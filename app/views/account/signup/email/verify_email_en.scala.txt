@@ -1,0 +1,7 @@
+@(verificationUrl: String, token: String, name: String, email: String)
+@name 您好!
+
+您已成功登記成為 babybox會員，請立即按以下連結完成登記:
+@verificationUrl
+
+babybox - Everymom is a Seller!

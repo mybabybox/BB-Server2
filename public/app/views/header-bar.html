@@ -1,0 +1,83 @@
+<!-- Top Header Bar -->
+<div id="header-backdrop" class="header-wrapper no-glow navbar hidden-print navbar-default box main navbar-fixed-top" role="navigation"></div>
+<div id="header" class="header-wrapper no-glow navbar hidden-print navbar-default box main navbar-fixed-top" role="navigation">
+    
+    <span>
+        <a class="header-main-text" ng-href="/my">
+        	Magic
+        </a>
+        <a class="header-main-text" ng-href="/my">
+        	My Feed
+        </a>
+        <a class="header-main-text" ng-href="/my">
+        	Trending
+        </a>
+        <a class="header-main-text" ng-if="userInfo.isLoggedIn" data-toggle="modal" data-target="#post-modal" href="">
+			Post +
+		</a>
+    </span>
+    
+    <div class="right-side">
+        <span ng-if="userInfo.isLoggedIn">
+            <a class="header-main-text" ng-href="/profile/{{userInfo.id}}">
+                <img class="post-title-user-image" ng-src="{{profileImage}}">
+                {{userInfo.displayName}}
+            </a>
+            <a style="position:relative;top:-3px;" class="dropdown-toggle dropdown-hover colorChange" data-toggle="dropdown" href="">
+                <img src="../assets/app/images/general/icons/w_settings.png" />
+            </a>
+            <ul class="dropdown-menu settings-dropdown-menu">
+                <li><a href="/logout">logout</a></li>
+            </ul>
+        </span>
+        <span ng-if="!userInfo.isLoggedIn">
+            <a class="header-main-text" ng-href="/signup">
+            	Signup
+            </a>
+            <a class="header-main-text" ng-href="/login">
+            	Login
+            </a>
+            <!--a class="header-main-text" ng-href="" ng-click="translateValidationMessages()" data-toggle="modal" data-target="#loginModal">
+                Log In
+            </a-->
+        </span>
+    </div>
+</div>
+
+<link rel="stylesheet" href="../assets/app/custom-css/login.css">
+<div class="modal fade lightbox" id="loginModal" data-backdrop="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">ç™»å…¥</h4>
+            </div>
+            <div class="modal-body">
+                <form name="formData" id="loginForm" action="/login-popup" method="post" >
+                    <div class="login-box" id="login-section">
+                        <ul>
+                            <li style="padding:5px;">
+                                <a href="/authenticatePopup/facebook?rurl=http%3A%2F%2Flocalhost:9000%2Fmy%23%2Fabout">
+                                    <img style="padding-left: 20px;width:216px;height:auto;" src="../assets/app/images/login/facebook_acc.jpg" />
+                                </a>
+                            </li>
+                            <hr style="margin-top:50px;"/>
+                            <li id="login-info-wrapper">
+                                <label for="Login email"></label>
+                                <input type="text" name="email" id="email" required="required" class="general-textfield" placeholder="é›»éƒµ" />
+                                <label for="Login password"></label>
+                                <input type="password" name="password" id="password" required="required" class="general-textfield" placeholder="å¯†ç¢¼" />
+                                <label for="Login state"></label>
+                                <input type="checkbox" name="login-state" id="login-state" /><p>ç¶­æŒ�æˆ‘çš„ç™»å…¥ç‹€æ…‹</p>
+                                <input type="submit" name="login-btn" id="login-btn" value="ç™»å…¥" />
+                                <input type="hidden" name="rurl" id="rurl" class="general-textfield" value="http://localhost:9000/my#!/about" />
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div data-ng-include data-src="'/assets/app/views/babybox/add-product-modal.html'"></div>
+<div id="main-top"/>
