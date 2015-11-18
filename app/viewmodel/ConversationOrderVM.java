@@ -21,21 +21,33 @@ public class ConversationOrderVM {
     @JsonProperty("declined") public boolean declined;
     @JsonProperty("declineDate") public Long declineDate;
     @JsonProperty("active") public boolean active;
-   
+    @JsonProperty("closed") public boolean closed;
+
 	public ConversationOrderVM(ConversationOrder order, User localUser) {
 		User otherUser = order.conversation.otherUser(localUser);
 		this.id = order.id;
 		this.conversationId = order.conversation.id;
 		this.userId = otherUser.id;
 		this.userName = otherUser.displayName;
-		this.createdDate = order.getCreatedDate().getTime();
-		this.updatedDate = order.getUpdatedDate().getTime();
+		if (order.getCreatedDate() != null) {
+		    this.createdDate = order.getCreatedDate().getTime();
+		}
+		if (order.getUpdatedDate() != null) {
+		    this.updatedDate = order.getUpdatedDate().getTime();
+		}
 		this.cancelled = order.cancelled;
-		this.cancelDate = order.cancelDate.getTime();
+		if (order.cancelDate != null) {
+		    this.cancelDate = order.cancelDate.getTime();
+		}
 		this.accepted = order.accepted;
-		this.acceptDate = order.acceptDate.getTime();
+		if (order.acceptDate != null) {
+		    this.acceptDate = order.acceptDate.getTime();
+		}
 		this.declined = order.declined;
-		this.declineDate = order.declineDate.getTime();
+		if (order.declineDate != null) {
+		    this.declineDate = order.declineDate.getTime();
+		}
 		this.active = order.active;
+		this.closed = order.isOrderClosed();
 	}
 }

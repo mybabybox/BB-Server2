@@ -25,7 +25,6 @@ import models.Message;
 import models.NotificationCounter;
 import models.Post;
 import models.Resource;
-import models.SiteTour;
 import models.SocialRelation;
 import models.User;
 
@@ -72,19 +71,6 @@ public class UserController extends Controller {
 		return null;
 	}
     
-    @Transactional
-    public static Result completeHomeTour() {
-        final User localUser = Application.getLocalUser(session());
-        SiteTour tour = SiteTour.getSiteTour(localUser.id, SiteTour.TourType.HOME);
-        if (tour == null) {
-            tour = new SiteTour(localUser.id, SiteTour.TourType.HOME);
-            tour.complete();
-            tour.save();
-            logger.underlyingLogger().debug(String.format("[u=%d] User completed home tour", localUser.id));
-        }
-        return ok();
-    }
-    
 	@Transactional
 	public static Result getUserInfo() {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
@@ -95,6 +81,8 @@ public class UserController extends Controller {
 		}
 		
 		UserVM userInfo = new UserVM(localUser);
+		
+		localUser.lastLogin = new Date();
 		
 		sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {
@@ -146,7 +134,6 @@ public class UserController extends Controller {
 		    logger.underlyingLogger().error("Error in uploadProfilePhoto", e);
 			return badRequest();
 		}
-	    completeHomeTour();
 		return ok();
 	}
 	
@@ -169,7 +156,6 @@ public class UserController extends Controller {
 		    logger.underlyingLogger().error("Error in uploadCoverPhoto", e);
 			return badRequest();
 		}
-	    completeHomeTour();
 		return ok();
 	}
 	
