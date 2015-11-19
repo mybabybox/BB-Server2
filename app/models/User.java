@@ -33,10 +33,10 @@ import javax.persistence.criteria.Root;
 import models.Post.ConditionType;
 import models.TokenAction.Type;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import play.Play;
 import play.data.format.Formats;
@@ -580,7 +580,7 @@ public class User extends SocialObject implements Subject, Followable {
 
 	private static void saveFbFriends(final AuthUser authUser, final User user) {
 		final FacebookAuthUser fbAuthUser = (FacebookAuthUser) authUser;
-		JsonNode frds = fbAuthUser.getFBFriends();
+		/*JsonNode frds = fbAuthUser.getFBFriends();
 
 		if (frds.has("data")) {
 			List<FbUserFriend> fbUserFriends = null;
@@ -595,7 +595,7 @@ public class User extends SocialObject implements Subject, Followable {
 			}
 			logger.underlyingLogger().info("[u="+user.id+"] saveFbFriends="+fbUserFriends.size());
 		}
-	}
+		 */	}
 
 	public static void merge(final AuthUser oldUser, final AuthUser newUser) {
 		User.findByAuthUserIdentity(oldUser).merge(

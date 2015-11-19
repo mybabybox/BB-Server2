@@ -41,8 +41,8 @@ public class Global extends GlobalSettings {
      * @param app
      */
     public void onStart(Application app) {
-		
-    	EventHandler.getInstance();
+		//jedisPool.getResource();
+    	//EventHandler.getInstance();
 		
         final boolean runBackgroundTasks = Play.application().configuration().getBoolean(RUN_BACKGROUND_TASKS_PROP, false);
         if (runBackgroundTasks) {
@@ -50,61 +50,57 @@ public class Global extends GlobalSettings {
             scheduleJobs();
         }
         
-        PlayAuthenticate.setResolver(new Resolver() {
-            @Override
-            public Call login(final Session session) {
-                // Your login page
-                return routes.Application.login();
-            }
+    	PlayAuthenticate.setResolver(new Resolver() {
 
-            @Override
-            public Call afterAuth(final Session session) {
-                // The user will be redirected to this page after authentication
-                // if no original URL was saved
-            	
+			@Override
+			public Call login() {
+				// Your login page
+				return routes.Application.login();
+			}
+
+			@Override
+			public Call afterAuth() {
+				// The user will be redirected to this page after authentication
+				// if no original URL was saved
             	// reset last login time
-            	final User user = controllers.Application.getLocalUser(session);
-    		    user.setLastLogin(new Date());
     		    
                 //return routes.Application.mainHome();
                 return routes.Application.mainHome();
-            }
+			}
 
-            @Override
-            public Call afterLogout(final Session session) {
-                return routes.Application.mainHome();
-            }
+			@Override
+			public Call afterLogout() {
+				return routes.Application.index();
+			}
 
-            @Override
-            public Call auth(final String provider) {
-                // You can provide your own authentication implementation,
-                // however the default should be sufficient for most cases
-                return com.feth.play.module.pa.controllers.routes.Authenticate
-                        .authenticate(provider);
-            }
-
-            @Override
-            public Call onException(final AuthException e) {
-                if (e instanceof AccessDeniedException) {
-                    return routes.Signup
-                            .oAuthDenied(((AccessDeniedException) e)
-                                    .getProviderKey());
-                }
-
-                // more custom problem handling here...
-                return super.onException(e);
-            }
+			@Override
+			public Call auth(final String provider) {
+				// You can provide your own authentication implementation,
+				// however the default should be sufficient for most cases
+				return com.feth.play.module.pa.controllers.routes.Authenticate
+						.authenticate(provider);
+			}
 
 			@Override
 			public Call askMerge() {
-				// TODO Auto-generated method stub
-				return null;
+				return routes.Account.askMerge();
 			}
 
 			@Override
 			public Call askLink() {
-				// TODO Auto-generated method stub
-				return null;
+				return routes.Account.askLink();
+			}
+
+			@Override
+			public Call onException(final AuthException e) {
+				if (e instanceof AccessDeniedException) {
+					return routes.Signup
+							.oAuthDenied(((AccessDeniedException) e)
+									.getProviderKey());
+				}
+
+				// more custom problem handling here...
+				return super.onException(e);
 			}
         });
 
@@ -117,7 +113,7 @@ public class Global extends GlobalSettings {
             JPA.withTransaction(new play.libs.F.Callback0() {
                 @Override
                 public void invoke() throws Throwable {
-                    init();
+                    //init();
                 }
             });
         } else {
@@ -226,18 +222,4 @@ public class Global extends GlobalSettings {
         ThreadLocalOverride.setIsServerStartingUp(false);
 	}
 
-	@Override
-	public Result onBadRequest(RequestHeader request, String error) {
-	    return Results.badRequest(error);
-	}
-	
-	@Override
-    public Result onError(RequestHeader request, Throwable throwable) {
-        return Results.internalServerError(throwable.getMessage());
-    }
-	
-	@Override
-    public Result onHandlerNotFound(RequestHeader request) {
-        return Results.notFound(views.html.notFound404.render(request.path()));
-    }
 }

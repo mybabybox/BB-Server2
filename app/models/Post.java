@@ -20,10 +20,11 @@ import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
 import play.db.jpa.JPA;
 import babybox.shopping.social.exception.SocialObjectNotCommentableException;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import common.cache.CalcServer;
 import common.utils.StringUtil;
 import controllers.Application.DeviceType;

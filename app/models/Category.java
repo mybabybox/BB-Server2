@@ -13,7 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.codehaus.jackson.annotate.JsonIgnore;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import common.cache.CategoryCache;
 

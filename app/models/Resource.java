@@ -9,7 +9,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.io.FileUtils;
-import org.codehaus.jackson.annotate.JsonIgnore;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import play.Play;
 import play.data.validation.Constraints.Required;

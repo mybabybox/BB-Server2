@@ -7,7 +7,7 @@
 # ~~~~
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file)
 
 GET     /sitemap.xml                controllers.Assets.at(path="/public",file="app/sitemap.xml")
 GET     /robots.txt                 controllers.Assets.at(path="/public",file="app/robots.txt")

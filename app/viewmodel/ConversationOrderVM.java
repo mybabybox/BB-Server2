@@ -3,7 +3,7 @@ package viewmodel;
 import models.ConversationOrder;
 import models.User;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ConversationOrderVM {
 	private static final play.api.Logger logger = play.api.Logger.apply(ConversationVM.class);

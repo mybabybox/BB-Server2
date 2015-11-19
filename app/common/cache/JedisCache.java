@@ -265,9 +265,9 @@ public class JedisCache {
     }
     
     private Jedis getResource() {
-    	if (jedisPool == null) {
+    	/*if (jedisPool == null) {
     		jedisPool = play.Play.application().plugin(RedisPlugin.class).jedisPool();
-    	}
+    	}*/
         return jedisPool.getResource();
     }
     
