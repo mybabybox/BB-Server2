@@ -1,10 +1,11 @@
-organization := "com.feth"
+organization := "com.babybox"
 
-name := "bb-server"
+name := "bb-server2"
 
 scalaVersion := "2.11.6"
 
-version := "1.0-SNAPSHOT"
+//version := "1.0-SNAPSHOT"
+version := "%s-%s".format("git rev-parse --abbrev-ref HEAD".!!.trim, "git rev-parse --short HEAD".!!.trim)
 
 val appDependencies = Seq(
   cache,
@@ -14,8 +15,8 @@ val appDependencies = Seq(
   "org.easytesting" % "fest-assert" % "1.4" % "test",
   "mysql" % "mysql-connector-java" % "5.1.36",
   "net.coobird" % "thumbnailator" % "0.4.7",
-   "be.objectify"  %% "deadbolt-java"     % "2.4.0",
-  "org.hibernate" % "hibernate-entitymanager" % "4.3.9.Final",
+   "be.objectify"  %% "deadbolt-java" % "2.4.0",
+  "org.hibernate" % "hibernate-entitymanager" % "4.3.11.Final",
   "commons-pool" % "commons-pool" % "1.6",
   "commons-lang" % "commons-lang" % "2.6",
   "commons-collections" % "commons-collections" % "3.2.1",
@@ -24,17 +25,15 @@ val appDependencies = Seq(
   "com.google.guava" % "guava" % "12.0",
   "com.ganyo" % "gcm-server" % "1.0.2",
   "com.typesafe.play.modules" %% "play-modules-redis" % "2.4.1",
-  "org.apache.httpcomponents" % "httpclient" % "4.5",
   "com.feth" %% "play-easymail" % "0.7.0",
   "org.mindrot" % "jbcrypt" % "0.3m",
   "org.apache.commons" % "commons-lang3" % "3.4",
   "com.typesafe.play" %% "play-mailer" % "3.0.0-M1",
-  "org.apache.httpcomponents" % "httpasyncclient" % "4.0-beta4",
-  "org.apache.httpcomponents" % "httpclient" % "4.3",
-  "org.apache.httpcomponents" % "httpmime" % "4.3",
+  "org.apache.httpcomponents" % "httpasyncclient" % "4.1.1",
+  "org.apache.httpcomponents" % "httpclient" % "4.5.1",
+  "org.apache.httpcomponents" % "httpmime" % "4.5.1",
   "org.json" % "json" % "20090211",
   "com.mashape.unirest" % "unirest-java" % "1.3.0"
-  
 )
 
 // add resolver for deadbolt and easymail snapshots

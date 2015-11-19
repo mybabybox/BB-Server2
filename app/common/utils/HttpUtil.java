@@ -3,7 +3,7 @@ package common.utils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import play.mvc.Http;
 import play.mvc.Http.MultipartFormData.FilePart;
@@ -78,7 +78,7 @@ public class HttpUtil {
     public static String getHTML(String urlToRead) throws Exception {
         StringBuilder result = new StringBuilder();
 
-        HttpClient client = new DefaultHttpClient();
+        HttpClient client = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(urlToRead);
         HttpResponse response = client.execute(request);
 

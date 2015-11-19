@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import play.Configuration;
@@ -14,10 +13,7 @@ import akka.actor.Cancellable;
 import babybox.shopping.social.utils.MailJob.Mail.Body;
 
 import com.feth.play.module.mail.Mailer;
-import com.feth.play.module.mail.Mailer.Mail;
 import com.feth.play.module.pa.PlayAuthenticate;
-
-import email.EDMUtility;
 
 public class MailJob implements Runnable {
 
