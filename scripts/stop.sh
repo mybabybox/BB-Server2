@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP_HOME=/apps/MB
+APP_HOME=/apps/BB
 INSTALL_PATH=$APP_HOME/current
 
 cd $INSTALL_PATH

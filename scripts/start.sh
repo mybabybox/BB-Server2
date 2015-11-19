@@ -1,7 +1,7 @@
 #!/bin/bash
 
-APP_HOME=/apps/MB
-INSTALL_PATH=$APP_HOME/current
+APP_HOME=/apps/BB
+INSTALL_PATH=$APP_HOME/current/bin
 LOG_DIR=$INSTALL_PATH/logs
 
 SERVICE_NAME=application
@@ -33,4 +33,4 @@ fi
 echo "Starting play"
 cd $INSTALL_PATH
 
-nohup ./start -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=$JMX_PORT -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -verbose:gc -Xloggc:$LOG_DIR/jvm.log -XX:+HeapDumpOnOutOfMemoryError -XX:+DisableExplicitGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xmx768m -XX:MaxPermSize=128m -Dhttp.port=9001 -Dconfig.file=/opt/conf/mb_prod.conf &
+nohup ./bb-server2 -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=$JMX_PORT -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -verbose:gc -Xloggc:$LOG_DIR/jvm.log -XX:+HeapDumpOnOutOfMemoryError -XX:+DisableExplicitGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xmx768m -XX:MaxPermSize=128m -Dhttp.port=9001 -Dconfig.file=/opt/conf/mb_prod.conf &

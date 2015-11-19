@@ -8,13 +8,13 @@ FTP_HOME=/home/ftp
 cd $FTP_HOME
 
 #server
-ls -rt | grep zip | grep babybox-server | head -n -4 | while read f; do
+ls -rt | grep zip | grep bb-server | head -n -4 | while read f; do
   rm -f "$f"
 done
 
 #admin
-ls -rt | grep zip | grep babybox-admin | head -n -4 | while read f; do
-  rm -f "$f"
-done
+#ls -rt | grep zip | grep bb-admin | head -n -4 | while read f; do
+#  rm -f "$f"
+#done
 
-echo "Done purging old babybox binary zips from $FTP_HOME"
+echo "Done purging old bb binary zips from $FTP_HOME"

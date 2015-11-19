@@ -18,7 +18,7 @@ fi
 
 IMG_TMP_ZIP=image_default.gz
 
-APP_HOME=/apps/MB
+APP_HOME=/apps/BB
 FTP_HOME=/home/ftp
 INSTALL_PATH=$APP_HOME/current
 APP_LOG_PATH=$APP_HOME/current/logs
