@@ -22,8 +22,8 @@ public class PostEventListener {
 	    try { 
     		Post post = (Post) map.get("post");
     		User user = (User) map.get("user");
-    		CalcServer.addToCategoryQueues(post);
-    		CalcServer.addToUserPostedQueue(post, user);
+    		CalcServer.instance().addToCategoryQueues(post);
+    		CalcServer.instance().addToUserPostedQueue(post, user);
     		
     		/*
     		// Need to query followers as recipients
@@ -49,8 +49,8 @@ public class PostEventListener {
 	    try {
             Post post = (Post) map.get("post");
             Category category = (Category) map.get("category");
-            CalcServer.removeFromCategoryQueues(post, category);
-            CalcServer.addToCategoryQueues(post);
+            CalcServer.instance().removeFromCategoryQueues(post, category);
+            CalcServer.instance().addToCategoryQueues(post);
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
         }
@@ -61,9 +61,9 @@ public class PostEventListener {
 	    try {
     		Post post = (Post) map.get("post");
     		User user = (User) map.get("user");
-    		CalcServer.removeFromCategoryQueues(post);
-    		CalcServer.removeFromUserPostedQueue(post, post.owner);
-    		CalcServer.removeFromAllUsersLikedQueues(post);
+    		CalcServer.instance().removeFromCategoryQueues(post);
+    		CalcServer.instance().removeFromUserPostedQueue(post, post.owner);
+    		CalcServer.instance().removeFromAllUsersLikedQueues(post);
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
         }

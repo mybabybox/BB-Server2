@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
@@ -1057,8 +1058,8 @@ public class User extends SocialObject implements Subject, Followable {
 	
 	@JsonIgnore
 	public boolean isFollowedBy(User user) {
-		CalcServer.isFollowed(user.id, this.id);
-		return FollowSocialRelation.isFollowing(user.id, SocialObjectType.USER, this.id, SocialObjectType.USER);
+	    return CalcServer.instance().isFollowed(user.id, this.id);
+		//return FollowSocialRelation.isFollowing(user.id, SocialObjectType.USER, this.id, SocialObjectType.USER);
 	}
 
 	public List<Collection> getUserCollection() {

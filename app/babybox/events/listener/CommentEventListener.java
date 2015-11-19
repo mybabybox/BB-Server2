@@ -28,7 +28,7 @@ public class CommentEventListener {
 	    try {
     		Comment comment = (Comment) map.get("comment");
     		Post post = (Post) map.get("post");
-    		CalcServer.recalcScoreAndAddToCategoryPopularQueue(post);
+    		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
     		
     		// first of all, send to post owner
             if (comment.owner.id != post.owner.id) {
@@ -95,7 +95,7 @@ public class CommentEventListener {
 	    try {
     		Comment comment = (Comment) map.get("comment");
     		Post post = (Post) map.get("post");
-    		CalcServer.recalcScoreAndAddToCategoryPopularQueue(post);
+    		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
 	    } catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
         }

@@ -18,7 +18,7 @@ public class ViewEventListener {
     		Post post = (Post) map.get("post");
     		User user = (User) map.get("user");
     		if (post.onView(user)) {
-    		    //CalcServer.recalcScoreAndAddToCategoryPopularQueue(post);
+    		    //CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
     		}
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
@@ -30,7 +30,7 @@ public class ViewEventListener {
 	    try {
             Post post = (Post) map.get("post");
             User user = (User) map.get("user");
-            CalcServer.recalcScoreAndAddToCategoryPopularQueue(post);
+            CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
         }

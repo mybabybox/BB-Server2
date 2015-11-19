@@ -41,9 +41,7 @@ public class Global extends GlobalSettings {
      * @param app
      */
     public void onStart(Application app) {
-		//jedisPool.getResource();
-    	//EventHandler.getInstance();
-		
+
         final boolean runBackgroundTasks = Play.application().configuration().getBoolean(RUN_BACKGROUND_TASKS_PROP, false);
         if (runBackgroundTasks) {
             // schedule background jobs
@@ -64,7 +62,6 @@ public class Global extends GlobalSettings {
 				// if no original URL was saved
             	// reset last login time
     		    
-                //return routes.Application.mainHome();
                 return routes.Application.mainHome();
 			}
 
@@ -113,7 +110,7 @@ public class Global extends GlobalSettings {
             JPA.withTransaction(new play.libs.F.Callback0() {
                 @Override
                 public void invoke() throws Throwable {
-                    //init();
+                    init();
                 }
             });
         } else {
@@ -152,7 +149,7 @@ public class Global extends GlobalSettings {
                        JPA.withTransaction(new play.libs.F.Callback0() {
                             public void invoke() {
                                 logger.underlyingLogger().info("[JobScheduler] cleanupSoldPosts starts...");
-                                CalcServer.cleanupSoldPosts();
+                                CalcServer.instance().cleanupSoldPosts();
                                 logger.underlyingLogger().info("[JobScheduler] cleanupSoldPosts completed !");
                             }
                         });
@@ -217,7 +214,10 @@ public class Global extends GlobalSettings {
         DataBootstrap.bootstrap();
         
         // cache warm up
-        CalcServer.warmUpActivity();
+        CalcServer.instance().warmUpActivity();
+        
+        // init event handler
+        EventHandler.getInstance();
         
         ThreadLocalOverride.setIsServerStartingUp(false);
 	}

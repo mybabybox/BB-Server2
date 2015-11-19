@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import models.Activity;
 import models.Collection;
 import models.Conversation;
@@ -58,6 +60,9 @@ import domain.DefaultValues;
 
 public class UserController extends Controller {
     private static final play.api.Logger logger = play.api.Logger.apply(UserController.class);
+
+    @Inject
+    FeedHandler feedHandler;
     
     public static String getMobileUserKey(final play.mvc.Http.Request r, final Object key) {
 		final String[] m = r.queryString().get(key);
@@ -72,7 +77,7 @@ public class UserController extends Controller {
 	}
     
 	@Transactional
-	public static Result getUserInfo() {
+	public Result getUserInfo() {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    
 		final User localUser = Application.getLocalUser(session());
@@ -92,7 +97,7 @@ public class UserController extends Controller {
 	}
 	
 	@Transactional
-	public static Result getUserInfoById(Long id) {
+	public Result getUserInfoById(Long id) {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    
 		final User localUser = Application.getLocalUser(session());
@@ -658,7 +663,7 @@ public class UserController extends Controller {
 	}
   
     @Transactional
-    public static Result profile(Long id) {
+    public Result profile(Long id) {
         	NanoSecondStopWatch sw = new NanoSecondStopWatch();
     	    
         	User user = User.findById(id);
@@ -673,37 +678,37 @@ public class UserController extends Controller {
     }
     
 	@Transactional 
-	public static Result getHomeExploreFeed(Long offset) {
+	public Result getHomeExploreFeed(Long offset) {
 		final User localUser = Application.getLocalUser(session());
 		if (!localUser.isLoggedIn()) {
 			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
 			return notFound();
 		}
 		
-		List<PostVMLite> vms = FeedHandler.getPostVM(localUser.id, offset, localUser, FeedType.HOME_EXPLORE);
+		List<PostVMLite> vms = feedHandler.getPostVM(localUser.id, offset, localUser, FeedType.HOME_EXPLORE);
 		return ok(Json.toJson(vms));
 	}
 	
 	@Transactional 
-	public static Result getHomeFollowingFeed(Long offset) {
+	public Result getHomeFollowingFeed(Long offset) {
 		final User localUser = Application.getLocalUser(session());
 		if (!localUser.isLoggedIn()) {
 			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
 			return notFound();
 		}
-		List<PostVMLite> vms = FeedHandler.getPostVM(localUser.id, offset, localUser, FeedType.HOME_FOLLOWING);
+		List<PostVMLite> vms = feedHandler.getPostVM(localUser.id, offset, localUser, FeedType.HOME_FOLLOWING);
 		return ok(Json.toJson(vms));
 	}
 	
     @Transactional
-    public static Result getUserPosts(Long id, Long offset) {
+    public Result getUserPosts(Long id, Long offset) {
     	final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
             return notFound();
         }
 
-        List<PostVMLite> vms = FeedHandler.getPostVM(id, offset, localUser, FeedType.USER_POSTED);
+        List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.USER_POSTED);
 		return ok(Json.toJson(vms));
     }
     
@@ -742,7 +747,7 @@ public class UserController extends Controller {
     }
     
     @Transactional
-    public static Result getFollowings(Long id, Long offset) {
+    public Result getFollowings(Long id, Long offset) {
     	final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
@@ -761,7 +766,7 @@ public class UserController extends Controller {
     }
     
     @Transactional
-    public static Result getFollowers(Long id, Long offset) {
+    public Result getFollowers(Long id, Long offset) {
     	final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
@@ -780,14 +785,14 @@ public class UserController extends Controller {
     }
     
     @Transactional
-    public static Result getUserLikedPosts(Long id, Long offset){
+    public Result getUserLikedPosts(Long id, Long offset){
     	final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
             return notFound();
         }
         
-        List<PostVMLite> vms = FeedHandler.getPostVM(id, offset, localUser, FeedType.USER_LIKED);
+        List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.USER_LIKED);
 		return ok(Json.toJson(vms));
     }
     

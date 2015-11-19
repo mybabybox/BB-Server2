@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.inject.Inject;
+
 import babybox.shopping.social.exception.SocialObjectNotCommentableException;
 import models.Category;
 import models.Collection;
@@ -43,6 +45,9 @@ import domain.SocialObjectType;
 public class ProductController extends Controller{
 	private static play.api.Logger logger = play.api.Logger.apply(ProductController.class);
 	
+	@Inject
+    FeedHandler feedHandler;
+    
 	@Transactional
 	public static Result createProductWeb() {
 		DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
@@ -226,7 +231,7 @@ public class ProductController extends Controller{
 	}
 
 	@Transactional
-	public static Result getAllFeedProducts() {
+	public Result getAllFeedProducts() {
 		return ok(Json.toJson(getPostVMsFromPosts(Post.getEligiblePostsForFeeds())));
 	}
 
@@ -281,13 +286,13 @@ public class ProductController extends Controller{
 	}
 
 	@Transactional
-	public static Result product(Long id) {
+	public Result product(Long id) {
 		final User localUser = Application.getLocalUser(session());
 		return ok(views.html.babybox.web.product.render(Json.stringify(Json.toJson(getProductInfoVM(id))), Json.stringify(Json.toJson(new UserVM(localUser)))));
 	}
 	
 	@Transactional
-	public static Result getProductInfo(Long id) {
+	public Result getProductInfo(Long id) {
 		PostVM post = getProductInfoVM(id);
 		if (post == null) {
 			return notFound();
@@ -437,59 +442,59 @@ public class ProductController extends Controller{
 	}
 	
 	@Transactional 
-	public static Result getCategoryPopularFeed(Long id, String postType, Long offset){
+	public Result getCategoryPopularFeed(Long id, String postType, Long offset){
 		final User localUser = Application.getLocalUser(session());
 		if (!localUser.isLoggedIn()) {
 			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
 			return notFound();
 		}
 		
-		List<PostVMLite> vms = FeedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_POPULAR);
+		List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_POPULAR);
 		return ok(Json.toJson(vms));
 
 	}
 
 	@Transactional 
-	public static Result getCategoryNewestFeed(Long id, String postType, Long offset){
+	public Result getCategoryNewestFeed(Long id, String postType, Long offset){
 		final User localUser = Application.getLocalUser(session());
 		if (!localUser.isLoggedIn()) {
 			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
 			return notFound();
 		}
-		List<PostVMLite> vms = FeedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_NEWEST);
+		List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_NEWEST);
 		return ok(Json.toJson(vms));
 	}
 	
 	@Transactional 
-	public static Result getCategoryPriceLowHighFeed(Long id, String postType, Long offset){
+	public Result getCategoryPriceLowHighFeed(Long id, String postType, Long offset){
 		final User localUser = Application.getLocalUser(session());
 		if (!localUser.isLoggedIn()) {
 			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
 			return notFound();
 		}
-		List<PostVMLite> vms = FeedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_PRICE_LOW_HIGH);
+		List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_PRICE_LOW_HIGH);
 		return ok(Json.toJson(vms));
 	}
 	
 	@Transactional 
-	public static Result getCategoryPriceHighLowFeed(Long id, String postType, Long offset) {
+	public Result getCategoryPriceHighLowFeed(Long id, String postType, Long offset) {
 		final User localUser = Application.getLocalUser(session());
 		if (!localUser.isLoggedIn()) {
 			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
 			return notFound();
 		}
-		List<PostVMLite> vms = FeedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_PRICE_HIGH_LOW);
+		List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_PRICE_HIGH_LOW);
 		return ok(Json.toJson(vms));
 	}
 	
 	@Transactional 
-	public static Result getSuggestedProducts(Long id) {
+	public Result getSuggestedProducts(Long id) {
 		final User localUser = Application.getLocalUser(session());
 		if (!localUser.isLoggedIn()) {
 			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
 			return notFound();
 		}
-		List<PostVMLite> vms = FeedHandler.getPostVM(id, 0l, localUser, FeedType.PRODUCT_SUGGEST);
+		List<PostVMLite> vms = feedHandler.getPostVM(id, 0l, localUser, FeedType.PRODUCT_SUGGEST);
 		return ok(Json.toJson(vms));
 	}
 	

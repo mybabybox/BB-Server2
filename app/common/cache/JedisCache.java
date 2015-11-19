@@ -1,18 +1,19 @@
 package common.cache;
 
+import java.util.Map;
+import java.util.Set;
+
+import javax.inject.Inject;
+
 import play.Play;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import com.typesafe.plugin.RedisPlugin;
-
+import com.google.inject.Singleton;
 import common.serialize.JsonSerializer;
-import domain.DefaultValues;
 
-import java.util.Map;
-import java.util.Set;
-
-public class JedisCache {
+@Singleton
+public class JedisCache{
     private static final play.api.Logger logger = play.api.Logger.apply(JedisCache.class);
     
     private static final String SYS_PREFIX = Play.application().configuration().getString("keyprefix", "prod_");
@@ -30,20 +31,12 @@ public class JedisCache {
     public final static String TODAY_WEATHER_KEY = "TODAY_WEATHER";
     public static final String ARTICLE_SLIDER_PREFIX = SYS_PREFIX + "user_sc_";
     
-    private static JedisPool jedisPool;
-    
-    private static JedisCache cache = new JedisCache();
+    @Inject
+    JedisPool jedisPool;
     
     public enum Status {
         OK,
         ERROR
-    }
-    
-    public static JedisCache cache() {
-        return cache;
-    }
-    
-    private JedisCache() {
     }
     
     public void putObj(String key, Object object) {
@@ -52,12 +45,12 @@ public class JedisCache {
     
     public void putObj(String key, Object object, int expire) {
         String json = JsonSerializer.serialize(object);
-        cache.put(key, json, expire);
+        put(key, json, expire);
     }
     
     public Object getObj(String key, Class<?> clazz) {
         Object object = null;
-        String json = cache.get(key);
+        String json = get(key);
         if (json == null) {
             return null;
         } else {
@@ -80,7 +73,7 @@ public class JedisCache {
                 return Status.ERROR;
             }
             if (expire != -1) {
-                cache.expire(key, expire);
+                expire(key, expire);
             }
             return Status.OK;
         } finally {
@@ -188,7 +181,7 @@ public class JedisCache {
         Jedis j = null;
         try {
             j = getResource();
-			return j.zrangeByScore(key, ++min, 99999999999999999999.9, 0, CalcServer.FEED_RETRIEVAL_COUNT);
+            return j.zrangeByScore(key, ++min, 99999999999999999999.9, 0, CalcServer.FEED_RETRIEVAL_COUNT);
         } finally {
             returnResource(j);
         }
@@ -199,11 +192,11 @@ public class JedisCache {
         try {
             j = getResource();
             if(max == 0){
-            	max = 999999999999999999999.9;
+                max = 999999999999999999999.9;
             }
             return j.zrevrangeByScore(key, --max, 0, 0, CalcServer.FEED_RETRIEVAL_COUNT); 
         } finally {
-        	returnResource(j);
+            returnResource(j);
         }
     }
     
@@ -213,7 +206,7 @@ public class JedisCache {
             j = getResource();
             return j.zrevrange(key, (int)offset, -1); 
         } finally {
-        	returnResource(j);
+            returnResource(j);
         }
     }
     
@@ -223,7 +216,7 @@ public class JedisCache {
             j = getResource();
             return j.zscore(key, member); 
         } finally {
-        	returnResource(j);
+            returnResource(j);
         }
     }
     
@@ -264,16 +257,13 @@ public class JedisCache {
         }
     }
     
-    private Jedis getResource() {
-    	/*if (jedisPool == null) {
-    		jedisPool = play.Play.application().plugin(RedisPlugin.class).jedisPool();
-    	}*/
+    public Jedis getResource() {
         return jedisPool.getResource();
     }
     
     private void returnResource(Jedis j) {
-    	if (j != null) {
-    		jedisPool.returnResource(j);
-    	}
+        if (j != null) {
+            jedisPool.returnResource(j);
+        }
     }
 }

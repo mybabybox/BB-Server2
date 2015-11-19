@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import javax.inject.Inject;
 
 import models.Category;
 import models.Location;
@@ -82,6 +83,9 @@ public class Application extends Controller {
     public static final String FLASH_MESSAGE_KEY = "message";
 	public static final String FLASH_ERROR_KEY = "error";
 
+	@Inject
+	CalcServer calcServer;
+	
 	public static enum DeviceType {
 		NA,
 		ANDROID,
@@ -99,7 +103,7 @@ public class Application extends Controller {
 	}
 	
 	@Transactional
-    public static Result index() {
+    public Result index() {
         return mainHome();
     }	
 	
@@ -108,7 +112,7 @@ public class Application extends Controller {
 	//
     
     @Transactional
-    public static Result mainHome() {
+    public Result mainHome() {
     	final User user = getLocalUser(session());
 		if (User.isLoggedIn(user) && user.userInfo == null) {
 		    if (user.fbLogin) {
@@ -168,7 +172,7 @@ public class Application extends Controller {
 	}
 
 	@Transactional
-	public static Result home() {
+	public Result home() {
         final User localUser = getLocalUser(session());
 		if(!User.isLoggedIn(localUser)) {
 		    return login();
@@ -177,12 +181,7 @@ public class Application extends Controller {
 		return home(localUser);
 	}
 
-	/**
-	 * 1. if user login first time
-	 *     i. bootstrap communities
-	 *     ii. welcome page
-	 */
-	public static Result home(User user) {
+	public Result home(User user) {
 	    return ok(views.html.babybox.web.home.render( Json.stringify(Json.toJson(new UserVM(user)))));
 	}
 	
@@ -495,7 +494,7 @@ public class Application extends Controller {
     }
     
     @Transactional
-    public static Result initNewUser() {
+    public Result initNewUser() {
     	final User user = getLocalUser(session());
     	if (!User.isLoggedIn(user)) {
     	    logger.underlyingLogger().error(String.format("[u=%d] User not logged in", user.id));
@@ -507,7 +506,7 @@ public class Application extends Controller {
 
         //GameAccount.setPointsForSignUp(user);
 
-    	CalcServer.clearUserQueues(user);
+    	calcServer.clearUserQueues(user);
     	
         user.setNewUser(false);
         
@@ -682,13 +681,13 @@ public class Application extends Controller {
 	@Transactional
 	public static Result addProduct() {
 		User user = Application.getLocalUser(session());
-		return ok(views.html.babybox.web.add_product.render( Json.stringify(Json.toJson(new UserVM(user)))));
+		return ok(views.html.babybox.web.add_product.render(Json.stringify(Json.toJson(new UserVM(user)))));
 	}
 	
 	@Transactional
 	public static Result addStory() {
 		User user = Application.getLocalUser(session());
-		return ok(views.html.babybox.web.add_story.render( Json.stringify(Json.toJson(new UserVM(user)))));
+		return ok(views.html.babybox.web.add_story.render(Json.stringify(Json.toJson(new UserVM(user)))));
 	}
 	
 	@Transactional

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -172,7 +173,7 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	
 	@Override
 	public boolean isLikedBy(User user){
-		return CalcServer.isLiked(user.id, this.id);
+		return CalcServer.instance().isLiked(user.id, this.id);
 	}
 
 	@Override

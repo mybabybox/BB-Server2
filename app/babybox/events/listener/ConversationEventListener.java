@@ -16,7 +16,7 @@ public class ConversationEventListener {
 	    try {
     	    Conversation conversation = (Conversation) map.get("conversation");
     	    Post post = (Post) map.get("post");
-           	CalcServer.recalcScoreAndAddToCategoryPopularQueue(post);
+    	    CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
         }
