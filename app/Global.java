@@ -101,7 +101,6 @@ public class Global extends GlobalSettings {
 			}
         });
 
-
         final boolean doDataBootstrap = Play.application().configuration().getBoolean(STARTUP_BOOTSTRAP_PROP, false);
 
         if (doDataBootstrap) {
