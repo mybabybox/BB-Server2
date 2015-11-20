@@ -1,19 +1,13 @@
 import java.util.Arrays;
-import java.util.Date;
 
 import models.Activity;
 import models.SecurityRole;
 import models.SecurityRole.RoleType;
-import models.User;
 import play.Application;
 import play.GlobalSettings;
 import play.Play;
 import play.db.jpa.JPA;
 import play.mvc.Call;
-import play.mvc.Http.RequestHeader;
-import play.mvc.Http.Session;
-import play.mvc.Result;
-import play.mvc.Results;
 import babybox.events.handler.EventHandler;
 
 import com.feth.play.module.pa.PlayAuthenticate;
