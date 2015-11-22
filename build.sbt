@@ -28,7 +28,7 @@ val appDependencies = Seq(
   "com.feth" %% "play-easymail" % "0.7.0",
   "org.mindrot" % "jbcrypt" % "0.3m",
   "org.apache.commons" % "commons-lang3" % "3.4",
-  "com.typesafe.play" %% "play-mailer" % "3.0.0-M1",
+  "com.typesafe.play" %% "play-mailer" % "3.0.1",
   "org.apache.httpcomponents" % "httpasyncclient" % "4.1.1",
   "org.apache.httpcomponents" % "httpclient" % "4.5.1",
   "org.apache.httpcomponents" % "httpmime" % "4.5.1",
