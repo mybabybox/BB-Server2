@@ -62,6 +62,6 @@ ln -s $UPGRADE_VERSION current
 
 echo "Fixing up permissions"
 cd $INSTALL_PATH
-chmod +x start
+chmod +x bin/bb-server2
 
 echo "Deploy Completed!"
