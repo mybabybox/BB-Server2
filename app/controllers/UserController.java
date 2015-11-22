@@ -730,7 +730,13 @@ public class UserController extends Controller {
             return notFound();
         }
         
-        SocialRelationHandler.recordFollowUser(localUser, User.findById(id));
+        final User user = User.findById(id);
+        if (user == null) {
+            logger.underlyingLogger().error(String.format("[u=%d] User is null", id));
+            return notFound();
+        }
+        
+        SocialRelationHandler.recordFollowUser(localUser, user);
 		return ok();
     }
     
@@ -742,7 +748,13 @@ public class UserController extends Controller {
             return notFound();
         }
         
-        SocialRelationHandler.recordUnFollowUser(localUser, User.findById(id));
+        final User user = User.findById(id);
+        if (user == null) {
+            logger.underlyingLogger().error(String.format("[u=%d] User is null", id));
+            return notFound();
+        }
+        
+        SocialRelationHandler.recordUnFollowUser(localUser, user);
 		return ok();
     }
     
@@ -759,8 +771,10 @@ public class UserController extends Controller {
     	
     	for (SocialRelation socialRelation : followings) {
     		User user = User.findById(socialRelation.target);
-    		UserVMLite uservm = new UserVMLite(user, localUser);
-    		userFollowings.add(uservm);
+    		if (user != null) {
+    		    UserVMLite uservm = new UserVMLite(user, localUser);
+    		    userFollowings.add(uservm);
+    		}
     	}
     	return ok(Json.toJson(userFollowings));
     }
@@ -778,8 +792,10 @@ public class UserController extends Controller {
     	
     	for(SocialRelation socialRelation : followings){
     		User user = User.findById(socialRelation.actor);
-    		UserVMLite uservm = new UserVMLite(user, localUser);
-    		userFollowers.add(uservm);
+    		if (user != null) {
+        		UserVMLite uservm = new UserVMLite(user, localUser);
+        		userFollowers.add(uservm);
+    		}
     	}
     	return ok(Json.toJson(userFollowers));
     }

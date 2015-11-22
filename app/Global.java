@@ -179,9 +179,7 @@ public class Global extends GlobalSettings {
                     try {
                        JPA.withTransaction(new play.libs.F.Callback0() {
                             public void invoke() {
-                                logger.underlyingLogger().info("[JobScheduler] commandCheck starts...");
                                 CommandChecker.checkCommandFiles();
-                                logger.underlyingLogger().info("[JobScheduler] commandCheck completed !");
                             }
                         });
                     } catch (Exception e) {

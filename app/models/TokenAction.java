@@ -61,15 +61,22 @@ public class TokenAction extends domain.Entity {
 
 	
 	public static TokenAction findByToken(final String token, final Type type) {
-		return (TokenAction) JPA.em().createQuery("Select t from TokenAction t where token = ?1 and type = ?2").
-		setParameter(1, token).
-		setParameter(2, type).getSingleResult();
+	    try {
+    		return (TokenAction) JPA.em().createQuery("Select t from TokenAction t where token = ?1 and type = ?2").
+    		setParameter(1, token).
+    		setParameter(2, type).getSingleResult();
+	    } catch (Exception e) {
+            return null;
+        }
 	}
 
 	public static void deleteByUser(final User u, final Type type) {
-		JPA.em().createQuery("DELETE TokenAction where targetUser.id = ?1 and type = ?2").
-		setParameter(1, u.id).
-		setParameter(2, type).executeUpdate();
+	    try {
+    		JPA.em().createQuery("DELETE TokenAction where targetUser.id = ?1 and type = ?2").
+    		setParameter(1, u.id).
+    		setParameter(2, type).executeUpdate();
+	    } catch (Exception e) {
+        }
 	}
 
 	public boolean isValid() {
