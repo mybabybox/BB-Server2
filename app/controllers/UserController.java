@@ -324,7 +324,6 @@ public class UserController extends Controller {
         
         return ok();
 	}
-	
     
     @Transactional
     public static Result getProfile(Long id) {

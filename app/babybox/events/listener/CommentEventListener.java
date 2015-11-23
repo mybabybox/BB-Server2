@@ -1,11 +1,8 @@
 package babybox.events.listener;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import play.libs.Json;
 import mobile.GcmSender;
 import models.Activity;
 import models.Comment;
@@ -45,13 +42,11 @@ public class CommentEventListener {
                 activity.ensureUniqueAndCreate();
                 
                 //GCM
-                Map<String, String> data = new HashMap<>();
-                data.put("message", comment.owner.name+" commented on your product: "+post.title);
-                data.put("messageType", GcmSender.NotificationType.COMMENT.name());
-                data.put("postId", post.id.toString());
-        		String msg = Json.stringify(Json.toJson(data));
-        		
-                GcmSender.sendNotification(post.owner.id, msg);
+                GcmSender.sendNewCommentNotification(
+                        post.owner.id, 
+                        comment.owner.name,
+                        post.title, 
+                        post.id);
             }
             
     		// fan out to all commenters

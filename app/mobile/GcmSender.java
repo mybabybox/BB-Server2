@@ -1,6 +1,10 @@
 package mobile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import play.Play;
+import play.libs.Json;
 import models.GcmToken;
 
 import com.google.android.gcm.server.Sender;
@@ -22,10 +26,27 @@ public class GcmSender {
         COMMENT
     }
 
-    public static void sendNotification(Long userId, String msg){
+    public static void sendNewCommentNotification(Long userId, String actor, String message, Long postId) {
+        Map<String, String> map = new HashMap<>();
+        map.put("actor", actor);
+        map.put("message", message);
+        map.put("messageType", NotificationType.COMMENT.name());
+        map.put("postId", postId.toString());
+        sendNotification(userId, Json.stringify(Json.toJson(map)));
+    }
+    
+    public static void sendNewMessageNotification(Long userId, String actor, String message) {
+        Map<String, String> map = new HashMap<>();
+        map.put("actor", actor);
+        map.put("message", message);
+        map.put("messageType", NotificationType.CONVERSATION.name());
+        sendNotification(userId, Json.stringify(Json.toJson(map)));
+    }
+    
+    private static void sendNotification(Long userId, String message) {
         GcmToken gcmToken = GcmToken.findByUserId(userId);
         if (gcmToken != null) {
-            sendToGcm(userId, gcmToken.getRegId(), msg);
+            sendToGcm(userId, gcmToken.getRegId(), message);
         } else {
             logger.underlyingLogger().info("[u="+userId+"] User does not have Gcm reg");
         }
