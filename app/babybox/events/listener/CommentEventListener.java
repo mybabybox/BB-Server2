@@ -39,7 +39,7 @@ public class CommentEventListener {
                         post.id,
                         post.getImage(), 
                         StringUtil.shortMessage(comment.body));
-                activity.ensureUniqueAndCreate();
+                activity.ensureUniqueAndMerge();    // only record latest comment activity from sender
                 
                 //GCM
                 GcmSender.sendNewCommentNotification(

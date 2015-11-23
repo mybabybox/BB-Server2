@@ -1,6 +1,7 @@
 package models;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -148,12 +149,23 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
 		if (activity == null) {
 			this.save();
 			return true;
-		} else {
-			//activity.setCreatedDate(new Date());
-			//activity.merge();
-			return false;
 		}
+		return false;
 	}
+	
+	@Transactional
+    public boolean ensureUniqueAndMerge() {
+        Activity activity = getActivity();
+        
+        if (activity == null) {
+            this.save();
+            return true;
+        } else {
+            activity.setCreatedDate(new Date());
+            activity.merge();
+            return false;
+        }
+    }
 
 	public Activity getActivity() {
 		Query q = JPA.em().createQuery(
