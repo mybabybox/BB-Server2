@@ -177,6 +177,7 @@ POST    /mobile/login                               controllers.Application.doMo
 POST    /authenticate/mobile/:provider              com.feth.play.module.pa.controllers.Authenticate.mobileAuthenticate(provider: String)
 
 # admin
+GET     /delete-account/:id                         controllers.UserController.deleteAccount(id:Long)
 GET     /adjust-up-post-score/:id                   controllers.ProductController.adjustUpPostScore(id:Long)
 GET     /adjust-down-post-score/:id                 controllers.ProductController.adjustDownPostScore(id:Long)
 GET     /reset-adjust-post-score/:id                controllers.ProductController.resetAdjustPostScore(id:Long)

@@ -1017,4 +1017,32 @@ public class UserController extends Controller {
         }
 		return ok();
     }
+    
+    @Transactional
+    public static Result deleteAccount(Long id){
+        NanoSecondStopWatch sw = new NanoSecondStopWatch();
+        
+        User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+
+        if (!localUser.isSuperAdmin()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User is not super admin. Failed to delete account !!", localUser.id));
+            return badRequest();
+        }
+        
+        User user = User.findById(id);
+        if (user != null) {
+            user.deleted = true;
+            user.save();    
+        }
+        
+        sw.stop();
+        if (logger.underlyingLogger().isDebugEnabled()) {
+            logger.underlyingLogger().debug("[u="+localUser.getId()+"] deleteAccount(). Took "+sw.getElapsedMS()+"ms");
+        }
+        return ok();
+    }
 }
