@@ -161,7 +161,11 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
             this.save();
             return true;
         } else {
+            activity.actorName = this.actorName;
+            activity.actorImage = this.actorImage;
+            activity.targetName = this.targetName;
             activity.setCreatedDate(new Date());
+            activity.deleted = false;
             activity.merge();
             return false;
         }

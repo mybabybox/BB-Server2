@@ -10,6 +10,7 @@ import models.GcmToken;
 import com.google.android.gcm.server.Sender;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
+import common.utils.StringUtil;
 
 public class GcmSender {
     private static final play.api.Logger logger = play.api.Logger.apply(GcmSender.class);
@@ -29,7 +30,7 @@ public class GcmSender {
     public static void sendNewCommentNotification(Long userId, String actor, String message, Long postId) {
         Map<String, String> map = new HashMap<>();
         map.put("actor", actor);
-        map.put("message", message);
+        map.put("message", StringUtil.shortMessage(message));
         map.put("messageType", NotificationType.COMMENT.name());
         map.put("postId", postId.toString());
         sendNotification(userId, Json.stringify(Json.toJson(map)));
@@ -38,7 +39,7 @@ public class GcmSender {
     public static void sendNewMessageNotification(Long userId, String actor, String message) {
         Map<String, String> map = new HashMap<>();
         map.put("actor", actor);
-        map.put("message", message);
+        map.put("message", StringUtil.shortMessage(message));
         map.put("messageType", NotificationType.CONVERSATION.name());
         sendNotification(userId, Json.stringify(Json.toJson(map)));
     }
