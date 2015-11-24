@@ -11,6 +11,7 @@ import babybox.events.map.UnFollowEvent;
 import com.google.common.eventbus.Subscribe;
 
 import common.cache.CalcServer;
+import email.SendgridEmailClient;
 
 public class FollowEventListener {
     private static final play.api.Logger logger = play.api.Logger.apply(FollowEventListener.class);
@@ -38,6 +39,8 @@ public class FollowEventListener {
         					user.id,
         					user.displayName);
         			activity.ensureUniqueAndCreate();
+        			
+        			SendgridEmailClient.getInstatnce().sendMailOnFollow(localUser, user);
     			}
     		}
     	} catch(Exception e) {

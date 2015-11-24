@@ -88,4 +88,16 @@ public class HtmlUtil {
         }
         return text;
     }
+    
+    public static String appendBr() {
+        return "<Br>";
+    }
+    
+    public static String appendP(String text) {
+        return "<P>"+text+"</p>";
+    }
+    
+    public static String appendTitle(String title) {
+        return "<h2>"+title+"</h2>";
+    }
 }

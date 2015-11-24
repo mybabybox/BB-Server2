@@ -33,7 +33,8 @@ val appDependencies = Seq(
   "org.apache.httpcomponents" % "httpclient" % "4.5.1",
   "org.apache.httpcomponents" % "httpmime" % "4.5.1",
   "org.json" % "json" % "20090211",
-  "com.mashape.unirest" % "unirest-java" % "1.3.0"
+  "com.mashape.unirest" % "unirest-java" % "1.3.0",
+  "com.sendgrid" % "sendgrid-java" % "2.2.2"
 )
 
 // add resolver for deadbolt and easymail snapshots

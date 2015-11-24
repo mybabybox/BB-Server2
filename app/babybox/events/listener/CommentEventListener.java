@@ -16,6 +16,7 @@ import com.google.common.eventbus.Subscribe;
 import common.cache.CalcServer;
 import common.utils.StringUtil;
 import domain.DefaultValues;
+import email.SendgridEmailClient;
 
 public class CommentEventListener {
     private static final play.api.Logger logger = play.api.Logger.apply(CommentEventListener.class);
@@ -40,6 +41,8 @@ public class CommentEventListener {
                         post.getImage(), 
                         StringUtil.shortMessage(comment.body));
                 activity.ensureUniqueAndMerge();    // only record latest comment activity from sender
+	            
+                SendgridEmailClient.getInstatnce().sendMailOnComment(comment.owner, post.owner, comment.body);
                 
                 //GCM
                 GcmSender.sendNewCommentNotification(
