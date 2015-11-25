@@ -104,7 +104,7 @@ public class Application extends Controller {
 	
 	@Transactional
     public Result index() {
-        return mainHome();
+        return home();
     }	
 	
 	//
@@ -112,22 +112,40 @@ public class Application extends Controller {
 	//
     
     @Transactional
-    public Result mainHome() {
-    	final User user = getLocalUser(session());
-		if (User.isLoggedIn(user) && user.userInfo == null) {
-		    if (user.fbLogin) {
-		        return ok(views.html.signup_info_fb.render(user));
-		    }
-		    return ok(views.html.signup_info.render(user));
-		}
-	    
-		if (user.isNewUser()) {
-	        initNewUser();
-	    }
-		
-	    return home();
+    public Result home() {
+        final User user = getLocalUser(session());
+        if (!User.isLoggedIn(user)) {
+            return login();
+        }
+        
+        if (User.isLoggedIn(user) && user.userInfo == null) {
+            if (user.fbLogin) {
+                return ok(views.html.signup_info_fb.render(user));
+            }
+            return ok(views.html.signup_info.render(user));
+        }
+        
+        if (user.isNewUser()) {
+            initNewUser();
+        }
+
+        return home(user);
     }
-	
+
+    public Result home(User user) {
+        return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user)))));
+    }
+    
+    @Transactional
+    public static Result signup() {
+        final User localUser = getLocalUser(session());
+        if (User.isLoggedIn(localUser)) {
+            return redirect("/my");
+        }
+        
+        return ok(views.html.signup.render(MyUsernamePasswordAuthProvider.SIGNUP_FORM));
+    }
+    
 	public static User getBBAdmin() {
 	    return User.getBBAdmin();
 	}
@@ -171,20 +189,6 @@ public class Application extends Controller {
 		return redirect("/my#!/promo-code-page/"+promoCode);
 	}
 
-	@Transactional
-	public Result home() {
-        final User localUser = getLocalUser(session());
-		if(!User.isLoggedIn(localUser)) {
-		    return login();
-		}
-
-		return home(localUser);
-	}
-
-	public Result home(User user) {
-	    return ok(views.html.babybox.web.home.render( Json.stringify(Json.toJson(new UserVM(user)))));
-	}
-	
 	@Transactional
     public static Result saveSignupInfoFb() {
 	    return doSaveSignupInfo(true);
@@ -513,18 +517,6 @@ public class Application extends Controller {
         return ok();
     }
     
-	@Transactional
-	public static Result signup() {
-		
-		final User localUser = getLocalUser(session());
-		if(User.isLoggedIn(localUser)) {
-			return redirect("/my");
-		}
-		
-		//TrackingController.track(TrackingTarget.SIGNUP_PAGE, isMobileUser());
-		return ok(views.html.signup.render(MyUsernamePasswordAuthProvider.SIGNUP_FORM));
-	}
-
     public static Result jsRoutes() {
         return ok(Routes.javascriptRouter("jsRoutes", 
     	        controllers.routes.javascript.Signup.forgotPassword())).as("text/javascript");
@@ -644,6 +636,22 @@ public class Application extends Controller {
 	}
 	
 	@Transactional
+    public static Result apps() {
+        return ok(views.html.babybox.web.apps.render(
+                "https://itunes.apple.com/app/idxxx",
+                "https://play.google.com/store/apps/details?id=com.babybox.app",
+                "https://www.baby-box.hk"));
+    }
+	
+	@Transactional
+    public static Result getStarted() {
+        return ok(views.html.babybox.web.getstarted.render(
+                "https://itunes.apple.com/app/idxxx",
+                "https://play.google.com/store/apps/details?id=com.babybox.app",
+                "https://www.baby-box.hk"));
+    }
+    
+	@Transactional
 	public static Result privacy() {
 		TermsAndConditions terms = TermsAndConditions.getTermsAndConditions();
         return ok(views.html.privacy.render(terms.privacy));
@@ -651,8 +659,8 @@ public class Application extends Controller {
 	
 	@Transactional
 	public static Result terms() {
-		TermsAndConditions tAndC = TermsAndConditions.getTermsAndConditions();
-        return ok(views.html.terms_and_conditions.render(tAndC.terms));
+		TermsAndConditions terms = TermsAndConditions.getTermsAndConditions();
+        return ok(views.html.terms_and_conditions.render(terms.terms));
     }
 	
 	public static String formatTimestamp(final long t) {
@@ -706,5 +714,4 @@ public class Application extends Controller {
 		CategoryVM categoryVM = new CategoryVM(category);
 		return ok(Json.toJson(categoryVM));
 	}
-	
 }

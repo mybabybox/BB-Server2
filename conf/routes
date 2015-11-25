@@ -19,6 +19,8 @@ GET     /favicon.ico                controllers.Assets.at(path="/public", file="
 GET     /assets/javascript/routes.js    controllers.Application.jsRoutes
 GET     /privacy                    controllers.Application.privacy
 GET     /terms                      controllers.Application.terms
+GET     /apps                       controllers.Application.apps
+GET     /getstarted                 controllers.Application.getStarted
 
 GET     /restricted                 controllers.Application.restricted
 GET     /profile/:id                @controllers.UserController.profile(id: Long)
@@ -26,7 +28,7 @@ GET     /profile                    controllers.Application.profile
 
 # Main
 GET     /                           @controllers.Application.index
-GET     /my                         @controllers.Application.mainHome
+GET     /my                         @controllers.Application.home
 GET     /login                      controllers.Application.login
 
 # Home

@@ -56,7 +56,7 @@ public class Global extends GlobalSettings {
 				// if no original URL was saved
             	// reset last login time
     		    
-                return routes.Application.mainHome();
+                return routes.Application.home();
 			}
 
 			@Override

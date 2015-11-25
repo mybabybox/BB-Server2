@@ -6,10 +6,8 @@ import java.lang.reflect.Method;
 import models.User;
 import play.Logger;
 
-import com.feth.play.module.mail.Mailer.Mail.Body;
 import com.sendgrid.SendGrid;
 import com.sendgrid.SendGridException;
-import com.sendgrid.smtpapi.SMTPAPI;
 
 import common.utils.HtmlUtil;
 
