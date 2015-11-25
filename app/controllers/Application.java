@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import models.Category;
 import models.Location;
 import models.SecurityRole;
-import models.Setting;
 import models.TermsAndConditions;
 import models.User;
 import models.UserChild;
@@ -32,8 +31,6 @@ import play.db.jpa.Transactional;
 import play.i18n.Messages;
 import play.libs.Json;
 import play.mvc.Controller;
-import play.mvc.Http;
-import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Http.Session;
 import play.mvc.Result;
 import providers.MyLoginUsernamePasswordAuthUser;
@@ -640,7 +637,7 @@ public class Application extends Controller {
         return ok(views.html.babybox.web.apps.render(
                 "https://itunes.apple.com/app/idxxx",
                 "https://play.google.com/store/apps/details?id=com.babybox.app",
-                "https://www.baby-box.hk"));
+                "http://www.baby-box.hk"));
     }
 	
 	@Transactional
@@ -648,7 +645,7 @@ public class Application extends Controller {
         return ok(views.html.babybox.web.getstarted.render(
                 "https://itunes.apple.com/app/idxxx",
                 "https://play.google.com/store/apps/details?id=com.babybox.app",
-                "https://www.baby-box.hk"));
+                "http://www.baby-box.hk"));
     }
     
 	@Transactional
