@@ -15,8 +15,11 @@ import com.sendgrid.SendGridException;
 public class SendgridEmailClient implements TransactionalEmailClient {
     private static final play.api.Logger logger = play.api.Logger.apply(SendgridEmailClient.class);
     
-    public static final String SENDGRID_MAIL_FROM = 
-            Play.application().configuration().getString("sendgrid.mail.from");
+    public static final String SENDGRID_MAIL_FROM_NAME = 
+            Play.application().configuration().getString("sendgrid.mail.from.name");
+    
+    public static final String SENDGRID_MAIL_FROM_ADDRESS = 
+            Play.application().configuration().getString("sendgrid.mail.from.address");
     
     public static final String SENDGRID_AUTHEN_USERNAME = 
             Play.application().configuration().getString("sendgrid.authen.username");
@@ -36,10 +39,12 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 	    sendgrid = new SendGrid(SENDGRID_AUTHEN_USERNAME, SENDGRID_AUTHEN_PASSWORD);
 	}
 	
+	@Override
 	public String sendMail(String mailId, String subject, String body) {
 	    SendGrid.Email email = new SendGrid.Email();
 	    email.addTo(mailId);
-	    email.setFrom(SENDGRID_MAIL_FROM);
+	    email.setFromName(SENDGRID_MAIL_FROM_NAME);
+	    email.setFrom(SENDGRID_MAIL_FROM_ADDRESS);
 	    email.setSubject(subject);
 	    email.setHtml(body);
 	    try {
@@ -69,7 +74,7 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 	                target.displayName);
 		}
 
-		return sendMail(target.email, "You have new follower", template);
+		return sendMail(target.email, "有人關注了你", template);
 	}
 	
 	public String sendMailOnLike(User actor, User target, String product){
@@ -91,7 +96,7 @@ public class SendgridEmailClient implements TransactionalEmailClient {
                     product);
         }
         
-        return sendMail(target.email, "Your product has new Like - "+product, template);
+        return sendMail(target.email, "有人喜歡你的商品 - "+product, template);
 	}
 	
 	public String sendMailOnComment(User actor, User target, String product, String comment) {
@@ -115,7 +120,7 @@ public class SendgridEmailClient implements TransactionalEmailClient {
                     comment);
         }
         
-        return sendMail(target.email, "Your product has new Comment - "+product, template);
+        return sendMail(target.email, "你的商品有新留言 - "+product, template);
     }
 	
 	protected String getEmailTemplate(final String template, final String actor, final String target) {
@@ -152,5 +157,4 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 		}
 		return ret;
 	}
-	
 }

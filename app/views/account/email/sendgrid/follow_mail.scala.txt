@@ -1,4 +1,4 @@
 @(actor: String, target: String, product: String, body: String)
 Hi @target,
 
-@actor started following you on BabyBox
+@actor 關注了你。
