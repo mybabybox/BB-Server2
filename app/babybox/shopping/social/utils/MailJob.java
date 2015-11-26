@@ -30,11 +30,10 @@ public class MailJob implements Runnable {
 	
 	public static Cancellable sendMail(final Mail email) {
 		email.setFrom(MAIL_FROM);
-		return Akka
-				.system()
-				.scheduler()
-				.scheduleOnce(Duration.create(1, TimeUnit.SECONDS), new MailJob(email),
-						Akka.system().dispatcher());
+		return Akka.system().scheduler().scheduleOnce(
+		        Duration.create(1, TimeUnit.SECONDS), 
+		        new MailJob(email),
+		        Akka.system().dispatcher());
 	}
 
 	public static Cancellable sendMail(final String subject, final Body body,

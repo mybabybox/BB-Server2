@@ -19,10 +19,10 @@ public class JobScheduler {
     private static play.api.Logger logger = play.api.Logger.apply(JobScheduler.class);
 
     // Singleton
-    private static JobScheduler instance_ = new JobScheduler();
+    private static JobScheduler instance = new JobScheduler();
 
     public static JobScheduler getInstance() {
-        return instance_;
+        return instance;
     }
 
     /**

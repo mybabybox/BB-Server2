@@ -43,13 +43,14 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 	}
 	
 	public void sendMailAsync(final String mailId, final String subject, final String body) {
-		Akka.system().scheduler().scheduleOnce(Duration.create(50, TimeUnit.MILLISECONDS),
-				new Runnable() {
-			@Override
-			public void run() {
-				sendMail(mailId, subject, body);
-			}
-		}, Akka.system().dispatcher());
+		Akka.system().scheduler().scheduleOnce(
+		        Duration.create(1, TimeUnit.SECONDS), 
+		        new Runnable() {
+		            @Override
+		            public void run() {
+		                sendMail(mailId, subject, body);
+		                }
+		            }, Akka.system().dispatcher());
 	}
 	
 	@Override
