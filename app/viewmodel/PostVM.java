@@ -15,6 +15,7 @@ public class PostVM extends PostVMLite {
 	@JsonProperty("updatedDate") public Long updatedDate;
 	@JsonProperty("ownerNumProducts") public Long ownerNumProducts;
 	@JsonProperty("ownerNumFollowers") public Long ownerNumFollowers;
+	@JsonProperty("ownerLastLogin") public Long ownerLastLogin;
 	@JsonProperty("body") public String body;
 	@JsonProperty("categoryId") public Long categoryId;
 	@JsonProperty("categoryName") public String categoryName;
@@ -32,6 +33,7 @@ public class PostVM extends PostVMLite {
     	
         this.ownerNumProducts = post.owner.numProducts;
         this.ownerNumFollowers = post.owner.numFollowers;
+        this.ownerLastLogin = post.owner.lastLogin == null? post.getUpdatedDate().getTime() : post.owner.lastLogin.getTime();
         this.createdDate = post.getCreatedDate().getTime();
         this.updatedDate = post.getUpdatedDate().getTime();
         this.body = post.body;
