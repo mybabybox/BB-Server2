@@ -20,8 +20,6 @@ import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.apache.commons.lang3.StringUtils;
-
 import mobile.GcmSender;
 import common.utils.StringUtil;
 import play.data.validation.Constraints.Required;
@@ -150,9 +148,12 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		    // recipient message count
 			this.user2NumMessages++;
 			
-			// first message, increment conversationsCount for recipient
+			// first new message, send notifications
 			if (this.user2NumMessages == 1) {
 				NotificationCounter.incrementConversationsCount(recipient.id);
+				
+				// Sendgrid
+		        SendgridEmailClient.getInstatnce().sendMailOnConversation(sender, recipient, post.title, body);
 			}
 		} else {
 		    recipient = this.user1;
@@ -160,17 +161,16 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		    // recipient message count
 			this.user1NumMessages++;
 			
-			// first message, increment conversationsCount for recipient
+			// first new message, send notifications
 			if (this.user1NumMessages == 1) {
 			    NotificationCounter.incrementConversationsCount(recipient.id);
+			    
+			    // Sendgrid
+		        SendgridEmailClient.getInstatnce().sendMailOnConversation(sender, recipient, post.title, body);
 			}
 		}
-		
 		this.save();
 		
-		// Sendgrid
-        SendgridEmailClient.getInstatnce().sendMailOnConversation(sender, recipient, post.title, body);
-        
         // GCM
         GcmSender.sendNewMessageNotification(
                 recipient.id, 

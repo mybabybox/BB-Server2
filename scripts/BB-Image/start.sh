@@ -1,11 +1,11 @@
 #!/bin/bash
 
-APP_HOME=/apps/BB
+APP_HOME=/apps/BB-Image
 INSTALL_PATH=$APP_HOME/current
 LOG_DIR=$INSTALL_PATH/logs
 
 SERVICE_NAME=application
-JMX_PORT=14001
+JMX_PORT=14002
 
 #purge temp directory
 rm -rf $APP_HOME/temp/*
@@ -31,6 +31,10 @@ fi
 
 #Start up Server
 echo "Starting play"
-cd $INSTALL_PATH
+echo cd $INSTALL_PATH
+echo ""
+echo bin/bb-server2 -J-Xloggc:$LOG_DIR/jvm.log -J-XX:+HeapDumpOnOutOfMemoryError -J-XX:+DisableExplicitGC -J-XX:+PrintGCDetails -J-XX:+PrintGCDateStamps -J-Xmx768m -J-XX:MaxPermSize=128m -Dhttp.port=9002 -Dconfig.file=/opt/conf/bb_image_prod.conf
+echo ""
 
-nohup bin/bb-server2 -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=$JMX_PORT -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -J-Xloggc:$LOG_DIR/jvm.log -J-XX:+HeapDumpOnOutOfMemoryError -J-XX:+DisableExplicitGC -J-XX:+PrintGCDetails -J-XX:+PrintGCDateStamps -J-Xmx768m -J-XX:MaxPermSize=128m -Dhttp.port=9001 -Dconfig.file=/opt/conf/bb_prod.conf &
+cd $INSTALL_PATH
+nohup bin/bb-server2 -J-Xloggc:$LOG_DIR/jvm.log -J-XX:+HeapDumpOnOutOfMemoryError -J-XX:+DisableExplicitGC -J-XX:+PrintGCDetails -J-XX:+PrintGCDateStamps -J-Xmx768m -J-XX:MaxPermSize=128m -Dhttp.port=9002 -Dconfig.file=/opt/conf/bb_image_prod.conf &
