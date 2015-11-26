@@ -3,90 +3,145 @@ package email;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.apache.commons.lang3.StringUtils;
+
 import models.User;
 import play.Logger;
+import play.Play;
 
 import com.sendgrid.SendGrid;
 import com.sendgrid.SendGridException;
 
-import common.utils.HtmlUtil;
-
 public class SendgridEmailClient implements TransactionalEmailClient {
-	
-	protected final static String SENDGRID_USERNAME = "mybabybox";
-	protected final static String SENDGRID_PASSWORD = "myBabyEd3";
-	
-	static SendgridEmailClient client = new SendgridEmailClient();
+    private static final play.api.Logger logger = play.api.Logger.apply(SendgridEmailClient.class);
+    
+    public static final String SENDGRID_MAIL_FROM = 
+            Play.application().configuration().getString("sendgrid.mail.from");
+    
+    public static final String SENDGRID_AUTHEN_USERNAME = 
+            Play.application().configuration().getString("sendgrid.authen.username");
+    
+    public static final String SENDGRID_AUTHEN_PASSWORD = 
+            Play.application().configuration().getString("sendgrid.authen.password");
+    
+    private SendGrid sendgrid;
+    
+	private static SendgridEmailClient client = new SendgridEmailClient();
 	
 	public static SendgridEmailClient getInstatnce(){
 		return client;
 	}
 	
-	public String sendMail(String mailId, String subject, String htmlBody){
-		SendGrid sendgrid = new SendGrid(SENDGRID_USERNAME, SENDGRID_PASSWORD);
-
+	private SendgridEmailClient() {
+	    sendgrid = new SendGrid(SENDGRID_AUTHEN_USERNAME, SENDGRID_AUTHEN_PASSWORD);
+	}
+	
+	public String sendMail(String mailId, String subject, String body) {
 	    SendGrid.Email email = new SendGrid.Email();
 	    email.addTo(mailId);
-	    email.setFrom("other@example.com");
+	    email.setFrom(SENDGRID_MAIL_FROM);
 	    email.setSubject(subject);
-	    email.setHtml(htmlBody);
+	    email.setHtml(body);
 	    try {
-	      SendGrid.Response response = sendgrid.send(email);
-	      System.out.println(response.getMessage());
-	      return response.getMessage();
-	    }
-	    catch (SendGridException e) {
-	      System.err.println(e);
-	      return(e.getMessage());
+	        SendGrid.Response response = sendgrid.send(email);
+	        logger.underlyingLogger().info("[email="+mailId+"] sendMail response="+response.getMessage()+" body="+body);
+	        return response.getMessage();
+	    } catch (SendGridException e) {
+	        logger.underlyingLogger().error("[email="+mailId+"] sendMail body="+body+" error="+e.getMessage(), e);
+	        return(e.getMessage());
 	    }
 	}
 	
-	public String sendMailOnComment(User sender, User recipent, String body){
-		return sendMail(recipent.email, "BabyBox Comment", HtmlUtil.appendTitle(sender.displayName+" commented '"+body+"' on your post"));
-	}
-	
-	public String sendMailOnFollow(User sender, User recipent){
-		final String text = getEmailTemplate(
-				"views.html.account.email.follow_mail",
-				recipent.displayName);
-		
-		final String html = getEmailTemplate(
-				"views.html.account.email.follow_mail",
-				recipent.displayName);
+	public String sendMailOnFollow(User actor, User target) {
+	    if (StringUtils.isEmpty(target.email)) {
+            logger.underlyingLogger().warn("[recipient="+target.displayName+"] sendMailOnFollow recipient email is null");
+            return null;
+        }
+	    
+		String template = getEmailTemplate(
+				"views.html.account.email.sendgrid.follow_mail",
+				actor.displayName,
+				target.displayName);
+		if (template == null) {
+		    template = getEmailTemplate(
+		            "views.txt.account.email.sendgrid.follow_mail",
+	                actor.displayName,
+	                target.displayName);
+		}
 
-		//return sendMail(recipent.email, "BabyBox Follow", HtmlUtil.appendP(sender.name+" followd you"));
-		return sendMail(recipent.email, "BabyBox Follow", html);
+		return sendMail(target.email, "You have new follower", template);
 	}
 	
-	public String sendMailOnLike(User sender, User recipent, String postTitle){
-		return sendMail(recipent.email, "BabyBox Liked", HtmlUtil.appendP(sender.name+" Liked your post "+postTitle));
+	public String sendMailOnLike(User actor, User target, String product){
+	    if (StringUtils.isEmpty(target.email)) {
+            logger.underlyingLogger().warn("[recipient="+target.displayName+"] sendMailOnLike recipient email is null");
+            return null;
+        }
+        
+        String template = getEmailTemplate(
+                "views.html.account.email.sendgrid.like_mail",
+                actor.displayName,
+                target.displayName,
+                product);
+        if (template == null) {
+            template = getEmailTemplate(
+                    "views.txt.account.email.sendgrid.like_mail",
+                    actor.displayName,
+                    target.displayName,
+                    product);
+        }
+        
+        return sendMail(target.email, "Your product has new Like - "+product, template);
 	}
 	
-	protected String getEmailTemplate(final String template, final String name) {
+	public String sendMailOnComment(User actor, User target, String product, String comment) {
+        if (StringUtils.isEmpty(target.email)) {
+            logger.underlyingLogger().warn("[recipient="+target.displayName+"] sendMailOnComment recipient email is null");
+            return null;
+        }
+        
+        String template = getEmailTemplate(
+                "views.html.account.email.sendgrid.comment_mail",
+                actor.displayName,
+                target.displayName,
+                product,
+                comment);
+        if (template == null) {
+            template = getEmailTemplate(
+                    "views.txt.account.email.sendgrid.comment_mail",
+                    actor.displayName,
+                    target.displayName,
+                    product,
+                    comment);
+        }
+        
+        return sendMail(target.email, "Your product has new Comment - "+product, template);
+    }
+	
+	protected String getEmailTemplate(final String template, final String actor, final String target) {
+	    return getEmailTemplate(template, actor, target, "", "");
+	}
+	
+	protected String getEmailTemplate(final String template, final String actor, final String target, final String product) {
+        return getEmailTemplate(template, actor, target, product, "");
+    }
+	
+	protected String getEmailTemplate(final String template, 
+	        final String actor, final String target, final String product, final String body) {
+	    
 		Class<?> cls = null;
 		String ret = null;
 		try {
 			cls = Class.forName(template);
 		} catch (ClassNotFoundException e) {
-			Logger.warn("Template: '"
-					+ template
-					+ "' was not found! Trying to use English fallback template instead.");
+			Logger.warn("Template: '"+ template + "' was not found!");
 		}
-		if (cls == null) {
-			try {
-				cls = Class.forName(template);
-			} catch (ClassNotFoundException e) {
-				Logger.error("Fallback template: '" + template 
-						+ "' was not found either!");
-			}
-		}
+		
 		if (cls != null) {
 			Method htmlRender = null;
 			try {
-				htmlRender = cls.getMethod("render",String.class);
-				ret = htmlRender.invoke(null, name)
-						.toString();
-
+				htmlRender = cls.getMethod("render",String.class,String.class,String.class,String.class);
+				ret = htmlRender.invoke(null, actor, target, product, body).toString();
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {

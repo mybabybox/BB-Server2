@@ -1,0 +1,6 @@
+@(actor: String, target: String, product: String, body: String)
+Hi @target,
+
+@actor commented on your product - @product
+
+@body

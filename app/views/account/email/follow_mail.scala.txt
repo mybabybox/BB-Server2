@@ -1,2 +1,0 @@
-@(name: String)
-@name followed you on babybox!

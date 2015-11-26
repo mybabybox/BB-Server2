@@ -40,6 +40,7 @@ public class FollowEventListener {
         					user.displayName);
         			activity.ensureUniqueAndCreate();
         			
+        			// Sendgrid
         			SendgridEmailClient.getInstatnce().sendMailOnFollow(localUser, user);
     			}
     		}

@@ -147,7 +147,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 				NotificationCounter.incrementConversationsCount(this.user2.id);
 			}
 			
-			 //GCM
+			 // GCM
 	        GcmSender.sendNewMessageNotification(
 	                this.user2.id, 
 	                sender.name,
@@ -161,7 +161,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 			    NotificationCounter.incrementConversationsCount(this.user1.id);
 			}
 			
-			 //GCM
+			 // GCM
 	        GcmSender.sendNewMessageNotification(
 	                this.user1.id, 
 	                sender.name,

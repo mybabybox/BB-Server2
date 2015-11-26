@@ -90,11 +90,11 @@ public class HtmlUtil {
     }
     
     public static String appendBr() {
-        return "<Br>";
+        return "<br>";
     }
     
     public static String appendP(String text) {
-        return "<P>"+text+"</p>";
+        return "<p>"+text+"</p>";
     }
     
     public static String appendTitle(String title) {

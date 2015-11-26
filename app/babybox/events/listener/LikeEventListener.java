@@ -37,7 +37,9 @@ public class LikeEventListener {
         					post.getImage(),
         					StringUtil.shortMessage(post.title));
         	        activity.ensureUniqueAndCreate();
-        	        SendgridEmailClient.getInstatnce().sendMailOnLike(user, post.owner, post.title);
+        	        
+        	        // Sendgrid
+        	        //SendgridEmailClient.getInstatnce().sendMailOnLike(user, post.owner, post.title);
     	       	}
            	}
     	} catch(Exception e) {
