@@ -20,6 +20,8 @@ import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang3.StringUtils;
+
 import mobile.GcmSender;
 import common.utils.StringUtil;
 import play.data.validation.Constraints.Required;
@@ -29,6 +31,7 @@ import domain.AuditListener;
 import domain.Creatable;
 import domain.DefaultValues;
 import domain.Updatable;
+import email.SendgridEmailClient;
 
 /**
  * ALTER TABLE Conversation DROP COLUMN user1ReadDate;
@@ -137,37 +140,42 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		message.save();
 		this.messages.add(message);
 		
-		this.setUpdatedDate(now);
+		setUpdatedDate(now);
+		setReadDate(sender);
+		
+		User recipient = null;
 		if (this.user1 == sender) {
-			setReadDate(this.user1);
+		    recipient = this.user2;
+
+		    // recipient message count
 			this.user2NumMessages++;
 			
-			// first message, increment conversationsCount for receiver
+			// first message, increment conversationsCount for recipient
 			if (this.user2NumMessages == 1) {
-				NotificationCounter.incrementConversationsCount(this.user2.id);
+				NotificationCounter.incrementConversationsCount(recipient.id);
 			}
-			
-			 // GCM
-	        GcmSender.sendNewMessageNotification(
-	                this.user2.id, 
-	                sender.name,
-	                body);
 		} else {
-			setReadDate(this.user2);
+		    recipient = this.user1;
+		    
+		    // recipient message count
 			this.user1NumMessages++;
 			
-			// first message, increment conversationsCount for receiver
+			// first message, increment conversationsCount for recipient
 			if (this.user1NumMessages == 1) {
-			    NotificationCounter.incrementConversationsCount(this.user1.id);
+			    NotificationCounter.incrementConversationsCount(recipient.id);
 			}
-			
-			 // GCM
-	        GcmSender.sendNewMessageNotification(
-	                this.user1.id, 
-	                sender.name,
-	                body);
 		}
+		
 		this.save();
+		
+		// Sendgrid
+        SendgridEmailClient.getInstatnce().sendMailOnConversation(sender, recipient, post.title, body);
+        
+        // GCM
+        GcmSender.sendNewMessageNotification(
+                recipient.id, 
+                sender.name,
+                body);
 		
 		return message;
 	}

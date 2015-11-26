@@ -3,6 +3,8 @@ package mobile;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import play.Play;
 import play.libs.Json;
 import models.GcmToken;
@@ -10,6 +12,7 @@ import models.GcmToken;
 import com.google.android.gcm.server.Sender;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
+
 import common.utils.StringUtil;
 
 public class GcmSender {
@@ -28,6 +31,10 @@ public class GcmSender {
     }
 
     public static void sendNewCommentNotification(Long userId, String actor, String message, Long postId) {
+        if (StringUtils.isEmpty(actor) || StringUtils.isEmpty(message)) {
+            return;
+        }
+        
         Map<String, String> map = new HashMap<>();
         map.put("actor", actor);
         map.put("message", StringUtil.shortMessage(message));
@@ -37,6 +44,10 @@ public class GcmSender {
     }
     
     public static void sendNewMessageNotification(Long userId, String actor, String message) {
+        if (StringUtils.isEmpty(actor) || StringUtils.isEmpty(message)) {
+            return;
+        }
+        
         Map<String, String> map = new HashMap<>();
         map.put("actor", actor);
         map.put("message", StringUtil.shortMessage(message));

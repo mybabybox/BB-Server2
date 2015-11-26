@@ -77,7 +77,11 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 		return sendMail(target.email, "有人關注了你", template);
 	}
 	
-	public String sendMailOnLike(User actor, User target, String product){
+	public String sendMailOnLike(User actor, User target, String product) {
+	    if (StringUtils.isEmpty(product)) {
+            return null;
+        }
+	    
 	    if (StringUtils.isEmpty(target.email)) {
             logger.underlyingLogger().warn("[recipient="+target.displayName+"] sendMailOnLike recipient email is null");
             return null;
@@ -100,6 +104,10 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 	}
 	
 	public String sendMailOnComment(User actor, User target, String product, String comment) {
+	    if (StringUtils.isEmpty(product) || StringUtils.isEmpty(comment)) {
+            return null;
+        }
+	    
         if (StringUtils.isEmpty(target.email)) {
             logger.underlyingLogger().warn("[recipient="+target.displayName+"] sendMailOnComment recipient email is null");
             return null;
@@ -121,6 +129,34 @@ public class SendgridEmailClient implements TransactionalEmailClient {
         }
         
         return sendMail(target.email, "你的商品有新留言 - "+product, template);
+    }
+	
+	public String sendMailOnConversation(User actor, User target, String product, String message) {
+	    if (StringUtils.isEmpty(product) || StringUtils.isEmpty(message)) {
+            return null;
+        }
+	    
+        if (StringUtils.isEmpty(target.email)) {
+            logger.underlyingLogger().warn("[recipient="+target.displayName+"] sendMailOnComment recipient email is null");
+            return null;
+        }
+        
+        String template = getEmailTemplate(
+                "views.html.account.email.sendgrid.conversation_mail",
+                actor.displayName,
+                target.displayName,
+                product,
+                message);
+        if (template == null) {
+            template = getEmailTemplate(
+                    "views.txt.account.email.sendgrid.conversation_mail",
+                    actor.displayName,
+                    target.displayName,
+                    product,
+                    message);
+        }
+        
+        return sendMail(target.email, "你的商品有新訊息 - "+product, template);
     }
 	
 	protected String getEmailTemplate(final String template, final String actor, final String target) {
