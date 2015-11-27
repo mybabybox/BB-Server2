@@ -13,6 +13,7 @@ import com.google.common.eventbus.Subscribe;
 
 import common.cache.CalcServer;
 import common.utils.StringUtil;
+import email.SendgridEmailClient;
 
 public class PostEventListener {
     private static final play.api.Logger logger = play.api.Logger.apply(PostEventListener.class);
@@ -39,6 +40,9 @@ public class PostEventListener {
     				StringUtil.shortMessage(post.title));
             activity.ensureUniqueAndCreate();
             */
+    		
+    		// Sendgrid
+            SendgridEmailClient.getInstatnce().sendMailOnPost(post);
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
         }

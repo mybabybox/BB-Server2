@@ -2,18 +2,20 @@ package email;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 
+import models.Post;
 import models.User;
 import play.Logger;
 import play.Play;
-import play.libs.Akka;
-import scala.concurrent.duration.Duration;
 
 import com.sendgrid.SendGrid;
 import com.sendgrid.SendGridException;
+
+import common.schedule.JobScheduler;
+import common.utils.HtmlUtil;
+import controllers.Application;
 
 public class SendgridEmailClient implements TransactionalEmailClient {
     private static final play.api.Logger logger = play.api.Logger.apply(SendgridEmailClient.class);
@@ -30,6 +32,8 @@ public class SendgridEmailClient implements TransactionalEmailClient {
     public static final String SENDGRID_AUTHEN_PASSWORD = 
             Play.application().configuration().getString("sendgrid.authen.password");
     
+    public static final String POST_IMAGE_BY_ID_URL = Application.APPLICATION_BASE_URL + "/image/get-post-image-by-id/";
+    
     private SendGrid sendgrid;
     
 	private static SendgridEmailClient client = new SendgridEmailClient();
@@ -43,14 +47,13 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 	}
 	
 	public void sendMailAsync(final String mailId, final String subject, final String body) {
-		Akka.system().scheduler().scheduleOnce(
-		        Duration.create(1, TimeUnit.SECONDS), 
-		        new Runnable() {
+	    JobScheduler.getInstance().run(
+	            new Runnable() {
 		            @Override
 		            public void run() {
 		                sendMail(mailId, subject, body);
 		                }
-		            }, Akka.system().dispatcher());
+		            });
 	}
 	
 	@Override
@@ -81,40 +84,11 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 				"views.html.account.email.sendgrid.follow_mail",
 				actor.displayName,
 				target.displayName);
-		if (template == null) {
-		    template = getEmailTemplate(
-		            "views.txt.account.email.sendgrid.follow_mail",
-	                actor.displayName,
-	                target.displayName);
-		}
 		
-		sendMailAsync(target.email, "有人關注了你", template);
-	}
-	
-	public void sendMailOnLike(User actor, User target, String product){
-	    if (StringUtils.isEmpty(product)) {
-            return;
-        }
-	    
-	    if (StringUtils.isEmpty(target.email)) {
-            logger.underlyingLogger().warn("[recipient="+target.displayName+"] sendMailOnLike recipient email is null");
-            return;
-        }
-        
-        String template = getEmailTemplate(
-                "views.html.account.email.sendgrid.like_mail",
-                actor.displayName,
-                target.displayName,
-                product);
-        if (template == null) {
-            template = getEmailTemplate(
-                    "views.txt.account.email.sendgrid.like_mail",
-                    actor.displayName,
-                    target.displayName,
-                    product);
-        }
-        
-        sendMailAsync(target.email, "有人喜歡你的商品 - "+product, template);
+		sendMailAsync(
+		        target.email, 
+		        formatSubject("有人關注了你"), 
+		        template);
 	}
 	
 	public void sendMailOnComment(User actor, User target, String product, String comment) {
@@ -133,16 +107,11 @@ public class SendgridEmailClient implements TransactionalEmailClient {
                 target.displayName,
                 product,
                 comment);
-        if (template == null) {
-            template = getEmailTemplate(
-                    "views.txt.account.email.sendgrid.comment_mail",
-                    actor.displayName,
-                    target.displayName,
-                    product,
-                    comment);
-        }
         
-        sendMailAsync(target.email, "你的商品有新留言 - "+product, template);
+        sendMailAsync(
+                target.email, 
+                formatSubject("你的商品有新留言 - "+product), 
+                template);
     }
 	
 	public void sendMailOnConversation(User actor, User target, String product, String message) {
@@ -151,7 +120,7 @@ public class SendgridEmailClient implements TransactionalEmailClient {
         }
 	    
         if (StringUtils.isEmpty(target.email)) {
-            logger.underlyingLogger().warn("[recipient="+target.displayName+"] sendMailOnComment recipient email is null");
+            logger.underlyingLogger().warn("[recipient="+target.displayName+"] sendMailOnConversation recipient email is null");
             return;
         }
         
@@ -161,16 +130,36 @@ public class SendgridEmailClient implements TransactionalEmailClient {
                 target.displayName,
                 product,
                 message);
-        if (template == null) {
-            template = getEmailTemplate(
-                    "views.txt.account.email.sendgrid.conversation_mail",
-                    actor.displayName,
-                    target.displayName,
-                    product,
-                    message);
+        
+        sendMailAsync(
+                target.email, 
+                formatSubject("你的商品有新訊息 - "+product), 
+                template);
+    }
+	
+	public void sendMailOnPost(Post post) {
+	    User target = post.owner;
+        if (StringUtils.isEmpty(target.email)) {
+            logger.underlyingLogger().warn("[recipient="+target.displayName+"] sendMailOnPost recipient email is null");
+            return;
         }
         
-        sendMailAsync(target.email, "你的商品有新訊息 - "+product, template);
+        String htmlBody = 
+                HtmlUtil.appendImage(POST_IMAGE_BY_ID_URL+post.getImage(), 150, 150)+HtmlUtil.appendBr()+ 
+                post.title+HtmlUtil.appendBr()+HtmlUtil.appendBr()+ 
+                "價格: $" + post.price.intValue();
+        
+        String template = getEmailTemplate(
+                "views.html.account.email.sendgrid.post_mail",
+                post.owner.displayName,
+                target.displayName,
+                post.title,
+                htmlBody);
+        
+        sendMailAsync(
+                target.email, 
+                formatSubject("成功刊登商品 - "+post.title), 
+                template);
     }
 	
 	protected String getEmailTemplate(final String template, final String actor, final String target) {
@@ -206,5 +195,9 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 			}
 		}
 		return ret;
+	}
+	
+	protected String formatSubject(String subject) {
+	    return "🎁"+subject;
 	}
 }

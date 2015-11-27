@@ -1,6 +1,7 @@
 package common.schedule;
 
 import akka.actor.ActorSystem;
+import akka.actor.Cancellable;
 import play.libs.Akka;
 import play.libs.Time;
 import scala.concurrent.duration.Duration;
@@ -18,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 public class JobScheduler {
     private static play.api.Logger logger = play.api.Logger.apply(JobScheduler.class);
 
+    public static final Long DEFAULT_RUN_DELAY_MILLIS = 1000L;
+    
     // Singleton
     private static JobScheduler instance = new JobScheduler();
 
@@ -25,6 +28,23 @@ public class JobScheduler {
         return instance;
     }
 
+    public Cancellable run(Runnable jobTask) {
+        return run(jobTask, DEFAULT_RUN_DELAY_MILLIS);
+    }
+    
+    public Cancellable run(Runnable jobTask, Long delayMillis) {
+        ActorSystem actorSystem = Akka.system();
+        try {
+            return actorSystem.scheduler().scheduleOnce(
+                    Duration.create(delayMillis, TimeUnit.MILLISECONDS), 
+                    jobTask, 
+                    actorSystem.dispatcher());
+        } catch (Exception e) {
+            logger.underlyingLogger().error("Error in run", e);
+        }
+        return null;
+    }
+    
     /**
      * 
      * @param schedulerId

@@ -89,6 +89,10 @@ public class HtmlUtil {
         return text;
     }
     
+    public static String appendImage(String src, int width, int height) {
+        return "<img src='"+src+"' width='"+width+"' height='"+height+"' border='0' style='display:block;border:none;outline:none;text-decoration:none'></img>";
+    }
+    
     public static String appendBr() {
         return "<br>";
     }

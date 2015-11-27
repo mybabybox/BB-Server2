@@ -7,15 +7,14 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 
-import akka.actor.ActorSystem;
 import common.image.ImageDimensions;
+import common.schedule.JobScheduler;
 import common.utils.ImageFileUtil;
 import common.utils.NanoSecondStopWatch;
 import net.coobird.thumbnailator.Thumbnails;
@@ -30,8 +29,6 @@ import com.google.common.base.Objects;
 import domain.Creatable;
 import domain.SocialObjectType;
 import domain.Updatable;
-import play.libs.Akka;
-import scala.concurrent.duration.Duration;
 
 /**
  * Represent a folder contains a set of Resources
@@ -197,27 +194,21 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
                     FileUtils.copyFile(source, new java.io.File(resource.getThumbnail()));
                 }
 
-                ActorSystem actorSystem = Akka.system();
-                actorSystem.scheduler().scheduleOnce(
-                    Duration.create(0, TimeUnit.MILLISECONDS),
-                    new Runnable() {
-                        public void run() {
-                            try {
-                                int targetFullWidth = ImageDimensions.LIGHTBOX_WIDTH_PX;
-                                if (origWidth > targetFullWidth) {
-                                    Thumbnails.of(source)
-                                            .width(targetFullWidth)
-                                            .keepAspectRatio(true)
-                                            .toFiles(parentFile, Rename.NO_CHANGE);
-                                } else {
-                                    FileUtils.copyFile(source, new java.io.File(resource.getPath()));
+                JobScheduler.getInstance().run(
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    int targetFullWidth = ImageDimensions.LIGHTBOX_WIDTH_PX;
+                                    if (origWidth > targetFullWidth) {
+                                        Thumbnails.of(source).width(targetFullWidth).keepAspectRatio(true).toFiles(parentFile, Rename.NO_CHANGE);
+                                    } else {
+                                        FileUtils.copyFile(source, new java.io.File(resource.getPath()));
+                                    }
+                                } catch (Exception e) {
+                                    logger.underlyingLogger().error("Failed to resize", e);
                                 }
-                            } catch (Exception e) {
-                                logger.underlyingLogger().error("Failed to resize", e);
                             }
-                        }
-                    }, actorSystem.dispatcher()
-                );
+                        }, 0L);
 			}
             // vertical pictures
             else {
@@ -231,27 +222,24 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
                     FileUtils.copyFile(source, new java.io.File(resource.getThumbnail()));
                 }
 
-                ActorSystem actorSystem = Akka.system();
-                actorSystem.scheduler().scheduleOnce(
-                    Duration.create(0, TimeUnit.MILLISECONDS),
-                    new Runnable() {
-                        public void run() {
-                            try {
-                                int targetFullHeight = ImageDimensions.LIGHTBOX_HEIGHT_PX;
-                                if (origHeight > targetFullHeight) {
-                                    Thumbnails.of(source)
-                                            .height(targetFullHeight)
-                                            .keepAspectRatio(true)
-                                            .toFiles(parentFile, Rename.NO_CHANGE);
-                                } else {
-                                    FileUtils.copyFile(source, new java.io.File(resource.getPath()));
+                JobScheduler.getInstance().run(
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    int targetFullHeight = ImageDimensions.LIGHTBOX_HEIGHT_PX;
+                                    if (origHeight > targetFullHeight) {
+                                        Thumbnails.of(source)
+                                                .height(targetFullHeight)
+                                                .keepAspectRatio(true)
+                                                .toFiles(parentFile, Rename.NO_CHANGE);
+                                    } else {
+                                        FileUtils.copyFile(source, new java.io.File(resource.getPath()));
+                                    }
+                                } catch (Exception e) {
+                                    logger.underlyingLogger().error("Failed to resize", e);
                                 }
-                            } catch (Exception e) {
-                                logger.underlyingLogger().error("Failed to resize", e);
                             }
-                        }
-                    }, actorSystem.dispatcher()
-                );
+                        }, 0L);
 			}
 
 			// mini
@@ -283,27 +271,24 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
                     FileUtils.copyFile(source, new java.io.File(resource.getThumbnail()));
                 }
 
-                ActorSystem actorSystem = Akka.system();
-                actorSystem.scheduler().scheduleOnce(
-                    Duration.create(0, TimeUnit.MILLISECONDS),
-                    new Runnable() {
-                        public void run() {
-                            try {
-                                int targetFullWidth = ImageDimensions.LIGHTBOX_WIDTH_PX;
-                                if (origWidth > targetFullWidth) {
-                                    Thumbnails.of(source)
-                                            .width(targetFullWidth)
-                                            .keepAspectRatio(true)
-                                            .toFiles(parentFile, Rename.NO_CHANGE);
-                                } else {
-                                    FileUtils.copyFile(source, new java.io.File(resource.getPath()));
+                JobScheduler.getInstance().run(
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    int targetFullWidth = ImageDimensions.LIGHTBOX_WIDTH_PX;
+                                    if (origWidth > targetFullWidth) {
+                                        Thumbnails.of(source)
+                                                .width(targetFullWidth)
+                                                .keepAspectRatio(true)
+                                                .toFiles(parentFile, Rename.NO_CHANGE);
+                                    } else {
+                                        FileUtils.copyFile(source, new java.io.File(resource.getPath()));
+                                    }
+                                } catch (Exception e) {
+                                    logger.underlyingLogger().error("Failed to resize", e);
                                 }
-                            } catch (Exception e) {
-                                logger.underlyingLogger().error("Failed to resize", e);
                             }
-                        }
-                    }, actorSystem.dispatcher()
-                );
+                        }, 0L);
 			} else {
                 int targetPreviewHeight = ImageDimensions.PM_IMAGE_PREVIEW_HEIGHT_PX;
                 if (origHeight > targetPreviewHeight) {
@@ -315,27 +300,24 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
                     FileUtils.copyFile(source, new java.io.File(resource.getThumbnail()));
                 }
 
-                ActorSystem actorSystem = Akka.system();
-                actorSystem.scheduler().scheduleOnce(
-                    Duration.create(0, TimeUnit.MILLISECONDS),
-                    new Runnable() {
-                        public void run() {
-                            try {
-                                int targetFullHeight = ImageDimensions.LIGHTBOX_HEIGHT_PX;
-                                if (origHeight > targetFullHeight) {
-                                    Thumbnails.of(source)
-                                            .height(targetFullHeight)
-                                            .keepAspectRatio(true)
-                                            .toFiles(parentFile, Rename.NO_CHANGE);
-                                } else {
-                                    FileUtils.copyFile(source, new java.io.File(resource.getPath()));
+                JobScheduler.getInstance().run(
+                        new Runnable() {
+                            public void run() {
+                                try {
+                                    int targetFullHeight = ImageDimensions.LIGHTBOX_HEIGHT_PX;
+                                    if (origHeight > targetFullHeight) {
+                                        Thumbnails.of(source)
+                                                .height(targetFullHeight)
+                                                .keepAspectRatio(true)
+                                                .toFiles(parentFile, Rename.NO_CHANGE);
+                                    } else {
+                                        FileUtils.copyFile(source, new java.io.File(resource.getPath()));
+                                    }
+                                } catch (Exception e) {
+                                    logger.underlyingLogger().error("Failed to resize", e);
                                 }
-                            } catch (Exception e) {
-                                logger.underlyingLogger().error("Failed to resize", e);
                             }
-                        }
-                    }, actorSystem.dispatcher()
-                );
+                        }, 0L);
 			}
 
             sw.stop();

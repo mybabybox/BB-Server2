@@ -11,7 +11,6 @@ import com.google.common.eventbus.Subscribe;
 
 import common.cache.CalcServer;
 import common.utils.StringUtil;
-import email.SendgridEmailClient;
 
 public class LikeEventListener {
     private static final play.api.Logger logger = play.api.Logger.apply(LikeEventListener.class);
@@ -37,9 +36,6 @@ public class LikeEventListener {
         					post.getImage(),
         					StringUtil.shortMessage(post.title));
         	        activity.ensureUniqueAndCreate();
-        	        
-        	        // Sendgrid
-        	        //SendgridEmailClient.getInstatnce().sendMailOnLike(user, post.owner, post.title);
     	       	}
            	}
     	} catch(Exception e) {

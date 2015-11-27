@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.apache.commons.io.FileUtils;
+import common.utils.FileUtil;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -52,11 +52,11 @@ public class Resource extends SocialObject {
 	}
 
 	public Boolean isImage() {
-		return babybox.shopping.social.utils.FileUtils.isImage(resourceName);
+		return FileUtil.isImage(resourceName);
 	}
 
 	public Boolean isExternal() {
-		return babybox.shopping.social.utils.FileUtils.isExternal(resourceName);
+		return FileUtil.isExternal(resourceName);
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class Resource extends SocialObject {
 		if (isExternal()) {
 			return null;
 		} else {
-			return FileUtils.sizeOf(getRealFile());
+			return org.apache.commons.io.FileUtils.sizeOf(getRealFile());
 		}
 	}
 

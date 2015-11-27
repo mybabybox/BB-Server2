@@ -42,15 +42,15 @@ public class CommentEventListener {
                         StringUtil.shortMessage(comment.body));
                 activity.ensureUniqueAndMerge();    // only record latest comment activity from sender
 	            
-                // Sendgrid
-                SendgridEmailClient.getInstatnce().sendMailOnComment(comment.owner, post.owner, post.title, comment.body);
-                
                 // GCM
                 GcmSender.sendNewCommentNotification(
                         post.owner.id, 
                         comment.owner.name,
                         post.title, 
                         post.id);
+                
+                // Sendgrid
+                SendgridEmailClient.getInstatnce().sendMailOnComment(comment.owner, post.owner, post.title, comment.body);
             }
             
     		// fan out to all commenters

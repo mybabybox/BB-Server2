@@ -1,4 +1,0 @@
-@(actor: String, target: String, product: String, body: String)
-Hi @target, 
-
-@actor 喜歡你的商品 - @product

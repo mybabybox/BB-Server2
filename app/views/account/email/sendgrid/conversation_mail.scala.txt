@@ -1,3 +1,0 @@
-@(actor: String, target: String, product: String, body: String)
-
-@actor: @body

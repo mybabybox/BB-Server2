@@ -1,11 +1,11 @@
-package babybox.shopping.social.utils;
+package common.utils;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import play.Play;
 
-public class FileUtils {
+public class FileUtil {
 
     private static final String STORAGE_IMAGES_VALID_EXT = 
             Play.application().configuration().getString("storage.images.valid-extensions");
