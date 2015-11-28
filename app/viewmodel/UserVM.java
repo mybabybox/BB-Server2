@@ -17,16 +17,6 @@ public class UserVM extends UserVMLite {
     @JsonProperty("setting") public SettingVM setting;
     @JsonProperty("isMobile") public boolean isMobile = false;
 
-    // admin readyonly fields
-    @JsonProperty("createdDate") public Long createdDate;
-    @JsonProperty("lastLogin") public Long lastLogin;
-    @JsonProperty("totalLogin") public Long totalLogin;
-    @JsonProperty("isLoggedIn") public boolean isLoggedIn = false;
-    @JsonProperty("isFbLogin") public boolean isFbLogin = false;
-    @JsonProperty("emailValidated") public boolean emailValidated = false;
-    @JsonProperty("newUser") public boolean newUser = false;
-    @JsonProperty("isAdmin") public boolean isAdmin = false;
-
     public UserVM(User user) {
     	this(user, user);
     }
@@ -51,23 +41,6 @@ public class UserVM extends UserVMLite {
             }
         }
         this.isMobile = Application.isMobileUser();
-        
-        this.createdDate = user.getCreatedDate().getTime();
-        this.lastLogin = user.lastLogin.getTime();
-        this.totalLogin = user.totalLogin;
-        this.isLoggedIn = user.isLoggedIn();
-        this.isFbLogin = user.fbLogin;
-        this.emailValidated = user.emailValidated;
-        this.newUser = user.isNewUser();
-        this.isAdmin = user.isSuperAdmin();
-    }
-
-    public Long getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Long createdDate) {
-        this.createdDate = createdDate;
     }
 
     public String getEmail() {
@@ -124,62 +97,6 @@ public class UserVM extends UserVMLite {
 
     public void setLocation(LocationVM location) {
         this.location = location;
-    }
-
-    public Long getTotalLogin() {
-        return totalLogin;
-    }
-
-    public void setTotalLogin(Long totalLogin) {
-        this.totalLogin = totalLogin;
-    }
-
-    public Long getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(Long lastLogin) {
-        this.lastLogin = lastLogin;
-    }
-
-    public boolean isLoggedIn() {
-        return isLoggedIn;
-    }
-
-    public void setIsLoggedIn(boolean isLoggedIn) {
-        this.isLoggedIn = isLoggedIn;
-    }
-
-    public boolean isFbLogin() {
-        return isFbLogin;
-    }
-
-    public void setIsFbLogin(boolean isFbLogin) {
-        this.isFbLogin = isFbLogin;
-    }
-
-    public boolean getEmailValidated() {
-        return emailValidated;
-    }
-
-    public void setEmailValidated(boolean emailValidated) {
-        this.emailValidated = emailValidated;
-    }
-
-    public boolean getNewUser() {
-        return newUser;
-    }
-
-    public void setNewUser(boolean newUser) {
-        this.newUser = newUser;
-    }
-
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public void setIsAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
     }
 
     @Override

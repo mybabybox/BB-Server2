@@ -15,6 +15,16 @@ public class UserVMLite {
     @JsonProperty("numCollections") public Long numCollections = 0L;
     @JsonProperty("isFollowing") public boolean isFollowing = false;
 
+    // admin readyonly fields
+    @JsonProperty("createdDate") public Long createdDate;
+    @JsonProperty("lastLogin") public Long lastLogin;
+    @JsonProperty("totalLogin") public Long totalLogin;
+    @JsonProperty("isLoggedIn") public boolean isLoggedIn = false;
+    @JsonProperty("isFbLogin") public boolean isFbLogin = false;
+    @JsonProperty("emailValidated") public boolean emailValidated = false;
+    @JsonProperty("newUser") public boolean newUser = false;
+    @JsonProperty("isAdmin") public boolean isAdmin = false;
+
     public UserVMLite(User user, User localUser) {
         this.id = user.id;
         
@@ -32,6 +42,15 @@ public class UserVMLite {
         if (!user.equals(localUser)) {
         	this.isFollowing = user.isFollowedBy(localUser);
         }
+        
+        this.createdDate = user.getCreatedDate().getTime();
+        this.lastLogin = user.lastLogin.getTime();
+        this.totalLogin = user.totalLogin;
+        this.isLoggedIn = user.isLoggedIn();
+        this.isFbLogin = user.fbLogin;
+        this.emailValidated = user.emailValidated;
+        this.newUser = user.isNewUser();
+        this.isAdmin = user.isSuperAdmin();
     }
     
     public Long getId() {
@@ -108,5 +127,69 @@ public class UserVMLite {
 
     public void setIsFollowing(boolean isFollowing) {
         this.isFollowing = isFollowing;
+    }
+    
+    public Long getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Long createdDate) {
+        this.createdDate = createdDate;
+    }
+    
+    public Long getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Long lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+    
+    public Long getTotalLogin() {
+        return totalLogin;
+    }
+
+    public void setTotalLogin(Long totalLogin) {
+        this.totalLogin = totalLogin;
+    }
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setIsLoggedIn(boolean isLoggedIn) {
+        this.isLoggedIn = isLoggedIn;
+    }
+
+    public boolean isFbLogin() {
+        return isFbLogin;
+    }
+
+    public void setIsFbLogin(boolean isFbLogin) {
+        this.isFbLogin = isFbLogin;
+    }
+
+    public boolean getEmailValidated() {
+        return emailValidated;
+    }
+
+    public void setEmailValidated(boolean emailValidated) {
+        this.emailValidated = emailValidated;
+    }
+
+    public boolean getNewUser() {
+        return newUser;
+    }
+
+    public void setNewUser(boolean newUser) {
+        this.newUser = newUser;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 }
