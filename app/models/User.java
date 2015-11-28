@@ -60,6 +60,7 @@ import common.utils.DateTimeUtil;
 import common.utils.ImageFileUtil;
 import common.utils.NanoSecondStopWatch;
 import controllers.Application.DeviceType;
+import domain.DefaultValues;
 import domain.Followable;
 import domain.SocialObjectType;
 
@@ -1116,4 +1117,15 @@ public class User extends SocialObject implements Subject, Followable {
 			return null;
 		}
 	}
+	
+	public static List<User> getUsers(Long offset) {
+        Query q = JPA.em().createQuery("Select u from User u where deleted = false order by CREATED_DATE desc");
+        try {
+            q.setFirstResult((int) (offset * DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT));
+            q.setMaxResults(DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT);
+            return (List<User>) q.getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        }
+    }
 }

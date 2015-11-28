@@ -97,7 +97,7 @@ public class UserController extends Controller {
 	}
 	
 	@Transactional
-	public Result getUserInfoById(Long id) {
+	public static Result getUserInfoById(Long id) {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    
 		final User localUser = Application.getLocalUser(session());
@@ -758,7 +758,7 @@ public class UserController extends Controller {
     }
     
     @Transactional
-    public Result getFollowings(Long id, Long offset) {
+    public static Result getFollowings(Long id, Long offset) {
     	final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
@@ -779,7 +779,7 @@ public class UserController extends Controller {
     }
     
     @Transactional
-    public Result getFollowers(Long id, Long offset) {
+    public static Result getFollowers(Long id, Long offset) {
     	final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
@@ -1044,5 +1044,29 @@ public class UserController extends Controller {
             logger.underlyingLogger().debug("[u="+localUser.getId()+"] deleteAccount(). Took "+sw.getElapsedMS()+"ms");
         }
         return ok();
+    }
+    
+    @Transactional
+    public static Result getUsers(Long offset) {
+        final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        if (!localUser.isSuperAdmin()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User is not super admin. Failed to delete account !!", localUser.id));
+            return badRequest();
+        }
+        
+        List<User> users = User.getUsers(offset);
+        List<UserVMLite> vms = new ArrayList<UserVMLite>();
+        for (User user : users) {
+            if (user != null) {
+                UserVMLite vm = new UserVMLite(user, localUser);
+                vms.add(vm);
+            }
+        }
+        return ok(Json.toJson(vms));
     }
 }
