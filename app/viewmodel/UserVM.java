@@ -102,6 +102,7 @@ public class UserVM extends UserVMLite {
     @Override
     public String toString() {
         return "id=" + id + "\n" +
+                "name=" + lastName + " " + firstName + "\n" +
                 "email=" + email + "\n" +
                 "emailValidated=" + emailValidated + "\n" +
                 "fbLogin=" + isFbLogin + "\n" +

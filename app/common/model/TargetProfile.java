@@ -53,7 +53,7 @@ public class TargetProfile {
         profile.location = user.userInfo.location;
 
         // children
-        TargetGender childrenGender = TargetGender.Both;
+        TargetGender childrenGender = TargetGender.BOTH;
         Integer childrenMinAge = null;
         Integer childrenMaxAge = null;
 
@@ -63,10 +63,10 @@ public class TargetProfile {
 
             boolean hasBoy = false, hasGirl = false;
             for (UserChild child : children) {
-                if (TargetGender.Male.equals(child.gender)) {
+                if (TargetGender.MALE.equals(child.gender)) {
                     hasBoy = true;
                 }
-                else if (TargetGender.Female.equals(child.gender)) {
+                else if (TargetGender.FEMALE.equals(child.gender)) {
                     hasGirl = true;
                 }
 
@@ -86,11 +86,11 @@ public class TargetProfile {
                 }
             }
             if (hasBoy && hasGirl) {
-                childrenGender = TargetGender.Both;
+                childrenGender = TargetGender.BOTH;
             } else if (hasBoy) {
-                childrenGender = TargetGender.Male;
+                childrenGender = TargetGender.MALE;
             } else if (hasGirl) {
-                childrenGender = TargetGender.Female;
+                childrenGender = TargetGender.FEMALE;
             }
         }
         

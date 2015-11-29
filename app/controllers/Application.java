@@ -56,6 +56,7 @@ import common.cache.LocationCache;
 import common.model.TargetGender;
 import common.utils.DateTimeUtil;
 import common.utils.UserAgentUtil;
+import domain.DefaultValues;
 
 public class Application extends Controller {
     private static final play.api.Logger logger = play.api.Logger.apply(Application.class);
@@ -206,14 +207,22 @@ public class Application extends Controller {
 		// UserInfo
         DynamicForm form = DynamicForm.form().bindFromRequest();
         String parentDisplayName = form.get("parent_displayname").trim();
-        String parentBirthYear = form.get("parent_birth_year");
         Location parentLocation = Location.getLocationById(Integer.valueOf(form.get("parent_location")));
+
+        /*
+        String parentBirthYear = form.get("parent_birth_year");
         ParentType parentType = ParentType.valueOf(form.get("parent_type"));
         int numChildren = Integer.valueOf(form.get("num_children"));
         if (ParentType.NA.equals(parentType)) {
             numChildren = 0;
         }
-        
+        */
+
+        // Default to dummy values
+        String parentBirthYear = DefaultValues.DUMMY_BIRTH_YEAR + "";
+        ParentType parentType = ParentType.NA;
+        int numChildren = 0;
+                
         if (!User.isDisplayNameValid(parentDisplayName)) {
             return handleSaveSignupInfoError("\""+parentDisplayName+"\" 不可有空格", fb);
         }
@@ -233,11 +242,11 @@ public class Application extends Controller {
         userInfo.parentType = parentType;
         
         if (ParentType.MOM.equals(parentType) || ParentType.SOON_MOM.equals(parentType)) {
-            userInfo.gender = TargetGender.Female;
+            userInfo.gender = TargetGender.FEMALE;
         } else if (ParentType.DAD.equals(parentType) || ParentType.SOON_DAD.equals(parentType)) {
-            userInfo.gender = TargetGender.Male;
+            userInfo.gender = TargetGender.MALE;
         } else {
-            userInfo.gender = TargetGender.Female;   // default
+            userInfo.gender = TargetGender.NA;
         }
         userInfo.numChildren = numChildren;
         
@@ -247,6 +256,7 @@ public class Application extends Controller {
         logger.underlyingLogger().info("[u="+localUser.id+"][name="+localUser.displayName+"] doSaveSignupInfo userInfo="+userInfo.toString());
         
         // UseChild
+        /*
         int maxChildren = (numChildren > 5)? 5 : numChildren;
         for (int i = 1; i <= maxChildren; i++) {
             String genderStr = form.get("bb_gender" + i);
@@ -278,6 +288,7 @@ public class Application extends Controller {
             
             logger.underlyingLogger().info("[u="+localUser.id+"][name="+localUser.displayName+"] doSaveSignupInfo userChild="+userChild.toString());
         }
+        */
         
         return redirect("/my");
 	}

@@ -236,13 +236,11 @@ public class UserController extends Controller {
         }
         
 		// UserInfo
-        String parentBirthYear = form.get("parent_birth_year");
         Location parentLocation = Location.getLocationById(Integer.valueOf(form.get("parent_location")));
-        
-        if (StringUtils.isEmpty(parentBirthYear) || parentLocation == null) {
+        if (parentLocation == null) {
             logger.underlyingLogger().error(String.format(
-                    "[u=%d][birthYear=%s][location=%s] birthYear or location missing", localUser.id, parentBirthYear, parentLocation.displayName));
-            return badRequest("請填寫您的生日，地區");
+                    "[u=%d][birthYear=%s][location=%s] location missing", localUser.id, parentLocation.displayName));
+            return badRequest("請填寫地區");
         }
         
         localUser.displayName = parentDisplayName;
@@ -250,7 +248,6 @@ public class UserController extends Controller {
         localUser.firstName = parentFirstName;
         localUser.lastName = parentLastName;
         
-        localUser.userInfo.birthYear = parentBirthYear;
         localUser.userInfo.location = parentLocation;
         localUser.userInfo.aboutMe = parentAboutMe;
         localUser.userInfo.save();
@@ -281,9 +278,9 @@ public class UserController extends Controller {
         if (ParentType.MOM.equals(parentType) || ParentType.SOON_MOM.equals(parentType)) {
             userInfo.gender = TargetGender.Female;
         } else if (ParentType.DAD.equals(parentType) || ParentType.SOON_DAD.equals(parentType)) {
-            userInfo.gender = TargetGender.Male;
+            userInfo.gender = TargetGender.MALE;
         } else {
-            userInfo.gender = TargetGender.Female;   // default
+            userInfo.gender = TargetGender.FEMALE;   // default
         }
         userInfo.numChildren = numChildren;
         
