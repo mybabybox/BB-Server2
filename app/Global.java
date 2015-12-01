@@ -25,7 +25,7 @@ import controllers.routes;
  *
  */
 public class Global extends GlobalSettings {
-    private static final play.api.Logger logger = play.api.Logger.apply("application");
+    private static final play.api.Logger logger = play.api.Logger.apply(Global.class);
 
     // Configurations
     private static final String STARTUP_BOOTSTRAP_PROP = "startup.data.bootstrap";

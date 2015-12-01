@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 import play.Play;
+import play.db.jpa.Transactional;
 import common.thread.ThreadLocalOverride;
 import common.utils.NanoSecondStopWatch;
 
@@ -24,6 +25,7 @@ public class CalcFormula {
 	public static final int FEED_SCORE_COMPUTE_DECAY_START = Play.application().configuration().getInt("feed.score.compute.decay.start");
 	public static final int FEED_SCORE_COMPUTE_DECAY_VELOCITY = Play.application().configuration().getInt("feed.score.compute.decay.velocity");
 	
+	@Transactional
 	public Long computeBaseScore(Post post) {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
         logger.underlyingLogger().debug("computeBaseScore for p="+post.id);

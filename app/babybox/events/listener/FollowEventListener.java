@@ -12,33 +12,34 @@ import com.google.common.eventbus.Subscribe;
 
 import common.cache.CalcServer;
 
-public class FollowEventListener {
+public class FollowEventListener extends EventListener {
     private static final play.api.Logger logger = play.api.Logger.apply(FollowEventListener.class);
     
 	@Subscribe
-    public void recordFollowEventInDB(FollowEvent map){
+    public void recordFollowEvent(FollowEvent map){
 	    try {
-    		User localUser = (User) map.get("localUser");
-    		User user = (User) map.get("user");
+    		final User localUser = (User) map.get("localUser");
+    		final User user = (User) map.get("user");
     		
-           	// why we require this, if we are renewing HOME_FOLLOWING feed after every 2 mins 
+    		// why we require this, if we are renewing HOME_FOLLOWING feed after every 2 mins 
     		if (localUser.onFollow(user)) {
-    			Long score = new Date().getTime();		// ideally use FollowSocialRelation.CREATED_DATE
-    			CalcServer.instance().addToFollowQueue(localUser.id, user.id, score.doubleValue());
-    			
-    			if (user.id != localUser.id) {
-        			Activity activity = new Activity(
-        					ActivityType.FOLLOWED, 
-        					user.id,
-        					false, 
-        					localUser.id,
-        					localUser.id,
-        					localUser.displayName,
-        					user.id,
-        					user.id,
-        					user.displayName);
-        			activity.ensureUniqueAndCreate();
-    			}
+    		    // ideally use FollowSocialRelation.CREATED_DATE
+                Long score = new Date().getTime();
+                CalcServer.instance().addToFollowQueue(localUser.id, user.id, score.doubleValue());
+                
+                if (user.id != localUser.id) {
+                    Activity activity = new Activity(
+                            ActivityType.FOLLOWED, 
+                            user.id,
+                            false, 
+                            localUser.id,
+                            localUser.id,
+                            localUser.displayName,
+                            user.id,
+                            user.id,
+                            user.displayName);
+                    activity.ensureUniqueAndCreate();
+                }
     		}
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
@@ -46,12 +47,13 @@ public class FollowEventListener {
     }
 	
 	@Subscribe
-    public void recordUnFollowEventInDB(UnFollowEvent map){
+    public void recordUnFollowEvent(UnFollowEvent map){
 	    try {
-    		User localUser = (User) map.get("localUser");
-    		User user = (User) map.get("user");
+    		final User localUser = (User) map.get("localUser");
+    		final User user = (User) map.get("user");
+    		
     		if (localUser.onUnFollow(user)) {
-    		    CalcServer.instance().removeFromFollowQueue(localUser.id, user.id);
+    		    CalcServer.instance().removeFromFollowQueue(localUser.id, user.id);                          
     		}
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);

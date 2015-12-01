@@ -8,14 +8,15 @@ import com.google.common.eventbus.Subscribe;
 
 import common.cache.CalcServer;
 
-public class ConversationEventListener {
+public class ConversationEventListener extends EventListener {
     private static final play.api.Logger logger = play.api.Logger.apply(ConversationEventListener.class);
     
 	@Subscribe
-    public void recordConversationEventInDB(ConversationEvent map){
+    public void recordConversationEvent(ConversationEvent map){
 	    try {
-    	    Conversation conversation = (Conversation) map.get("conversation");
-    	    Post post = (Post) map.get("post");
+    	    final Conversation conversation = (Conversation) map.get("conversation");
+    	    final Post post = (Post) map.get("post");
+    	    
     	    CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);

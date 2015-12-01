@@ -476,7 +476,7 @@ public class UserController extends Controller {
 		        system = false;
 		    }
 		    
-	        Message message = Conversation.newMessage(conversationId, localUser, body, system);
+	        Message message = newMessage(conversationId, localUser, body, system);
 	        
 	        List<FilePart> images = HttpUtil.getMultipartFormDataFiles(multipartFormData, "image", DefaultValues.MAX_MESSAGE_IMAGES);
 	        for (FilePart image : images){
@@ -493,6 +493,12 @@ public class UserController extends Controller {
 		}
         
         return badRequest();
+    }
+	
+	@Transactional
+	public static Message newMessage(Long conversationId, User sender, String body, boolean system) {
+        Conversation conversation = Conversation.findById(conversationId);
+        return conversation.addMessage(sender, body, system);
     }
 	
 	@Transactional

@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
@@ -23,8 +25,10 @@ public class SystemInfo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
     
+    @Temporal(TemporalType.TIMESTAMP)
     public Date serverStartTime;
     
+    @Temporal(TemporalType.TIMESTAMP)
     public Date serverRunTime;
     
 	public String androidVersion = "1";
@@ -56,6 +60,7 @@ public class SystemInfo {
         }
     }
 	
+	@Transactional
 	public static void recordServerStartTime() {
 	    SystemInfo info = getInfo();
 	    if (info != null) {

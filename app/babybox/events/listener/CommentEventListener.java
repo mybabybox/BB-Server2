@@ -14,21 +14,23 @@ import babybox.events.map.DeleteCommentEvent;
 import com.google.common.eventbus.Subscribe;
 
 import common.cache.CalcServer;
+import common.thread.TransactionalRunnableTask;
 import common.utils.StringUtil;
 import domain.DefaultValues;
 import email.SendgridEmailClient;
 
-public class CommentEventListener {
+public class CommentEventListener extends EventListener {
     private static final play.api.Logger logger = play.api.Logger.apply(CommentEventListener.class);
     
 	@Subscribe
-	public void recordCommentEventInDB(CommentEvent map){
+	public void recordCommentEvent(CommentEvent map){
 	    try {
-    		Comment comment = (Comment) map.get("comment");
-    		Post post = (Post) map.get("post");
-    		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
+    		final Comment comment = (Comment) map.get("comment");
+    		final Post post = (Post) map.get("post");
     		
-    		// first of all, send to post owner
+    		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
+            
+            // first of all, send to post owner
             if (comment.owner.id != post.owner.id) {
                 Activity activity = new Activity(
                         ActivityType.NEW_COMMENT, 
@@ -41,35 +43,41 @@ public class CommentEventListener {
                         post.getImage(), 
                         StringUtil.shortMessage(comment.body));
                 activity.ensureUniqueAndMerge();    // only record latest comment activity from sender
-	            
-                // GCM
-                GcmSender.sendNewCommentNotification(
-                        post.owner.id, 
-                        comment.owner.name,
-                        post.title, 
-                        post.id);
                 
-                // Sendgrid
-                SendgridEmailClient.getInstatnce().sendMailOnComment(comment.owner, post.owner, post.title, comment.body);
+                executeAsync(
+                        new TransactionalRunnableTask() {
+                            @Override
+                            public void execute() {
+                                // GCM
+                                GcmSender.sendNewCommentNotification(
+                                        post.owner.id, 
+                                        comment.owner.name,
+                                        post.title, 
+                                        post.id);
+                                
+                                // Sendgrid
+                                SendgridEmailClient.getInstatnce().sendMailOnComment(comment.owner, post.owner, post.title, comment.body);
+                            }
+                        });
             }
             
-    		// fan out to all commenters
-    		Set<Long> commenterIds = new HashSet<>();
-    		for (Comment c : post.comments) {
-    		    // 1. skip post owner here, sent already
-    		    // 2. skip comment owner
-    		    // 3. remove duplicates
-    		    if (c.owner.id == post.owner.id || 
-    		            c.owner.id == comment.owner.id || 
-    		            commenterIds.contains(c.owner.id)) {
-    		        continue;
-    		    }
-    		    
-    		    // safety measure, fan out to max N commenters
-    		    if (commenterIds.size() > DefaultValues.ACTIVITY_NEW_COMMENT_MAX_FAN_OUT) {
-    		        break;
-    		    }
-    		    
+            // fan out to all commenters
+            Set<Long> commenterIds = new HashSet<>();
+            for (Comment c : post.comments) {
+                // 1. skip post owner here, sent already
+                // 2. skip comment owner
+                // 3. remove duplicates
+                if (c.owner.id == post.owner.id || 
+                        c.owner.id == comment.owner.id || 
+                        commenterIds.contains(c.owner.id)) {
+                    continue;
+                }
+                
+                // safety measure, fan out to max N commenters
+                if (commenterIds.size() > DefaultValues.ACTIVITY_NEW_COMMENT_MAX_FAN_OUT) {
+                    break;
+                }
+                
                 Activity activity = new Activity(
                         ActivityType.NEW_COMMENT, 
                         c.owner.id,
@@ -90,10 +98,11 @@ public class CommentEventListener {
 	}
 	
 	@Subscribe
-	public void recordDeleteCommentEventInDB(DeleteCommentEvent map) {
+	public void recordDeleteCommentEvent(DeleteCommentEvent map) {
 	    try {
-    		Comment comment = (Comment) map.get("comment");
-    		Post post = (Post) map.get("post");
+    		final Comment comment = (Comment) map.get("comment");
+    		final Post post = (Post) map.get("post");
+    		
     		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
 	    } catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);

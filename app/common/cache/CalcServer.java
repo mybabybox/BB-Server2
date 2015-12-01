@@ -72,12 +72,16 @@ public class CalcServer {
 		        TimeUnit.HOURS,
 				new Runnable() {
 					public void run() {
-						JPA.withTransaction(new play.libs.F.Callback0() {
-							@Override
-							public void invoke() throws Throwable {
-								buildCategoryPopularQueues();
-							}
-						});
+					    try {
+    						JPA.withTransaction(new play.libs.F.Callback0() {
+    							@Override
+    							public void invoke() throws Throwable {
+    								buildCategoryPopularQueues();
+    							}
+    						});
+					    } catch (Exception e) {
+	                        logger.underlyingLogger().error("[JobScheduler] buildCategoryPopularQueues failed...", e);
+	                    }
 					}
 				});
         

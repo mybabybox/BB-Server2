@@ -52,8 +52,8 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 		            @Override
 		            public void run() {
 		                sendMail(mailId, subject, body);
-		                }
-		            });
+		            }
+		        });
 	}
 	
 	@Override
@@ -85,7 +85,7 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 				actor.displayName,
 				target.displayName);
 		
-		sendMailAsync(
+		sendMail(
 		        target.email, 
 		        formatSubject("有人關注了你"), 
 		        template);
@@ -108,7 +108,7 @@ public class SendgridEmailClient implements TransactionalEmailClient {
                 product,
                 comment);
         
-        sendMailAsync(
+        sendMail(
                 target.email, 
                 formatSubject("你的商品有新留言 - "+product), 
                 template);
@@ -131,7 +131,7 @@ public class SendgridEmailClient implements TransactionalEmailClient {
                 product,
                 message);
         
-        sendMailAsync(
+        sendMail(
                 target.email, 
                 formatSubject("你的商品有新訊息 - "+product), 
                 template);
@@ -156,7 +156,7 @@ public class SendgridEmailClient implements TransactionalEmailClient {
                 post.title,
                 htmlBody);
         
-        sendMailAsync(
+        sendMail(
                 target.email, 
                 formatSubject("成功刊登商品 - "+post.title), 
                 template);

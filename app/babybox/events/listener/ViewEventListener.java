@@ -9,16 +9,17 @@ import com.google.common.eventbus.Subscribe;
 
 import common.cache.CalcServer;
 
-public class ViewEventListener {
+public class ViewEventListener extends EventListener {
     private static final play.api.Logger logger = play.api.Logger.apply(ViewEventListener.class);
     
 	@Subscribe
-    public void recordViewEventInDB(ViewEvent map){
+    public void recordViewEvent(ViewEvent map){
 	    try {
-    		Post post = (Post) map.get("post");
-    		User user = (User) map.get("user");
+    		final Post post = (Post) map.get("post");
+    		final User user = (User) map.get("user");
+    		
     		if (post.onView(user)) {
-    		    //CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
+    		    // CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
     		}
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
@@ -26,10 +27,11 @@ public class ViewEventListener {
     }
 	
 	@Subscribe
-    public void recordTouchEventOnCalcServer(TouchEvent map){
+    public void recordTouchEvent(TouchEvent map){
 	    try {
-            Post post = (Post) map.get("post");
-            User user = (User) map.get("user");
+            final Post post = (Post) map.get("post");
+            final User user = (User) map.get("user");
+            
             CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);

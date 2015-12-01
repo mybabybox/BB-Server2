@@ -20,7 +20,6 @@ import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import mobile.GcmSender;
 import common.utils.StringUtil;
 import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
@@ -29,7 +28,6 @@ import domain.AuditListener;
 import domain.Creatable;
 import domain.DefaultValues;
 import domain.Updatable;
-import email.SendgridEmailClient;
 
 /**
  * ALTER TABLE Conversation DROP COLUMN user1ReadDate;
@@ -119,11 +117,6 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 	    }
 	}
 	
-	public static Message newMessage(Long conversationId, User sender, String body, boolean system) {
-		Conversation conversation = Conversation.findById(conversationId);
-		return conversation.addMessage(sender, body, system);
-	}
-	
 	public Message addMessage(User sender, String body, boolean system) {
 		Date now = new Date();
 		Message message = new Message();
@@ -141,6 +134,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		setUpdatedDate(now);
 		setReadDate(sender);
 		
+		boolean firstMessage = false;
 		User recipient = null;
 		if (this.user1 == sender) {
 		    recipient = this.user2;
@@ -150,10 +144,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 			
 			// first new message, send notifications
 			if (this.user2NumMessages == 1) {
-				NotificationCounter.incrementConversationsCount(recipient.id);
-				
-				// Sendgrid
-		        SendgridEmailClient.getInstatnce().sendMailOnConversation(sender, recipient, post.title, body);
+			    firstMessage = true;
 			}
 		} else {
 		    recipient = this.user1;
@@ -163,19 +154,12 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 			
 			// first new message, send notifications
 			if (this.user1NumMessages == 1) {
-			    NotificationCounter.incrementConversationsCount(recipient.id);
-			    
-			    // Sendgrid
-		        SendgridEmailClient.getInstatnce().sendMailOnConversation(sender, recipient, post.title, body);
+			    firstMessage = true;
 			}
 		}
 		this.save();
 		
-        // GCM
-        GcmSender.sendNewMessageNotification(
-                recipient.id, 
-                sender.name,
-                body);
+		SocialRelationHandler.recordNewMessage(message, sender, recipient, firstMessage);
 		
 		return message;
 	}

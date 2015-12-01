@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
@@ -52,6 +53,7 @@ public class NotificationCounter extends domain.Entity implements Serializable, 
         }
 	}
 	
+	@Transactional
 	public static void resetActivitiesCount(Long userId) {
 		NotificationCounter counter = getNotificationCounter(userId);
 		if (counter != null && counter.activitiesCount != 0L) {
@@ -60,6 +62,7 @@ public class NotificationCounter extends domain.Entity implements Serializable, 
 		}
 	}
 	
+	@Transactional
 	public static void resetConversationsCount(Long userId) {
         NotificationCounter counter = getNotificationCounter(userId);
         if (counter != null && counter.conversationsCount != 0L) {
@@ -68,6 +71,7 @@ public class NotificationCounter extends domain.Entity implements Serializable, 
         }
     }
 	
+	@Transactional
 	public static void setActivitiesCount(Long userId, Long count) {
         NotificationCounter counter = getNotificationCounter(userId);
         if (counter != null && counter.activitiesCount != count) {
@@ -76,6 +80,7 @@ public class NotificationCounter extends domain.Entity implements Serializable, 
         }
     }
     
+	@Transactional
 	public static void setConversationsCount(Long userId, Long count) {
         NotificationCounter counter = getNotificationCounter(userId);
         if (counter != null && counter.conversationsCount != count) {
@@ -84,6 +89,7 @@ public class NotificationCounter extends domain.Entity implements Serializable, 
         }
     }
 	
+	@Transactional
 	public static void incrementActivitiesCount(Long userId) {
 		NotificationCounter counter = NotificationCounter.getNotificationCounter(userId);
 		if (counter != null) {
@@ -92,6 +98,7 @@ public class NotificationCounter extends domain.Entity implements Serializable, 
 		}
 	}
 	
+	@Transactional
 	public static void decrementActivitiesCount(Long userId) {
 		NotificationCounter counter = NotificationCounter.getNotificationCounter(userId);
 		if (counter != null && counter.activitiesCount > 0) {
@@ -100,6 +107,7 @@ public class NotificationCounter extends domain.Entity implements Serializable, 
 		}
 	}
 	
+	@Transactional
 	public static void incrementConversationsCount(Long userId) {
 		NotificationCounter counter = NotificationCounter.getNotificationCounter(userId);
 		if (counter != null) {
@@ -108,6 +116,7 @@ public class NotificationCounter extends domain.Entity implements Serializable, 
 		}
 	}
 	
+	@Transactional
 	public static void decrementConversationsCount(Long userId) {
 		NotificationCounter counter = NotificationCounter.getNotificationCounter(userId);
 		if (counter != null && counter.conversationsCount > 0) {

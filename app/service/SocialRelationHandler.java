@@ -3,6 +3,7 @@ package service;
 import models.Category;
 import models.Comment;
 import models.Conversation;
+import models.Message;
 import models.Post;
 import models.User;
 import babybox.events.handler.EventHandler;
@@ -13,6 +14,7 @@ import babybox.events.map.DeletePostEvent;
 import babybox.events.map.EditPostEvent;
 import babybox.events.map.FollowEvent;
 import babybox.events.map.LikeEvent;
+import babybox.events.map.MessageEvent;
 import babybox.events.map.PostEvent;
 import babybox.events.map.SoldEvent;
 import babybox.events.map.TouchEvent;
@@ -92,21 +94,30 @@ public class SocialRelationHandler {
 		EventHandler.getInstance().getEventBus().post(soldEvent);
 	}
 	
-	public static void recordNewConversation(Conversation conversation, Post post){
+	public static void recordNewConversation(Conversation conversation, Post post) {
 	    ConversationEvent conversationEvent = new ConversationEvent();
 	    conversationEvent.put("conversation", conversation);
 	    conversationEvent.put("post", post);
         EventHandler.getInstance().getEventBus().post(conversationEvent);
 	}
 	
-	public static void recordViewPost(Post post, User localUser){
+	public static void recordNewMessage(Message message, User sender, User recipient, Boolean firstMessage) {
+        MessageEvent messageEvent = new MessageEvent();
+        messageEvent.put("message", message);
+        messageEvent.put("sender", sender);
+        messageEvent.put("recipient", recipient);
+        messageEvent.put("firstMessage", firstMessage);
+        EventHandler.getInstance().getEventBus().post(messageEvent);
+    }
+	
+	public static void recordViewPost(Post post, User localUser) {
 		ViewEvent viewEvent = new ViewEvent();
 		viewEvent.put("post", post);
 		viewEvent.put("user", localUser);
 		EventHandler.getInstance().getEventBus().post(viewEvent);
 	}
 	
-	public static void recordTouchPost(Post post, User localUser){
+	public static void recordTouchPost(Post post, User localUser) {
 	    TouchEvent touchEvent = new TouchEvent();
 	    touchEvent.put("post", post);
 	    touchEvent.put("user", localUser);
