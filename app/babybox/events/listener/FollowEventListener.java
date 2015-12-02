@@ -3,8 +3,10 @@ package babybox.events.listener;
 import java.util.Date;
 
 import models.Activity;
+import models.GameBadgeHistory;
 import models.User;
 import models.Activity.ActivityType;
+import models.GameBadge.BadgeType;
 import babybox.events.map.FollowEvent;
 import babybox.events.map.UnFollowEvent;
 
@@ -32,20 +34,25 @@ public class FollowEventListener extends EventListener {
                         new TransactionalRunnableTask() {
                             @Override
                             public void execute() {
-                                if (user.id != localUser.id) {
-                                    // activity
-                                    Activity activity = new Activity(
-                                            ActivityType.FOLLOWED, 
-                                            user.id,
-                                            false, 
-                                            localUser.id,
-                                            localUser.id,
-                                            localUser.displayName,
-                                            user.id,
-                                            user.id,
-                                            user.displayName);
-                                    activity.ensureUniqueAndCreate();
-                                }                            
+                                // game badge
+                                if (user.numFollowings == 1) {
+                                    GameBadgeHistory.recordGameBadge(user.id, BadgeType.FOLLOW_1);
+                                } else if (user.numFollowings == 10) {
+                                    GameBadgeHistory.recordGameBadge(user.id, BadgeType.FOLLOW_10);
+                                }
+                                
+                                // activity
+                                Activity activity = new Activity(
+                                        ActivityType.FOLLOWED, 
+                                        user.id,
+                                        false, 
+                                        localUser.id,
+                                        localUser.id,
+                                        localUser.displayName,
+                                        user.id,
+                                        user.id,
+                                        user.displayName);
+                                activity.ensureUniqueAndCreate();
                             }
                         });
     		}

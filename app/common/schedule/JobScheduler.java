@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class JobScheduler {
     private static play.api.Logger logger = play.api.Logger.apply(JobScheduler.class);
 
-    public static final Long DEFAULT_RUN_DELAY_MILLIS = 1000L;
+    public static final Long DEFAULT_RUN_DELAY_MILLIS = 100L;
     
     // Singleton
     private static JobScheduler instance = new JobScheduler();

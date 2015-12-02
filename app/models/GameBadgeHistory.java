@@ -1,14 +1,21 @@
 package models;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import common.utils.NanoSecondStopWatch;
+
+import domain.AuditListener;
+import domain.Creatable;
+import domain.Updatable;
 import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
@@ -17,7 +24,8 @@ import play.db.jpa.Transactional;
  * 
  */
 @Entity
-public class GameBadgeHistory extends domain.Entity {
+@EntityListeners(AuditListener.class)
+public class GameBadgeHistory extends domain.Entity implements Serializable, Creatable, Updatable {
     private static final play.api.Logger logger = play.api.Logger.apply(GameBadgeHistory.class);
 
     @Id
@@ -43,6 +51,8 @@ public class GameBadgeHistory extends domain.Entity {
 
 	@Transactional
 	public static void recordGameBadge(Long userId, GameBadge.BadgeType badgeType) {
+	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
+	    
 	    GameBadge gameBadge = GameBadge.findByBadgeType(badgeType);
 	    if (gameBadge == null) {
 	        logger.underlyingLogger().error("[u="+userId+"] recordGameBadge() badgeType="+badgeType.name()+" does not exist !!");
@@ -51,12 +61,17 @@ public class GameBadgeHistory extends domain.Entity {
 	    
 	    GameBadgeHistory history = getGameBadgeHistory(userId, gameBadge.id);
 	    if (history != null) {
-	        //logger.underlyingLogger().warn("[u="+userId+"] recordGameBadge() badgeType="+badgeType.name()+" awarded already, skipped..");
+	        logger.underlyingLogger().warn("[u="+userId+"] recordGameBadge() badgeType="+badgeType.name()+" awarded already, skipped..");
 	        return;
 	    }
 	    
 	    history = new GameBadgeHistory(userId, gameBadge.id);
         history.save();
+        
+        sw.stop();
+        if (logger.underlyingLogger().isDebugEnabled()) {
+            logger.underlyingLogger().debug("[u="+userId+"] recordGameBadge() badgeType="+badgeType.name()+". Took "+sw.getElapsedMS()+"ms");
+        }
 	}
 	
 	public static List<GameBadgeHistory> getGameBadgesHistory(Long userId) {

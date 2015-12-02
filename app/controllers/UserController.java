@@ -21,6 +21,7 @@ import models.Conversation;
 import models.ConversationOrder;
 import models.Emoticon;
 import models.FollowSocialRelation;
+import models.GameBadgeHistory;
 import models.GcmToken;
 import models.Location;
 import models.Message;
@@ -29,6 +30,7 @@ import models.Post;
 import models.Resource;
 import models.SocialRelation;
 import models.User;
+import models.GameBadge.BadgeType;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -135,6 +137,9 @@ public class UserController extends Controller {
 	    try {
             File fileTo = ImageFileUtil.copyImageFileToTemp(image.getFile(), fileName);
 			localUser.setPhotoProfile(fileTo);
+			
+			// game badge
+	        GameBadgeHistory.recordGameBadge(localUser.id, BadgeType.PROFILE_PHOTO);
 		} catch (IOException e) {
 		    logger.underlyingLogger().error("Error in uploadProfilePhoto", e);
 			return badRequest();

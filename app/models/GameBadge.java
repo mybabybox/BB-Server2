@@ -1,9 +1,11 @@
 package models;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -13,6 +15,9 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import common.cache.GameBadgeCache;
+import domain.AuditListener;
+import domain.Creatable;
+import domain.Updatable;
 import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
 
@@ -20,7 +25,8 @@ import play.db.jpa.JPA;
  * 
  */
 @Entity
-public class GameBadge extends domain.Entity {
+@EntityListeners(AuditListener.class)
+public class GameBadge extends domain.Entity  implements Serializable, Creatable, Updatable {
     private static final play.api.Logger logger = play.api.Logger.apply(GameBadge.class);
 
     @Id

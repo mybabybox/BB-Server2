@@ -160,8 +160,12 @@ public class Post extends SocialObject implements Likeable, Commentable {
 					LikeSocialRelation.unlike(
 							user.id, SocialObjectType.USER, this.id, SocialObjectType.POST);
 			if (unliked) {
-				this.numLikes--;
-				user.numLikes--;
+			    if (this.numLikes > 0) {
+			        this.numLikes--;
+			    }
+			    if (user.numLikes > 0) {
+			        user.numLikes--;
+			    }
 			} else {
 				logger.underlyingLogger().debug(String.format("Post [p=%d] already unliked by User [u=%d]", this.id, user.id));
 			}

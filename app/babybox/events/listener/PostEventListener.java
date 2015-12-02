@@ -2,9 +2,11 @@ package babybox.events.listener;
 
 import models.Activity;
 import models.Category;
+import models.GameBadgeHistory;
 import models.Post;
 import models.User;
 import models.Activity.ActivityType;
+import models.GameBadge.BadgeType;
 import babybox.events.map.DeletePostEvent;
 import babybox.events.map.EditPostEvent;
 import babybox.events.map.PostEvent;
@@ -33,7 +35,14 @@ public class PostEventListener extends EventListener {
                     new TransactionalRunnableTask() {
                         @Override
                         public void execute() {
-                            if (user.numProducts >= 1) {
+                            // game badge
+                            if (user.numProducts == 1) {
+                                GameBadgeHistory.recordGameBadge(user.id, BadgeType.POST_1);
+                            } else if (user.numProducts == 10) {
+                                GameBadgeHistory.recordGameBadge(user.id, BadgeType.POST_10);
+                            }
+                            
+                            if (user.numProducts == 1) {
                                 // activity 
                                 Activity activity = new Activity(
                                         ActivityType.FIRST_POST, 

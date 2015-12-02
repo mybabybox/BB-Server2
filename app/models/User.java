@@ -30,6 +30,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import models.GameBadge.BadgeType;
 import models.Post.ConditionType;
 import models.TokenAction.Type;
 
@@ -223,9 +224,6 @@ public class User extends SocialObject implements Subject, Followable {
 		this.albumPhotoProfile.setHighPriorityFile(newPhoto);
 		newPhoto.save();
 
-		// credit points if first time
-		//GameAccount.setPointsForPhotoProfile(this);
-
 		return newPhoto;
 	}
 
@@ -378,7 +376,9 @@ public class User extends SocialObject implements Subject, Followable {
 	public void deleteProduct(Post post) {
         post.deleted = true;
         post.deletedBy = this;
-        post.owner.numProducts--;
+        if (post.owner.numProducts > 0) {
+            post.owner.numProducts--;
+        }
         post.save();
 	}
 	
@@ -1012,6 +1012,10 @@ public class User extends SocialObject implements Subject, Followable {
 			logger.underlyingLogger().debug("[localUser="+this.id+"][u="+user.id+"] User onFollow");
 		}
 		
+		if (this.id == user.id) {
+		    return false;
+		}
+		
 		if (!isFollowing(user)) {
 			boolean followed = recordFollow(user);
 			if (followed) {
@@ -1036,8 +1040,12 @@ public class User extends SocialObject implements Subject, Followable {
 					FollowSocialRelation.unfollow(
 							this.id, SocialObjectType.USER, user.id, SocialObjectType.USER);
 			if (unfollowed) {
-				this.numFollowings--;
-				user.numFollowers--;
+			    if (this.numFollowings > 0) {
+			        this.numFollowings--;
+			    }
+			    if (user.numFollowers > 0) {
+			        user.numFollowers--;
+			    }
 			} else {
 				logger.underlyingLogger().debug(String.format("User [u=%d] already unfollowed User [u=%d]", this.id, user.id));
 			}

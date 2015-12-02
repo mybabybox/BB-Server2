@@ -480,17 +480,25 @@ public class DataBootstrap {
         gameBadge.save();
         
         for (User user : User.getEligibleUsersForFeed()) {
+            if (user.albumPhotoProfile != null) {
+                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.PROFILE_PHOTO);
+            }
             if (user.numLikes >= 1) {
                 GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.LIKE_1);
-            } else if (user.numLikes >= 10) {
+            }
+            if (user.numLikes >= 10) {
                 GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.LIKE_10);
-            } else if (user.numFollowings >= 1) {
+            }
+            if (user.numFollowings >= 1) {
                 GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.FOLLOW_1);
-            } else if (user.numFollowings >= 10) {
+            }
+            if (user.numFollowings >= 10) {
                 GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.FOLLOW_10);
-            } else if (user.numProducts >= 1) {
+            }
+            if (user.numProducts >= 1) {
                 GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.POST_1);
-            } else if (user.numProducts >= 10) {
+            }
+            if (user.numProducts >= 10) {
                 GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.POST_10);
             }
         }
