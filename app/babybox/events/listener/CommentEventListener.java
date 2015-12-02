@@ -37,6 +37,7 @@ public class CommentEventListener extends EventListener {
                         new TransactionalRunnableTask() {
                             @Override
                             public void execute() {
+                                // activity
                                 Activity activity = new Activity(
                                         ActivityType.NEW_COMMENT, 
                                         post.owner.id,

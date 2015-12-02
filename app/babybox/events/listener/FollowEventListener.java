@@ -33,6 +33,7 @@ public class FollowEventListener extends EventListener {
                             @Override
                             public void execute() {
                                 if (user.id != localUser.id) {
+                                    // activity
                                     Activity activity = new Activity(
                                             ActivityType.FOLLOWED, 
                                             user.id,

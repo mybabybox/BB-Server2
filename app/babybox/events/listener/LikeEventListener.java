@@ -30,6 +30,7 @@ public class LikeEventListener extends EventListener {
                     new TransactionalRunnableTask() {
                         @Override
                         public void execute() {
+                            // activity
                             if (user.id != post.owner.id) {
                                 Activity activity = new Activity(
                                         ActivityType.LIKED, 

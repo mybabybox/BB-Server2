@@ -28,25 +28,25 @@ public class PostEventListener extends EventListener {
     		CalcServer.instance().addToCategoryQueues(post);
             CalcServer.instance().addToUserPostedQueue(post, user);
             
-            //final Long postImageId = post.getImage();
+            final Long postImageId = post.getImage();
     		executeAsync(
                     new TransactionalRunnableTask() {
                         @Override
                         public void execute() {
-                            /*
-                            // Need to query followers as recipients
-                            Activity activity = new Activity(
-                                    ActivityType.NEW_POST, 
-                                    user.id,
-                                    true, 
-                                    user.id,
-                                    user.id,
-                                    user.displayName,
-                                    post.id,
-                                    postImageId, 
-                                    StringUtil.shortMessage(post.title));
-                            activity.ensureUniqueAndCreate();
-                            */
+                            if (user.numProducts == 1) {
+                                // activity 
+                                Activity activity = new Activity(
+                                        ActivityType.FIRST_POST, 
+                                        user.id,
+                                        true, 
+                                        user.id,
+                                        user.id,
+                                        user.displayName,
+                                        post.id,
+                                        postImageId, 
+                                        StringUtil.shortMessage(post.title));
+                                activity.ensureUniqueAndCreate();
+                            }
                             
                             // Sendgrid
                             SendgridEmailClient.getInstatnce().sendMailOnPost(post);

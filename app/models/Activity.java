@@ -70,6 +70,7 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
 	public ActivityType activityType;
 
 	public static enum ActivityType {
+	    FIRST_POST,
 		NEW_POST,
 		NEW_COMMENT,
 		LIKED,
@@ -96,6 +97,10 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
 
 	private void setActorTargetType() {
 		switch (this.activityType) {
+		case FIRST_POST:
+		    this.actorType = SocialObjectType.USER;
+            this.targetType = SocialObjectType.POST;
+            break;
 		case NEW_POST:
 			this.actorType = SocialObjectType.USER;
 			this.targetType = SocialObjectType.POST;
@@ -116,6 +121,11 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
 			this.actorType = SocialObjectType.USER;
 			this.targetType = SocialObjectType.POST;
 			break;
+		default:
+		    logger.underlyingLogger().error("setActorTargetType: set to default.. unknown activityType="+activityType.name());
+		    this.actorType = SocialObjectType.USER;
+            this.targetType = SocialObjectType.POST;
+            break;
 		}
 	}
 
