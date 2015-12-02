@@ -11,6 +11,7 @@ import babybox.events.map.UnFollowEvent;
 import com.google.common.eventbus.Subscribe;
 
 import common.cache.CalcServer;
+import common.thread.TransactionalRunnableTask;
 
 public class FollowEventListener extends EventListener {
     private static final play.api.Logger logger = play.api.Logger.apply(FollowEventListener.class);
@@ -27,19 +28,25 @@ public class FollowEventListener extends EventListener {
                 Long score = new Date().getTime();
                 CalcServer.instance().addToFollowQueue(localUser.id, user.id, score.doubleValue());
                 
-                if (user.id != localUser.id) {
-                    Activity activity = new Activity(
-                            ActivityType.FOLLOWED, 
-                            user.id,
-                            false, 
-                            localUser.id,
-                            localUser.id,
-                            localUser.displayName,
-                            user.id,
-                            user.id,
-                            user.displayName);
-                    activity.ensureUniqueAndCreate();
-                }
+                executeAsync(
+                        new TransactionalRunnableTask() {
+                            @Override
+                            public void execute() {
+                                if (user.id != localUser.id) {
+                                    Activity activity = new Activity(
+                                            ActivityType.FOLLOWED, 
+                                            user.id,
+                                            false, 
+                                            localUser.id,
+                                            localUser.id,
+                                            localUser.displayName,
+                                            user.id,
+                                            user.id,
+                                            user.displayName);
+                                    activity.ensureUniqueAndCreate();
+                                }                            
+                            }
+                        });
     		}
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);

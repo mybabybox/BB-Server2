@@ -7,6 +7,8 @@ import models.Activity.ActivityType;
 import babybox.events.map.SoldEvent;
 
 import com.google.common.eventbus.Subscribe;
+import common.thread.TransactionalRunnableTask;
+import common.utils.StringUtil;
 
 public class SoldEventListener extends EventListener {
     private static final play.api.Logger logger = play.api.Logger.apply(SoldEventListener.class);
@@ -21,20 +23,27 @@ public class SoldEventListener extends EventListener {
     		    // NOTE: sold posts purged by daily scheduler at 5am HKT !!
                 //CalcServer.instance().removeFromCategoryQueues(post);
                 
-                // Need to query chat users as recipients
     		    /*
-                Activity activity = new Activity(
-                        ActivityType.SOLD, 
-                        user.id,
-                        true, 
-                        user.id,
-                        user.id,
-                        user.displayName,
-                        post.id,
-                        post.getImage(), 
-                        StringUtil.shortMessage(post.title));
-                activity.save();
-                */
+    		    final Long postImageId = post.getImage();
+    		    executeAsync(
+                        new TransactionalRunnableTask() {
+                            @Override
+                            public void execute() {
+                                // Need to query chat users as recipients
+                                Activity activity = new Activity(
+                                        ActivityType.SOLD, 
+                                        user.id,
+                                        true, 
+                                        user.id,
+                                        user.id,
+                                        user.displayName,
+                                        post.id,
+                                        postImageId, 
+                                        StringUtil.shortMessage(post.title));
+                                activity.save();                     
+                            }
+                        });
+    		     */
     		}
 	    } catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);

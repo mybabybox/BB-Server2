@@ -10,6 +10,7 @@ import babybox.events.map.UnlikeEvent;
 import com.google.common.eventbus.Subscribe;
 
 import common.cache.CalcServer;
+import common.thread.TransactionalRunnableTask;
 import common.utils.StringUtil;
 
 public class LikeEventListener extends EventListener {
@@ -24,19 +25,26 @@ public class LikeEventListener extends EventListener {
     		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
             CalcServer.instance().addToLikeQueue(post, user);
             
-            if (user.id != post.owner.id) {
-                Activity activity = new Activity(
-                        ActivityType.LIKED, 
-                        post.owner.id,
-                        true, 
-                        user.id,
-                        user.id,
-                        user.displayName,
-                        post.id,
-                        post.getImage(),
-                        StringUtil.shortMessage(post.title));
-                activity.ensureUniqueAndCreate();
-            }
+            final Long postImageId = post.getImage();
+            executeAsync(
+                    new TransactionalRunnableTask() {
+                        @Override
+                        public void execute() {
+                            if (user.id != post.owner.id) {
+                                Activity activity = new Activity(
+                                        ActivityType.LIKED, 
+                                        post.owner.id,
+                                        true, 
+                                        user.id,
+                                        user.id,
+                                        user.displayName,
+                                        post.id,
+                                        postImageId,
+                                        StringUtil.shortMessage(post.title));
+                                activity.ensureUniqueAndCreate();
+                            }                            
+                        }
+                    });
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
         }

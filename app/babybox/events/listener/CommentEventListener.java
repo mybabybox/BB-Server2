@@ -30,24 +30,25 @@ public class CommentEventListener extends EventListener {
     		
     		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
             
-            // first of all, send to post owner
+            // firstly, send to post owner
+    		final Long postImageId = post.getImage();
             if (comment.owner.id != post.owner.id) {
-                Activity activity = new Activity(
-                        ActivityType.NEW_COMMENT, 
-                        post.owner.id,
-                        true,
-                        comment.owner.id, 
-                        comment.owner.id,
-                        comment.owner.name,
-                        post.id,
-                        post.getImage(), 
-                        StringUtil.shortMessage(comment.body));
-                activity.ensureUniqueAndMerge();    // only record latest comment activity from sender
-                
                 executeAsync(
                         new TransactionalRunnableTask() {
                             @Override
                             public void execute() {
+                                Activity activity = new Activity(
+                                        ActivityType.NEW_COMMENT, 
+                                        post.owner.id,
+                                        true,
+                                        comment.owner.id, 
+                                        comment.owner.id,
+                                        comment.owner.name,
+                                        post.id,
+                                        postImageId, 
+                                        StringUtil.shortMessage(comment.body));
+                                activity.ensureUniqueAndMerge();    // only record latest comment activity from sender
+                                
                                 // GCM
                                 GcmSender.sendNewCommentNotification(
                                         post.owner.id, 
@@ -78,17 +79,24 @@ public class CommentEventListener extends EventListener {
                     break;
                 }
                 
-                Activity activity = new Activity(
-                        ActivityType.NEW_COMMENT, 
-                        c.owner.id,
-                        false, 
-                        comment.owner.id, 
-                        comment.owner.id, 
-                        comment.owner.name,
-                        post.id,
-                        post.getImage(), 
-                        StringUtil.shortMessage(comment.body));
-                activity.ensureUniqueAndCreate();
+                final Long commenterId = c.owner.id;
+                executeAsync(
+                        new TransactionalRunnableTask() {
+                            @Override
+                            public void execute() {
+                                Activity activity = new Activity(
+                                        ActivityType.NEW_COMMENT, 
+                                        commenterId,
+                                        false, 
+                                        comment.owner.id, 
+                                        comment.owner.id, 
+                                        comment.owner.name,
+                                        post.id,
+                                        postImageId, 
+                                        StringUtil.shortMessage(comment.body));
+                                activity.ensureUniqueAndCreate();
+                            }
+                        });
                 
                 commenterIds.add(c.owner.id);
             }

@@ -22,12 +22,12 @@ public class MessageEventListener extends EventListener {
     	    final User recipient = (User) map.get("recipient");
     	    final Boolean firstMessage = (Boolean) map.get("firstMessage");
     	    
-    	    NotificationCounter.incrementConversationsCount(recipient.id);
-    	    
     	    executeAsync(
                     new TransactionalRunnableTask() {
                         @Override
                         public void execute() {
+                            NotificationCounter.incrementConversationsCount(recipient.id);
+                            
                             // transactional email for first message only
                             if (firstMessage) {
                                 // Sendgrid

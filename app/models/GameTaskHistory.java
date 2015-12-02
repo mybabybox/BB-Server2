@@ -9,8 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import models.GameTask.TaskType;
 import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
+import play.db.jpa.Transactional;
 
 /**
  * 
@@ -40,8 +42,15 @@ public class GameTaskHistory extends domain.Entity {
 	    this.gameTaskId = gameTaskId;
     }
 
-	public static void recordGameTaskHistory(Long userId, Long gameTaskId) {
-	    GameTaskHistory history = new GameTaskHistory(userId, gameTaskId);
+	@Transactional
+	public static void recordGameTaskHistory(Long userId, GameTask.TaskType taskType) {
+	    GameTask gameTask = GameTask.findByTaskType(taskType);
+	    if (gameTask == null) {
+	        logger.underlyingLogger().error("recordGameTaskHistory() taskType="+taskType.name()+" does not exist !!");
+	        return;
+	    }
+	    
+	    GameTaskHistory history = new GameTaskHistory(userId, gameTask.id);
 	    history.save();
 	}
 	
