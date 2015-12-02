@@ -118,7 +118,7 @@ public class CalcServer {
 	}
 	
 	private void buildUserQueues() {
-		for(User user : User.getEligibleUserForFeed()){
+		for(User user : User.getEligibleUsersForFeed()){
 			clearUserQueues(user);
 			buildUserPostedQueue(user);
 			buildUserLikedPostQueue(user);

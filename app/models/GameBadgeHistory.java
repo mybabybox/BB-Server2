@@ -49,7 +49,7 @@ public class GameBadgeHistory extends domain.Entity {
 	        return;
 	    }
 	    
-	    GameBadgeHistory history = getGameBadgeHistory(userId, badgeType);
+	    GameBadgeHistory history = getGameBadgeHistory(userId, gameBadge.id);
 	    if (history != null) {
 	        //logger.underlyingLogger().warn("[u="+userId+"] recordGameBadge() badgeType="+badgeType.name()+" awarded already, skipped..");
 	        return;
@@ -63,17 +63,17 @@ public class GameBadgeHistory extends domain.Entity {
 	    try {
             Query q = JPA.em().createQuery("SELECT h FROM GameBadgeHistory h where userId = ?1 and deleted = false");
             q.setParameter(1, userId);
-            return (List<GameBadgeHistory>) q.getSingleResult();
+            return (List<GameBadgeHistory>) q.getResultList();
         } catch (NoResultException nre) {
             return null;
         }
 	}
 	
-	public static GameBadgeHistory getGameBadgeHistory(Long userId, GameBadge.BadgeType badgeType) {
+	public static GameBadgeHistory getGameBadgeHistory(Long userId, Long gameBadgeId) {
         try {
-            Query q = JPA.em().createQuery("SELECT h FROM GameBadgeHistory h where userId = ?1 and badgeType = ?2 and deleted = false");
+            Query q = JPA.em().createQuery("SELECT h FROM GameBadgeHistory h where userId = ?1 and gameBadgeId = ?2 and deleted = false");
             q.setParameter(1, userId);
-            q.setParameter(2, badgeType.name());
+            q.setParameter(2, gameBadgeId);
             return (GameBadgeHistory) q.getSingleResult();
         } catch (NoResultException nre) {
             return null;

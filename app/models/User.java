@@ -116,8 +116,6 @@ public class User extends SocialObject implements Subject, Followable {
 
 	public Long numProducts = 0L;
 	
-	public Long numStories = 0L;
-
 	public Long numCollections = 0L;
 
 	// system
@@ -1083,8 +1081,8 @@ public class User extends SocialObject implements Subject, Followable {
 		return result;
 	}
 
-	public static List<User> getEligibleUserForFeed() {
-		//TODO filter-out eligible user
+	public static List<User> getEligibleUsersForFeed() {
+		// TODO query only eligible user
 		try {
 			Query q = JPA.em().createQuery("SELECT u FROM User u where deleted = false");
 			return (List<User>) q.getResultList();

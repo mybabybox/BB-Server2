@@ -34,13 +34,13 @@ public class GameBadge extends domain.Entity {
     public BadgeType badgeType;
     
     @Column(length=1000)
-    public String shortDescription;
-    
-    @Column(length=2000)
     public String description;
     
     @Required
     public String icon;
+    
+    @Required
+    public String icon2;
     
     @Required
     public int seq;
@@ -50,6 +50,7 @@ public class GameBadge extends domain.Entity {
     
 	public static enum BadgeType {
 	    PROFILE_PHOTO,
+	    PROFILE_INFO,
 	    LIKE_1,
 	    LIKE_10,
 	    FOLLOW_1,
@@ -61,12 +62,12 @@ public class GameBadge extends domain.Entity {
 	public GameBadge() {
 	}
 	
-	public GameBadge(BadgeType badgeType, String name, String shortDescription, String description, String icon) {
+	public GameBadge(BadgeType badgeType, String name, String description, String icon, String icon2) {
 	    this.badgeType = badgeType;
 	    this.name = name;
-	    this.shortDescription = shortDescription;
 	    this.description = description;
 	    this.icon = icon;
+	    this.icon2 = icon2;
 	    this.seq = badgeType.ordinal();
     }
 

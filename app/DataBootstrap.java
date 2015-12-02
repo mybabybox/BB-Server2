@@ -7,8 +7,11 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import controllers.Application;
 import models.Category;
 import models.Emoticon;
+import models.GameBadge;
+import models.GameBadgeHistory;
 import models.Icon;
 import models.SystemInfo;
+import models.GameBadge.BadgeType;
 import models.Icon.IconType;
 import models.Location;
 import models.Location.LocationCode;
@@ -33,6 +36,7 @@ public class DataBootstrap {
         bootstrapUser();
         bootstrapLocation();
         bootstrapCategory();
+        bootstrapGameBadge();
 	}
     
     private static void bootstrapTermsAndConditions() {
@@ -46,7 +50,7 @@ public class DataBootstrap {
 
         TermsAndConditions tnc = new TermsAndConditions();
         tnc.terms =
-                "<p>歡迎你加入babybox成為會員，babybox會員服務(以下稱會員服務)是由babybox Ltd(以下稱本公司)所建置提供，所有申請使用會員服務之使用者(以 下稱會員)，都應該詳細閱讀下列使用條款，這些使用條款訂立的目的，是為了保護會員服務的提供者以及所有使用者的利益，並構成使用者與會員服務提供者之間 的契約，使用者完成註冊手續、或開始使babybox所提供之會員服務時，即視為已知悉、並完全同意本使用條款的所有約定。</p>" +
+                "<p>歡迎你加入BabyBox成為會員，BabyBox會員服務(以下稱會員服務)是由BabyBox Ltd(以下稱本公司)所建置提供，所有申請使用會員服務之使用者(以 下稱會員)，都應該詳細閱讀下列使用條款，這些使用條款訂立的目的，是為了保護會員服務的提供者以及所有使用者的利益，並構成使用者與會員服務提供者之間 的契約，使用者完成註冊手續、或開始使BabyBox所提供之會員服務時，即視為已知悉、並完全同意本使用條款的所有約定。</p>" +
                 "<p>會員服務</p>" +
                 "<p>一旦本公司完成並確認你的申請後，本公司將提供予你的免費會員服務內容有：會員專區、會員電子報，及其他未來可能新增之一般會員服務。會員服務之期間，是指使用者填妥申請表格並完成註冊程序後，本公司於完成相關系統設定、使會員服務達於可供使用之日。因會員服務所提供之所有相關網域名稱、 網路位址、功能以及其他一切因會員身分得享有之權益，均仍屬本公司或其他合法權利人所有，會員除僅得於服務期間內依本使用條款之約定為使用外，均不得以任 何方式將其轉讓、移轉、出租或出借予其他任何第三人。 會員服務僅依當時所提供之功能及狀態提供服務；本公司並保留新增、修改或取消會員服務內相關系統或功能之全部或一部之權利。帳號、密碼與安全性在使用會員 服務以前，必須經過完整的註冊手續，在註冊過程中你必須填入完整、而且正確的資料。在註冊過程中你可以自行選擇使用者名稱和密碼，但在使用會員服務的過程 中，你必須為經由這個使用者名稱和密碼所進行的所有行為負責。 對於你所取得的使用者名稱和密碼，你必須負妥善保管和保密的義務，如果你發現或懷疑這個使用者名稱和密碼被其他人冒用或不當使用，你必須立即通知 info&#64;baby-box.com.hk，讓本公司儘快採取適當之因應措施，但上述因應措施不得因此解釋為本公司明示或默示對你負有任何形式之賠償或補償之責任或義務。</p>" +
                 "<p>使用者的行為</p>" +
@@ -87,9 +91,9 @@ public class DataBootstrap {
                 "<p>1.本約定條款解釋、補充及適用均以香港特別行政區為準據法。</p>" +
                 "<p>2.因本約定條款所發生之訴訟，以香港特別行政區法院為第一審管轄法院。</p>";
         tnc.privacy =
-                "<p>babybox網站為閣下提供最佳服務及尊重閣下的個人私隱。因此，本公司在搜集、維護及使用個人資料時，保證遵守香港法例第 486 章《個人資料（私隱）條例》的要求。</p>" + 
+                "<p>BabyBox網站為閣下提供最佳服務及尊重閣下的個人私隱。因此，本公司在搜集、維護及使用個人資料時，保證遵守香港法例第 486 章《個人資料（私隱）條例》的要求。</p>" + 
                 "<p>要求資料</p>" + 
-                "<p>babybox網站有數處地方可能要求閣下提供個人資料，這些資料可能包括：</p>" + 
+                "<p>BabyBox網站有數處地方可能要求閣下提供個人資料，這些資料可能包括：</p>" + 
                 "<p>- 登入名稱及密碼</p>" + 
                 "<p>- 姓名</p>" + 
                 "<p>- 住址地區</p>" + 
@@ -98,10 +102,10 @@ public class DataBootstrap {
                 "<p>- 電郵地址</p>" + 
                 "<p>- 小孩子性別</p>" + 
                 "<p>- 小孩子出生日期</p>" + 
-                "<p>當登記成為會員或使用babybox網站時，本公司可能要求閣下提供以上資料。閣下同意所提供給本公司的資料為正確、真實、有效和完整。</p>" + 
+                "<p>當登記成為會員或使用BabyBox網站時，本公司可能要求閣下提供以上資料。閣下同意所提供給本公司的資料為正確、真實、有效和完整。</p>" + 
                 "<p>資料使用</p>" + 
                 "<p>若資料為不正確，不真實，無效或不完整，本公司有權利取消閣下用戶之註冊或使用網站之權利及服務。閣下知道及同意，你對所提供之資料的內容和準確性須負上所有責任。</p>" + 
-                "<p>本公司偶爾會使用閣下所提供的資料通知閣下babybox網站的轉變、新設的服務，及與閣下息息相關的優惠。如不想取得這些資料，可於電郵 info&#64;baby-box.com.hk 通知我們。 閣下知道、同意及授權所提供的資料可能供給、披露及供存取予以下人士或公司及作出以下用途：</p>" + 
+                "<p>本公司偶爾會使用閣下所提供的資料通知閣下BabyBox網站的轉變、新設的服務，及與閣下息息相關的優惠。如不想取得這些資料，可於電郵 info&#64;baby-box.com.hk 通知我們。 閣下知道、同意及授權所提供的資料可能供給、披露及供存取予以下人士或公司及作出以下用途：</p>" + 
                 "<p>- 本公司及 / 或本公司集團內的任何人士或公司；</p>" + 
                 "<p>- 須向本公司履行保密責任之任何人士或公司；</p>" + 
                 "<p>- 為上述目的或與上述目的有關而聘用之任何合約承包商、代理商、公司，或向本公司提供行政、電訊、電腦、付賬、專業服務或其他服務的公司；</p>" + 
@@ -117,15 +121,15 @@ public class DataBootstrap {
                 "<p>保護資料</p>" + 
                 "<p>為防止不授權登入、保持數據的安全性及確保資料得到正確的運用，本公司不論在實體、電子化及管理上皆制定了合適程序去保障及保護本公司所收集的資料的安全性。</p>" + 
                 "<p>連接到其他網站</p>" + 
-                "<p>閣下可從babybox網站連接到其他網站，但請注意該等網站的私隱政策很可能與本公司的不同。本公司建議閣下在該等網站披露其個人資料前，先詳細閱讀其私隱政策。[在任何情況下，該等網站都不會與本公司分享用戶的個人資料。]</p>" + 
+                "<p>閣下可從BabyBox網站連接到其他網站，但請注意該等網站的私隱政策很可能與本公司的不同。本公司建議閣下在該等網站披露其個人資料前，先詳細閱讀其私隱政策。[在任何情況下，該等網站都不會與本公司分享用戶的個人資料。]</p>" + 
                 "<p>聊天室、交換電郵、告示板及網誌</p>" + 
                 "<p>請留意若閣下自願在聊天室、交換電郵、告示板及網誌上公開披露其個人資料，該等資料很可能被收集及被他人使用及可能導致閣下因公開資料而收到其他不必要的訊息，本公司毋須就以上情況負責。</p>" + 
                 "<p>登入/修改/更新個人資料</p>" + 
-                "<p>閣下可以隨時在babybox裏修改及更新你的個人資料。會員戶口是受到密碼保護的，因此只有該會員能登入及檢視其會員戶口資料。</p>" +
+                "<p>閣下可以隨時在BabyBox裏修改及更新你的個人資料。會員戶口是受到密碼保護的，因此只有該會員能登入及檢視其會員戶口資料。</p>" +
                 "<p>通訊協定地址</p>" + 
-                "<p>為方便管理伺服器及系統，本公司會收集用戶的通訊協定地址。請注意在babybox網站上的連接網站很可能會收集閣下的個人資料，本私隱政策並不包括該等網站對其資料的處理及政策。</p>" + 
+                "<p>為方便管理伺服器及系統，本公司會收集用戶的通訊協定地址。請注意在BabyBox網站上的連接網站很可能會收集閣下的個人資料，本私隱政策並不包括該等網站對其資料的處理及政策。</p>" + 
                 "<p>私隱政策改動</p>" + 
-                "<p>若本私穩政策有任何改動，本公司會在這裏刊登更新的政策及有關條文，以便閣下能查閱有關政策。閣下繼續使用babybox網站代表你接受所有已更改的條款。除非有更新聲明，本公司不會在閣下沒有機會拒絕或避免的情況下，把你的個人資料運用在新的用途上。</p>" + 
+                "<p>若本私穩政策有任何改動，本公司會在這裏刊登更新的政策及有關條文，以便閣下能查閱有關政策。閣下繼續使用BabyBox網站代表你接受所有已更改的條款。除非有更新聲明，本公司不會在閣下沒有機會拒絕或避免的情況下，把你的個人資料運用在新的用途上。</p>" + 
                 "<p>立法解除條款</p>" + 
                 "<p>在法律要求下，本公司或會披露閣下個人資料而該等行為是必需的。本公司確信資料公開能保障及維護本公司、用戶及他人的權利、財產及安全，並相信該等資料會依據正確法律程序處理。</p>" + 
                 "<p>聯絡我們</p>" +
@@ -273,7 +277,7 @@ public class DataBootstrap {
         // signup info for super admin
         MySignup signup = new MySignup();
         signup.email = "mybabybox.app@gmail.com";
-        signup.fname = "babybox";
+        signup.fname = "BabyBox";
         signup.lname = "HK";
         signup.password = "myBabyB0x";
         signup.repeatPassword = "myBabyB0x";
@@ -407,5 +411,88 @@ public class DataBootstrap {
             logger.underlyingLogger().error(ExceptionUtils.getStackTrace(e));
         }
         return category;
+    }
+    
+    private static void bootstrapGameBadge() {
+        Query q = JPA.em().createQuery("Select count(b) from GameBadge b");
+        Long count = (Long)q.getSingleResult();
+        if (count > 0) {
+            return;
+        }
+        
+        logger.underlyingLogger().info("bootstrapGameBadge()");
+        
+        GameBadge gameBadge = new GameBadge(
+                BadgeType.PROFILE_PHOTO, 
+                "上載個人頭像照片", 
+                "上載個人頭像照片", 
+                "/assets/app/images/game/badges/profile_photo.png",
+                "/assets/app/images/game/badges/profile_photo_off.png");
+        gameBadge.save();
+        gameBadge = new GameBadge(
+                BadgeType.PROFILE_INFO, 
+                "完成填寫個人資料", 
+                "完成填寫個人資料", 
+                "/assets/app/images/game/badges/profile_info.png",
+                "/assets/app/images/game/badges/profile_info_off.png");
+        gameBadge.save();
+        gameBadge = new GameBadge(
+                BadgeType.LIKE_1, 
+                "你已喜歡1個商品", 
+                "你已喜歡1個商品", 
+                "/assets/app/images/game/badges/like_1.png",
+                "/assets/app/images/game/badges/like_1_off.png");
+        gameBadge.save();
+        gameBadge = new GameBadge(
+                BadgeType.LIKE_10, 
+                "你已喜歡10個商品", 
+                "你已喜歡10個商品", 
+                "/assets/app/images/game/badges/like_10.png",
+                "/assets/app/images/game/badges/like_10_off.png");
+        gameBadge.save();
+        gameBadge = new GameBadge(
+                BadgeType.FOLLOW_1, 
+                "你已關注1個賣家", 
+                "你已關注1個賣家", 
+                "/assets/app/images/game/badges/follow_1.png",
+                "/assets/app/images/game/badges/follow_1_off.png");
+        gameBadge.save();
+        gameBadge = new GameBadge(
+                BadgeType.FOLLOW_10, 
+                "你已關注10個賣家", 
+                "你已關注10個賣家", 
+                "/assets/app/images/game/badges/follow_10.png",
+                "/assets/app/images/game/badges/follow_10_off.png");
+        gameBadge.save();
+        gameBadge = new GameBadge(
+                BadgeType.POST_1, 
+                "你已刊登1個商品", 
+                "你已刊登1個商品", 
+                "/assets/app/images/game/badges/post_1.png",
+                "/assets/app/images/game/badges/post_1_off.png");
+        gameBadge.save();
+        gameBadge = new GameBadge(
+                BadgeType.POST_10, 
+                "你已刊登10個商品", 
+                "你已刊登10個商品", 
+                "/assets/app/images/game/badges/post_10.png",
+                "/assets/app/images/game/badges/post_10_off.png");
+        gameBadge.save();
+        
+        for (User user : User.getEligibleUsersForFeed()) {
+            if (user.numLikes >= 1) {
+                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.LIKE_1);
+            } else if (user.numLikes >= 10) {
+                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.LIKE_10);
+            } else if (user.numFollowings >= 1) {
+                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.FOLLOW_1);
+            } else if (user.numFollowings >= 10) {
+                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.FOLLOW_10);
+            } else if (user.numProducts >= 1) {
+                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.POST_1);
+            } else if (user.numProducts >= 10) {
+                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.POST_10);
+            }
+        }
     }
 }

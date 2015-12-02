@@ -33,7 +33,7 @@ public class PostEventListener extends EventListener {
                     new TransactionalRunnableTask() {
                         @Override
                         public void execute() {
-                            if (user.numProducts == 1) {
+                            if (user.numProducts >= 1) {
                                 // activity 
                                 Activity activity = new Activity(
                                         ActivityType.FIRST_POST, 

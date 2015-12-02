@@ -2,6 +2,9 @@ package babybox.events.listener;
 
 import models.Activity;
 import models.Activity.ActivityType;
+import models.GameBadge;
+import models.GameBadge.BadgeType;
+import models.GameBadgeHistory;
 import models.Post;
 import models.User;
 import babybox.events.map.LikeEvent;
@@ -30,6 +33,13 @@ public class LikeEventListener extends EventListener {
                     new TransactionalRunnableTask() {
                         @Override
                         public void execute() {
+                            // game badge
+                            if (user.numLikes == 1) {
+                                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.LIKE_1);
+                            } else if (user.numLikes == 10) {
+                                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.LIKE_10);
+                            }
+                            
                             // activity
                             if (user.id != post.owner.id) {
                                 Activity activity = new Activity(

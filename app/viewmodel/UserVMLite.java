@@ -10,7 +10,6 @@ public class UserVMLite {
     @JsonProperty("numFollowings") public Long numFollowings = 0L;
     @JsonProperty("numFollowers") public Long numFollowers = 0L;
     @JsonProperty("numProducts") public Long numProducts = 0L;
-    @JsonProperty("numStories") public Long numStories = 0L;
     @JsonProperty("numLikes") public Long numLikes = 0L;
     @JsonProperty("numCollections") public Long numCollections = 0L;
     @JsonProperty("isFollowing") public boolean isFollowing = false;
@@ -34,7 +33,6 @@ public class UserVMLite {
         
         this.displayName = user.displayName;
         this.numProducts = user.numProducts;
-        this.numStories = user.numStories;
         this.numLikes = user.numLikes;
         this.numFollowers = user.numFollowers;
         this.numFollowings = user.numFollowings;
@@ -91,14 +89,6 @@ public class UserVMLite {
 
 	public void setNumProducts(Long numProducts) {
 		this.numProducts = numProducts;
-	}
-
-	public Long getNumStories() {
-		return numStories;
-	}
-
-	public void setNumStories(Long numStories) {
-		this.numStories = numStories;
 	}
 
 	public void setFollowing(boolean isFollowing) {
