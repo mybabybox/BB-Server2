@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import models.Category;
 
-
 public class CategoryVM {
 	@JsonProperty("id") public Long id;
 	@JsonProperty("icon") public String icon;

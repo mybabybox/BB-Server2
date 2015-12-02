@@ -2,7 +2,7 @@ package babybox.events.listener;
 
 import models.Activity;
 import models.Category;
-import models.GameBadgeHistory;
+import models.GameBadgeAwarded;
 import models.Post;
 import models.User;
 import models.Activity.ActivityType;
@@ -37,9 +37,9 @@ public class PostEventListener extends EventListener {
                         public void execute() {
                             // game badge
                             if (user.numProducts == 1) {
-                                GameBadgeHistory.recordGameBadge(user.id, BadgeType.POST_1);
+                                GameBadgeAwarded.recordGameBadge(user.id, BadgeType.POST_1);
                             } else if (user.numProducts == 10) {
-                                GameBadgeHistory.recordGameBadge(user.id, BadgeType.POST_10);
+                                GameBadgeAwarded.recordGameBadge(user.id, BadgeType.POST_10);
                             }
                             
                             if (user.numProducts == 1) {

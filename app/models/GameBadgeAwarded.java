@@ -1,6 +1,7 @@
 package models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -12,7 +13,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import common.utils.NanoSecondStopWatch;
-
 import domain.AuditListener;
 import domain.Creatable;
 import domain.Updatable;
@@ -25,8 +25,8 @@ import play.db.jpa.Transactional;
  */
 @Entity
 @EntityListeners(AuditListener.class)
-public class GameBadgeHistory extends domain.Entity implements Serializable, Creatable, Updatable {
-    private static final play.api.Logger logger = play.api.Logger.apply(GameBadgeHistory.class);
+public class GameBadgeAwarded extends domain.Entity implements Serializable, Creatable, Updatable {
+    private static final play.api.Logger logger = play.api.Logger.apply(GameBadgeAwarded.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,10 +41,10 @@ public class GameBadgeHistory extends domain.Entity implements Serializable, Cre
     @Required
     public Boolean deleted = false;
     
-	public GameBadgeHistory() {
+	public GameBadgeAwarded() {
 	}
 	
-	public GameBadgeHistory(Long userId, Long gameBadgeId) {
+	public GameBadgeAwarded(Long userId, Long gameBadgeId) {
 	    this.userId = userId;
 	    this.gameBadgeId = gameBadgeId;
     }
@@ -53,20 +53,20 @@ public class GameBadgeHistory extends domain.Entity implements Serializable, Cre
 	public static void recordGameBadge(Long userId, GameBadge.BadgeType badgeType) {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    
-	    GameBadge gameBadge = GameBadge.findByBadgeType(badgeType);
-	    if (gameBadge == null) {
+	    GameBadge badge = GameBadge.findByBadgeType(badgeType);
+	    if (badge == null) {
 	        logger.underlyingLogger().error("[u="+userId+"] recordGameBadge() badgeType="+badgeType.name()+" does not exist !!");
 	        return;
 	    }
 	    
-	    GameBadgeHistory history = getGameBadgeHistory(userId, gameBadge.id);
-	    if (history != null) {
+	    boolean awarded = isGameBadgeAwarded(userId, badge.id);
+	    if (awarded) {
 	        logger.underlyingLogger().warn("[u="+userId+"] recordGameBadge() badgeType="+badgeType.name()+" awarded already, skipped..");
 	        return;
 	    }
 	    
-	    history = new GameBadgeHistory(userId, gameBadge.id);
-        history.save();
+	    GameBadgeAwarded badgeAwarded = new GameBadgeAwarded(userId, badge.id);
+	    badgeAwarded.save();
         
         sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {
@@ -74,32 +74,33 @@ public class GameBadgeHistory extends domain.Entity implements Serializable, Cre
         }
 	}
 	
-	public static List<GameBadgeHistory> getGameBadgesHistory(Long userId) {
+	public static List<GameBadgeAwarded> getGameBadgesAwarded(Long userId) {
 	    try {
-            Query q = JPA.em().createQuery("SELECT h FROM GameBadgeHistory h where userId = ?1 and deleted = false");
+            Query q = JPA.em().createQuery("SELECT b FROM GameBadgeAwarded b where userId = ?1 and deleted = false");
             q.setParameter(1, userId);
-            return (List<GameBadgeHistory>) q.getResultList();
+            return (List<GameBadgeAwarded>) q.getResultList();
         } catch (NoResultException nre) {
-            return null;
+            return new ArrayList<>();
         }
 	}
 	
-	public static GameBadgeHistory getGameBadgeHistory(Long userId, Long gameBadgeId) {
+	public static boolean isGameBadgeAwarded(Long userId, Long gameBadgeId) {
         try {
-            Query q = JPA.em().createQuery("SELECT h FROM GameBadgeHistory h where userId = ?1 and gameBadgeId = ?2 and deleted = false");
+            Query q = JPA.em().createQuery("SELECT count(b) FROM GameBadgeAwarded b where userId = ?1 and gameBadgeId = ?2 and deleted = false");
             q.setParameter(1, userId);
             q.setParameter(2, gameBadgeId);
-            return (GameBadgeHistory) q.getSingleResult();
+            Long count = (Long)q.getSingleResult();
+            return count > 0;
         } catch (NoResultException nre) {
-            return null;
+            return false;
         }
     }
 	
-	public static GameBadgeHistory findById(Long id) {
+	public static GameBadgeAwarded findById(Long id) {
         try {
-            Query q = JPA.em().createQuery("SELECT h FROM GameBadgeHistory h where id = ?1 and deleted = false");
+            Query q = JPA.em().createQuery("SELECT b FROM GameBadgeAwarded b where id = ?1 and deleted = false");
             q.setParameter(1, id);
-            return (GameBadgeHistory) q.getSingleResult();
+            return (GameBadgeAwarded) q.getSingleResult();
         } catch (NoResultException nre) {
             return null;
         }

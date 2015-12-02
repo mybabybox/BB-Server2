@@ -3,7 +3,7 @@ package babybox.events.listener;
 import java.util.Date;
 
 import models.Activity;
-import models.GameBadgeHistory;
+import models.GameBadgeAwarded;
 import models.User;
 import models.Activity.ActivityType;
 import models.GameBadge.BadgeType;
@@ -36,9 +36,9 @@ public class FollowEventListener extends EventListener {
                             public void execute() {
                                 // game badge
                                 if (user.numFollowings == 1) {
-                                    GameBadgeHistory.recordGameBadge(user.id, BadgeType.FOLLOW_1);
+                                    GameBadgeAwarded.recordGameBadge(user.id, BadgeType.FOLLOW_1);
                                 } else if (user.numFollowings == 10) {
-                                    GameBadgeHistory.recordGameBadge(user.id, BadgeType.FOLLOW_10);
+                                    GameBadgeAwarded.recordGameBadge(user.id, BadgeType.FOLLOW_10);
                                 }
                                 
                                 // activity

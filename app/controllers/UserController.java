@@ -10,8 +10,10 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -21,7 +23,8 @@ import models.Conversation;
 import models.ConversationOrder;
 import models.Emoticon;
 import models.FollowSocialRelation;
-import models.GameBadgeHistory;
+import models.GameBadge;
+import models.GameBadgeAwarded;
 import models.GcmToken;
 import models.Location;
 import models.Message;
@@ -48,6 +51,7 @@ import viewmodel.CollectionVM;
 import viewmodel.ConversationOrderVM;
 import viewmodel.ConversationVM;
 import viewmodel.EmoticonVM;
+import viewmodel.GameBadgeVM;
 import viewmodel.MessageVM;
 import viewmodel.NotificationCounterVM;
 import viewmodel.PostVMLite;
@@ -139,7 +143,7 @@ public class UserController extends Controller {
 			localUser.setPhotoProfile(fileTo);
 			
 			// game badge
-	        GameBadgeHistory.recordGameBadge(localUser.id, BadgeType.PROFILE_PHOTO);
+	        GameBadgeAwarded.recordGameBadge(localUser.id, BadgeType.PROFILE_PHOTO);
 		} catch (IOException e) {
 		    logger.underlyingLogger().error("Error in uploadProfilePhoto", e);
 			return badRequest();
@@ -1068,12 +1072,45 @@ public class UserController extends Controller {
         }
         
         List<User> users = User.getUsers(offset);
-        List<UserVMLite> vms = new ArrayList<UserVMLite>();
+        List<UserVMLite> vms = new ArrayList<>();
         for (User user : users) {
             if (user != null) {
                 UserVMLite vm = new UserVMLite(user, localUser);
                 vms.add(vm);
             }
+        }
+        return ok(Json.toJson(vms));
+    }
+    
+    public static Result getGameBadges() {
+        return getGameBadges(false);
+    }
+    
+    public static Result getGameBadgesAwarded() {
+        return getGameBadges(true);        
+    }
+    
+    private static Result getGameBadges(Boolean awardedOnly) {
+        final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+
+        Map<Long, GameBadgeAwarded> map = new HashMap<>();
+        for (GameBadgeAwarded badgeAwarded : GameBadgeAwarded.getGameBadgesAwarded(localUser.id)) {
+            map.put(badgeAwarded.gameBadgeId, badgeAwarded);
+        }
+        
+        List<GameBadgeVM> vms = new ArrayList<>();
+        GameBadgeVM vm = null;
+        for (GameBadge gameBadge : GameBadge.getAllGameBadges()) {
+            if (map.containsKey(gameBadge.id)) {
+                vm = new GameBadgeVM(gameBadge, map.get(gameBadge.id));
+            } else if (!awardedOnly) {
+                vm = new GameBadgeVM(gameBadge);
+            }
+            vms.add(vm);
         }
         return ok(Json.toJson(vms));
     }

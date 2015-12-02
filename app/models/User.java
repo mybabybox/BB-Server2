@@ -734,10 +734,7 @@ public class User extends SocialObject implements Subject, Followable {
 	public static boolean isDisplayNameExists(String displayName) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
 
-		Query q = JPA.em().createQuery(
-				"SELECT count(u) FROM User u where " +  
-						"system = false and deleted = false and " + 
-				"displayName = ?1");
+		Query q = JPA.em().createQuery("SELECT count(u) FROM User u where displayName = ?1 and system = false and deleted = false");
 		q.setParameter(1, displayName);
 		Long count = (Long)q.getSingleResult();
 		if (count > 0) {

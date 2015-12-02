@@ -143,6 +143,14 @@ GET     /reset-activities-count                     controllers.UserController.r
 GET     /reset-conversations-count                  controllers.UserController.resetConversationsCount
 GET		/get-activities/:offset				    	controllers.UserController.getActivities(offset:Long)
 
+# Category
+GET     /categories                                 controllers.Application.getCategories()
+GET     /category/:id                               controllers.Application.getCategory(id:Long)
+
+# Game
+GET     /game-badges                                controllers.UserController.getGameBadges()
+GET     /game-badges-awarded                        controllers.UserController.getGameBadgesAwarded()
+
 # image upload
 POST    /image/upload-profile-photo                 controllers.UserController.uploadProfilePhoto
 POST    /image/upload-cover-photo                   controllers.UserController.uploadCoverPhoto
@@ -165,10 +173,6 @@ GET     /image/getEmoticons                         controllers.UserController.g
 
 # misc
 GET     /get-all-districts                          controllers.Application.getAllDistricts
-
-# category
-GET     /categories                                 controllers.Application.getCategories()
-GET     /category/:id                               controllers.Application.getCategory(id:Long)
 
 # web
 GET     /add/product                                controllers.Application.addProduct

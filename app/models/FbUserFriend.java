@@ -42,7 +42,7 @@ public class FbUserFriend {
 		try {
 		    return (List<FbUserFriend>)q.getResultList();
 		} catch(NoResultException e) {
-			return new ArrayList<FbUserFriend>();
+			return new ArrayList<>();
 		}
 	}
 

@@ -293,7 +293,7 @@ public class ProductController extends Controller{
 	
 	@Transactional
 	public Result getProductInfo(Long id) {
-		PostVM post = getProductInfoVM(id);
+	    PostVM post = getProductInfoVM(id);
 		if (post == null) {
 			return notFound();
 		}

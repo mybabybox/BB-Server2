@@ -8,7 +8,7 @@ import controllers.Application;
 import models.Category;
 import models.Emoticon;
 import models.GameBadge;
-import models.GameBadgeHistory;
+import models.GameBadgeAwarded;
 import models.Icon;
 import models.SystemInfo;
 import models.GameBadge.BadgeType;
@@ -481,25 +481,25 @@ public class DataBootstrap {
         
         for (User user : User.getEligibleUsersForFeed()) {
             if (user.albumPhotoProfile != null) {
-                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.PROFILE_PHOTO);
+                GameBadgeAwarded.recordGameBadge(user.id, GameBadge.BadgeType.PROFILE_PHOTO);
             }
             if (user.numLikes >= 1) {
-                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.LIKE_1);
+                GameBadgeAwarded.recordGameBadge(user.id, GameBadge.BadgeType.LIKE_1);
             }
             if (user.numLikes >= 10) {
-                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.LIKE_10);
+                GameBadgeAwarded.recordGameBadge(user.id, GameBadge.BadgeType.LIKE_10);
             }
             if (user.numFollowings >= 1) {
-                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.FOLLOW_1);
+                GameBadgeAwarded.recordGameBadge(user.id, GameBadge.BadgeType.FOLLOW_1);
             }
             if (user.numFollowings >= 10) {
-                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.FOLLOW_10);
+                GameBadgeAwarded.recordGameBadge(user.id, GameBadge.BadgeType.FOLLOW_10);
             }
             if (user.numProducts >= 1) {
-                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.POST_1);
+                GameBadgeAwarded.recordGameBadge(user.id, GameBadge.BadgeType.POST_1);
             }
             if (user.numProducts >= 10) {
-                GameBadgeHistory.recordGameBadge(user.id, GameBadge.BadgeType.POST_10);
+                GameBadgeAwarded.recordGameBadge(user.id, GameBadge.BadgeType.POST_10);
             }
         }
     }
