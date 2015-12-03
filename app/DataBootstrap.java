@@ -424,57 +424,57 @@ public class DataBootstrap {
         
         GameBadge gameBadge = new GameBadge(
                 BadgeType.PROFILE_PHOTO, 
-                "上載個人頭像照片", 
-                "上載個人頭像照片", 
+                "上載個人頭像", 
+                "上載個人頭像", 
                 "/assets/app/images/game/badges/profile_photo.png",
                 "/assets/app/images/game/badges/profile_photo_off.png");
         gameBadge.save();
         gameBadge = new GameBadge(
                 BadgeType.PROFILE_INFO, 
-                "完成填寫個人資料", 
-                "完成填寫個人資料", 
+                "完整個人資料", 
+                "完整個人資料", 
                 "/assets/app/images/game/badges/profile_info.png",
                 "/assets/app/images/game/badges/profile_info_off.png");
         gameBadge.save();
         gameBadge = new GameBadge(
                 BadgeType.LIKE_1, 
-                "你已喜歡1個商品", 
-                "你已喜歡1個商品", 
+                "喜歡商品x1", 
+                "喜歡商品x1", 
                 "/assets/app/images/game/badges/like_1.png",
                 "/assets/app/images/game/badges/like_1_off.png");
         gameBadge.save();
         gameBadge = new GameBadge(
                 BadgeType.LIKE_10, 
-                "你已喜歡10個商品", 
-                "你已喜歡10個商品", 
+                "喜歡商品x10", 
+                "喜歡商品x10", 
                 "/assets/app/images/game/badges/like_10.png",
                 "/assets/app/images/game/badges/like_10_off.png");
         gameBadge.save();
         gameBadge = new GameBadge(
                 BadgeType.FOLLOW_1, 
-                "你已關注1個賣家", 
-                "你已關注1個賣家", 
+                "關注賣家x1", 
+                "關注賣家x1", 
                 "/assets/app/images/game/badges/follow_1.png",
                 "/assets/app/images/game/badges/follow_1_off.png");
         gameBadge.save();
         gameBadge = new GameBadge(
                 BadgeType.FOLLOW_10, 
-                "你已關注10個賣家", 
-                "你已關注10個賣家", 
+                "關注賣家x10", 
+                "關注賣家x10", 
                 "/assets/app/images/game/badges/follow_10.png",
                 "/assets/app/images/game/badges/follow_10_off.png");
         gameBadge.save();
         gameBadge = new GameBadge(
                 BadgeType.POST_1, 
-                "你已刊登1個商品", 
-                "你已刊登1個商品", 
+                "刊登商品x1", 
+                "刊登商品x1", 
                 "/assets/app/images/game/badges/post_1.png",
                 "/assets/app/images/game/badges/post_1_off.png");
         gameBadge.save();
         gameBadge = new GameBadge(
                 BadgeType.POST_10, 
-                "你已刊登10個商品", 
-                "你已刊登10個商品", 
+                "刊登商品x10", 
+                "刊登商品x10", 
                 "/assets/app/images/game/badges/post_10.png",
                 "/assets/app/images/game/badges/post_10_off.png");
         gameBadge.save();

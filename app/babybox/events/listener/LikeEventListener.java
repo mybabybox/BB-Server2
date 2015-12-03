@@ -24,37 +24,39 @@ public class LikeEventListener extends EventListener {
     		final Post post = (Post) map.get("post");
     		final User user = (User) map.get("user");
     		
-    		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
-            CalcServer.instance().addToLikeQueue(post, user);
-            
-            final Long postImageId = post.getImage();
-            executeAsync(
-                    new TransactionalRunnableTask() {
-                        @Override
-                        public void execute() {
-                            // game badge
-                            if (user.numLikes == 1) {
-                                GameBadgeAwarded.recordGameBadge(user.id, BadgeType.LIKE_1);
-                            } else if (user.numLikes == 10) {
-                                GameBadgeAwarded.recordGameBadge(user.id, BadgeType.LIKE_10);
+    		if (post.onLikedBy(user)) {
+        		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
+                CalcServer.instance().addToLikeQueue(post, user);
+                
+                final Long postImageId = post.getImage();
+                executeAsync(
+                        new TransactionalRunnableTask() {
+                            @Override
+                            public void execute() {
+                                // game badge
+                                if (user.numLikes == 1) {
+                                    GameBadgeAwarded.recordGameBadge(user.id, BadgeType.LIKE_1);
+                                } else if (user.numLikes == 10) {
+                                    GameBadgeAwarded.recordGameBadge(user.id, BadgeType.LIKE_10);
+                                }
+                                
+                                // activity
+                                if (user.id != post.owner.id) {
+                                    Activity activity = new Activity(
+                                            ActivityType.LIKED, 
+                                            post.owner.id,
+                                            true, 
+                                            user.id,
+                                            user.id,
+                                            user.displayName,
+                                            post.id,
+                                            postImageId,
+                                            StringUtil.shortMessage(post.title));
+                                    activity.ensureUniqueAndCreate();
+                                }                            
                             }
-                            
-                            // activity
-                            if (user.id != post.owner.id) {
-                                Activity activity = new Activity(
-                                        ActivityType.LIKED, 
-                                        post.owner.id,
-                                        true, 
-                                        user.id,
-                                        user.id,
-                                        user.displayName,
-                                        post.id,
-                                        postImageId,
-                                        StringUtil.shortMessage(post.title));
-                                activity.ensureUniqueAndCreate();
-                            }                            
-                        }
-                    });
+                        });
+    		}
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
         }
@@ -66,8 +68,10 @@ public class LikeEventListener extends EventListener {
     		final Post post = (Post) map.get("post");
     		final User user = (User) map.get("user");
     		
-    		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
-            CalcServer.instance().removeFromLikeQueue(post, user);
+    		if (post.onUnlikedBy(user)) {
+        		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
+                CalcServer.instance().removeFromLikeQueue(post, user);
+    		}
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
         }

@@ -75,8 +75,6 @@ public abstract class SocialObject extends domain.Entity implements Serializable
 	protected final boolean recordLike(User user) {
 		LikeSocialRelation action = new LikeSocialRelation(user, this);
 		return action.ensureUniqueAndCreate();
-		// Game Stats
-		//GameAccountStatistics.recordLike(user.id);
 	}
 	
 	protected final boolean recordFollow(User user) {
@@ -88,16 +86,12 @@ public abstract class SocialObject extends domain.Entity implements Serializable
 		PostSocialRelation action = new PostSocialRelation(user, post);
 		action.actionType = PostSocialRelation.ActionType.PRODUCT;
 		action.save();
-		// Game Stats
-		//GameAccountStatistics.recordPostProduct(user.id);
 	}
 	
 	protected final void recordPostStory(SocialObject user, SocialObject post) {
 		PostSocialRelation action = new PostSocialRelation(user, post);
 		action.actionType = PostSocialRelation.ActionType.STORY;
 		action.save();
-		// Game Stats
-		//GameAccountStatistics.recordPostStory(user.id);
 	}
 
 	protected void recordCommentProduct(SocialObject user, Comment comment) {

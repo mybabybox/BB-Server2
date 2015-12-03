@@ -72,7 +72,6 @@ public class Category extends SocialObject implements Likeable, Postable, Compar
         }
     }
 
-	@Transactional
 	public static Category findById(Long id) {
 		Category category = CategoryCache.getCategory(id);
 		if (category != null) {

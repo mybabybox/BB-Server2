@@ -148,8 +148,8 @@ GET     /categories                                 controllers.Application.getC
 GET     /category/:id                               controllers.Application.getCategory(id:Long)
 
 # Game
-GET     /game-badges                                controllers.UserController.getGameBadges()
-GET     /game-badges-awarded                        controllers.UserController.getGameBadgesAwarded()
+GET     /game-badges/:id                            controllers.UserController.getGameBadges(id:Long)
+GET     /game-badges-awarded/:id                    controllers.UserController.getGameBadgesAwarded(id:Long)
 
 # image upload
 POST    /image/upload-profile-photo                 controllers.UserController.uploadProfilePhoto

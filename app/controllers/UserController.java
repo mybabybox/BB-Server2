@@ -10,10 +10,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -1082,23 +1080,21 @@ public class UserController extends Controller {
         return ok(Json.toJson(vms));
     }
     
-    public static Result getGameBadges() {
-        return getGameBadges(false);
+    @Transactional
+    public static Result getGameBadges(Long userId) {
+        return getGameBadges(userId, false);
     }
     
-    public static Result getGameBadgesAwarded() {
-        return getGameBadges(true);        
+    @Transactional
+    public static Result getGameBadgesAwarded(Long userId) {
+        return getGameBadges(userId, true);        
     }
     
-    private static Result getGameBadges(Boolean awardedOnly) {
-        final User localUser = Application.getLocalUser(session());
-        if (!localUser.isLoggedIn()) {
-            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-            return notFound();
-        }
-
+    private static Result getGameBadges(Long userId, Boolean awardedOnly) {
+        NanoSecondStopWatch sw = new NanoSecondStopWatch();
+        
         Map<Long, GameBadgeAwarded> map = new HashMap<>();
-        for (GameBadgeAwarded badgeAwarded : GameBadgeAwarded.getGameBadgesAwarded(localUser.id)) {
+        for (GameBadgeAwarded badgeAwarded : GameBadgeAwarded.getGameBadgesAwarded(userId)) {
             map.put(badgeAwarded.gameBadgeId, badgeAwarded);
         }
         
@@ -1111,6 +1107,11 @@ public class UserController extends Controller {
                 vm = new GameBadgeVM(gameBadge);
             }
             vms.add(vm);
+        }
+        
+        sw.stop();
+        if (logger.underlyingLogger().isDebugEnabled()) {
+            logger.underlyingLogger().debug("[u="+userId+"][awardedOnly="+awardedOnly+"] getGameBadges() returns "+vms.size()+" badges. Took "+sw.getElapsedMS()+"ms");
         }
         return ok(Json.toJson(vms));
     }

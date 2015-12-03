@@ -78,7 +78,7 @@ public class GameBadge extends domain.Entity  implements Serializable, Creatable
     }
 
 	public static List<GameBadge> loadGameBadges() {
-        Query q = JPA.em().createQuery("SELECT b FROM GameBadge b where deleted = false");
+        Query q = JPA.em().createQuery("SELECT b FROM GameBadge b where deleted = false order by seq");
         return (List<GameBadge>)q.getResultList();
     }
 	
