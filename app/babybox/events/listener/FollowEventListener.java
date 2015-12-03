@@ -35,10 +35,10 @@ public class FollowEventListener extends EventListener {
                             @Override
                             public void execute() {
                                 // game badge
-                                if (user.numFollowings == 1) {
-                                    GameBadgeAwarded.recordGameBadge(user.id, BadgeType.FOLLOW_1);
-                                } else if (user.numFollowings == 10) {
-                                    GameBadgeAwarded.recordGameBadge(user.id, BadgeType.FOLLOW_10);
+                                if (localUser.numFollowings == 1) {
+                                    GameBadgeAwarded.recordGameBadge(localUser.id, BadgeType.FOLLOW_1);
+                                } else if (localUser.numFollowings == 10) {
+                                    GameBadgeAwarded.recordGameBadge(localUser.id, BadgeType.FOLLOW_10);
                                 }
                                 
                                 // activity
