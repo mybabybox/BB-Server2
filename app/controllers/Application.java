@@ -12,11 +12,12 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Inject;
 
 import models.Category;
+import models.GameBadge.BadgeType;
+import models.GameBadgeAwarded;
 import models.Location;
 import models.SecurityRole;
 import models.TermsAndConditions;
 import models.User;
-import models.UserChild;
 import models.UserInfo;
 import models.UserInfo.ParentType;
 
@@ -56,6 +57,7 @@ import common.cache.LocationCache;
 import common.model.TargetGender;
 import common.utils.DateTimeUtil;
 import common.utils.UserAgentUtil;
+import common.utils.ValidationUtil;
 import domain.DefaultValues;
 
 public class Application extends Controller {
@@ -223,7 +225,7 @@ public class Application extends Controller {
         ParentType parentType = ParentType.NA;
         int numChildren = 0;
                 
-        if (!User.isDisplayNameValid(parentDisplayName)) {
+        if (!ValidationUtil.isDisplayNameValid(parentDisplayName)) {
             return handleSaveSignupInfoError("\""+parentDisplayName+"\" 不可有空格", fb);
         }
         if (User.isDisplayNameExists(parentDisplayName)) {
@@ -521,6 +523,10 @@ public class Application extends Controller {
 
         //GameAccount.setPointsForSignUp(user);
 
+    	if (user.hasCompleteInfo()) {
+    	    GameBadgeAwarded.recordGameBadge(user.id, BadgeType.PROFILE_INFO);
+    	}
+    	
     	calcServer.clearUserQueues(user);
     	
         user.setNewUser(false);

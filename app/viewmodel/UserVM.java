@@ -104,6 +104,7 @@ public class UserVM extends UserVMLite {
         return "id=" + id + "\n" +
                 "name=" + lastName + " " + firstName + "\n" +
                 "email=" + email + "\n" +
+                "emailProvidedOnSignup=" + emailProvidedOnSignup + "\n" +
                 "emailValidated=" + emailValidated + "\n" +
                 "fbLogin=" + isFbLogin + "\n" +
                 "signupDate=" + createdDate + "\n" +

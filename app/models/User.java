@@ -30,7 +30,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import models.GameBadge.BadgeType;
+import org.apache.commons.lang3.StringUtils;
+
 import models.Post.ConditionType;
 import models.TokenAction.Type;
 
@@ -125,6 +126,9 @@ public class User extends SocialObject implements Subject, Followable {
 	public boolean active;
 
 	@JsonIgnore
+    public boolean emailProvidedOnSignup;
+	
+	@JsonIgnore
 	public boolean emailValidated;
 
 	@JsonIgnore
@@ -198,10 +202,6 @@ public class User extends SocialObject implements Subject, Followable {
 		target.onLikedBy(this);
 	}
 
-	public void markNotificationRead(Activity notification) {
-		//notification.changeStatus(1);
-	}
-
 	public static User searchEmail(String email) {
 		CriteriaBuilder builder = JPA.em().getCriteriaBuilder();
 		CriteriaQuery<User> criteria = builder.createQuery(User.class);
@@ -212,6 +212,13 @@ public class User extends SocialObject implements Subject, Followable {
 		return JPA.em().createQuery(criteria).getSingleResult();
 	}
 
+	public boolean hasCompleteInfo() {
+	    if (StringUtils.isEmpty(email)) {
+	        return false;
+	    }
+	    return true;
+	}
+	
 	public Resource setPhotoProfile(File file) throws IOException {
 		ensureAlbumPhotoProfileExist();
 
@@ -516,12 +523,17 @@ public class User extends SocialObject implements Subject, Followable {
 		user.lastLogin = new Date();
 		user.totalLogin = 1L;
 		user.fbLogin = false;
+		user.emailProvidedOnSignup = true;
 		user.emailValidated = true;
 		
 		if (authUser instanceof EmailIdentity) {
 			final EmailIdentity identity = (EmailIdentity) authUser;
 			user.email = identity.getEmail();
 			//user.emailValidated = false;
+			
+			if (StringUtils.isEmpty(user.email)) {
+			    user.emailProvidedOnSignup = false;
+			}
 		}
 
 		/* 
@@ -537,7 +549,7 @@ public class User extends SocialObject implements Subject, Followable {
                 user.name = name;
             }
         }
-		 */
+		*/
 
 		if (authUser instanceof FirstLastNameIdentity) {
 			final FirstLastNameIdentity identity = (FirstLastNameIdentity) authUser;
@@ -575,23 +587,26 @@ public class User extends SocialObject implements Subject, Followable {
 	}
 
 	private static void saveFbFriends(final AuthUser authUser, final User user) {
-		final FacebookAuthUser fbAuthUser = (FacebookAuthUser) authUser;
-		/*JsonNode frds = fbAuthUser.getFBFriends();
-
-		if (frds.has("data")) {
-			List<FbUserFriend> fbUserFriends = null;
-			try {
-				fbUserFriends = new ObjectMapper().readValue(frds.get("data").traverse(), new TypeReference<List<FbUserFriend>>() {});
-			} catch(Exception e) {
-
-			}
-			for (FbUserFriend frnd : fbUserFriends) {
-				frnd.user = user;
-				frnd.save();
-			}
-			logger.underlyingLogger().info("[u="+user.id+"] saveFbFriends="+fbUserFriends.size());
-		}
-		 */	}
+	    // TODO commented out for play 2.4 upgrade
+        /*
+        final FacebookAuthUser fbAuthUser = (FacebookAuthUser) authUser;
+        JsonNode frds = fbAuthUser.getFBFriends();
+        
+        if (frds.has("data")) {
+        	List<FbUserFriend> fbUserFriends = null;
+        	try {
+        		fbUserFriends = new ObjectMapper().readValue(frds.get("data").traverse(), new TypeReference<List<FbUserFriend>>() {});
+        	} catch(Exception e) {
+        
+        	}
+        	for (FbUserFriend frnd : fbUserFriends) {
+        		frnd.user = user;
+        		frnd.save();
+        	}
+        	logger.underlyingLogger().info("[u="+user.id+"] saveFbFriends="+fbUserFriends.size());
+        }
+        */
+	}
 
 	public static void merge(final AuthUser oldUser, final AuthUser newUser) {
 		User.findByAuthUserIdentity(oldUser).merge(
@@ -723,70 +738,83 @@ public class User extends SocialObject implements Subject, Followable {
 		return false;
 	}
 
-	public static boolean isDisplayNameValid(String displayName) {
-		Pattern pattern = Pattern.compile("\\s");
-		Matcher matcher = pattern.matcher(displayName);
-		boolean containsWhitespace = matcher.find();
-		return !containsWhitespace;
-	}
-
+	public static boolean isEmailExists(String email) {
+        final User user = User.findByEmail(email);
+        if (user != null) {
+            return true;
+        }
+        return false;
+    }
+	
 	@Transactional
 	public static boolean isDisplayNameExists(String displayName) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
 
-		Query q = JPA.em().createQuery("SELECT count(u) FROM User u where displayName = ?1 and system = false and deleted = false");
-		q.setParameter(1, displayName);
-		Long count = (Long)q.getSingleResult();
-		if (count > 0) {
-			logger.underlyingLogger().error("[displayName="+displayName+"][count="+count+"] already exists");
-		}
-		boolean exists = count > 0;
-
-		sw.stop();
-		logger.underlyingLogger().info("isDisplayNameExists="+exists+". Took "+sw.getElapsedMS()+"ms");
-		return exists;
-	}
+		try {
+    		Query q = JPA.em().createQuery("SELECT count(u) FROM User u where displayName = ?1 and system = false and deleted = false");
+    		q.setParameter(1, displayName);
+    		Long count = (Long)q.getSingleResult();
+    		if (count > 0) {
+    			logger.underlyingLogger().error("[displayName="+displayName+"][count="+count+"] already exists");
+    		}
+    		boolean exists = count > 0;
+    		
+    		sw.stop();
+            logger.underlyingLogger().info("isDisplayNameExists="+exists+". Took "+sw.getElapsedMS()+"ms");
+            return exists;
+    	} catch (NoResultException e) {
+            return false;
+        }
+    }
 
 	@Transactional
 	public static Long getTodaySignupCount() {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
 
-		Query q = JPA.em().createQuery(
-				"SELECT count(u) FROM User u where " +  
-						"system = false and deleted = false and " + 
-				"CREATED_DATE >= ?1 and CREATED_DATE < ?2");
-		q.setParameter(1, DateTimeUtil.getToday().toDate());
-		q.setParameter(2, DateTimeUtil.getTomorrow().toDate());
-		Long count = (Long)q.getSingleResult();
-
-		sw.stop();
-		logger.underlyingLogger().info("getTodaySignupCount="+count+". Took "+sw.getElapsedMS()+"ms");
-		return count;
+		try {
+    		Query q = JPA.em().createQuery(
+    				"SELECT count(u) FROM User u where " +  
+    						"system = false and deleted = false and " + 
+    				"CREATED_DATE >= ?1 and CREATED_DATE < ?2");
+    		q.setParameter(1, DateTimeUtil.getToday().toDate());
+    		q.setParameter(2, DateTimeUtil.getTomorrow().toDate());
+    		Long count = (Long)q.getSingleResult();
+    
+    		sw.stop();
+    		logger.underlyingLogger().info("getTodaySignupCount="+count+". Took "+sw.getElapsedMS()+"ms");
+    		return count;
+		} catch (NoResultException e) {
+            return 0L;
+        }
 	}
 
 	@Transactional
 	public static Pair<Integer,String> getAndroidTargetEdmUsers() {
-		StringBuilder sb = new StringBuilder();
-
-		Query q = JPA.em().createNativeQuery(
-				"select CONCAT(id,',',email,',',firstName,',',lastName,',') from User where deleted=0 and emailValidated=1 and "+
-						"email is not null and email not like '%abc.com' and email not like '%xxx.com' and firstName is not null and lastName is not null and id not in (1,2,4,5,102,1098,1124,575,1374,1119,1431) "+
-						"and id not in (select g.userId from gameaccounttransaction g where g.transactionDescription like '%APP%') "+
-						"and (lastLoginUserAgent is NULL OR lastLoginUserAgent not like '%iphone%') "+
-				"order by id");
-		List<Object> results = (List<Object>) q.getResultList();
-		for (Object res : results) {
-			if (res instanceof String) {
-				sb.append((String)res).append("\n");
-			} else {
-				try {
-					sb.append(new String((byte[])res, "UTF-8")).append("\n");
-				} catch (Exception e) {
-					logger.underlyingLogger().error("Failed to create string");
-				}
-			}
-		}
-		return new Pair<>(results.size(),sb.toString());
+	    try {
+    		StringBuilder sb = new StringBuilder();
+    
+    		Query q = JPA.em().createNativeQuery(
+    				"select CONCAT(id,',',email,',',firstName,',',lastName,',') from User where deleted=0 and emailValidated=1 and "+
+    						"email is not null and email not like '%abc.com' and email not like '%xxx.com' and firstName is not null and lastName is not null and id not in (1,2,4,5,102,1098,1124,575,1374,1119,1431) "+
+    						"and id not in (select g.userId from gameaccounttransaction g where g.transactionDescription like '%APP%') "+
+    						"and (lastLoginUserAgent is NULL OR lastLoginUserAgent not like '%iphone%') "+
+    				"order by id");
+    		List<Object> results = (List<Object>) q.getResultList();
+    		for (Object res : results) {
+    			if (res instanceof String) {
+    				sb.append((String)res).append("\n");
+    			} else {
+    				try {
+    					sb.append(new String((byte[])res, "UTF-8")).append("\n");
+    				} catch (Exception e) {
+    					logger.underlyingLogger().error("Failed to create string");
+    				}
+    			}
+    		}
+    		return new Pair<>(results.size(),sb.toString());
+	    } catch (NoResultException e) {
+            return new Pair<>();
+        }
 	}
 
 	@JsonIgnore
@@ -801,8 +829,7 @@ public class User extends SocialObject implements Subject, Followable {
 		TokenAction.deleteByUser(unverified, Type.EMAIL_VERIFICATION);
 	}
 
-	public void changePassword(final UsernamePasswordAuthUser authUser,
-			final boolean create) {
+	public void changePassword(final UsernamePasswordAuthUser authUser, final boolean create) {
 		LinkedAccount a = this.getAccountByProvider(authUser.getProvider());
 		if (a == null) {
 			if (create) {
@@ -905,6 +932,14 @@ public class User extends SocialObject implements Subject, Followable {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
+
+	public boolean isEmailProvidedOnSignup() {
+        return emailProvidedOnSignup;
+    }
+
+    public void setEmailProvidedOnSignup(boolean emailProvidedOnSignup) {
+        this.emailProvidedOnSignup = emailProvidedOnSignup;
+    }
 
 	public boolean isEmailValidated() {
 		return emailValidated;

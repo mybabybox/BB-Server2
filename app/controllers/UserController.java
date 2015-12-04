@@ -60,6 +60,8 @@ import common.model.FeedFilter.FeedType;
 import common.utils.HttpUtil;
 import common.utils.ImageFileUtil;
 import common.utils.NanoSecondStopWatch;
+import common.utils.StringUtil;
+import common.utils.ValidationUtil;
 import domain.DefaultValues;
 
 public class UserController extends Controller {
@@ -211,6 +213,7 @@ public class UserController extends Controller {
 	    
 	    // Basic info
 	    DynamicForm form = DynamicForm.form().bindFromRequest();
+	    String parentEmail = form.get("parent_email");
 	    String parentDisplayName = form.get("parent_displayname");
 	    String parentFirstName = form.get("parent_firstname");
 	    String parentLastName = form.get("parent_lastname");
@@ -229,17 +232,51 @@ public class UserController extends Controller {
 	        parentAboutMe = parentAboutMe.trim();
 	    }
 	    
-	    if (!localUser.displayName.equals(parentDisplayName)) {  
-	        if (!User.isDisplayNameValid(parentDisplayName)) {
+	    if (!localUser.displayName.equals(parentDisplayName)) {
+	        if (!StringUtil.hasWhitespace(parentDisplayName)) {
                 logger.underlyingLogger().error(String.format(
                         "[u=%d][displayname=%s] displayname contains whitespace", localUser.id, parentDisplayName));
                 return badRequest("\""+parentDisplayName+"\" 不可有空格");
+            }
+	        if (!ValidationUtil.isDisplayNameValid(parentDisplayName)) {
+                logger.underlyingLogger().error(String.format(
+                        "[u=%d][displayname=%s] displayname incorrect format", localUser.id, parentDisplayName));
+                return badRequest("\""+parentDisplayName+"\" 格式不正確");
 	        }
 	        if (User.isDisplayNameExists(parentDisplayName)) {
                 logger.underlyingLogger().error(String.format(
                         "[u=%d][displayname=%s] displayname already exists", localUser.id, parentDisplayName));
                 return badRequest("\""+parentDisplayName+"\" 已被選用。請選擇另一個顯示名稱重試");
             }
+        }
+        
+	    // Email - handle email ONLY for fb signup with no email provided
+        if (localUser.fbLogin && !localUser.emailProvidedOnSignup && 
+                !localUser.email.equals(parentEmail)) {
+            if (StringUtils.isEmpty(parentEmail)) {
+                logger.underlyingLogger().error(
+                        String.format("[u=%d] email is missing", localUser.id));
+                return badRequest("請填寫電郵");
+            }
+            if (!StringUtil.hasWhitespace(parentEmail)) {
+                logger.underlyingLogger().error(String.format(
+                        "[u=%d][email=%s] email contains whitespace", localUser.id, parentEmail));
+                return badRequest("\""+parentEmail+"\" 不可有空格");
+            }
+            if (!ValidationUtil.isEmailValid(parentEmail)) {
+                logger.underlyingLogger().error(String.format(
+                        "[u=%d][email=%s] email incorrect format", localUser.id, parentEmail));
+                return badRequest("\""+parentEmail+"\" 格式不正確");
+            }
+            if (User.isEmailExists(parentEmail)) {
+                logger.underlyingLogger().error(
+                        String.format("[u=%d][email=%s] email already exists", 
+                                localUser.id, parentEmail));
+                return badRequest("\""+parentEmail+"\" 已登記。請確認你的電郵重試");
+            }
+            
+            // set email
+            localUser.email = parentEmail;
         }
         
 		// UserInfo
@@ -325,6 +362,10 @@ public class UserController extends Controller {
             localUser.children.add(userChild);
         }
         */
+        
+        if (localUser.hasCompleteInfo()) {
+            GameBadgeAwarded.recordGameBadge(localUser.id, BadgeType.PROFILE_INFO);
+        }
         
         return ok();
 	}

@@ -4,11 +4,24 @@ import domain.DefaultValues;
 
 import java.io.*;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class StringUtil {
 
+    /**
+     * 
+     * @param text
+     * @return
+     */
+    public static boolean hasWhitespace(String text) {
+        Pattern pattern = Pattern.compile("\\s");
+        Matcher matcher = pattern.matcher(text);
+        return matcher.find();
+    }
+    
 	/**
 	 * 
 	 * @param str

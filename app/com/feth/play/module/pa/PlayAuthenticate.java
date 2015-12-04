@@ -2,12 +2,10 @@ package com.feth.play.module.pa;
 
 import java.util.Date;
 
-import models.User;
 import play.Configuration;
 import play.Logger;
 import play.Play;
 import play.data.Form;
-import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 import play.i18n.Messages;
 import play.mvc.Call;
@@ -23,7 +21,6 @@ import com.feth.play.module.pa.exceptions.AuthException;
 import com.feth.play.module.pa.providers.AuthProvider;
 import com.feth.play.module.pa.service.UserService;
 import com.feth.play.module.pa.user.AuthUser;
-import com.feth.play.module.pa.user.EmailIdentity;
 
 import controllers.Application;
 
@@ -457,7 +454,8 @@ public abstract class PlayAuthenticate {
 	        throw new AuthException("十分抱歉! 由於 babybox是新平台，為了提供最好的體驗給每個用戶，我們預設了每日新登記用戶上限。現在已超出登記上限，請遲些回來重試。");
 	    }
 	    
-	   /* // Email must be unique 
+	    /* 
+	    // Email must be unique 
 	    if (u instanceof EmailIdentity) {
 	        final EmailIdentity identity = (EmailIdentity) u;
 	        final User existingUser = User.findByEmail(identity.getEmail());
@@ -465,7 +463,8 @@ public abstract class PlayAuthenticate {
 	            throw new AuthException("您輸入的Facebook電郵已經登記。請重試");
 	                    //Messages.get("playauthenticate.core.exception.signupuser_exists"));
 	        }
-	    }*/
+	    }
+	    */
 	    
 		final AuthUser loginUser;
 		
@@ -554,7 +553,7 @@ public abstract class PlayAuthenticate {
 				// so this is a signup, not a link
 				if (isLoggedIn) {
 					oldIdentity = getUserService().getLocalIdentity(oldUser);
-				isLoggedIn &= oldIdentity != null;
+					isLoggedIn &= oldIdentity != null;
 					if (!isLoggedIn) {
 						// if isLoggedIn is false here, then the local user has
 						// been deleted/deactivated
@@ -571,8 +570,7 @@ public abstract class PlayAuthenticate {
 					return loginAndRedirect(context, newUser);
 				}
 
-				final Object loginIdentity = getUserService().getLocalIdentity(
-						newUser);
+				final Object loginIdentity = getUserService().getLocalIdentity(newUser);
 				final boolean isLinked = loginIdentity != null;
 
 				final AuthUser loginUser;
@@ -580,75 +578,72 @@ public abstract class PlayAuthenticate {
 					// 1. -> Login
 					loginUser = newUser;
 
-			} else if (isLinked && isLoggedIn) {
-				// 2. -> Merge
-
-					// merge the two identities and return the AuthUser we want
-					// to use for the log in
-					if (isAccountMergeEnabled()
-							&& !loginIdentity.equals(oldIdentity)) {
-						// account merge is enabled
-						// and
-						// The currently logged in user and the one to log in
-						// are not the same, so shall we merge?
-
-						if (isAccountAutoMerge()) {
-							// Account auto merging is enabled
-							loginUser = getUserService()
-									.merge(newUser, oldUser);
-						} else {
-							// Account auto merging is disabled - forward user
-							// to merge request page
-							final Call c = getResolver().askMerge();
-							if (c == null) {
-								throw new RuntimeException(
-										Messages.get(
-												"playauthenticate.core.exception.merge.controller_undefined",
-												SETTING_KEY_ACCOUNT_AUTO_MERGE));
-							}
-							storeMergeUser(newUser, session);
-							return Controller.redirect(c);
-						}
-					} else {
-						// the currently logged in user and the new login belong
-						// to the same local user,
-						// or Account merge is disabled, so just change the log
-						// in to the new user
-						loginUser = newUser;
-					}
-
-			} else if (!isLinked && !isLoggedIn) {
-				// 3. -> Signup
-				loginUser = signupUser(newUser);
-			} else {
-				// !isLinked && isLoggedIn:
-
-					// 4. -> Link additional
-					if (isAccountAutoLink()) {
-						// Account auto linking is enabled
-
-						loginUser = getUserService().link(oldUser, newUser);
-					} else {
-						// Account auto linking is disabled - forward user to
-						// link suggestion page
-						final Call c = getResolver().askLink();
-						if (c == null) {
-							throw new RuntimeException(
-									Messages.get(
-											"playauthenticate.core.exception.link.controller_undefined",
-											SETTING_KEY_ACCOUNT_AUTO_LINK));
-						}
-						storeLinkUser(newUser, session);
-						return Controller.redirect(c);
-					}
-
-				}
-
-				return loginAndRedirect(context, loginUser);
-			} else {
-				return Controller.internalServerError(Messages
-						.get("playauthenticate.core.exception.general"));
-			}
+    			} else if (isLinked && isLoggedIn) {
+    			    // 2. -> Merge
+    
+    			    // merge the two identities and return the AuthUser we want
+    				// to use for the log in
+    				if (isAccountMergeEnabled()
+    						&& !loginIdentity.equals(oldIdentity)) {
+    					// account merge is enabled
+    					// and
+    					// The currently logged in user and the one to log in
+    					// are not the same, so shall we merge?
+    
+    					if (isAccountAutoMerge()) {
+    						// Account auto merging is enabled
+    						loginUser = getUserService()
+    								.merge(newUser, oldUser);
+    					} else {
+    						// Account auto merging is disabled - forward user
+    						// to merge request page
+    						final Call c = getResolver().askMerge();
+    						if (c == null) {
+    							throw new RuntimeException(
+    									Messages.get(
+    											"playauthenticate.core.exception.merge.controller_undefined",
+    											SETTING_KEY_ACCOUNT_AUTO_MERGE));
+    						}
+    						storeMergeUser(newUser, session);
+    						return Controller.redirect(c);
+    					}
+    				} else {
+    					// the currently logged in user and the new login belong
+    					// to the same local user,
+    					// or Account merge is disabled, so just change the log
+    					// in to the new user
+    					loginUser = newUser;
+    				}
+    			} else if (!isLinked && !isLoggedIn) {
+    				// 3. -> Signup
+    				loginUser = signupUser(newUser);
+    			} else {
+    				// !isLinked && isLoggedIn:
+    
+    				// 4. -> Link additional
+    				if (isAccountAutoLink()) {
+    					// Account auto linking is enabled
+    
+    					loginUser = getUserService().link(oldUser, newUser);
+    				} else {
+    					// Account auto linking is disabled - forward user to
+    					// link suggestion page
+    					final Call c = getResolver().askLink();
+    					if (c == null) {
+    						throw new RuntimeException(
+    								Messages.get(
+    										"playauthenticate.core.exception.link.controller_undefined",
+    										SETTING_KEY_ACCOUNT_AUTO_LINK));
+    					}
+    					storeLinkUser(newUser, session);
+    					return Controller.redirect(c);
+    				}
+    			}
+    			return loginAndRedirect(context, loginUser);
+    		} else {
+    			return Controller.internalServerError(
+    			        Messages.get("playauthenticate.core.exception.general"));
+    		}
 		} catch (final AuthException e) {
 			final Call c = getResolver().onException(e);
 			if (c != null) {
