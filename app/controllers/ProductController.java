@@ -378,6 +378,7 @@ public class ProductController extends Controller{
 			
 			SocialRelationHandler.recordNewComment(comment, post);
 			ResponseStatusVM response = new ResponseStatusVM(SocialObjectType.COMMENT, comment.id, comment.owner.id, true);
+			
 			return ok(Json.toJson(response));
 		} catch (SocialObjectNotCommentableException e) {
 		}

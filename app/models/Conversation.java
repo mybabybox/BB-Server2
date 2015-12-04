@@ -95,6 +95,8 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 	
 	public int user2NumMessages = 0;
 
+	public int numMessages = 0;
+	
 	public Boolean deleted = false; 
 	
 	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "conversation")
@@ -130,6 +132,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		message.setCreatedDate(now);
 		message.save();
 		this.messages.add(message);
+		this.numMessages++;
 		
 		setUpdatedDate(now);
 		setReadDate(sender);
@@ -160,6 +163,15 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		this.save();
 		
 		SocialRelationHandler.recordNewMessage(message, sender, recipient, firstMessage);
+		
+		// first message of new conversation, record stats
+		if (this.numMessages == 1) {
+		    this.post.numConversations++;
+		    sender.numConversationsAsSender++;
+		    recipient.numConversationsAsRecipient++;
+		    
+		    SocialRelationHandler.recordNewConversation(this, this.post);
+		}
 		
 		return message;
 	}
@@ -267,11 +279,6 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		conversation.setUpdatedDate(now);
 		conversation.setReadDate(localUser);		// New conversation always opened by buyer
 		conversation.save();
-		
-		post.numChats++;      // new conversation for post
-		post.save();
-		
-		SocialRelationHandler.recordNewConversation(conversation, post);
 		
 		return conversation;
 	}

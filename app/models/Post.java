@@ -80,11 +80,12 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	@Temporal(TemporalType.TIMESTAMP)
     public Date soldDate;
     
+	public int numViews = 0;
 	public int numComments = 0;
 	public int numLikes = 0;
+	public int numConversations = 0;
 	public int numBuys = 0;
-	public int numViews = 0;
-	public int numChats = 0;
+	
 	public Long baseScoreAdjust = 0L;
 	public Long baseScore = 0L;
 	public Double timeScore = 0D;
@@ -277,16 +278,19 @@ public class Post extends SocialObject implements Likeable, Commentable {
 		if (comments == null) {
 			comments = new ArrayList<>();
 		}
+		
 		this.comments.add(comment);
 		this.numComments++;
-		JPA.em().merge(this);
-		
-        // record for notifications
+		this.merge();
+
+        user.numComments++;
+
         if (this.postType == PostType.PRODUCT) {
             recordCommentProduct(user, comment);
         } else if (this.postType == PostType.STORY) {
             recordCommentStory(user, comment);
         }
+        
         return comment;
 	}
 
@@ -298,7 +302,14 @@ public class Post extends SocialObject implements Likeable, Commentable {
         comment.deleted = true;
         comment.deletedBy = user;
         comment.save();
-        this.numComments--;
+        
+        if (user.numComments > 0) {
+            user.numComments--;
+        }
+        
+        if (this.numComments > 0) {
+            this.numComments--;
+        }
 	}
 
 	public boolean onSold(User user) {

@@ -33,7 +33,7 @@ public class CalcFormula {
             logger.underlyingLogger().debug("     numComments="+post.numComments);
             logger.underlyingLogger().debug("     numViews="+post.numViews);
             logger.underlyingLogger().debug("     numLikes="+post.numLikes);
-            logger.underlyingLogger().debug("     numChats="+post.numChats);
+            logger.underlyingLogger().debug("     numConversations="+post.numConversations);
             logger.underlyingLogger().debug("     numBuys="+post.numBuys);
             logger.underlyingLogger().debug("     baseScoreAdjust="+post.baseScoreAdjust);
         }
@@ -42,7 +42,7 @@ public class CalcFormula {
                 post.numComments 
                 + 2 * post.numViews 
                 + 2 * post.numLikes 
-                + 5 * post.numChats 
+                + 5 * post.numConversations 
                 + 5 * post.numBuys 
                 + FEED_SCORE_COMPUTE_BASE);
         

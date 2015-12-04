@@ -19,7 +19,7 @@ public class PostVMLite {
 	@JsonProperty("hasImage") public Boolean hasImage = false;
 	
 	@JsonProperty("numLikes") public int numLikes;
-	@JsonProperty("numChats") public int numChats;
+	@JsonProperty("numConversations") public int numConversations;
 	@JsonProperty("numBuys") public int numBuys;
 	@JsonProperty("numComments") public int numComments;
 	@JsonProperty("numViews") public int numViews;
@@ -44,7 +44,7 @@ public class PostVMLite {
         }
         
         this.numLikes = post.numLikes;
-        this.numChats = post.numChats;
+        this.numConversations = post.numConversations;
         this.numBuys = post.numBuys;
         this.numComments = post.numComments;
         this.numViews = post.numViews;
@@ -111,12 +111,12 @@ public class PostVMLite {
         this.sold = sold;
     }
 
-    public int getNumChats() {
-        return numChats;
+    public int getNumConversations() {
+        return numConversations;
     }
 
-    public void setNumChats(int numChats) {
-        this.numChats = numChats;
+    public void setNumConversations(int numConversations) {
+        this.numConversations = numConversations;
     }
 
     public int getNumBuys() {

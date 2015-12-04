@@ -14,8 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -117,6 +115,12 @@ public class User extends SocialObject implements Subject, Followable {
 	public Long numFollowers = 0L;
 
 	public Long numProducts = 0L;
+	
+	public Long numComments = 0L;
+	
+	public Long numConversationsAsSender = 0L;
+	
+	public Long numConversationsAsRecipient = 0L;
 	
 	public Long numCollections = 0L;
 
@@ -354,6 +358,7 @@ public class User extends SocialObject implements Subject, Followable {
 		post.save();
 		
 		recordPostProduct(this, post);
+		
 		this.numProducts++;
 		
 		return post;
@@ -383,8 +388,8 @@ public class User extends SocialObject implements Subject, Followable {
 	public void deleteProduct(Post post) {
         post.deleted = true;
         post.deletedBy = this;
-        if (post.owner.numProducts > 0) {
-            post.owner.numProducts--;
+        if (this.numProducts > 0) {
+            this.numProducts--;
         }
         post.save();
 	}
