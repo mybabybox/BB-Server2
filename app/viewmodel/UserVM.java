@@ -113,7 +113,10 @@ public class UserVM extends UserVMLite {
                 "numLikes=" + numLikes + "\n" +
                 "numFollowers=" + numFollowers + "\n" +
                 "numFollowings=" + numFollowings + "\n" +
-                "numProducts=" + numProducts;
+                "numProducts=" + numProducts + "\n" +
+                "numComments=" + numComments + "\n" +
+                "numConversationsAsSender=" + numConversationsAsSender + "\n" +
+                "numConversationsAsRecipient=" + numConversationsAsRecipient;
     }
 }
 

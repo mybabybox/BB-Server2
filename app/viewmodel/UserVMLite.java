@@ -7,10 +7,13 @@ import models.User;
 public class UserVMLite {
 	@JsonProperty("id") public Long id;
     @JsonProperty("displayName") public String displayName;
+    @JsonProperty("numLikes") public Long numLikes = 0L;
     @JsonProperty("numFollowings") public Long numFollowings = 0L;
     @JsonProperty("numFollowers") public Long numFollowers = 0L;
     @JsonProperty("numProducts") public Long numProducts = 0L;
-    @JsonProperty("numLikes") public Long numLikes = 0L;
+    @JsonProperty("numComments") public Long numComments = 0L;
+    @JsonProperty("numConversationsAsSender") public Long numConversationsAsSender = 0L;
+    @JsonProperty("numConversationsAsRecipient") public Long numConversationsAsRecipient = 0L;
     @JsonProperty("numCollections") public Long numCollections = 0L;
     @JsonProperty("isFollowing") public boolean isFollowing = false;
 
@@ -33,10 +36,13 @@ public class UserVMLite {
         }
         
         this.displayName = user.displayName;
-        this.numProducts = user.numProducts;
         this.numLikes = user.numLikes;
         this.numFollowers = user.numFollowers;
         this.numFollowings = user.numFollowings;
+        this.numProducts = user.numProducts;
+        this.numComments = user.numComments;
+        this.numConversationsAsSender = user.numConversationsAsSender;
+        this.numConversationsAsRecipient = user.numConversationsAsRecipient;
         this.numCollections = user.numCollections;
         if (!user.equals(localUser)) {
         	this.isFollowing = user.isFollowedBy(localUser);
@@ -105,6 +111,30 @@ public class UserVMLite {
         this.numLikes = numLikes;
     }
 
+    public Long getNumComments() {
+        return numComments;
+    }
+
+    public void setNumComments(Long numComments) {
+        this.numComments = numComments;
+    }
+    
+    public Long getNumConversationsAsSender() {
+        return numConversationsAsSender;
+    }
+
+    public void setNumConversationsAsSender(Long numConversationsAsSender) {
+        this.numConversationsAsSender = numConversationsAsSender;
+    }
+    
+    public Long getNumConversationsAsRecipient() {
+        return numConversationsAsRecipient;
+    }
+
+    public void setNumConversationsAsRecipient(Long numConversationsAsRecipient) {
+        this.numConversationsAsRecipient = numConversationsAsRecipient;
+    }
+    
     public Long getNumCollections() {
         return numCollections;
     }
