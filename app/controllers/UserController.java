@@ -233,7 +233,7 @@ public class UserController extends Controller {
 	    }
 	    
 	    if (!localUser.displayName.equals(parentDisplayName)) {
-	        if (!StringUtil.hasWhitespace(parentDisplayName)) {
+	        if (StringUtil.hasWhitespace(parentDisplayName)) {
                 logger.underlyingLogger().error(String.format(
                         "[u=%d][displayname=%s] displayname contains whitespace", localUser.id, parentDisplayName));
                 return badRequest("\""+parentDisplayName+"\" 不可有空格");
@@ -258,7 +258,7 @@ public class UserController extends Controller {
                         String.format("[u=%d] email is missing", localUser.id));
                 return badRequest("請填寫電郵");
             }
-            if (!StringUtil.hasWhitespace(parentEmail)) {
+            if (StringUtil.hasWhitespace(parentEmail)) {
                 logger.underlyingLogger().error(String.format(
                         "[u=%d][email=%s] email contains whitespace", localUser.id, parentEmail));
                 return badRequest("\""+parentEmail+"\" 不可有空格");
