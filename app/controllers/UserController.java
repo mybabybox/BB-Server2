@@ -251,8 +251,9 @@ public class UserController extends Controller {
         }
         
 	    // Email - handle email ONLY for fb signup with no email provided
-        if (localUser.fbLogin && !localUser.emailProvidedOnSignup && 
-                !localUser.email.equals(parentEmail)) {
+	    boolean emailAllowedToChange = localUser.fbLogin && !localUser.emailProvidedOnSignup;
+        if (emailAllowedToChange && 
+                (localUser.email == null || !localUser.email.equals(parentEmail))) {
             if (StringUtils.isEmpty(parentEmail)) {
                 logger.underlyingLogger().error(
                         String.format("[u=%d] email is missing", localUser.id));
