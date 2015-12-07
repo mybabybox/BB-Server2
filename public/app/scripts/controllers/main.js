@@ -3,18 +3,28 @@
 var babybox = angular.module('babybox');
 
 babybox.controller('FrontPageController', 
-		function($scope, $route, feedService, $rootScope, ngDialog, userInfo, viewService, $location, $anchorScroll, usSpinnerService) {
+		function($scope, $route, feedService, productService, $rootScope, ngDialog, userInfo, viewService, $location, $anchorScroll, usSpinnerService) {
 	usSpinnerService.spin('loading...');
 	$scope.userInfo = userInfo;
-	$scope.products = feedService.getFeedProduct.get(
-	        function() {
-	        	usSpinnerService.stop('loading...');
-	        });
+	$scope.homeFeed=true;
+	$scope.products = productService.getHomeExploreFeed.get({offset:0});
+	console.log($scope.products);
 	$scope.gotoTop=function(){
 		$location.hash('');
 		$anchorScroll();
 	};
-
+	
+	$scope. getHomeExploreProducts= function () {
+		$scope.products = productService.getHomeExploreFeed.get({offset:0});
+		$scope.homeFeed=true;
+		console.log($scope.products);
+		};
+	
+	$scope.getHomeFollowingProducts = function () {
+		$scope.products = productService.getHomeFollowingFeed.get({offset:0});
+		$scope.homeFeed=false;
+		console.log($scope.products);
+	};
 /*	$scope.open = function (product) {
 		$scope.product = product;
 		viewService.viewProduct.get({id:product.id});

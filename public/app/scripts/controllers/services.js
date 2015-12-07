@@ -59,6 +59,22 @@ babybox.service('productService',function($resource){
                 get: {method:'get' ,isArray:true}
             }
     );
+    
+    this.getHomeFollowingFeed = $resource(
+            '/get-home-following-feed/:offset',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get' ,isArray:true, params:{offset: '@offset'}}
+            }
+    );
+    
+    this.getHomeExploreFeed = $resource(
+            '/get-home-explore-feed/:offset	',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get' ,isArray:true, params:{offset: '@offset'}}
+            }
+    );
 });
 
 babybox.service('collecctionService',function($resource){
