@@ -1,0 +1,106 @@
+<div class="header">
+	<div class='inner middle-centered-div'>	
+       <div ng-click="doBack()" class="icon_left ic_icon  ic_arrow_back clickable_area">
+		</div>
+		<div class="no-search-bar-holder flex1"></div>
+		<div class='page_name L16'></div>
+		<span ng-if="!userInfo.isLoggedIn">
+		<a href="/login">
+		<div class='hold user_avatar ic_web_profile clickable_area'></div>
+		</a>
+		</span>
+		<span ng-if="userInfo.isLoggedIn">
+		<a href="/profile/{{userInfo.id}}">
+		<div class='hold user_avatar ic_web_profile clickable_area'></div>
+		</a>
+		</span>
+		<div class='second-panel'>
+				<div class='signup-btn' data-i18n='label_signup'>
+				</div>
+				<div class='login-btn' data-i18n='label_login'>
+				</div>
+		</div>
+        <div class="clearfix"></div>
+	</div>
+</div>
+<div class="page-holder center-container" id="item-page">
+	<div class="top-part">
+		
+		  <div class="item-title">
+            <div id="title-name" class="title r16"></div>
+			
+		</div>
+
+	<div id="review-part" class="review-part">
+		<div id="review-container">
+		<div id="review-template" class="review" style="display: block;" >
+			<div class="flex-it">
+				<div class="left">
+					<a>
+						<div class="image-container">
+							<div class="image">							
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="right flex1 flex-it">
+					<div class="flex1">
+						<a><div class="name m14">@UserName</div></a>
+
+						<div class="comment text r14">This user is comment : 1</div>
+						<!-- <div class="param">
+							<div class="buyer-review m12" data-i18n="label_bueyer_review">buyer review</div>
+							<div class="time">
+								<span class="ic_icon ic_clock"></span>
+								<span class="text r12">14w</span>
+							</div>
+						</div> -->
+					</div>
+
+				</div>
+				<div class="face ic_icon ic_rate_average"></div>
+			</div>
+		</div>
+		</div>
+		
+		<div id="review-container">
+		<div id="review-template" class="review" style="display: block;" >
+			<div class="flex-it">
+				<div class="left">
+					<a>
+						<div class="image-container">
+							<div class="image">
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="right flex1 flex-it">
+					<div class="flex1">
+						<a><div class="name m14">@UserName</div></a>
+
+						<div class="comment text r14">This user is comment : 2</div>
+						<!-- <div class="param">
+							<div class="buyer-review m12" data-i18n="label_bueyer_review">buyer review</div>
+							<div class="time">
+								<span class="ic_icon ic_clock"></span>
+								<span class="text r12">14w</span>
+							</div>
+						</div> -->
+					</div>
+
+				</div>
+				<div class="face ic_icon ic_rate_average"></div>
+			</div>
+		</div>
+		</div>
+	</div>
+	
+
+<div id="cover" class="cover">
+</div>
+
+
+
+
+</div>
+</div>

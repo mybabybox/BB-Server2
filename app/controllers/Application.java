@@ -1,5 +1,7 @@
 package controllers;
 
+import handler.FeedHandler;
+
 import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import models.Location;
 import models.SecurityRole;
 import models.TermsAndConditions;
 import models.User;
+import models.UserChild;
 import models.UserInfo;
 import models.UserInfo.ParentType;
 
@@ -40,6 +43,9 @@ import providers.MyUsernamePasswordAuthProvider.MyLogin;
 import providers.MyUsernamePasswordAuthProvider.MySignup;
 import viewmodel.ApplicationInfoVM;
 import viewmodel.CategoryVM;
+import viewmodel.PostVM;
+import viewmodel.PostVMLite;
+import viewmodel.ProfileVM;
 import viewmodel.UserVM;
 import Decoder.BASE64Encoder;
 import Decoder.BASE64Decoder;
@@ -55,6 +61,7 @@ import com.feth.play.module.pa.user.AuthUser;
 import common.cache.CalcServer;
 import common.cache.LocationCache;
 import common.model.TargetGender;
+import common.model.FeedFilter.FeedType;
 import common.utils.DateTimeUtil;
 import common.utils.UserAgentUtil;
 import common.utils.ValidationUtil;
@@ -89,6 +96,9 @@ public class Application extends Controller {
 	@Inject
 	CalcServer calcServer;
 	
+	@Inject
+    FeedHandler feedHandler;
+	
 	public static enum DeviceType {
 		NA,
 		ANDROID,
@@ -117,10 +127,13 @@ public class Application extends Controller {
     @Transactional
     public Result home() {
         final User user = getLocalUser(session());
-        if (!User.isLoggedIn(user)) {
-            return login();
+        if (user.id == -1) {
+        	return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user)))));
         }
         
+        if (!User.isLoggedIn(user)){
+            return login();
+        }
         if (User.isLoggedIn(user) && user.userInfo == null) {
             if (user.fbLogin) {
                 return ok(views.html.signup_info_fb.render(user));
@@ -406,20 +419,29 @@ public class Application extends Controller {
 
     @Restrict(@Group(SecurityRole.USER))
     public static Result profile() {
-       
-        return ok(views.html.babybox.web.profile.render("",""));
+    	 final User localUser = getLocalUser(session());
+    	 return ok(views.html.babybox.web.profile.render(Json.stringify(Json.toJson(new UserVM(localUser))), Json.stringify(Json.toJson(new UserVM(localUser)))));
+        //return ok(views.html.babybox.web.profile.render(localUser,"localUser"));
     }
     
 	@Transactional
 	public static Result login() {
         
 		final User localUser = getLocalUser(session());
-		if (User.isLoggedIn(localUser)) {
+		/*if (User.isLoggedIn(localUser)) {
 			return redirect("/my");
-		}
+		}*/
 		return ok(views.html.login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM, isOverDailySignupThreshold()));
 	}
+	
+        
+	@Transactional
+	public static Result comment() {
+		    final User localUser = getLocalUser(session());
+		    return ok(views.html.babybox.web.comment.render());
+        }
 
+	
 	@Transactional
 	public static Result doLogin() {
 		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
@@ -731,4 +753,28 @@ public class Application extends Controller {
 		CategoryVM categoryVM = new CategoryVM(category);
 		return ok(Json.toJson(categoryVM));
 	}
+	
+	@Transactional
+	public Result getCategoryPage(Long id, String catagoryFilter){
+		User localUser = Application.getLocalUser(session());
+		Category category = Category.findById(id);
+		CategoryVM categoryVM = new CategoryVM(category);
+		List<PostVMLite> postVMs = new ArrayList<>();
+		switch(catagoryFilter){
+		case "popular":
+			postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_POPULAR);
+			break;
+		case "newest":
+			postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_NEWEST);
+			break;
+		case "high2low":
+			postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_PRICE_HIGH_LOW);
+			break;
+		case "low2high":
+			postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_PRICE_LOW_HIGH);
+			break;
+		}
+		return ok(views.html.babybox.web.category.render(Json.stringify(Json.toJson(categoryVM)), Json.stringify(Json.toJson(postVMs)), Json.stringify(Json.toJson(new UserVM(localUser)))));
+	}
+	
 }

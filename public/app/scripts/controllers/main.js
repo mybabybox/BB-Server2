@@ -3,7 +3,7 @@
 var babybox = angular.module('babybox');
 
 babybox.controller('FrontPageController', 
-		function($scope, $route, feedService, ngDialog, userInfo, viewService, $location, $anchorScroll, usSpinnerService) {
+		function($scope, $route, feedService, $rootScope, ngDialog, userInfo, viewService, $location, $anchorScroll, usSpinnerService) {
 	usSpinnerService.spin('loading...');
 	$scope.userInfo = userInfo;
 	$scope.products = feedService.getFeedProduct.get(
@@ -15,7 +15,7 @@ babybox.controller('FrontPageController',
 		$anchorScroll();
 	};
 
-	$scope.open = function (product) {
+/*	$scope.open = function (product) {
 		$scope.product = product;
 		viewService.viewProduct.get({id:product.id});
 		ngDialog.open({
@@ -25,96 +25,84 @@ babybox.controller('FrontPageController',
 			scope: $scope                
 		});
 	};
+*/	
+	$scope.categories = feedService.getAllCategories.get();
+
+});
+
+babybox.controller('CategoryPageController', 
+		function($scope, $route, $rootScope, ngDialog, $routeParams, $location,userInfo, category, products, categoryService, $anchorScroll, usSpinnerService) {
+	usSpinnerService.spin('loading...');
+	console.log("controller .. ")
+	$scope.userInfo = userInfo;
+	$scope.products = products;
+	$scope.cat = category;
+	//we are routing this from scala file so we can't able to get $routeParams , so this is just a workaround
+	var url = $location.absUrl();
+	var values= url.split("/");
+	$scope.catType = values[values.length-1];
+	$scope.gotoTop=function(){
+		$location.hash('');
+		$anchorScroll();
+	};
+	
+/*	$scope.open = function (product) {
+		$scope.product = product;
+		viewService.viewProduct.get({id:product.id});
+		ngDialog.open({
+			template: '/assets/app/views/babybox/product-dialog.html',
+			className: 'ngdialog-theme-plain custom-width ',
+			controller: 'ProductController',
+			scope: $scope                
+		});
+	};*/
 });
 
 babybox.controller('ProductPageController', 
-		function($scope, $route, $http, likeService, userService, productService, product, userInfo) {
+		function($scope, $route, $rootScope, $location, $http,  $window, likeService, userService, productService, product, userInfo, suggestedPost) {
 	$scope.product = product;
 	$scope.userInfo = userInfo;
-});
-
-babybox.controller('ProductController', 
-		function($scope, $route, $http, likeService, userService, productService, usSpinnerService, followService) {
-	console.log($scope.product.imgs);
-	$scope.imageUrl = "/image/get-original-post-image-by-id/"+$scope.product.images[0];
-	$scope.collections = [];
-
-
-	$scope.similarProducts = productService.getSimilarProduct.get();
-	$scope.open = false;
-	$scope.product = productService.getProductInfo.get({id:$scope.product.id});
-
-	console.log($scope.imageUrl);
-	$scope.setImgUrl = function(id){
-		$scope.imageUrl= "/image/get-original-post-image-by-id/"+id;
-	};
-
-	if($scope.product.oid = $scope.userInfo.id){
-		$scope.collections = userService.getUserCollection.get({id:$scope.userInfo.id});
-	}
-	$scope.like_product = function(id) {
-		likeService.likeProduct.get({id:id});
-		$scope.product.isLiked = !$scope.product.isLike;
-		$scope.product.numLikes++;
-	}
-	$scope.unlike_product = function(id) {
-		likeService.unLikeProduct.get({id:id});
-		$scope.product.isLikeD = !$scope.product.isLike;
-		$scope.product.numLikes--;
-	}
-	$scope.colectionValue = "";
-	$scope.collection = {};
-	$scope.addCollection = function(text) {
-		$scope.collection = {
-				"cn" :  text,
-				"id" : 0,
+	$scope.suggestedPost = suggestedPost;
+	$scope.like_Unlike = function(id) {
+		if($scope.userInfo.id != -1){
+			if($scope.product.isLiked){
+				likeService.unLikeProduct.get({id:id});
+				$scope.product.isLiked = !$scope.product.isLiked;
+				$scope.product.numLikes--;
+			}
+			else{
+				likeService.likeProduct.get({id:id});
+				$scope.product.isLiked = !$scope.product.isLiked;
+				$scope.product.numLikes++;
+			}
 		}
-		$scope.collections.push($scope.collection);
-		$scope.open = false;
+		else
+		{
+			console.log("login on like. . . ");
+			$window.location.href ='/login';
+		}
 	}
-	$scope.selectValue = function(collection){
-		$scope.collection = collection;
-		$scope.colectionValue = collection.cn;
-		$scope.open = false;
-	}
-
-	$scope.add_product_to_collection = function(){
-		var data = {
-				"product_id" : $scope.product.id,
-				"collectionId":  $scope.collection.id,
-				"collectionName":  $scope.collection.cn,
-		};
-		usSpinnerService.spin('loading...');
-		$http.post('/product/add-to-collection', data) 
-		.success(function(response) {
-			usSpinnerService.stop('loading...');
-			console.log(response);
-		});
+	$scope.loginComment = function() {
+		if($scope.userInfo.id != -1){
+			$window.location.href ='/comment';
+		}
+		else
+			$window.location.href ='/login';
 	}
 
-	$scope.onFollowUser = function() {
-		followService.followUser.get({id:$scope.product.ownerId});
-		$scope.product.ifu = !$scope.product.ifu;
-	}
-	$scope.onUnFollowUser = function() {
-		followService.unFollowUser.get({id:$scope.product.ownerId});
-		$scope.product.ifu = !$scope.product.ifu;
-	}
 });
+
 
 babybox.controller('CommentOnProductController', 
 		function($scope, $route, $http, likeService) {
 	$scope.formData = {};
-
 	$scope.comArray=[];
-
 	$scope.submit = function() {
 		var newCommentVM = {
 				"postId" : $scope.product.id,
 				"body" : $scope.formData.comment,
 		};
 
-		console.log($scope.userInfo);
 		usSpinnerService.spin('loading...');
 		$http.post('/comment/new', newCommentVM) 
 		.success(function(response) {
@@ -129,16 +117,16 @@ babybox.controller('CommentOnProductController',
 			usSpinnerService.stop('loading...');
 		});
 	}
-
 });
 
 
 babybox.controller('ProfileController', 
-		function($scope, $route, profileUser, userService, userInfo, followService, viewService, ngDialog) {
+		function($scope, $route, $rootScope, profileUser, userService, userInfo, followService, viewService, ngDialog) {
+	$scope.activeflag = true;
 	$scope.userInfo = userInfo;
 	$scope.user = profileUser;
-	$scope.products = userService.getUserProduct.get({id:profileUser.id});
-	$scope.collections = userService.getUserCollection.get({id:profileUser.id});
+	$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
+
 	$scope.onFollowUser = function() {
 		followService.followUser.get({id:profileUser.id});
 		$scope.user.ifu = !$scope.user.ifu;
@@ -150,21 +138,19 @@ babybox.controller('ProfileController',
 		$scope.user.n_fr--;
 	}
 
-	$scope.open = function (product) {
-		$scope.product = product;
-		//viewService.viewProduct.get({id:product.id});
-		ngDialog.open({
-			template: '/assets/app/views/babybox/product-dialog.html',
-			className: 'ngdialog-theme-plain custom-width ',
-			controller: 'ProductController',
-			scope: $scope                
-		});
-	};
-
+	$scope.userProducts = function() {
+		$scope.activeflag = true;
+		$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
+		console.log($scope.products);
+	}
+	$scope.likedProducts = function() {
+		$scope.activeflag = false;
+		$scope.products=userService.getUserLikedFeed.get({id:profileUser.id, offset:0});
+	}
 });
 
 
-babybox.controller('CreateCollectionController', 
+/*babybox.controller('CreateCollectionController', 
 		function($scope, $route, $http, usSpinnerService) {
 	$scope.formData = {};
 	$scope.createCollection = function() {
@@ -176,7 +162,7 @@ babybox.controller('CreateCollectionController',
 		});
 	}
 });
-
+*/
 babybox.controller('CreateProductController',function($scope, $location, $http, $upload, $validator, usSpinnerService, userInfo){
 	$scope.userInfo = userInfo;
 	$scope.formData = {};
@@ -1919,4 +1905,4 @@ babybox.controller('UserConversationController',function($scope, $http, $filter,
 	}
 
 });
-*/
+ */

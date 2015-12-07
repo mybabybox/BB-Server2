@@ -724,8 +724,8 @@ public class UserController extends Controller {
             if (logger.underlyingLogger().isDebugEnabled()) {
                 logger.underlyingLogger().debug("[u="+user.getId()+"] getProfile(). Took "+sw.getElapsedMS()+"ms");
             }
-            return ok(Json.toJson(ProfileVM.profile(user,localUser)));
-        	//return ok(views.html.babybox.web.profile.render(Json.stringify(Json.toJson(ProfileVM.profile(user,localUser))), Json.stringify(Json.toJson(new UserVM(localUser)))));
+            //return ok(Json.toJson(ProfileVM.profile(user,localUser)));
+        	return ok(views.html.babybox.web.profile.render(Json.stringify(Json.toJson(ProfileVM.profile(user,localUser))), Json.stringify(Json.toJson(new UserVM(localUser)))));
     }
     
 	@Transactional 

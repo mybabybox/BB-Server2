@@ -1,5 +1,5 @@
 <!-- Top Header Bar -->
-<div id="header-backdrop" class="header-wrapper no-glow navbar hidden-print navbar-default box main navbar-fixed-top" role="navigation"></div>
+<!-- <div id="header-backdrop" class="header-wrapper no-glow navbar hidden-print navbar-default box main navbar-fixed-top" role="navigation"></div>
 <div id="header" class="header-wrapper no-glow navbar hidden-print navbar-default box main navbar-fixed-top" role="navigation">
     
     <span>
@@ -37,9 +37,9 @@
             <a class="header-main-text" ng-href="/login">
             	Login
             </a>
-            <!--a class="header-main-text" ng-href="" ng-click="translateValidationMessages()" data-toggle="modal" data-target="#loginModal">
+            a class="header-main-text" ng-href="" ng-click="translateValidationMessages()" data-toggle="modal" data-target="#loginModal">
                 Log In
-            </a-->
+            </a
         </span>
     </div>
 </div>
@@ -80,4 +80,26 @@
     </div>
 </div>
 <div data-ng-include data-src="'/assets/app/views/babybox/add-product-modal.html'"></div>
-<div id="main-top"/>
+<div id="main-top"/> -->
+
+
+
+<div class="header">
+	<div class='inner middle-centered-div'>	
+        <a href="/"><div class='ic_logo clickable_area'>
+    </div></a>
+		<div class="no-search-bar-holder flex1"></div>
+		<div class='page_name L16'></div>
+		
+		<a href="/profile/{{userInfo.id}}">
+		<div class='hold user_avatar ic_web_profile clickable_area'></div>
+		</a>
+		<div class='second-panel'>
+				<div class='signup-btn' data-i18n='label_signup'>
+				</div>
+				<div class='login-btn' data-i18n='label_login'>
+				</div>
+		</div>
+        <div class="clearfix"></div>
+	</div>
+</div>

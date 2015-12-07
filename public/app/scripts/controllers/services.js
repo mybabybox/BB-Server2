@@ -2,6 +2,13 @@
 
 var babybox = angular.module('babybox');
 
+babybox.run(function($rootScope, $window) {
+    $rootScope.doBack = function() {
+    	$window.history.back();
+        console.log("I'm global doBack()!");
+    };
+});
+
 babybox.service('feedService',function($resource){
     this.getFeedProduct = $resource(
             '/get-all-feed-products',
@@ -10,7 +17,32 @@ babybox.service('feedService',function($resource){
                 get: {method:'get' ,isArray:true}
             }
     );
+    this.getAllCategories = $resource(
+            '/categories',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get' ,isArray:true}
+            }
+    );
 });
+
+babybox.service('categoryService',function($resource){
+    this.getCategoryPopularFeed = $resource(
+            '/get-category-popular-feed/:id/:postType/:offset',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get' ,isArray:true, params:{id:'@id',postType: '@postType',offset: '@offset'}}
+            }
+    );
+    this.getCategoryNewestFeed = $resource(
+            '/get-category-newest-feed/:id/:postType/:offset',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get' ,isArray:true, params:{id:'@id',postType: '@postType',offset: '@offset'}}
+            }
+    );
+});
+
 
 babybox.service('productService',function($resource){
     this.getProductInfo = $resource(
@@ -47,6 +79,25 @@ babybox.service('userService',function($resource){
                 get: {method:'get', isArray:true}
             }
     );
+    
+   
+    	 this.getUserLikedFeed = $resource(
+                 '/get-user-liked-feed/:id/:offset',
+                 {alt:'json',callback:'JSON_CALLBACK'},
+                 {
+                     get: {method:'get', isArray:true, params:{id:'@id',offset: '@offset'}}
+                 }
+         );
+    
+    
+        this.getUserPostedFeed = $resource(
+                '/get-user-posted-feed/:id/:offset',
+                {alt:'json',callback:'JSON_CALLBACK'},
+                {
+                    get: {method:'get', isArray:true, params:{id:'@id',offset: '@offset'}}
+                }
+        );
+        
     
     this.getUserCollection = $resource(
             '/get-user-collections/:id',
@@ -91,6 +142,15 @@ babybox.service('likeService',function($resource){
                 get: {method:'get', params:{id:'@id'}}
             }
     );
+    
+ /*   this.login_like = $resource(
+            '/login_like',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get'}
+            }
+    );
+    */
 });
 
 babybox.service('viewService',function($resource){

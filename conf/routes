@@ -128,6 +128,7 @@ GET		/post/:id									@controllers.ProductController.getProductInfo(id:Long)
 GET     /post/delete/:id                            controllers.ProductController.deletePost(id:Long)
 GET     /comment/delete/:id                         controllers.ProductController.deleteComment(id:Long)
 GET     /comments/:postId/:offset                   controllers.ProductController.getPostComments(postId: Long,offset:Long)
+GET     /comment  									controllers.Application.comment	
 
 # User
 GET     /get-user-posted-feed/:id/:offset       	@controllers.UserController.getUserPosts(id: Long, offset:Long)
@@ -173,6 +174,11 @@ GET     /image/getEmoticons                         controllers.UserController.g
 
 # misc
 GET     /get-all-districts                          controllers.Application.getAllDistricts
+
+# category
+#GET     /categories                                 controllers.Application.getCategories()
+#GET     /category/:id                               controllers.Application.getCategory(id:Long)
+GET     /category/:id/:catagoryFilter               @controllers.Application.getCategoryPage(id:Long, catagoryFilter:String)
 
 # web
 GET     /add/product                                controllers.Application.addProduct

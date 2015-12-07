@@ -6,7 +6,9 @@ import handler.FeedHandler;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.inject.Inject;
 
@@ -19,6 +21,7 @@ import models.Post;
 import models.Post.ConditionType;
 import models.Resource;
 import models.User;
+import play.Play;
 import play.data.DynamicForm;
 import play.db.jpa.Transactional;
 import play.libs.Json;
@@ -288,12 +291,21 @@ public class ProductController extends Controller{
 	@Transactional
 	public Result product(Long id) {
 		final User localUser = Application.getLocalUser(session());
-		return ok(views.html.babybox.web.product.render(Json.stringify(Json.toJson(getProductInfoVM(id))), Json.stringify(Json.toJson(new UserVM(localUser)))));
+		PostVM vm = getProductInfoVM(id);
+		Map<String, List<String>> images = new HashMap<>();
+		List<String> originalImages = new ArrayList<>();
+		List<String> miniImages = new ArrayList<>();
+		for(Long imageId : vm.images){
+			originalImages.add("background-image:url('"+Application.APPLICATION_BASE_URL+"/image/get-post-image-by-id/"+imageId+"')");
+		}
+		images.put("original", originalImages);
+		List<PostVMLite> vms = feedHandler.getPostVM(id, 0l, localUser, FeedType.PRODUCT_SUGGEST);
+		return ok(views.html.babybox.web.product.render(Json.stringify(Json.toJson(vm)), Json.stringify(Json.toJson(new UserVM(localUser))), images, Json.stringify(Json.toJson(vms))));
 	}
 	
 	@Transactional
 	public Result getProductInfo(Long id) {
-	    PostVM post = getProductInfoVM(id);
+		PostVM post = getProductInfoVM(id);
 		if (post == null) {
 			return notFound();
 		}
@@ -378,7 +390,6 @@ public class ProductController extends Controller{
 			
 			SocialRelationHandler.recordNewComment(comment, post);
 			ResponseStatusVM response = new ResponseStatusVM(SocialObjectType.COMMENT, comment.id, comment.owner.id, true);
-			
 			return ok(Json.toJson(response));
 		} catch (SocialObjectNotCommentableException e) {
 		}

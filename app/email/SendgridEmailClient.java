@@ -198,7 +198,7 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 	}
 	
 	protected String formatSubject(String subject) {
-	    //return "ğŸ"+subject;
+	    //return ""+subject;
 	    return subject;
 	}
 }
