@@ -138,9 +138,11 @@ babybox.controller('ProfileController',
 	$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
 
 	$scope.onFollowUser = function() {
+		if($scope.user.id != $scope.userInfo.id){
 		followService.followUser.get({id:profileUser.id});
 		$scope.user.ifu = !$scope.user.ifu;
 		$scope.user.n_fr++;
+		}
 	}
 	$scope.onUnFollowUser = function() {
 		followService.unFollowUser.get({id:profileUser.id});
