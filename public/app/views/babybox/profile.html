@@ -1,267 +1,249 @@
 <div class="header">
-	<div class='inner middle-centered-div' style="padding-right: 15px;">	
-        <div ng-click="doBack()" class="icon_left ic_icon  ic_arrow_back clickable_area"></div>
-		<div class="no-search-bar-holder flex1"></div>
-		<div class='page_name L16'>{{user.dn}}</div>
-		  <div class="right-side">
-		 <span ng-if="userInfo.isLoggedIn">
-            <a style="position:relative;top:-3px;" class="dropdown-toggle dropdown-hover colorChange" data-toggle="dropdown" href="">
-            <div  ng-class="user.id==userInfo.id ? 'hold ic_web_setting' : '' " ></div>
-            </a>
-            <!-- <ul class="dropdown-menu settings-dropdown-menu"> -->
-            <ul class=" dropdown-menu logout_"> 
-                <li><a href="/logout">logout</a></li>
-            </ul>
-         </span>
-        </div>
-        
-		<div class='second-panel'>
-				<div class='signup-btn' data-i18n='label_signup'>
-				</div>
-				<div class='login-btn' data-i18n='label_login'>
-				</div>
-		</div>
-        <div class="clearfix"></div>
-	</div>
+ <div class='inner middle-centered-div' style="padding-right: 15px;">
+  <div ng-click="doBack()"
+   class="icon_left ic_icon  ic_arrow_back clickable_area"></div>
+  <div class="no-search-bar-holder flex1"></div>
+  <div class='page_name L16'>{{user.dn}}</div>
+  <div class="right-side">
+   <span ng-if="userInfo.isLoggedIn"> <a
+    style="position: relative; top: -3px;"
+    class="dropdown-toggle dropdown-hover colorChange"
+    data-toggle="dropdown" href="">
+     <div ng-class="user.id==userInfo.id ? 'hold ic_web_setting' : '' "></div>
+   </a> <!-- <ul class="dropdown-menu settings-dropdown-menu"> -->
+    <ul class=" dropdown-menu logout_">
+     <li><a href="/logout">logout</a></li>
+    </ul>
+   </span>
+  </div>
+
+  <div class='second-panel'>
+   <div class='signup-btn' data-i18n='label_signup'></div>
+   <div class='login-btn' data-i18n='label_login'></div>
+  </div>
+  <div class="clearfix"></div>
+ </div>
 </div>
 
-<div class='header-holder'>
-</div>
-<div class='body-mask'>
-</div>
-<div class='general-mask'>
-</div>
+<div class='header-holder'></div>
+<div class='body-mask'></div>
+<div class='general-mask'></div>
 <div class='lure-hold'>
-	<div class='close_btn but_no_close' onclick='hideProm()'>
-	</div>
+ <div class='close_btn but_no_close' onclick='hideProm()'></div>
 
-    <div class='dogi-logo'>
-        <div class='ic_logo_get'></div>
-    </div>
+ <div class='dogi-logo'>
+  <div class='ic_logo_get'></div>
+ </div>
 
-	<div class='show-text L13'>
-	</div>
-	<div class='bottom'>
+ <div class='show-text L13'></div>
+ <div class='bottom'>
 
 
-        <div class="get_app_btns_wrapper">
-            <div class="full">
-                <a id='get_app_link' target='_blank' href='#' data-i18n='label_get' class='btn'>
-                </a>
-            </div>
-            <div class="half"><a id='get_ios_app_link' target='_blank' href='#' class='btn' onclick="_track_download_ios();">
-                    <div class="ic_IPhone icon"></div>
-                    <div data-i18n="label_iphone"></div>
-                </a>
-            </div><div class="half"><a id='get_android_app_link' target='_blank' href='#' class='btn' onclick="_track_download_android();">
-                    <div class="ic_Android icon"></div>
-                    <div data-i18n="label_android"></div>
-                </a></div>
+  <div class="get_app_btns_wrapper">
+   <div class="full">
+    <a id='get_app_link' target='_blank' href='#' data-i18n='label_get'
+     class='btn'> </a>
+   </div>
+   <div class="half">
+    <a id='get_ios_app_link' target='_blank' href='#' class='btn'
+     onclick="_track_download_ios();">
+     <div class="ic_IPhone icon"></div>
+     <div data-i18n="label_iphone"></div>
+    </a>
+   </div>
+   <div class="half">
+    <a id='get_android_app_link' target='_blank' href='#' class='btn'
+     onclick="_track_download_android();">
+     <div class="ic_Android icon"></div>
+     <div data-i18n="label_android"></div>
+    </a>
+   </div>
 
-        </div>
+  </div>
 
-	</div>
+ </div>
 </div>
 
-		
-		<div class="shopee-confirm-modal hidden">
-</div>
+
+<div class="shopee-confirm-modal hidden"></div>
 <div class="shopee-confirm hidden">
-	<div class="confirm-title">
-		<div class="content"></div>
-	</div>
-	<div class="confirm-message">
-		<div class="content"></div>
-	</div>
-	<div class="confirm-button-holder middle-centered-div">
-		<div class="confirm-button cancel" data-button-id="1"></div>
-		<div class="flex1" data-button-id="0"></div>
-		<div class="confirm-button ok" data-button-id="0"></div>
-	</div>
+ <div class="confirm-title">
+  <div class="content"></div>
+ </div>
+ <div class="confirm-message">
+  <div class="content"></div>
+ </div>
+ <div class="confirm-button-holder middle-centered-div">
+  <div class="confirm-button cancel" data-button-id="1"></div>
+  <div class="flex1" data-button-id="0"></div>
+  <div class="confirm-button ok" data-button-id="0"></div>
+ </div>
 </div>
 
-	
 
-	
+
+
 
 <div id="shop-page" class="has-toolbar page-holder center-container">
-	<header>
-        <div class="mask"></div>
-        <div class="flex-it header-container">
-			<div class='avatar-container'>
-				<!-- <div class="avatar" > <img data-ng-src="/image/get-thumbnail-profile-image-by-id/{{user.id}}" /></div> -->
-				<div class="avatar" style="background-image: url(/image/get-thumbnail-profile-image-by-id/{{user.id}});"></div>
-			</div>
-			<div class="flex1 middle-centered-div shopname-wrapper">
-				<div class="shopname truncate m16 flex1">{{user.dn}}</div>
-				<div ng-if="!user.ifu"  ng-click="onFollowUser()">
-				<div class='btn-follow follow r10 clickable_area'>+ Follow</div>
-				</div>
-				<div ng-if="user.ifu"  ng-click="onUnFollowUser()">
-				<div class='btn-follow follow r10 active clickable_area'>Following</div>
-				</div>
-			</div>
-
-        </div>
-
-	</header>
-    <div class="shop-stats middle-centered-div">
-        <div class='followers r12'>
-            <a class='followerhref'><span data-i18n='label_follower'>Followers</span><span class='number r12'>{{user.n_fr}}</span></a>
-        </div>
-		<div class='holder withborder flex1'></div>
-		<div class='holder flex1'></div>
-        <div class='following r12'>
-            <a class='followinghref'><span data-i18n='label_following'>Following</span><span class='number r12'>{{user.n_fg}}</span></a>
-        </div>
-		<div class='holder flex1'></div>
+ <header>
+  <div class="mask"></div>
+  <div class="flex-it header-container">
+   <div class='avatar-container'>
+    <!-- <div class="avatar" > <img data-ng-src="/image/get-thumbnail-profile-image-by-id/{{user.id}}" /></div> -->
+    <div class="avatar"
+     style="background-image: url(/image/get-thumbnail-profile-image-by-id/{{user.id}});"></div>
+   </div>
+   <div class="flex1 middle-centered-div shopname-wrapper">
+    <div class="shopname truncate m16 flex1">{{user.dn}}</div>
+    <div ng-if="!user.ifu" ng-click="onFollowUser()">
+     <div class='btn-follow follow r10 clickable_area'>+ Follow</div>
     </div>
+    <div ng-if="user.ifu" ng-click="onUnFollowUser()">
+     <div class='btn-follow follow r10 active clickable_area'>Following</div>
+    </div>
+   </div>
 
-	<div class='meta-data '>
-		
-		<div class='shop-part-container inShop'>
-			<div class='shop-part ' data-shopid=''>
-	
-	<a href='index.html#shopid=' username='' userid=''>
-	
-		<div class='top-holder'>
-			<div class='avatar-box'>
-				
-				
-				
-			</div>
-			<div class='center-box'>
-				<div class='head-line m15 truncate'>
-					
-				</div>
-				<div class='gray-line r12' data-lastlogin="">
-				</div>
-			</div>
-			<div class='view-box  r12' data-shopid=>
-				<span data-i18n='label_view_shop'></span>
-			</div>
-		</div>
+  </div>
 
-	</a>
-	<ul class="bottom-holder isPC">
-			
-				<li  ng-class="activeflag? 'activetab': '' " class="products-box " ng-click="userProducts()">
-					<div class="space"></div>
-					<div class="box-left">
-						<span class="icon ic_detail_product_web">
-						</span>
-					</div>
-					<div class="box-right">
-						<div class="number m18">{{user.n_p}}</div>
-						
-							<div class="text" data-i18n="label_products">Products</div>
-						
-					</div>
-					<div class="space"></div>
-				</li>
-				
-				<li class="border">&nbsp;
-				</li>
-				
-				<li  ng-class="activeflag? '': 'activetab' " class="reviews-box" ng-click="likedProducts()">
-					<div class="space"></div>
-					<div class="box-left">
-						<span class="icon ic_detail_positive_web">
-						</span>
-					</div>
-					<div class="box-right r12">
-						<div class="number m18">{{user.n_l}}</div>
-						
-							<div class="text"  data-i18n="label_positive_reviews">Like Products</div>
-						
-					</div>
-					<div class="space"></div>
-				</li>
-			
-							
-		</ul>	
-</div>
-</div>
-</div>
+ </header>
+ <div class="shop-stats middle-centered-div">
+  <div class='followers r12'>
+   <a class='followerhref'><span data-i18n='label_follower'>Followers</span><span
+    class='number r12'>{{user.n_fr}}</span></a>
+  </div>
+  <div class='holder withborder flex1'></div>
+  <div class='holder flex1'></div>
+  <div class='following r12'>
+   <a class='followinghref'><span data-i18n='label_following'>Following</span><span
+    class='number r12'>{{user.n_fg}}</span></a>
+  </div>
+  <div class='holder flex1'></div>
+ </div>
+
+ <div class='meta-data '>
+
+  <div class='shop-part-container inShop'>
+   <div class='shop-part ' data-shopid=''>
+
+    <a href='index.html#shopid=' username='' userid=''>
+
+     <div class='top-holder'>
+      <div class='avatar-box'></div>
+      <div class='center-box'>
+       <div class='head-line m15 truncate'></div>
+       <div class='gray-line r12' data-lastlogin=""></div>
+      </div>
+      <div class='view-box  r12' data-shopid=>
+       <span data-i18n='label_view_shop'></span>
+      </div>
+     </div>
+
+    </a>
+    <ul class="bottom-holder isPC">
+
+     <li ng-class="activeflag? 'activetab': '' " class="products-box "
+      ng-click="userProducts()">
+      <div class="space"></div>
+      <div class="box-left">
+       <span class="icon ic_detail_product_web"> </span>
+      </div>
+      <div class="box-right">
+       <div class="number m18">{{user.n_p}}</div>
+
+       <div class="text" data-i18n="label_products">Products</div>
+
+      </div>
+      <div class="space"></div>
+     </li>
+
+     <li class="border">&nbsp;</li>
+
+     <li ng-class="activeflag? '': 'activetab' " class="reviews-box"
+      ng-click="likedProducts()">
+      <div class="space"></div>
+      <div class="box-left">
+       <span class="icon ic_detail_positive_web"> </span>
+      </div>
+      <div class="box-right r12">
+       <div class="number m18">{{user.n_l}}</div>
+
+       <div class="text" data-i18n="label_positive_reviews">Like
+        Products</div>
+
+      </div>
+      <div class="space"></div>
+     </li>
+
+
+    </ul>
+   </div>
+  </div>
+ </div>
 </div>
 
 
 <div class="popular_products_wrapper container center-container">
-		<div class="swiper-wrapper">
-			<ul class='item-list-pop swiper-slide' data-cate='pop'>
-			</ul>
-			<ul class='item-list-ctime swiper-slide' data-cate='ctime'>
-			</ul>
-			<ul class='item-list-distance swiper-slide' data-cate='distance'>
-			</ul>
-		</div>
+ <div class="swiper-wrapper">
+  <ul class='item-list-pop swiper-slide' data-cate='pop'>
+  </ul>
+  <ul class='item-list-ctime swiper-slide' data-cate='ctime'>
+  </ul>
+  <ul class='item-list-distance swiper-slide' data-cate='distance'>
+  </ul>
+ </div>
 
-<div class='loading-text' style="display:none;">
-	Loading...
+ <div class='loading-text' style="display: none;">Loading...</div>
+
+ <div class='initial-loading-indicator'
+  style='display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); -webkit-transform: translate(-50%, -50%);'>
+  <img src='../../static/images/loading.gif' />
+ </div>
+ <div
+  class="popular_products_wrapper container center-container swiper-container-horizontal"
+  style="padding-left: 0px;">
+  <div class="swiper-wrapper">
+   <ul class="item-list-pop swiper-slide swiper-slide-active"
+    data-cate="pop"
+    style="min-height: 629px; text-align: left; width: 597px;">
+    <li class="item-card simple null" ng-repeat="product in products">
+     <div data-ng-include style="width: 100%;"
+      data-src="'/assets/app/views/babybox/similar-product-info.html'"></div>
+    </li>
+   </ul>
+  </div>
+ <div id="back-to-top" style="z-index: 1000">
+  <a data-ng-click="gotoTop()"><span class="icon-title-arrow-up"></span>Top</a>
+ </div>
+
 </div>
 
-<div class='initial-loading-indicator' style='display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); -webkit-transform: translate(-50%, -50%);'>
-	<img src='../../static/images/loading.gif' />
-</div>
-<div class="popular_products_wrapper container center-container swiper-container-horizontal" style="padding-left: 0px;">
-	<div class="swiper-wrapper">
-		<ul class="item-list-pop swiper-slide swiper-slide-active"
-			data-cate="pop"
-			style="min-height: 629px; text-align: left; width: 597px;">
-			<li class="item-card simple null"
-				ng-repeat="product in products">
-				<div data-ng-include style="width: 100%;"
-					 data-src="'/assets/app/views/babybox/similar-product-info.html'"></div>
-			</li>
-			</ul>
-			<ul class="item-list-ctime swiper-slide swiper-slide-next"
-				data-cate="ctime"
-				style="min-height: 629px; text-align: left; width: 597px;">
-			</ul>
-			<ul class="item-list-distance swiper-slide" data-cate="distance"
-				style="min-height: 629px; text-align: left; width: 597px;">
-			</ul>
-		</div>
-			<div class="loading-text" style="">Loading...</div>
-				<div class="initial-loading-indicator"
-					style="display: none; position: fixed; top: 75%; left: 50%; transform: translate(-50%, -50%);">
-					<img src="/static/images/loading.gif">
-				</div>
-				<div class="nomore">No more product found.</div>
-			</div>
-			<div id="back-to-top" style="z-index: 1000">
-				<a data-ng-click="gotoTop()"><span class="icon-title-arrow-up"></span>Top</a>
-			</div>
 
-		</div>
-	
-	
 <style>
 .activetab {
 	color: #ff5722;
 	border-bottom: 2px solid #ff5722;
 }
-.logout_{
 
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    display: none;
-    float: left;
-    min-width: 160px;
-    padding: 5px 0;
-    margin: 2px 0 0;
-    list-style: none;
-    font-size: 14px;
-    text-align: left;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 4px;
-    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,0.175);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.175);
-    background-clip: padding-box;
+.logout_ {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 1000;
+	display: none;
+	float: left;
+	min-width: 160px;
+	padding: 5px 0;
+	margin: 2px 0 0;
+	list-style: none;
+	font-size: 14px;
+	text-align: left;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	border-radius: 4px;
+	-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+	background-clip: padding-box;
 }
 }
 </style>
