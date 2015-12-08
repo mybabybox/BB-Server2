@@ -26,7 +26,7 @@ import play.db.jpa.JPA;
  */
 @Entity
 @EntityListeners(AuditListener.class)
-public class GameBadge extends domain.Entity  implements Serializable, Creatable, Updatable {
+public class GameBadge extends domain.Entity implements Serializable, Creatable, Updatable {
     private static final play.api.Logger logger = play.api.Logger.apply(GameBadge.class);
 
     @Id

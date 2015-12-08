@@ -156,7 +156,7 @@ public class Application extends Controller {
     public static Result signup() {
         final User localUser = getLocalUser(session());
         if (User.isLoggedIn(localUser)) {
-            return redirect("/my");
+            return redirect("/home");
         }
         
         return ok(views.html.signup.render(MyUsernamePasswordAuthProvider.SIGNUP_FORM));
@@ -202,7 +202,7 @@ public class Application extends Controller {
 		// put into http session
         session().put(SESSION_PROMOCODE, promoCode);
 
-		return redirect("/my#!/promo-code-page/"+promoCode);
+		return redirect("/home#!/promo-code-page/"+promoCode);
 	}
 
 	@Transactional
@@ -305,7 +305,7 @@ public class Application extends Controller {
         }
         */
         
-        return redirect("/my");
+        return redirect("/home");
 	}
 	
 	private static Result handleSaveSignupInfoError(String error, boolean fb) {
@@ -429,7 +429,7 @@ public class Application extends Controller {
         
 		final User localUser = getLocalUser(session());
 		/*if (User.isLoggedIn(localUser)) {
-			return redirect("/my");
+			return redirect("/home");
 		}*/
 		return ok(views.html.login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM, isOverDailySignupThreshold()));
 	}
@@ -726,18 +726,6 @@ public class Application extends Controller {
 	//
 	// TEMP
 	//
-	
-	@Transactional
-	public static Result addProduct() {
-		User user = Application.getLocalUser(session());
-		return ok(views.html.babybox.web.add_product.render(Json.stringify(Json.toJson(new UserVM(user)))));
-	}
-	
-	@Transactional
-	public static Result addStory() {
-		User user = Application.getLocalUser(session());
-		return ok(views.html.babybox.web.add_story.render(Json.stringify(Json.toJson(new UserVM(user)))));
-	}
 	
 	@Transactional
 	public static Result getCategories(){

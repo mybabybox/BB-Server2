@@ -28,7 +28,7 @@ GET     /profile                    controllers.Application.profile
 
 # Main
 GET     /                           @controllers.Application.index
-GET     /my                         @controllers.Application.home
+GET     /home                       @controllers.Application.home
 GET     /login                      controllers.Application.login
 
 # Home
@@ -179,10 +179,6 @@ GET     /get-all-districts                          controllers.Application.getA
 #GET     /categories                                 controllers.Application.getCategories()
 #GET     /category/:id                               controllers.Application.getCategory(id:Long)
 GET     /category/:id/:catagoryFilter               @controllers.Application.getCategoryPage(id:Long, catagoryFilter:String)
-
-# web
-GET     /add/product                                controllers.Application.addProduct
-GET     /add/story                                  controllers.Application.addStory
 
 # mobile
 POST    /mobile/login                               controllers.Application.doMobileLogin

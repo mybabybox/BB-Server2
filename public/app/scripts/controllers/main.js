@@ -4,11 +4,13 @@ var babybox = angular.module('babybox');
 
 babybox.controller('FrontPageController', 
 		function($scope, $route, feedService, productService, $rootScope, ngDialog, userInfo, viewService, $location, $anchorScroll, usSpinnerService) {
+	
 	usSpinnerService.spin('loading...');
 	$scope.userInfo = userInfo;
 	$scope.homeFeed=true;
 	$scope.products = productService.getHomeExploreFeed.get({offset:0});
 	console.log($scope.products);
+	
 	$scope.gotoTop=function(){
 		$location.hash('');
 		$anchorScroll();
@@ -25,23 +27,14 @@ babybox.controller('FrontPageController',
 		$scope.homeFeed=false;
 		console.log($scope.products);
 	};
-/*	$scope.open = function (product) {
-		$scope.product = product;
-		viewService.viewProduct.get({id:product.id});
-		ngDialog.open({
-			template: '/assets/app/views/babybox/product-dialog.html',
-			className: 'ngdialog-theme-plain custom-width ',
-			controller: 'ProductController',
-			scope: $scope                
-		});
-	};
-*/	
+
 	$scope.categories = feedService.getAllCategories.get();
 
 });
 
 babybox.controller('CategoryPageController', 
 		function($scope, $route, $rootScope, ngDialog, $routeParams, $location,userInfo, category, products, categoryService, $anchorScroll, usSpinnerService) {
+	
 	usSpinnerService.spin('loading...');
 	console.log("controller .. ")
 	$scope.userInfo = userInfo;
@@ -56,16 +49,6 @@ babybox.controller('CategoryPageController',
 		$anchorScroll();
 	};
 	
-/*	$scope.open = function (product) {
-		$scope.product = product;
-		viewService.viewProduct.get({id:product.id});
-		ngDialog.open({
-			template: '/assets/app/views/babybox/product-dialog.html',
-			className: 'ngdialog-theme-plain custom-width ',
-			controller: 'ProductController',
-			scope: $scope                
-		});
-	};*/
 });
 
 babybox.controller('ProductPageController', 

@@ -25,18 +25,11 @@ var writeMetaCanonical = function(absUrl) {
 	//log('orignial: '+absUrl);
 	if (absUrl.match(/\/frontpage#!/)) {
 		absUrl = absUrl.replace(/\/frontpage#!/, "/#!");
-	} else if (absUrl.match(/\/my#!/)) {
-		absUrl = absUrl.replace(/\/my#!\/communities-discover/, "/#!/communities-discover");
-		absUrl = absUrl.replace(/\/my#!\/community/, "/#!/community");
-		absUrl = absUrl.replace(/\/my#!\/post-landing/, "/#!/post-landing");
-		absUrl = absUrl.replace(/\/my#!\/qna-landing/, "/#!/qna-landing");
-	} else if (absUrl.match(/\/m-frontpage#!/)) {
-		absUrl = absUrl.replace(/\/m-frontpage#!/, "/#!");
-	} else if (absUrl.match(/\/m-my#!/)) {
-		absUrl = absUrl.replace(/\/m-my#!\/communities-discover/, "/#!/communities-discover");
-		absUrl = absUrl.replace(/\/m-my#!\/community/, "/#!/community");
-		absUrl = absUrl.replace(/\/m-my#!\/post-landing/, "/#!/post-landing");
-		absUrl = absUrl.replace(/\/m-my#!\/qna-landing/, "/#!/qna-landing");
+	} else if (absUrl.match(/\/home#!/)) {
+		absUrl = absUrl.replace(/\/home#!\/communities-discover/, "/#!/communities-discover");
+		absUrl = absUrl.replace(/\/home#!\/community/, "/#!/community");
+		absUrl = absUrl.replace(/\/home#!\/post-landing/, "/#!/post-landing");
+		absUrl = absUrl.replace(/\/home#!\/qna-landing/, "/#!/qna-landing");
 	}
 	//log('replace: 'absUrl);
 	
