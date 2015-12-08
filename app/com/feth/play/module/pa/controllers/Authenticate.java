@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 
 import play.data.DynamicForm;
 import play.db.jpa.Transactional;
-import play.mvc.Http.Request;
 import play.mvc.Result;
 import Decoder.BASE64Encoder;
 
@@ -39,7 +38,7 @@ public class Authenticate extends AuthenticateBase {
 		String encryptedValue = null;
 		String providerKey = session().get(PlayAuthenticate.PROVIDER_KEY);
 		String userKey = session().get(PlayAuthenticate.USER_KEY);
-		String plainData = providerKey + "-" + userKey;
+		String plainData = providerKey + PlayAuthenticate.USER_ENCRYPTED_KEY_SEPARATOR + userKey;
 		
 		if (StringUtils.isEmpty(providerKey) || "null".equals(providerKey.trim()) || 
 				StringUtils.isEmpty(userKey) || "null".equals(userKey.trim())) {
@@ -59,11 +58,6 @@ public class Authenticate extends AuthenticateBase {
     		logger.underlyingLogger().error((user == null? "" : "[u=" + user.id + "] ") + "mobileAuthenticate login failure key=" + plainData, e);
     		return status(500);
     	}
-		
-		// credit for first app login
-		if (user != null) {
-			//GameAccount.setPointsForAppLogin(user);
-		}
 		
 		return ok(encryptedValue.replace("+", "%2b"));
 	}

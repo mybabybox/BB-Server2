@@ -198,7 +198,6 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 	}
 	
 	protected String formatSubject(String subject) {
-	    //return "Å"+subject;
 	    return subject;
 	}
 }

@@ -2,12 +2,10 @@ package com.feth.play.module.pa;
 
 import java.util.Date;
 
-import models.User;
 import play.Configuration;
 import play.Logger;
 import play.Play;
 import play.data.Form;
-import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 import play.i18n.Messages;
 import play.mvc.Call;
@@ -23,7 +21,6 @@ import com.feth.play.module.pa.exceptions.AuthException;
 import com.feth.play.module.pa.providers.AuthProvider;
 import com.feth.play.module.pa.service.UserService;
 import com.feth.play.module.pa.user.AuthUser;
-import com.feth.play.module.pa.user.EmailIdentity;
 
 import controllers.Application;
 
@@ -36,6 +33,8 @@ public abstract class PlayAuthenticate {
 	private static final String SETTING_KEY_ACCOUNT_AUTO_LINK = "accountAutoLink";
 	private static final String SETTING_KEY_ACCOUNT_AUTO_MERGE = "accountAutoMerge";
 
+	public static final String USER_ENCRYPTED_KEY_SEPARATOR = ":";
+	
 	public abstract static class Resolver {
 
 		/**
@@ -246,7 +245,7 @@ public abstract class PlayAuthenticate {
 	}
 
 	public static AuthUser getUser(String string) {
-		String[] st = string.split("-");
+		String[] st = string.split(USER_ENCRYPTED_KEY_SEPARATOR);
 		String provider = st[0];
 		String id = st[1];
 		final long expires = 1424514658953L;

@@ -325,8 +325,8 @@ public class Application extends Controller {
 				Key dkey = generateKey();
 				Cipher c = Cipher.getInstance("AES");
 				c.init(Cipher.DECRYPT_MODE, dkey);
-				byte[] decordedValue = new BASE64Decoder().decodeBuffer(userKey);
-				byte[] decValue = c.doFinal(decordedValue);
+				byte[] decodedValue = new BASE64Decoder().decodeBuffer(userKey);
+				byte[] decValue = c.doFinal(decodedValue);
 				decryptedValue = new String(decValue);
 				//logger.underlyingLogger().debug("getLocalUser from mobile - " + userKey + " => " + decryptedValue);
 				localUser = getMobileLocalUser(decryptedValue);
@@ -437,9 +437,9 @@ public class Application extends Controller {
         
 	@Transactional
 	public static Result comment() {
-		    final User localUser = getLocalUser(session());
-		    return ok(views.html.babybox.web.comment.render());
-        }
+	    final User localUser = getLocalUser(session());
+	    return ok(views.html.babybox.web.comment.render());
+    }
 
 	
 	@Transactional
@@ -489,7 +489,7 @@ public class Application extends Controller {
 				return badRequest("電郵尚未認證，請登入電郵並按認證連結 - "+user.email);
 			}
 			
-			// null-null
+			// null:null
 			String providerKey = session().get(PlayAuthenticate.PROVIDER_KEY);
 			String userKey = session().get(PlayAuthenticate.USER_KEY);
 			if (StringUtils.isEmpty(providerKey) || "null".equals(providerKey.trim()) || 
@@ -498,7 +498,9 @@ public class Application extends Controller {
 			}
 			
 			String encryptedValue = null;
-			String plainData = session().get(PlayAuthenticate.PROVIDER_KEY)+"-"+session().get(PlayAuthenticate.USER_KEY);
+			String plainData = session().get(PlayAuthenticate.PROVIDER_KEY) +
+			        PlayAuthenticate.USER_ENCRYPTED_KEY_SEPARATOR +
+			        session().get(PlayAuthenticate.USER_KEY);
 			try { 
 	    		Key key = generateKey();
 	            Cipher c = Cipher.getInstance("AES");
@@ -509,9 +511,9 @@ public class Application extends Controller {
 	    		return badRequest();
 	    	}
 
-			
-			logger.underlyingLogger().info("[u="+user.id+"] [name="+user.displayName+"] Native mobile login");
-			return ok(encryptedValue.replace("+", "%2b"));
+			encryptedValue = encryptedValue.replace("+", "%2b");
+			logger.underlyingLogger().info("[u="+user.id+"] [name="+user.displayName+"] Native mobile login - encryptedValue="+encryptedValue);
+			return ok(encryptedValue);
 		}
 	}
 
