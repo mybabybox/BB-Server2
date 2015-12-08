@@ -25,7 +25,7 @@
         <meta property="og:description" content="description" /-->
         
        
-        <link rel="stylesheet" href="@routes.Assets.versioned("components/library/bootstrap/css/bootstrap.min.css")" />
+        <!-- <link rel="stylesheet" href="@routes.Assets.versioned("components/library/bootstrap/css/bootstrap.min.css")" /> -->
       	<link rel="stylesheet" href="@routes.Assets.versioned("app/bower_components/ng-file-upload/css/file-upload.css")" />
       	<link rel="stylesheet" href="@routes.Assets.versioned("app/bower_components/dropdowns-enhancement/css/dropdowns-enhancement.css")" />
       	<link rel="stylesheet" href="@routes.Assets.versioned("app/bower_components/angular-xeditable/dist/css/xeditable.css")" />
@@ -35,7 +35,7 @@
       	<link rel="icon" type="image/png" href="@routes.Assets.versioned("app/images/favicon-1.ico")">
       	<link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("app/images/favicon-1.ico")">
     </head>
-    <body id="main-app" class="menu-right-hidden" ng-app="babybox" ng-controller="ProfileController" style="overflow-x:hidden">
+    <body id="main-app" class="menu-right-hidden" ng-app="babybox" style="max-width: 100; overflow-x: hidden;" ng-controller="ProfileController">
     <span us-spinner spinner-key="loading..." ></span>
         <div class="container-fluid menu-hidden">
             <div id="main-view" >

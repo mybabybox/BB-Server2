@@ -274,7 +274,7 @@ a:focus {
   background-color: transparent;
 }
 .dropdown-menu {
-    min-width: 120px;
+   
     position: absolute;
     top: 100%;
     left: 50px;

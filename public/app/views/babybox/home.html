@@ -28,7 +28,7 @@
 
 <div style="padding-top: 55px;">
 <div class="center-container" >
-	<div class="category-grids subcat-container container row categories-wrapper center-container">
+	<div class="category-grids subcat-container row categories-wrapper center-container">
 		<div data-ng-repeat="cat in categories" class="col-xs-4 category-grid clickable_area ">
 		 	<a data-ng-href="/category/{{cat.id}}/popular">
 				<div class="ratio_4_3_box category-wrapper"
@@ -62,7 +62,7 @@
 	</ul>
 	<div class="location-bar "></div>
 	<div class="location-bar_fixed "></div>
-	<div class="popular_products_wrapper container center-container">
+	<div class="popular_products_wrapper center-container">
 		<div class="swiper-wrapper">
 			<ul class='item-list-pop swiper-slide' data-cate='pop'>
 			</ul>
@@ -83,11 +83,11 @@
 <div class='initial-loading-indicator' style='display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); -webkit-transform: translate(-50%, -50%);'>
 	<img src='../../static/images/loading.gif' />
 </div>
-<div class="popular_products_wrapper container center-container swiper-container-horizontal" style="padding-left: 0px;">
+<div class="popular_products_wrapper center-container swiper-container-horizontal" style="padding-left: 0px;">
 	<div class="swiper-wrapper">
 		<ul class="item-list-pop swiper-slide swiper-slide-active"
 			data-cate="pop"
-			style="min-height: 629px; text-align: left; width: 597px;">
+			style="min-height: 629px; text-align: left; width:102%;">
 			<li class="item-card simple null"
 				ng-repeat="product in products">
 				<div data-ng-include style="width: 100%;"
@@ -99,7 +99,7 @@
 				style="min-height: 629px; text-align: left; width: 597px;">
 			</ul>
 			<ul class="item-list-distance swiper-slide" data-cate="distance"
-				style="min-height: 629px; text-align: left; width: 597px;">
+				style="min-height: 629px; text-align: left; width: 102%;">
 			</ul>
 		</div>
 			<div class="loading-text" style="">Loading...</div>
