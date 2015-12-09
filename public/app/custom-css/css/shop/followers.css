@@ -1,1 +1,133 @@
-*{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}a{text-decoration:none;color:inherit}body{line-height:1.42857;font-size:14px}div,p,input{font-size:14px}.btn{display:inline-block}label{display:inline-block;max-width:100%}#shop-followers li{padding:12px;height:64px;background:white;border-bottom:1px solid rgba(0,0,0,0.09)}#shop-followers li .portrait{width:40px;height:40px;border-radius:20px;overflow:hidden;background-size:40px 40px}#shop-followers li .central-part{padding:0 12px}#shop-followers li .central-part .up{position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#shop-followers li .central-part .up a{color:rgba(0,0,0,0.87)}#shop-followers li .central-part .down{position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#shop-followers li .central-part .down a{color:rgba(0,0,0,0.54)}#shop-followers li .btn-follow,#shop-followers li .btn-remove{border-radius:4px;font-size:14px;font-weight:500;height:36px;padding:0 12px;-webkit-transition:all 0.2s ease-in;-moz-transition:all 0.2s ease-in;transition:all 0.2s ease-in;border:1px solid #ff5722;background-color:#ff5722;color:white;min-width:60px;height:36px;line-height:34px;background:#ff5722;border:1px solid #ff5722;text-align:center;width:100px;color:white;box-shadow:none;padding:0 2px}#shop-followers li .btn-follow:active,#shop-followers li .btn-remove:active{background-color:#ee3900;color:#FFFFFF;box-shadow:0px 4px 4px 0px rgba(0,0,0,0.08),0px 2px 2px 0px rgba(0,0,0,0.12)}#shop-followers li .btn-follow.active,#shop-followers li .btn-follow:active,#shop-followers li .btn-remove.active,#shop-followers li .btn-remove:active{color:#ff5722;background:white;border:1px solid rgba(255,87,34,0.4)}#shop-followers .loading-text{position:relative;padding:20px 0 40px 0;text-align:center;font-weight:500;color:#ff5722}.label-banned{color:#ff5722}.deleted{color:rgba(0,0,0,0.54)}.ic_following_attention{position:relative;top:1px}
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box
+}
+
+a {
+    text-decoration: none;
+    color: inherit
+}
+
+body {
+    line-height: 1.42857;
+    font-size: 14px
+}
+
+div,
+p,
+input {
+    font-size: 14px
+}
+
+.btn {
+    display: inline-block
+}
+
+label {
+    display: inline-block;
+    max-width: 100%
+}
+
+#shop-followers li {
+    padding: 12px;
+    height: 64px;
+    background: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.09)
+}
+
+#shop-followers li .portrait {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    overflow: hidden;
+    background-size: 40px 40px
+}
+
+#shop-followers li .central-part {
+    padding: 0 12px
+}
+
+#shop-followers li .central-part .up {
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+
+#shop-followers li .central-part .up a {
+    color: rgba(0, 0, 0, 0.87)
+}
+
+#shop-followers li .central-part .down {
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+
+#shop-followers li .central-part .down a {
+    color: rgba(0, 0, 0, 0.54)
+}
+
+#shop-followers li .btn-follow,
+#shop-followers li .btn-remove {
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    height: 36px;
+    padding: 0 12px;
+    -webkit-transition: all 0.2s ease-in;
+    -moz-transition: all 0.2s ease-in;
+    transition: all 0.2s ease-in;
+    border: 1px solid #ff5722;
+    background-color: #ff5722;
+    color: white;
+    min-width: 60px;
+    height: 36px;
+    line-height: 34px;
+    background: #ff5722;
+    border: 1px solid #ff5722;
+    text-align: center;
+    width: 100px;
+    color: white;
+    box-shadow: none;
+    padding: 0 2px
+}
+
+#shop-followers li .btn-follow:active,
+#shop-followers li .btn-remove:active {
+    background-color: #ee3900;
+    color: #FFFFFF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.08), 0px 2px 2px 0px rgba(0, 0, 0, 0.12)
+}
+
+#shop-followers li .btn-follow.active,
+#shop-followers li .btn-follow:active,
+#shop-followers li .btn-remove.active,
+#shop-followers li .btn-remove:active {
+    color: #ff5722;
+    background: white;
+    border: 1px solid rgba(255, 87, 34, 0.4)
+}
+
+#shop-followers .loading-text {
+    position: relative;
+    padding: 20px 0 40px 0;
+    text-align: center;
+    font-weight: 500;
+    color: #ff5722
+}
+
+.label-banned {
+    color: #ff5722
+}
+
+.deleted {
+    color: rgba(0, 0, 0, 0.54)
+}
+
+.ic_following_attention {
+    position: relative;
+    top: 1px
+}
