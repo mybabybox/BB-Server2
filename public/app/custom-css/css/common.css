@@ -8115,7 +8115,7 @@ a:hover {
     left: 0;
     height: 44px;
     width: 100%;
-    background: #f6f6f6;
+    background: #fff;
     z-index: 1001;
     border-bottom: 1px solid rgba(0, 0, 0, 0.09)
 }
@@ -8136,7 +8136,7 @@ a:hover {
 
 .header .inner {
     position: relative;
-    background: #f6f6f6;
+    background: #fff;
     margin-left: auto;
     margin-right: auto;
     height: 44px;
@@ -8152,9 +8152,9 @@ a:hover {
     position: relative;
     margin-top: 4px;
     margin-left: 12px;
-    width: 30px;
+    width: 128px;
     height: 30px;
-    background-size: 30px 30px
+    background-size: 128px 30px
 }
 
 .header .hold {
@@ -8550,9 +8550,9 @@ a:hover {
 }
 
 .ic_logo {
-    background-image: url(../images/logo_babybox_s%402x.png);
-    background-size: 32px 32px;
-    width: 32px;
+    background-image: url(../images/logo_babybox%402x.png);
+    background-size: 128px 32px;
+    width: 128px;
     height: 32px
 }
 
@@ -13016,7 +13016,7 @@ a:hover {
         background-image: url(../images/ic_remove%402x.png)
     }
     .ic_logo {
-        background-image: url(../images/logo_babybox_s%402x.png)
+        background-image: url(../images/logo_babybox%402x.png)
     }
     .ic_issue {
         background-image: url(../images/ic_issue%402x.png)
@@ -13343,7 +13343,7 @@ a:hover {
         background-image: url(../images/ic_remove%403x.png)
     }
     .ic_logo {
-        background-image: url(../images/logo_babybox_s%403x.png)
+        background-image: url(../images/logo_babybox%403x.png)
     }
     .ic_issue {
         background-image: url(../images/ic_issue%403x.png)

@@ -550,26 +550,26 @@ label {
 }
 
 .category-grids {
-    background-color: white
+    background-color: #f6f6f6
 }
 
 .categories-wrapper {
     margin-top: 0 !important;
     padding-right: 0;
     padding-left: 0;
-    margin-right: -6px
+    margin-right: 0px
 }
 
 .categories-wrapper.subcat-container {
-    padding-top: 6px;
-    padding-left: 6px;
+    padding-top: 4px;
+    padding-left: 4px;
     margin-right: 0px
 }
 
 .categories-wrapper .col-xs-4 {
-    padding-right: 6px;
+    padding-right: 4px;
     padding-left: 0;
-    padding-bottom: 6px
+    padding-bottom: 4px
 }
 
 .categories-wrapper .col-xs-4 .category-wrapper {
