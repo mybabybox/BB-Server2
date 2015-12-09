@@ -85,7 +85,7 @@ label {
 
 #shop-page header .btn-follow {
     display: inline-block;
-    background-color: #ff5722;
+    background-color: #FF76A4;
     border-radius: 4px;
     font-size: 14px;
     font-weight: 500;
@@ -94,8 +94,8 @@ label {
     -webkit-transition: all 0.2s ease-in;
     -moz-transition: all 0.2s ease-in;
     transition: all 0.2s ease-in;
-    border: 1px solid #ff5722;
-    background-color: #ff5722;
+    border: 1px solid #FF76A4;
+    background-color: #FF76A4;
     color: white;
     min-width: 60px;
     padding-left: 0px;
@@ -357,7 +357,7 @@ label {
 }
 
 #shop-page .phone .text {
-    color: #ff5722
+    color: #FF76A4
 }
 
 #shop-page .shopurl {
@@ -374,7 +374,7 @@ label {
 }
 
 #shop-page .shopurl .text {
-    color: #ff5722
+    color: #FF76A4
 }
 
 #shop-page .listing .leading {
@@ -437,7 +437,7 @@ label {
     padding: 0 6px;
     text-align: center;
     color: white;
-    background: #ff5722;
+    background: #FF76A4;
     min-width: 80px
 }
 
@@ -579,7 +579,7 @@ label {
 }
 
 #shop-page .listing ul li .padder .item-detail .price {
-    color: #ff5722
+    color: #FF76A4
 }
 
 #shop-page .listing ul li .padder .item-status {
@@ -629,7 +629,7 @@ label {
     padding: 3px;
     border-radius: 50%;
     background: #424864;
-    background: #ff5722;
+    background: #FF76A4;
     -webkit-animation: animIn 1s ease-in-out 0s infinite;
     animation: animIn 1s ease-in-out 0s infinite
 }
@@ -687,7 +687,7 @@ label {
     padding: 20px 0 40px 0;
     text-align: center;
     font-weight: 500;
-    color: #ff5722;
+    color: #FF76A4;
     display: none
 }
 
@@ -707,7 +707,7 @@ label {
 }
 
 .view-all .text {
-    color: #ff5722;
+    color: #FF76A4;
     font-weight: bold
 }
 

@@ -93,7 +93,7 @@ label {
     border: 1px solid rgba(255, 87, 34, 0.3);
     background: rgba(255, 87, 34, 0.1);
     border-radius: 4px;
-    color: #ff5722
+    color: #FF76A4
 }
 
 .signup .input-underline {
@@ -143,7 +143,7 @@ label {
 }
 
 .signup .input-underline .resend.enabled {
-    color: #ff5722
+    color: #FF76A4
 }
 
 .signup .header {
@@ -176,8 +176,8 @@ label {
     -webkit-transition: all 0.2s ease-in;
     -moz-transition: all 0.2s ease-in;
     transition: all 0.2s ease-in;
-    border: 1px solid #ff5722;
-    background-color: #ff5722;
+    border: 1px solid #FF76A4;
+    background-color: #FF76A4;
     color: white;
     min-width: 60px;
     border-radius: 4px;

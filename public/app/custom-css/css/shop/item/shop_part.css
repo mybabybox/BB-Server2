@@ -316,7 +316,7 @@ label {
 }
 
 .shop-part-container .shop-part .top-holder .view-box.isPC {
-    background: #ff5722;
+    background: #FF76A4;
     color: white;
     font-size: 14px;
     border: none;
@@ -387,7 +387,7 @@ label {
 }
 
 .shop-part-container .shop-part .bottom-holder li .box-above .text {
-    color: #ff5722;
+    color: #FF76A4;
     margin-left: 4px
 }
 
@@ -436,7 +436,7 @@ label {
 }
 
 .shop-part-container .shop-part .bottom-holder.isPC li .box-right .number {
-    color: #ff5722
+    color: #FF76A4
 }
 
 .shop-part-container .shop-part .bottom-holder.isPC li .box-right .text {

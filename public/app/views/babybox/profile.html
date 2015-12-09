@@ -6,12 +6,12 @@
   <div class='page_name L16'>{{user.dn}}</div>
   <div class="right-side">
    <span ng-if="userInfo.isLoggedIn"> <a
-    style="position: relative; top: -3px;"
+    style="position: relative; top: 0px;"
     class="dropdown-toggle dropdown-hover colorChange"
     data-toggle="dropdown" href="">
      <div ng-class="user.id==userInfo.id ? 'hold ic_web_setting' : '' "></div>
-   </a> <!-- <ul class="dropdown-menu settings-dropdown-menu"> -->
-    <ul class=" dropdown-menu">
+   </a> 
+    <ul class="dropdown-menu settings-dropdown-menu">
      <li><a href="/logout">logout</a></li>
     </ul>
    </span>
@@ -217,30 +217,3 @@
  </div>
 
 </div>
-
-
-<style>
-.activetab {
-	color: #ff5722;
-	border-bottom: 2px solid #ff5722;
-}
-
-.logout_ {
-	
-    z-index: 1000;
-    display: none;
-    float: left;
-    left: -18px;
-    list-style: none;
-    font-size: 14px;
-    text-align: center;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    /* border: 1px solid rgba(0,0,0,0.15); */
-    border-radius: 4px;
-    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,0.175);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.175);
-    background-clip: padding-box;
-}
-}
-</style>

@@ -20,6 +20,10 @@ input {
     font-size: 14px
 }
 
+span {
+    line-height: 1;
+}
+
 .btn {
     display: inline-block
 }
@@ -151,7 +155,7 @@ label {
 }
 
 .badge-promotion-percent {
-    color: #ff5722
+    color: #FF76A4
 }
 
 .badge-promotion-off-label {
@@ -163,7 +167,7 @@ label {
 .badge-promotion-off-label.promotion-tw {
     line-height: 31px;
     display: inline !important;
-    color: #ff5722 !important
+    color: #FF76A4 !important
 }
 
 .item-list {
@@ -463,8 +467,8 @@ body {
 }
 
 .item-card .bottom .item-detail .price {
-    font-size: 12px;
-    color: #ff5722;
+    font-size: 14px;
+    color: #2CBA28;
     margin-top: 2px
 }
 
@@ -513,7 +517,7 @@ body {
 
 .item-card .bottom .action-text {
     position: absolute;
-    color: #ff5722;
+    color: #FF76A4;
     display: none
 }
 
@@ -596,7 +600,7 @@ body {
     padding: 3px;
     border-radius: 50%;
     background: #424864;
-    background: #ff5722;
+    background: #FF76A4;
     -webkit-animation: animIn 1s ease-in-out 0s infinite;
     animation: animIn 1s ease-in-out 0s infinite
 }
@@ -653,7 +657,7 @@ body {
     padding: 20px 0 40px 0;
     text-align: center;
     font-weight: 500;
-    color: #ff5722
+    color: #FF76A4
 }
 
 .nomore {
@@ -661,7 +665,7 @@ body {
     padding: 20px 0 40px 0;
     text-align: center;
     font-weight: 500;
-    color: #ff5722;
+    color: #FF76A4;
     display: none
 }
 

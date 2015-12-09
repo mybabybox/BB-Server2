@@ -1,1 +1,98 @@
-*{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}a{text-decoration:none;color:inherit}body{line-height:1.42857;font-size:14px}div,p,input{font-size:14px}.btn{display:inline-block}label{display:inline-block;max-width:100%}.web-popup-mask{display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:#000;opacity:0.6;z-index:1002}.web-popup-holder{display:none;position:fixed;left:20px;right:20px;top:50%;-webkit-transform:translateY(-50%);transform:translateY(-50%);background:white;z-index:1003;text-align:center;border-radius:4px;padding:12px 0}.web-popup-holder .title{position:relative;text-align:center;font-size:16px;margin:0 auto}.web-popup-holder .image{position:relative;margin:10px auto;background-position:center center;background-size:cover;background-repeat:no-repeat no-repeat}.web-popup-holder .text{position:relative;margin:0 28px 8px;text-align:center;color:rgba(0,0,0,0.54)}.web-popup-holder .button{position:relative;width:80%;text-align:center;color:#ff5722;padding:12px 25px;display:inline-block}.web-popup-holder .button:active{background:rgba(255,87,34,0.2)}.web-popup-holder-mobile{top:40%;-webkit-transform:translateY(-40%);transform:translateY(-40%)}
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box
+}
+
+a {
+    text-decoration: none;
+    color: inherit
+}
+
+body {
+    line-height: 1.42857;
+    font-size: 14px
+}
+
+div,
+p,
+input {
+    font-size: 14px
+}
+
+.btn {
+    display: inline-block
+}
+
+label {
+    display: inline-block;
+    max-width: 100%
+}
+
+.web-popup-mask {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: 0.6;
+    z-index: 1002
+}
+
+.web-popup-holder {
+    display: none;
+    position: fixed;
+    left: 20px;
+    right: 20px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    background: white;
+    z-index: 1003;
+    text-align: center;
+    border-radius: 4px;
+    padding: 12px 0
+}
+
+.web-popup-holder .title {
+    position: relative;
+    text-align: center;
+    font-size: 16px;
+    margin: 0 auto
+}
+
+.web-popup-holder .image {
+    position: relative;
+    margin: 10px auto;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat no-repeat
+}
+
+.web-popup-holder .text {
+    position: relative;
+    margin: 0 28px 8px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.54)
+}
+
+.web-popup-holder .button {
+    position: relative;
+    width: 80%;
+    text-align: center;
+    color: #FF76A4;
+    padding: 12px 25px;
+    display: inline-block
+}
+
+.web-popup-holder .button:active {
+    background: rgba(255, 87, 34, 0.2)
+}
+
+.web-popup-holder-mobile {
+    top: 40%;
+    -webkit-transform: translateY(-40%);
+    transform: translateY(-40%)
+}

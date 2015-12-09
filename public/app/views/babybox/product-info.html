@@ -9,7 +9,7 @@
 		<div class='hold user_avatar ic_web_profile clickable_area'></div>
 		</a>
 		</span>
-		<span ng-if="userInfo.isLoggedIn" style="padding-right: 15px; padding-top: 8px;">
+		<span ng-if="userInfo.isLoggedIn" style="padding-right: 15px; padding-top: 0px;">
 		<a href="/profile/{{userInfo.id}}">
 		<div class="hold user_avatar clickable_area"  style="background-image:url(/image/get-mini-profile-image-by-id/{{userInfo.id}});"></div>
 		</a>
@@ -29,7 +29,7 @@
 		<div class="item-title">
             <div id="title-name" class="title r16">{{product.title}}</div>
 			<div class="price">
-				<div class="price-inner m24" id="item-price"><span class="dollarfy_sign" dir="ltr" style="display: inline;">$</span> <span class="dollarfy_val" currency="SGD" val="3000000">{{product.price}}</span></div>
+				<div class="price-inner m24" id="item-price"><span class="dollarfy_sign" dir="ltr" style="display: inline;">$</span> <span class="dollarfy_val" currency="HKD" val="3000000">{{product.price}}</span></div>
 				
 				<div class="slide-out-select shipping-fee-select collapsed  middle-centered-div" style="display: none;">
 					<div class="slide-out-select-display">
@@ -55,12 +55,8 @@
 		</div>
 		<div class="actions flex-it middle-centered-div">
 			<div id="likes" ng-click="like_Unlike(product.id)" class="web flex1 middle-centered-div like clickable_area">
-			<div ng-if="!product.isLiked">
-				<div id="like-icon" class="ic_icon ic_heart"></div>
-			</div>	
-			<div ng-if="product.isLiked">
-				<div id="like-icon" class="ic_icon ic_heart_filled"></div>
-			</div>
+				<div ng-if="product.isLiked" id="like-icon" class="ic_icon ic_heart_filled"></div>
+				<div ng-if="!product.isLiked" id="like-icon" class="ic_icon ic_heart"></div>
 				<div class="text r14 flex1" data-i18n="label_like">Like</div>
 				<div class="r14 number-container">
 					<span class="number">{{product.numLikes}}</span>
@@ -264,7 +260,7 @@
 			<a href="/product/{{post.id}}">
 				<img data-ng-src="/image/get-mini-post-image-by-id/{{post.images[0]}}">
 				<div class="recommend-product-price r10">
-					<span class="dollarfy_sign" val="SGD" style="display: inline;">$</span>
+					<span class="dollarfy_sign" val="HKD" style="display: inline;">$</span>
 					<span class="dollarfy_ext_int unit-price"  style="display: inline;">{{post.price}}</span>
 				</div>
 				<div class="status_band"></div></a>

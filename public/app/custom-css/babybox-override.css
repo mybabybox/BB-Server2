@@ -1,0 +1,31 @@
+.settings-dropdown-menu {
+	min-width: 100px;
+    position: absolute;
+    top: 80%;
+    right: 10px;
+    z-index: 1000;
+    display: none;
+    margin: 2px 0 0;
+    list-style: none;
+    font-size: 14px;
+    text-align: left;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    background-clip: padding-box
+}
+.settings-dropdown-menu li {
+    border: 0px;
+    margin: 5px 15px;
+}
+.settings-dropdown-menu > li > a {
+    padding: 0;
+}
+.settings-dropdown-divider {
+    border-bottom: 1px solid #efefef !important;
+    margin-left: 7px;
+    margin-right: 7px;
+}

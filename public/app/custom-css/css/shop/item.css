@@ -406,7 +406,7 @@ label {
 }
 
 .badge-promotion-percent {
-    color: #ff5722
+    color: #FF76A4
 }
 
 .badge-promotion-off-label {
@@ -418,7 +418,7 @@ label {
 .badge-promotion-off-label.promotion-tw {
     line-height: 31px;
     display: inline !important;
-    color: #ff5722 !important
+    color: #FF76A4 !important
 }
 
 * {
@@ -650,7 +650,7 @@ label {
 }
 
 .badge-promotion-percent {
-    color: #ff5722
+    color: #FF76A4
 }
 
 .badge-promotion-off-label {
@@ -662,7 +662,7 @@ label {
 .badge-promotion-off-label.promotion-tw {
     line-height: 31px;
     display: inline !important;
-    color: #ff5722 !important
+    color: #FF76A4 !important
 }
 
 .hide {
@@ -1391,8 +1391,8 @@ label {
 #item-page .top-part #top-image .carousel-indicators li.active {
     margin-bottom: 1px;
     margin-left: 1px;
-    background: #ff5722;
-    border-color: #ff5722
+    background: #FF76A4;
+    border-color: #FF76A4
 }
 
 #item-page .top-part #top-image .image {
@@ -1493,7 +1493,7 @@ label {
 
 #item-page .top-part .item-title .title {
     position: relative;
-    margin-top: 4px;
+    padding-top: 8px;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -1509,7 +1509,8 @@ label {
 
 #item-page .top-part .item-title .price .price-inner {
     font-size: 16px;
-    color: #ff5722
+    font-weight: bold;
+    color: #2CBA28
 }
 
 #item-page .top-part .item-title .price .price-inner .dollarfy_sign,
@@ -1528,7 +1529,7 @@ label {
 }
 
 #item-page .top-part .item-title .price .option-shipping-fee.primary-color {
-    color: #ff5722
+    color: #FF76A4
 }
 
 #item-page .top-part .item-title .price .shipping_fee_included {
@@ -1920,7 +1921,7 @@ label {
 #item-page .review-part .view-all-comments .leave-a-comment {
     display: none;
     text-align: center;
-    color: #ff5722;
+    color: #FF76A4;
     margin-top: -20px
 }
 
@@ -1932,7 +1933,7 @@ label {
 #item-page .review-part .view-all-comments .text {
     display: inline-block;
     vertical-align: middle;
-    color: #ff5722
+    color: #FF76A4
 }
 
 #item-page #second-layer {
@@ -2025,7 +2026,7 @@ label {
     display: inline-block;
     margin-top: 16px;
     margin-bottom: 16px;
-    color: #ff5722
+    color: #FF76A4
 }
 
 #item-page #second-layer .btn-bottom-holder .button.disabled {
@@ -2121,8 +2122,8 @@ label {
     -webkit-transition: all 0.2s ease-in;
     -moz-transition: all 0.2s ease-in;
     transition: all 0.2s ease-in;
-    border: 1px solid #ff5722;
-    background-color: #ff5722;
+    border: 1px solid #FF76A4;
+    background-color: #FF76A4;
     color: white;
     min-width: 60px;
     line-height: 36px;
@@ -2230,12 +2231,12 @@ label {
     -webkit-transition: all 0.2s ease-in;
     -moz-transition: all 0.2s ease-in;
     transition: all 0.2s ease-in;
-    border: 1px solid #ff5722;
-    background-color: #ff5722;
+    border: 1px solid #FF76A4;
+    background-color: #FF76A4;
     color: white;
     min-width: 60px;
     color: white;
-    background: #ff5722;
+    background: #FF76A4;
     height: 40px;
     line-height: 38px;
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08)
@@ -2256,12 +2257,12 @@ label {
     -webkit-transition: all 0.2s ease-in;
     -moz-transition: all 0.2s ease-in;
     transition: all 0.2s ease-in;
-    border: 1px solid #ff5722;
-    background-color: #ff5722;
+    border: 1px solid #FF76A4;
+    background-color: #FF76A4;
     color: white;
     min-width: 60px;
     color: white;
-    background: #ff5722;
+    background: #FF76A4;
     height: 40px;
     line-height: 38px;
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
