@@ -68,19 +68,18 @@ babybox.controller('ProductPageController',
 				$scope.product.isLiked = !$scope.product.isLiked;
 				$scope.product.numLikes++;
 			}
-		}
-		else
-		{
+		} else {
 			console.log("login on like. . . ");
 			$window.location.href ='/login';
 		}
 	}
-	$scope.loginComment = function() {
+	$scope.loginComments = function() {
 		if($scope.userInfo.id != -1){
-			$window.location.href ='/comment';
+			$window.location.href ='/comments';
 		}
-		else
+		else {
 			$window.location.href ='/login';
+		}
 	}
 
 });

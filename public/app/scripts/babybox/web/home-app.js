@@ -17,15 +17,13 @@ angular.module('babybox', [
   'ui.tinymce',
   'ui.utils',
   'ngSanitize',
-  'angularMoment',
-  'pasvaz.bindonce',
-  'ui.utils'
+  'angularMoment'
 ])
 .config(function ($routeProvider, $locationProvider) {
 	/*
 	$routeProvider
 		.when('/', {
-			templateUrl: '/assets/app/views/babybox/home.html'
+			templateUrl: '/assets/app/views/babybox/web/home.html'
 		})
 		.otherwise({
 			redirectTo: '/'

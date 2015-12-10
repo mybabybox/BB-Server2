@@ -5,30 +5,24 @@ import java.util.List;
 
 import models.Collection;
 import models.Post;
-import models.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CollectionVM {
-	public Long id;
-	public Long ownerId;
-	public String ownerName;
-	public String collectionName;
-	public List<Long> productImages = new ArrayList<>();
-	
+    @JsonProperty("id") public Long id;
+    @JsonProperty("ownerId") public Long ownerId;
+    @JsonProperty("ownerName") public String ownerName;
+    @JsonProperty("collectionName") public String collectionName;
+    @JsonProperty("productImages") public List<Long> productImages = new ArrayList<>();
 	
 	//new added from android babybox
-	public String name;
-	public String desc;
-	public Boolean system;
-	public String type;
-	public Long seq;
+    @JsonProperty("name") public String name;
+    @JsonProperty("desc") public String desc;
+    @JsonProperty("system") public Boolean system;
+    @JsonProperty("seq") public Long seq;
 	
-	
-	public CollectionVM(){
-		
-	}
+	public CollectionVM() {}
 
 	public CollectionVM(Collection collection) {
 		this.ownerId = collection.owner.id;
@@ -40,7 +34,6 @@ public class CollectionVM {
 				this.productImages.add(product.folder.resources.get(0).getId());
 			}
 		}
-		
 	}
 
 	public Long getProductId() {
@@ -90,5 +83,4 @@ public class CollectionVM {
 	public void setProductImages(List<Long> productImages) {
 		this.productImages = productImages;
 	}
-
 }

@@ -82,7 +82,7 @@ GET     /get-user-info              @controllers.UserController.getUserInfo
 GET     /about-user                 controllers.UserController.aboutUser
 POST    /updateUserProfileData      controllers.UserController.updateUserProfileData
 
-# Gcm
+# GCM
 POST	/save-gcm-key/:key/:versionCode            controllers.UserController.saveGcmKey(key:String, versionCode:Long)
 
 # Conversation
@@ -101,15 +101,21 @@ GET     /conversation-order/cancel/:id              controllers.UserController.c
 GET     /conversation-order/accept/:id              controllers.UserController.acceptConversationOrder(id:Long)
 GET     /conversation-order/decline/:id             controllers.UserController.declineConversationOrder(id:Long)
 
-# Product
-GET		/get-category-popular-feed/:id/:postType/:offset		@controllers.ProductController.getCategoryPopularFeed(id :Long, postType: String, offset: Long)
-GET		/get-category-newest-feed/:id/:postType/:offset			@controllers.ProductController.getCategoryNewestFeed(id :Long, postType: String, offset: Long)
-GET		/get-category-price-low-high-feed/:id/:postType/:offset	@controllers.ProductController.getCategoryPriceLowHighFeed(id :Long, postType: String, offset: Long)
-GET		/get-category-price-high-low-feed/:id/:postType/:offset	@controllers.ProductController.getCategoryPriceHighLowFeed(id :Long, postType: String, offset: Long)
+# Feeds
+GET		/get-category-popular-feed/:id/:postType/:offset		@controllers.CategoryController.getCategoryPopularFeed(id :Long, postType: String, offset: Long)
+GET		/get-category-newest-feed/:id/:postType/:offset			@controllers.CategoryController.getCategoryNewestFeed(id :Long, postType: String, offset: Long)
+GET		/get-category-price-low-high-feed/:id/:postType/:offset	@controllers.CategoryController.getCategoryPriceLowHighFeed(id :Long, postType: String, offset: Long)
+GET		/get-category-price-high-low-feed/:id/:postType/:offset	@controllers.CategoryController.getCategoryPriceHighLowFeed(id :Long, postType: String, offset: Long)
 GET		/get-home-explore-feed/:offset							@controllers.UserController.getHomeExploreFeed(offset: Long)
 GET     /get-home-following-feed/:offset                        @controllers.UserController.getHomeFollowingFeed(offset: Long)
 GET		/get-suggested-products/:id								@controllers.ProductController.getSuggestedProducts(id :Long)						
 
+# Category
+GET     /categories                                 controllers.CategoryController.getCategories()
+GET     /category/:id                               controllers.CategoryController.getCategory(id:Long)
+GET     /category/:id/:catagoryFilter               @controllers.CategoryController.getCategoryPage(id:Long, catagoryFilter:String)
+
+# Product
 POST    /post/new                                   controllers.ProductController.createProduct()
 POST	/web/post/new		 		             	controllers.ProductController.createProductWeb()
 POST    /post/edit                                  controllers.ProductController.editProduct()
@@ -128,7 +134,7 @@ GET		/post/:id									@controllers.ProductController.getProductInfo(id:Long)
 GET     /post/delete/:id                            controllers.ProductController.deletePost(id:Long)
 GET     /comment/delete/:id                         controllers.ProductController.deleteComment(id:Long)
 GET     /comments/:postId/:offset                   controllers.ProductController.getPostComments(postId: Long,offset:Long)
-GET     /comment  									controllers.Application.comment	
+GET     /comments                                   controllers.ProductController.comments()	
 
 # User
 GET     /get-user-posted-feed/:id/:offset       	@controllers.UserController.getUserPosts(id: Long, offset:Long)
@@ -143,10 +149,6 @@ GET     /notification-counter                       controllers.UserController.g
 GET     /reset-activities-count                     controllers.UserController.resetActivitiesCount
 GET     /reset-conversations-count                  controllers.UserController.resetConversationsCount
 GET		/get-activities/:offset				    	controllers.UserController.getActivities(offset:Long)
-
-# Category
-GET     /categories                                 controllers.Application.getCategories()
-GET     /category/:id                               controllers.Application.getCategory(id:Long)
 
 # Game
 GET     /game-badges/:id                            controllers.UserController.getGameBadges(id:Long)
@@ -172,13 +174,9 @@ GET     /image/get-original-message-image-by-id/:id controllers.UserController.g
 GET     /image/get-mini-message-image-by-id/:id     controllers.UserController.getMiniMessageImageById(id :Long)
 GET     /image/getEmoticons                         controllers.UserController.getEmoticons()
 
-# misc
+# Other
 GET     /get-all-districts                          controllers.Application.getAllDistricts
-
-# category
-#GET     /categories                                 controllers.Application.getCategories()
-#GET     /category/:id                               controllers.Application.getCategory(id:Long)
-GET     /category/:id/:catagoryFilter               @controllers.Application.getCategoryPage(id:Long, catagoryFilter:String)
+GET     /get-promotion-items/:itemType              controllers.Application.getPromotionItems(itemType:String)
 
 # mobile
 POST    /mobile/login                               controllers.Application.doMobileLogin

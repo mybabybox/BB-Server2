@@ -1,5 +1,6 @@
 package common.cache;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,15 +16,23 @@ public class PromotionItemCache {
 
     private static List<PromotionItem> promotionItems;
     private static Map<Long, PromotionItem> idsMap;
-    private static Map<ItemType, PromotionItem> itemTypesMap;
+    private static Map<ItemType, List<PromotionItem>> itemTypesMap;
 
     static {
         promotionItems = PromotionItem.loadPromotionItems();
         idsMap = new HashMap<>();
         itemTypesMap = new HashMap<>();
-        for (PromotionItem promotionItem : promotionItems) {
-            idsMap.put(promotionItem.id, promotionItem);
-            itemTypesMap.put(promotionItem.itemType, promotionItem);
+        for (PromotionItem item : promotionItems) {
+            // 1. id -> item
+            idsMap.put(item.id, item);
+            
+            // 2. itemType -> item
+            List<PromotionItem> items = itemTypesMap.get(item.itemType);
+            if (items == null) {
+                items = new ArrayList<>();
+                itemTypesMap.put(item.itemType, items);
+            }
+            items.add(item);
         }
     }
 
@@ -32,13 +41,10 @@ public class PromotionItemCache {
     }
     
     public static PromotionItem getPromotionItem(Long id) {
-        if (idsMap.containsKey(id)) {
-            return idsMap.get(id);
-        }
-        return null;
+        return idsMap.get(id);
     }
     
-    public static PromotionItem getPromotionItem(ItemType itemType) {
+    public static List<PromotionItem> getPromotionItems(ItemType itemType) {
         if (itemTypesMap.containsKey(itemType)) {
             return itemTypesMap.get(itemType);
         }

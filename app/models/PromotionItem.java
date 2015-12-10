@@ -90,8 +90,8 @@ public class PromotionItem extends domain.Entity  implements Serializable, Creat
         return (List<PromotionItem>)q.getResultList();
     }
 	
-	public static List<PromotionItem> getAllPromotionItems() {
-	    return PromotionItemCache.getPromotionItems();
+	public static List<PromotionItem> getPromotionItems(ItemType itemType) {
+	    return PromotionItemCache.getPromotionItems(itemType);
 	}
 	
 	public static PromotionItem findById(Long id) {
@@ -103,21 +103,6 @@ public class PromotionItem extends domain.Entity  implements Serializable, Creat
         try {
             Query q = JPA.em().createQuery("SELECT p FROM PromotionItem p where id = ?1 and deleted = false");
             q.setParameter(1, id);
-            return (PromotionItem) q.getSingleResult();
-        } catch (NoResultException nre) {
-            return null;
-        }
-    }
-	
-	public static PromotionItem findByItemType(ItemType itemType) {
-	    PromotionItem promotionItem = PromotionItemCache.getPromotionItem(itemType);
-        if (promotionItem != null) {
-            return promotionItem;
-        }
-        
-        try {
-            Query q = JPA.em().createQuery("SELECT p FROM PromotionItem p where itemType = ?1 and deleted = false");
-            q.setParameter(1, itemType.name());
             return (PromotionItem) q.getSingleResult();
         } catch (NoResultException nre) {
             return null;

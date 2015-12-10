@@ -1,22 +1,24 @@
 package viewmodel;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import models.Activity;
 
 public class ActivityVM {
-	public Long id;
-	public Long createdDate;
-	public String activityType;
-	public Long actor;
-	public Long actorImage;
-	public String actorName;
-    public String actorType;
-	public Long target;
-	public Long targetImage;
-    public String targetName;
-    public String targetType;
-	public Boolean viewed;
+    @JsonProperty("id") public Long id;
+    @JsonProperty("createdDate") public Long createdDate;
+    @JsonProperty("activityType") public String activityType;
+    @JsonProperty("actor") public Long actor;
+    @JsonProperty("actorImage") public Long actorImage;
+    @JsonProperty("actorName") public String actorName;
+    @JsonProperty("actorType") public String actorType;
+    @JsonProperty("target") public Long target;
+    @JsonProperty("targetImage") public Long targetImage;
+    @JsonProperty("targetName") public String targetName;
+    @JsonProperty("targetType") public String targetType;
+    @JsonProperty("viewed") public Boolean viewed;
 	
-	public ActivityVM(){}
+	public ActivityVM() {}
 	
 	public ActivityVM(Activity activity) {
 		this.id = activity.id;

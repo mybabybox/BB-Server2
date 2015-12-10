@@ -13,15 +13,15 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Inject;
 
-import models.Category;
 import models.GameBadge.BadgeType;
 import models.GameBadgeAwarded;
 import models.Location;
+import models.PromotionItem;
 import models.SecurityRole;
 import models.TermsAndConditions;
 import models.User;
-import models.UserChild;
 import models.UserInfo;
+import models.PromotionItem.ItemType;
 import models.UserInfo.ParentType;
 
 import org.apache.commons.lang.StringUtils;
@@ -42,10 +42,7 @@ import providers.MyUsernamePasswordAuthProvider;
 import providers.MyUsernamePasswordAuthProvider.MyLogin;
 import providers.MyUsernamePasswordAuthProvider.MySignup;
 import viewmodel.ApplicationInfoVM;
-import viewmodel.CategoryVM;
-import viewmodel.PostVM;
-import viewmodel.PostVMLite;
-import viewmodel.ProfileVM;
+import viewmodel.PromotionItemVM;
 import viewmodel.UserVM;
 import Decoder.BASE64Encoder;
 import Decoder.BASE64Decoder;
@@ -60,9 +57,8 @@ import com.feth.play.module.pa.user.AuthUser;
 
 import common.cache.CalcServer;
 import common.cache.LocationCache;
+import common.cache.PromotionItemCache;
 import common.model.TargetGender;
-import common.model.FeedFilter.FeedType;
-import common.utils.DateTimeUtil;
 import common.utils.UserAgentUtil;
 import common.utils.ValidationUtil;
 import domain.DefaultValues;
@@ -434,14 +430,6 @@ public class Application extends Controller {
 		return ok(views.html.login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM, isOverDailySignupThreshold()));
 	}
 	
-        
-	@Transactional
-	public static Result comment() {
-	    final User localUser = getLocalUser(session());
-	    return ok(views.html.babybox.web.comment.render());
-    }
-
-	
 	@Transactional
 	public static Result doLogin() {
 		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
@@ -708,9 +696,27 @@ public class Application extends Controller {
 		return new SimpleDateFormat("yyyy-dd-MM HH:mm:ss").format(new Date(t));
 	}
     
+	//
+	// Other APIs
+	//
+	
 	@Transactional
     public static Result getAllDistricts() {
         return ok(Json.toJson(LocationCache.getHongKongDistrictsVM()));
+    }
+
+	@Transactional
+    public static Result getPromotionItems(String itemType) {
+	    List<PromotionItemVM> vms = new ArrayList<>();
+	    try {
+	        List<PromotionItem> promotionItems = PromotionItemCache.getPromotionItems(ItemType.valueOf(itemType));
+	        for (PromotionItem promotionItem : promotionItems) {
+	            vms.add(new PromotionItemVM(promotionItem));
+	        }
+	    } catch (Exception e) {
+	        
+	    }
+        return ok(Json.toJson(vms));
     }
 
 	//
@@ -722,49 +728,4 @@ public class Application extends Controller {
 	public static Result googleWebmaster() {
 	    return ok(views.html.google_webmaster.render());
 	}
-	
-	//
-	// TEMP
-	//
-	
-	@Transactional
-	public static Result getCategories(){
-		List<CategoryVM> categoryList = new ArrayList<CategoryVM>();
-		for(Category category : Category.getAllCategories()){
-			CategoryVM cvm = new CategoryVM(category);
-			categoryList.add(cvm);
-		}
-		return ok(Json.toJson(categoryList));
-	}
-	
-	@Transactional
-	public static Result getCategory(Long id){
-		Category category = Category.findById(id);
-		CategoryVM categoryVM = new CategoryVM(category);
-		return ok(Json.toJson(categoryVM));
-	}
-	
-	@Transactional
-	public Result getCategoryPage(Long id, String catagoryFilter){
-		User localUser = Application.getLocalUser(session());
-		Category category = Category.findById(id);
-		CategoryVM categoryVM = new CategoryVM(category);
-		List<PostVMLite> postVMs = new ArrayList<>();
-		switch(catagoryFilter){
-		case "popular":
-			postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_POPULAR);
-			break;
-		case "newest":
-			postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_NEWEST);
-			break;
-		case "high2low":
-			postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_PRICE_HIGH_LOW);
-			break;
-		case "low2high":
-			postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_PRICE_LOW_HIGH);
-			break;
-		}
-		return ok(views.html.babybox.web.category.render(Json.stringify(Json.toJson(categoryVM)), Json.stringify(Json.toJson(postVMs)), Json.stringify(Json.toJson(new UserVM(localUser)))));
-	}
-	
 }

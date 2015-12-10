@@ -454,52 +454,6 @@ public class ProductController extends Controller{
 	}
 	
 	@Transactional 
-	public Result getCategoryPopularFeed(Long id, String postType, Long offset){
-		final User localUser = Application.getLocalUser(session());
-		if (!localUser.isLoggedIn()) {
-			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-			return notFound();
-		}
-		
-		List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_POPULAR);
-		return ok(Json.toJson(vms));
-
-	}
-
-	@Transactional 
-	public Result getCategoryNewestFeed(Long id, String postType, Long offset){
-		final User localUser = Application.getLocalUser(session());
-		if (!localUser.isLoggedIn()) {
-			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-			return notFound();
-		}
-		List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_NEWEST);
-		return ok(Json.toJson(vms));
-	}
-	
-	@Transactional 
-	public Result getCategoryPriceLowHighFeed(Long id, String postType, Long offset){
-		final User localUser = Application.getLocalUser(session());
-		if (!localUser.isLoggedIn()) {
-			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-			return notFound();
-		}
-		List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_PRICE_LOW_HIGH);
-		return ok(Json.toJson(vms));
-	}
-	
-	@Transactional 
-	public Result getCategoryPriceHighLowFeed(Long id, String postType, Long offset) {
-		final User localUser = Application.getLocalUser(session());
-		if (!localUser.isLoggedIn()) {
-			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-			return notFound();
-		}
-		List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_PRICE_HIGH_LOW);
-		return ok(Json.toJson(vms));
-	}
-	
-	@Transactional 
 	public Result getSuggestedProducts(Long id) {
 		final User localUser = Application.getLocalUser(session());
 		if (!localUser.isLoggedIn()) {
@@ -530,6 +484,11 @@ public class ProductController extends Controller{
 		}
 		return ok(Json.toJson(comments));
 	}
+
+	@Transactional
+    public static Result comments() {
+        return ok(views.html.babybox.web.comments.render());
+    }
 
 	@Transactional
 	public static Result getConversations(Long id) {
