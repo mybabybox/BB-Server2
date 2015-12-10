@@ -5,29 +5,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import models.PromotionItem;
-import models.PromotionItem.ItemType;
+import models.FeaturedItem;
+import models.FeaturedItem.ItemType;
 
 /**
  * 
  */
-public class PromotionItemCache {
+public class FeaturedItemCache {
     // Permanent cache loaded up on system startup.
 
-    private static List<PromotionItem> promotionItems;
-    private static Map<Long, PromotionItem> idsMap;
-    private static Map<ItemType, List<PromotionItem>> itemTypesMap;
+    private static List<FeaturedItem> featuredItems;
+    private static Map<Long, FeaturedItem> idsMap;
+    private static Map<ItemType, List<FeaturedItem>> itemTypesMap;
 
     static {
-        promotionItems = PromotionItem.loadPromotionItems();
+        featuredItems = FeaturedItem.loadFeaturedItems();
         idsMap = new HashMap<>();
         itemTypesMap = new HashMap<>();
-        for (PromotionItem item : promotionItems) {
+        for (FeaturedItem item : featuredItems) {
             // 1. id -> item
             idsMap.put(item.id, item);
             
             // 2. itemType -> item
-            List<PromotionItem> items = itemTypesMap.get(item.itemType);
+            List<FeaturedItem> items = itemTypesMap.get(item.itemType);
             if (items == null) {
                 items = new ArrayList<>();
                 itemTypesMap.put(item.itemType, items);
@@ -36,15 +36,15 @@ public class PromotionItemCache {
         }
     }
 
-    public static List<PromotionItem> getPromotionItems() {
-        return promotionItems;
+    public static List<FeaturedItem> getFeaturedItems() {
+        return featuredItems;
     }
     
-    public static PromotionItem getPromotionItem(Long id) {
+    public static FeaturedItem getFeaturedItem(Long id) {
         return idsMap.get(id);
     }
     
-    public static List<PromotionItem> getPromotionItems(ItemType itemType) {
+    public static List<FeaturedItem> getFeaturedItems(ItemType itemType) {
         if (itemTypesMap.containsKey(itemType)) {
             return itemTypesMap.get(itemType);
         }

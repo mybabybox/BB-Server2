@@ -16,12 +16,12 @@ import javax.inject.Inject;
 import models.GameBadge.BadgeType;
 import models.GameBadgeAwarded;
 import models.Location;
-import models.PromotionItem;
+import models.FeaturedItem;
 import models.SecurityRole;
 import models.TermsAndConditions;
 import models.User;
 import models.UserInfo;
-import models.PromotionItem.ItemType;
+import models.FeaturedItem.ItemType;
 import models.UserInfo.ParentType;
 
 import org.apache.commons.lang.StringUtils;
@@ -42,7 +42,7 @@ import providers.MyUsernamePasswordAuthProvider;
 import providers.MyUsernamePasswordAuthProvider.MyLogin;
 import providers.MyUsernamePasswordAuthProvider.MySignup;
 import viewmodel.ApplicationInfoVM;
-import viewmodel.PromotionItemVM;
+import viewmodel.FeaturedItemVM;
 import viewmodel.UserVM;
 import Decoder.BASE64Encoder;
 import Decoder.BASE64Decoder;
@@ -57,7 +57,7 @@ import com.feth.play.module.pa.user.AuthUser;
 
 import common.cache.CalcServer;
 import common.cache.LocationCache;
-import common.cache.PromotionItemCache;
+import common.cache.FeaturedItemCache;
 import common.model.TargetGender;
 import common.utils.UserAgentUtil;
 import common.utils.ValidationUtil;
@@ -706,12 +706,12 @@ public class Application extends Controller {
     }
 
 	@Transactional
-    public static Result getPromotionItems(String itemType) {
-	    List<PromotionItemVM> vms = new ArrayList<>();
+    public static Result getFeaturedItems(String itemType) {
+	    List<FeaturedItemVM> vms = new ArrayList<>();
 	    try {
-	        List<PromotionItem> promotionItems = PromotionItemCache.getPromotionItems(ItemType.valueOf(itemType));
-	        for (PromotionItem promotionItem : promotionItems) {
-	            vms.add(new PromotionItemVM(promotionItem));
+	        List<FeaturedItem> featuredItems = FeaturedItemCache.getFeaturedItems(ItemType.valueOf(itemType));
+	        for (FeaturedItem featuredItem : featuredItems) {
+	            vms.add(new FeaturedItemVM(featuredItem));
 	        }
 	    } catch (Exception e) {
 	        

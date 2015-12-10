@@ -176,7 +176,7 @@ GET     /image/getEmoticons                         controllers.UserController.g
 
 # Other
 GET     /get-all-districts                          controllers.Application.getAllDistricts
-GET     /get-promotion-items/:itemType              controllers.Application.getPromotionItems(itemType:String)
+GET     /get-featured-items/:itemType               controllers.Application.getFeaturedItems(itemType:String)
 
 # mobile
 POST    /mobile/login                               controllers.Application.doMobileLogin
