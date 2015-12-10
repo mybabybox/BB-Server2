@@ -115,25 +115,6 @@ public class Global extends GlobalSettings {
      * scheduleJobs
      */
     private void scheduleJobs() {
-        // Note: (OFF as of 20150621) schedule Gamification EOD accounting daily at 3:00am HKT
-    	/*
-		JobScheduler.getInstance().schedule("gamificationEOD", "0 00 3 ? * *",
-            new Runnable() {
-                public void run() {
-                    try {
-                       JPA.withTransaction(new play.libs.F.Callback0() {
-                            public void invoke() {
-                                GameAccountTransaction.performEndOfDayTasks(1);
-                            }
-                        });
-                    } catch (Exception e) {
-                        logger.underlyingLogger().error("Error in gamificationEOD", e);
-                    }
-                }
-            }
-        );
-        */
-    	
         // schedule to purge sold posts daily at 5:00am HKT
         JobScheduler.getInstance().schedule("cleanupSoldPosts", "0 00 5 ? * *",
             new Runnable() {

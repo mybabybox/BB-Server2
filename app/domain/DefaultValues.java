@@ -4,7 +4,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import models.UserInfo;
-import models.UserInfo.ParentType;
 
 import org.joda.time.DateTime;
 

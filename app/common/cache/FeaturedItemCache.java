@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import play.db.jpa.JPA;
+import common.schedule.JobScheduler;
+import common.utils.DateTimeUtil;
 import models.FeaturedItem;
 import models.FeaturedItem.ItemType;
 
@@ -12,13 +16,37 @@ import models.FeaturedItem.ItemType;
  * 
  */
 public class FeaturedItemCache {
-    // Permanent cache loaded up on system startup.
+    private static final play.api.Logger logger = play.api.Logger.apply(FeaturedItemCache.class);
 
     private static List<FeaturedItem> featuredItems;
     private static Map<Long, FeaturedItem> idsMap;
     private static Map<ItemType, List<FeaturedItem>> itemTypesMap;
 
     static {
+        refresh();
+        
+        JobScheduler.getInstance().schedule(
+                "refreshFeaturedItemCache", 
+                DateTimeUtil.HOUR_MILLIS,   // initial delay 
+                DateTimeUtil.HOUR_MILLIS,   // interval
+                TimeUnit.MILLISECONDS,
+                new Runnable() {
+                    public void run() {
+                        try {
+                            JPA.withTransaction(new play.libs.F.Callback0() {
+                                @Override
+                                public void invoke() throws Throwable {
+                                    refresh();
+                                }
+                            });
+                        } catch (Exception e) {
+                            logger.underlyingLogger().error("[JobScheduler] refreshFeaturedItemCache failed...", e);
+                        }
+                    }
+                });
+    }
+
+    synchronized public static void refresh() {
         featuredItems = FeaturedItem.loadFeaturedItems();
         idsMap = new HashMap<>();
         itemTypesMap = new HashMap<>();
@@ -34,8 +62,9 @@ public class FeaturedItemCache {
             }
             items.add(item);
         }
+        logger.underlyingLogger().debug("FeaturedItemCache refreshed");
     }
-
+    
     public static List<FeaturedItem> getFeaturedItems() {
         return featuredItems;
     }

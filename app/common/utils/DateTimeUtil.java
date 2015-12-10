@@ -9,6 +9,14 @@ import org.joda.time.IllegalFieldValueException;
 
 public class DateTimeUtil {
     
+    public static final long SECOND_MILLIS = 1000;
+    public static final long MINUTE_MILLIS = 60 * SECOND_MILLIS;
+    public static final long HOUR_MILLIS = 60 * MINUTE_MILLIS;
+    public static final long DAY_MILLIS = 24 * HOUR_MILLIS;
+    public static final long WEEK_MILLIS = 7 * DAY_MILLIS;
+    public static final long MONTH_MILLIS = 30 * DAY_MILLIS;
+    public static final long YEAR_MILLIS = 365 * DAY_MILLIS;
+
     private static DateTime TODAY;
     
     private static SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm");
