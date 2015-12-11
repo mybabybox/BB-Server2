@@ -3,7 +3,7 @@
   <div ng-click="doBack()"
    class="icon_left ic_icon  ic_arrow_back clickable_area"></div>
   <div class="no-search-bar-holder flex1"></div>
-  <div class='page_name L16'>{{user.dn}}</div>
+  <div class='page_name L16'>{{user.displayName}}</div>
   <div class="right-side">
    <span ng-if="userInfo.isLoggedIn"> <a
     style="position: relative; top: 0px;"
@@ -94,11 +94,11 @@
      style="background-image: url(/image/get-thumbnail-profile-image-by-id/{{user.id}});"></div>
    </div>
    <div class="flex1 middle-centered-div shopname-wrapper">
-    <div class="shopname truncate m16 flex1">{{user.dn}}</div>
-    <div ng-if="!user.ifu" ng-click="onFollowUser()">
+    <div class="shopname truncate m16 flex1">{{user.displayName}}</div>
+    <div ng-if="!user.isFollowing" ng-click="onFollowUser()">
      <div class='btn-follow follow r10 clickable_area'>+ Follow</div>
     </div>
-    <div ng-if="user.ifu" ng-click="onUnFollowUser()">
+    <div ng-if="user.isFollowing" ng-click="onUnFollowUser()">
      <div class='btn-follow follow r10 active clickable_area'>Following</div>
     </div>
    </div>
@@ -109,13 +109,13 @@
  <div class="shop-stats middle-centered-div">
   <div class='followers r12'>
    <a class='followerhref'><span data-i18n='label_follower'>Followers</span><span
-    class='number r12'>{{user.n_fr}}</span></a>
+    class='number r12'>{{user.numFollowers}}</span></a>
   </div>
   <div class='holder withborder flex1'></div>
   <div class='holder flex1'></div>
   <div class='following r12'>
    <a class='followinghref'><span data-i18n='label_following'>Following</span><span
-    class='number r12'>{{user.n_fg}}</span></a>
+    class='number r12'>{{user.numFollowings}}</span></a>
   </div>
   <div class='holder flex1'></div>
  </div>
@@ -148,7 +148,7 @@
        <span class="icon ic_detail_product_web"> </span>
       </div>
       <div class="box-right">
-       <div class="number m18">{{user.n_p}}</div>
+       <div class="number m18">{{user.numProducts}}</div>
 
        <div class="text" data-i18n="label_products">Products</div>
 
@@ -165,7 +165,7 @@
        <span class="icon ic_detail_positive_web"> </span>
       </div>
       <div class="box-right r12">
-       <div class="number m18">{{user.n_l}}</div>
+       <div class="number m18">{{user.numLikes}}</div>
 
        <div class="text" data-i18n="label_positive_reviews">Like
         Products</div>

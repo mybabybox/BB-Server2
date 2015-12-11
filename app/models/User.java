@@ -102,6 +102,8 @@ public class User extends SocialObject implements Subject, Followable {
 
 	public boolean mobileSignup;
 
+	public DeviceType deviceType;
+	
 	@OneToOne
 	@JsonIgnore
 	public FbUserInfo fbUserInfo;
@@ -134,6 +136,9 @@ public class User extends SocialObject implements Subject, Followable {
 	
 	@JsonIgnore
 	public boolean emailValidated;
+	
+	@JsonIgnore
+    public boolean accountVerified;
 
 	@JsonIgnore
 	public boolean newUser;

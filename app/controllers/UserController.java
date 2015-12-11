@@ -53,7 +53,6 @@ import viewmodel.GameBadgeVM;
 import viewmodel.MessageVM;
 import viewmodel.NotificationCounterVM;
 import viewmodel.PostVMLite;
-import viewmodel.ProfileVM;
 import viewmodel.UserVM;
 import viewmodel.UserVMLite;
 import common.model.FeedFilter.FeedType;
@@ -372,21 +371,6 @@ public class UserController extends Controller {
 	}
     
     @Transactional
-    public static Result getProfile(Long id) {
-    	NanoSecondStopWatch sw = new NanoSecondStopWatch();
-	    
-    	User user = User.findById(id);
-    	final User localUser = Application.getLocalUser(session());
-		
-		sw.stop();
-        if (logger.underlyingLogger().isDebugEnabled()) {
-            logger.underlyingLogger().debug("[u="+user.getId()+"] getProfile(). Took "+sw.getElapsedMS()+"ms");
-        }
-
-    	return ok(Json.toJson(ProfileVM.profile(user,localUser)));
-    }
-    
-    @Transactional
 	public static Result getProfileImageById(Long id) {
         response().setHeader("Cache-Control", "max-age=1");
         User user = User.findById(id);
@@ -519,7 +503,6 @@ public class UserController extends Controller {
 			Long conversationId = HttpUtil.getMultipartFormDataLong(multipartFormData, "conversationId");
 		    String body = HttpUtil.getMultipartFormDataString(multipartFormData, "body");
 		    Boolean system = HttpUtil.getMultipartFormDataBoolean(multipartFormData, "system");
-		    String deviceType = HttpUtil.getMultipartFormDataString(multipartFormData, "deviceType");
 	        
 		    if (system == null) {
 		        system = false;
@@ -714,18 +697,19 @@ public class UserController extends Controller {
 	}
   
     @Transactional
-    public Result profile(Long id) {
-        	NanoSecondStopWatch sw = new NanoSecondStopWatch();
-    	    
-        	User user = User.findById(id);
-        	final User localUser = Application.getLocalUser(session());
-    		
-    		sw.stop();
-            if (logger.underlyingLogger().isDebugEnabled()) {
-                logger.underlyingLogger().debug("[u="+user.getId()+"] getProfile(). Took "+sw.getElapsedMS()+"ms");
-            }
-            //return ok(Json.toJson(ProfileVM.profile(user,localUser)));
-        	return ok(views.html.babybox.web.profile.render(Json.stringify(Json.toJson(ProfileVM.profile(user,localUser))), Json.stringify(Json.toJson(new UserVM(localUser)))));
+    public static Result profile(Long id) {
+    	NanoSecondStopWatch sw = new NanoSecondStopWatch();
+	    
+    	User user = User.findById(id);
+    	final User localUser = Application.getLocalUser(session());
+		
+		sw.stop();
+        if (logger.underlyingLogger().isDebugEnabled()) {
+            logger.underlyingLogger().debug("[u="+user.getId()+"] getProfile(). Took "+sw.getElapsedMS()+"ms");
+        }
+    	return ok(views.html.babybox.web.profile.render(
+    	        Json.stringify(Json.toJson(new UserVM(user,localUser))), 
+    	        Json.stringify(Json.toJson(new UserVM(localUser)))));
     }
     
 	@Transactional 

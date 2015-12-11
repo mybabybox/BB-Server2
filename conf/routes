@@ -23,8 +23,7 @@ GET     /apps                       controllers.Application.apps
 GET     /getstarted                 controllers.Application.getStarted
 
 GET     /restricted                 controllers.Application.restricted
-GET     /profile/:id                @controllers.UserController.profile(id: Long)
-GET     /profile                    controllers.Application.profile
+GET     /profile                    controllers.Application.profile()
 
 # Main
 GET     /                           @controllers.Application.index
@@ -41,7 +40,6 @@ POST    /login-popup                controllers.Application.doLoginPopup
 POST    /saveSignupInfo             controllers.Application.saveSignupInfo
 POST    /saveSignupInfoFb           controllers.Application.saveSignupInfoFb
 GET     /get-application-info       controllers.Application.getApplicationInfo
-GET     /get-user-target-profile    controllers.Application.getUserTargetProfile
 GET     /init-new-user              @controllers.Application.initNewUser
 
 GET     /logout                     com.feth.play.module.pa.controllers.Authenticate.logout
@@ -137,6 +135,7 @@ GET     /comments/:postId/:offset                   controllers.ProductControlle
 GET     /comments                                   controllers.ProductController.comments()	
 
 # User
+GET     /profile/:id                                controllers.UserController.profile(id:Long)
 GET     /get-user-posted-feed/:id/:offset       	@controllers.UserController.getUserPosts(id: Long, offset:Long)
 GET     /collections/:id							controllers.UserController.getUserCollections(id: Long)
 GET     /follow-user/:id          					controllers.UserController.followUser(id:Long)

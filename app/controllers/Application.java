@@ -417,14 +417,13 @@ public class Application extends Controller {
     public static Result profile() {
     	 final User localUser = getLocalUser(session());
     	 return ok(views.html.babybox.web.profile.render(Json.stringify(Json.toJson(new UserVM(localUser))), Json.stringify(Json.toJson(new UserVM(localUser)))));
-        //return ok(views.html.babybox.web.profile.render(localUser,"localUser"));
     }
     
 	@Transactional
 	public static Result login() {
-        
+	    /*
 		final User localUser = getLocalUser(session());
-		/*if (User.isLoggedIn(localUser)) {
+		if (User.isLoggedIn(localUser)) {
 			return redirect("/home");
 		}*/
 		return ok(views.html.login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM, isOverDailySignupThreshold()));
