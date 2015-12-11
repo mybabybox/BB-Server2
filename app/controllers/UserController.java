@@ -626,7 +626,10 @@ public class UserController extends Controller {
         Conversation conversation = Conversation.openConversation(post, localUser);
         ConversationVM conversationVM = new ConversationVM(conversation, localUser);
         
-		logger.underlyingLogger().debug(String.format("[p=%d][u1=%d][u2=%d] openConversation. Took "+sw.getElapsedMS()+"ms", postId, localUser.id, post.owner.id));
+        sw.stop();
+        if (logger.underlyingLogger().isDebugEnabled()) {
+            logger.underlyingLogger().debug(String.format("[p=%d][u1=%d][u2=%d] openConversation. Took "+sw.getElapsedMS()+"ms", postId, localUser.id, post.owner.id));
+        }
 		
 		return ok(Json.toJson(conversationVM));
     }

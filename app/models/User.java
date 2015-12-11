@@ -1117,17 +1117,32 @@ public class User extends SocialObject implements Subject, Followable {
 		}
 	}
 
-	public Map<String, Long> getUserCategoriesForFeed() {
-		Query q = JPA.em().createNativeQuery("Select c.id, (count(p.id)/(Select count(*) from ViewSocialRelation vr where vr.actor = ?1))*100 "
-				+ "from ViewSocialRelation vsr, post p, category c "
-				+ "where vsr.actor = ?1 and vsr.target = p.id and p.category_id = c.id  "
-				+ "group by c.id");
-		q.setParameter(1, this);
-		List<Object[]> feeds = q.getResultList();
-		Map<String, Long> result = new HashMap<String, Long>();
-		for (Object[] feed : feeds) {
-			result.put(((BigInteger) feed[0]).toString(), ((BigDecimal) feed[1]).longValue());
-		}
+	public Map<Long, Long> getUserCategoriesForFeed() {
+	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
+	    logger.underlyingLogger().debug(String.format("[u=%d] getUserCategoriesForFeed()", this.id));
+	    
+	    Map<Long, Long> result = new HashMap<>();
+	    try {
+    		Query q = JPA.em().createNativeQuery("Select c.id, (count(p.id)/(Select count(*) from ViewSocialRelation vr where vr.actor = ?1))*100 "
+    				+ "from ViewSocialRelation vsr, post p, category c "
+    				+ "where vsr.actor = ?1 and vsr.target = p.id and p.category_id = c.id  "
+    				+ "group by c.id");
+    		q.setParameter(1, this);
+    		List<Object[]> feeds = q.getResultList();
+    		for (Object[] feed : feeds) {
+    		    BigInteger catId = (BigInteger)feed[0];
+    		    BigDecimal percent = (BigDecimal)feed[1];
+    			result.put(catId.longValue(), percent.longValue());
+    			logger.underlyingLogger().debug("     catId="+catId+" %="+percent);
+    		}
+	    } catch (NoResultException nre) {
+        }
+	    
+	    sw.stop();
+        if (logger.underlyingLogger().isDebugEnabled()) {
+            logger.underlyingLogger().debug(String.format("[u=%d] getUserCategoriesForFeed(). Took "+sw.getElapsedMS()+"ms", this.id));
+        }
+        
 		return result;
 	}
 

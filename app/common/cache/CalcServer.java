@@ -264,7 +264,7 @@ public class CalcServer {
 			return;
 		}
 		
-		Map<String, Long> map = user.getUserCategoriesForFeed();
+		Map<Long, Long> map = user.getUserCategoriesForFeed();
 		for (Category category : Category.getAllCategories()){
 			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_POPULAR,category.id), 0L);
 			final List<Long> postIds = new ArrayList<>();
@@ -276,12 +276,10 @@ public class CalcServer {
 			}
 			
 			Long percentage = FEED_CATEGORY_EXPOSURE_MIN;
-			if(map.get(category.getId()) != null){
-				percentage = map.get(category.getId());
+			Long catViewPercentage = map.get(category.getId());
+			if (catViewPercentage != null && catViewPercentage > percentage) {
+				percentage = catViewPercentage;
 			}
-			
-			logger.underlyingLogger().debug(
-			        "     cat="+category.getId()+" name="+category.getName()+" %="+percentage);
 			
 			// if post.size() is less than FEED_HOME_COUNT_MAX (limit of post)
 			Long postsSize = postIds.size() > FEED_HOME_COUNT_MAX ? FEED_HOME_COUNT_MAX : postIds.size(); 
@@ -290,6 +288,9 @@ public class CalcServer {
 			for(Long postId : postIds){
 				jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE,user.id), Math.random() * FEED_SCORE_HIGH_BASE, postId.toString());
 			}
+			
+			logger.underlyingLogger().debug(
+                    "     cat="+category.getId()+" name="+category.getName()+" catFeedSize="+postsSize+" %="+percentage+" %catFeedSize="+postIds.size());
 		}
 		jedisCache.expire(getKey(FeedType.HOME_EXPLORE,user.id), FEED_SNAPSHOT_EXPIRY);
 		
