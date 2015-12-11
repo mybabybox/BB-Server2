@@ -57,9 +57,9 @@ public class GameBadge extends domain.Entity implements Serializable, Creatable,
 	public static enum BadgeType {
 	    PROFILE_PHOTO,
 	    PROFILE_INFO,
-	    LIKE_1,
+	    LIKE_3,
 	    LIKE_10,
-	    FOLLOW_1,
+	    FOLLOW_3,
 	    FOLLOW_10,
 	    POST_1,
 	    POST_10

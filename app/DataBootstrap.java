@@ -423,13 +423,6 @@ public class DataBootstrap {
         logger.underlyingLogger().info("bootstrapGameBadge()");
         
         GameBadge gameBadge = new GameBadge(
-                BadgeType.PROFILE_PHOTO, 
-                "上載個人頭像", 
-                "到'我的'個人專頁，按個人頭像然後選擇並上載照片", 
-                "/assets/app/images/game/badges/profile_photo.png",
-                "/assets/app/images/game/badges/profile_photo_off.png");
-        gameBadge.save();
-        gameBadge = new GameBadge(
                 BadgeType.PROFILE_INFO, 
                 "完整個人資料", 
                 "到'我的'個人專頁，按'更新個人資料'並填寫完整個人資料", 
@@ -437,11 +430,18 @@ public class DataBootstrap {
                 "/assets/app/images/game/badges/profile_info_off.png");
         gameBadge.save();
         gameBadge = new GameBadge(
-                BadgeType.LIKE_1, 
-                "喜歡商品x1", 
-                "對任何你喜歡的商品按'喜歡'", 
-                "/assets/app/images/game/badges/like_1.png",
-                "/assets/app/images/game/badges/like_1_off.png");
+                BadgeType.PROFILE_PHOTO, 
+                "上載個人頭像", 
+                "到'我的'個人專頁，按個人頭像然後選擇並上載照片", 
+                "/assets/app/images/game/badges/profile_photo.png",
+                "/assets/app/images/game/badges/profile_photo_off.png");
+        gameBadge.save();
+        gameBadge = new GameBadge(
+                BadgeType.LIKE_3, 
+                "喜歡商品x3", 
+                "對任何你喜歡的商品按'喜歡'，累積3個你喜歡的商品", 
+                "/assets/app/images/game/badges/like_3.png",
+                "/assets/app/images/game/badges/like_3_off.png");
         gameBadge.save();
         gameBadge = new GameBadge(
                 BadgeType.LIKE_10, 
@@ -451,11 +451,11 @@ public class DataBootstrap {
                 "/assets/app/images/game/badges/like_10_off.png");
         gameBadge.save();
         gameBadge = new GameBadge(
-                BadgeType.FOLLOW_1, 
-                "關注賣家x1", 
-                "對任何你感興趣的賣家按'關注'", 
-                "/assets/app/images/game/badges/follow_1.png",
-                "/assets/app/images/game/badges/follow_1_off.png");
+                BadgeType.FOLLOW_3, 
+                "關注賣家x3", 
+                "對任何你感興趣的賣家按'關注'，累積關注3個賣家", 
+                "/assets/app/images/game/badges/follow_3.png",
+                "/assets/app/images/game/badges/follow_3_off.png");
         gameBadge.save();
         gameBadge = new GameBadge(
                 BadgeType.FOLLOW_10, 
@@ -486,14 +486,14 @@ public class DataBootstrap {
             if (user.hasCompleteInfo()) {
                 GameBadgeAwarded.recordGameBadge(user.id, BadgeType.PROFILE_INFO);
             }
-            if (user.numLikes >= 1) {
-                GameBadgeAwarded.recordGameBadge(user.id, BadgeType.LIKE_1);
+            if (user.numLikes >= 3) {
+                GameBadgeAwarded.recordGameBadge(user.id, BadgeType.LIKE_3);
             }
             if (user.numLikes >= 10) {
                 GameBadgeAwarded.recordGameBadge(user.id, BadgeType.LIKE_10);
             }
-            if (user.numFollowings >= 1) {
-                GameBadgeAwarded.recordGameBadge(user.id, BadgeType.FOLLOW_1);
+            if (user.numFollowings >= 3) {
+                GameBadgeAwarded.recordGameBadge(user.id, BadgeType.FOLLOW_3);
             }
             if (user.numFollowings >= 10) {
                 GameBadgeAwarded.recordGameBadge(user.id, BadgeType.FOLLOW_10);
