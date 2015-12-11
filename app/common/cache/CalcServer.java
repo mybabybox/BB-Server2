@@ -263,6 +263,7 @@ public class CalcServer {
 			logger.underlyingLogger().error("buildUserExploreQueue failed!! User[id="+userId+"] not exists");
 			return;
 		}
+		
 		Map<String, Long> map = user.getUserCategoriesForFeed();
 		for (Category category : Category.getAllCategories()){
 			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_POPULAR,category.id), 0L);
@@ -273,11 +274,17 @@ public class CalcServer {
 				} catch (Exception e) {
 				}
 			}
-			Long percentage  = FEED_CATEGORY_EXPOSURE_MIN;
+			
+			Long percentage = FEED_CATEGORY_EXPOSURE_MIN;
 			if(map.get(category.getId()) != null){
 				percentage = map.get(category.getId());
 			}
-			Long postsSize = postIds.size() > FEED_HOME_COUNT_MAX ? FEED_HOME_COUNT_MAX : postIds.size(); // if post.size() is less than FEED_HOME_COUNT_MAX (limit of post) 
+			
+			logger.underlyingLogger().debug(
+			        "     cat="+category.getId()+" name="+category.getName()+" %="+percentage);
+			
+			// if post.size() is less than FEED_HOME_COUNT_MAX (limit of post)
+			Long postsSize = postIds.size() > FEED_HOME_COUNT_MAX ? FEED_HOME_COUNT_MAX : postIds.size(); 
 			Integer length =  (int) ((postsSize * percentage) / 100);
 			postIds.subList(0, length);
 			for(Long postId : postIds){
