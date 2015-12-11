@@ -10,7 +10,6 @@ babybox.controller('FrontPageController',
 	$scope.homeFeed=true;
 	$scope.products = productService.getHomeExploreFeed.get({offset:0});
 	console.log($scope.products);
-	
 	$scope.gotoTop=function(){
 		$location.hash('');
 		$anchorScroll();
@@ -19,17 +18,57 @@ babybox.controller('FrontPageController',
 	$scope. getHomeExploreProducts= function () {
 		$scope.products = productService.getHomeExploreFeed.get({offset:0});
 		$scope.homeFeed=true;
-		console.log($scope.products);
+		$scope.noMore = true;
 		};
 	
 	$scope.getHomeFollowingProducts = function () {
 		$scope.products = productService.getHomeFollowingFeed.get({offset:0});
 		$scope.homeFeed=false;
-		console.log($scope.products);
+		$scope.noMore = true;
 	};
 
 	$scope.categories = feedService.getAllCategories.get();
 
+	var flag = true;
+	$scope.noMore = true;
+	$scope.loadMore = function () {
+		if(($scope.products.length!=0) && ($scope.noMore==true)){
+			
+			var len = $scope.products.length;
+			console.log(len);
+			var off = $scope.products[len-1].offset;
+			console.log(off);
+			if($scope.homeFeed){
+				flag=true;
+				productService.getHomeExploreFeed.get({offset:off}, function(data){
+					console.log(data.length);
+					if(data.length == 0)
+						$scope.noMore=false;
+					angular.forEach(data, function(value, key) {
+						if(flag){
+							$scope.products.push(value);
+							console.log("pushed data");
+						}
+					});
+					flag=false;
+				});
+			}
+			if($scope.homeFeed==false){
+				flag=true;
+				productService.getHomeFollowingFeed.get({offset:off}, function(data){
+					console.log(data.length);
+					if(data.length == 0)
+						$scope.noMore=false;
+					angular.forEach(data, function(value, key) {
+						if(flag)
+							$scope.products.push(value);
+					});
+					flag=false;
+				});
+			}
+		}		
+	}
+	
 });
 
 babybox.controller('CategoryPageController', 
@@ -131,16 +170,54 @@ babybox.controller('ProfileController',
 		$scope.user.isFollowing = !$scope.user.isFollowing;
 		$scope.user.numFollowings--;
 	}
-
 	$scope.userProducts = function() {
 		$scope.activeflag = true;
+		$scope.noMore = true;
 		$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
-		console.log($scope.products);
 	}
 	$scope.likedProducts = function() {
 		$scope.activeflag = false;
+		$scope.noMore = true;
 		$scope.products=userService.getUserLikedFeed.get({id:profileUser.id, offset:0});
 	}
+	
+	var flag = true;
+	$scope.noMore = true;
+	
+	$scope.loadMore = function () {	
+		if(($scope.products.length!=0) && ($scope.noMore == true)){
+			var len = $scope.products.length;
+			var off = $scope.products[len-1].offset;
+			if($scope.activeflag){
+				flag=true;
+				userService.getUserPostedFeed.get({id:profileUser.id, offset:off}, function(data){
+					if(data.length == 0)
+						$scope.noMore = false;
+					angular.forEach(data, function(value, key) {
+						if(flag)
+							$scope.products.push(value);
+					});
+					flag=false;
+				});
+			}
+			if($scope.activeflag == false){
+				flag=true;
+				userService.getUserLikedFeed.get({id:profileUser.id, offset:off}, function(data){
+					if(data.length == 0)
+						$scope.noMore = false;
+					angular.forEach(data, function(value, key) {
+						if(flag)
+							$scope.products.push(value);
+					});
+					flag=false;
+				});
+			}
+		}		
+	}
+	
+	
+	
+	
 });
 
 

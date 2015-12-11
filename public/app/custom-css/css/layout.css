@@ -28,6 +28,10 @@ label {
     display: inline-block;
     max-width: 100%
 }
+.activetab {
+	color: #FF76A4;
+	border-bottom: 2px solid #FF76A4;
+}
 
 .flex1 {
     flex: 1;
