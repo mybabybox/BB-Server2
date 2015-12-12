@@ -9,6 +9,8 @@ import java.util.TreeSet;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,6 +29,7 @@ import service.SocialRelationHandler;
 import domain.AuditListener;
 import domain.Creatable;
 import domain.DefaultValues;
+import domain.HighlightColor;
 import domain.Updatable;
 
 /**
@@ -102,6 +105,23 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "conversation")
 	public Set<Message> messages = new TreeSet<Message>();
 
+	// Seller ONLY !! 
+	
+	@Enumerated(EnumType.STRING)
+    public OrderTransactionState orderTransactionState = OrderTransactionState.NA;
+	
+	public enum OrderTransactionState {
+	    NA,
+	    ORDERED,
+	    PAID,
+	    DELIVERED,
+	    SPECIAL_REQUEST,
+	    MISSING_DETAILS
+	}
+	
+	@Enumerated(EnumType.ORDINAL)
+    public HighlightColor highlightColor = HighlightColor.NONE;
+    
 	public Conversation() {}
 	
 	public Conversation(Post post, User user) {

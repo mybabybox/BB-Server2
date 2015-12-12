@@ -1,11 +1,14 @@
 package viewmodel;
 
 import models.Conversation;
+import models.Conversation.OrderTransactionState;
 import models.ConversationOrder;
 import models.Post;
 import models.User;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import domain.HighlightColor;
 
 public class ConversationVM {
 	private static final play.api.Logger logger = play.api.Logger.apply(ConversationVM.class);
@@ -23,7 +26,9 @@ public class ConversationVM {
 	@JsonProperty("lastMessageHasImage") public Boolean lastMessageHasImage;
 	@JsonProperty("lastMessageDate") public Long lastMessageDate;
 	@JsonProperty("unread") public Long unread = 0L;
-	@JsonProperty("order") public ConversationOrderVM order;
+	@JsonProperty("orderTransactionState") public String orderTransactionState;
+    @JsonProperty("highlightColor") public String highlightColor;
+    @JsonProperty("order") public ConversationOrderVM order;
 	
 	public ConversationVM(Conversation conversation, User localUser) {
 		User otherUser = conversation.otherUser(localUser);
@@ -41,6 +46,16 @@ public class ConversationVM {
 		this.lastMessageDate = conversation.lastMessageDate.getTime();
 		this.unread = conversation.getUnreadCount(localUser);
 		
+		// Seller order management
+		if (this.postOwner) {
+		    this.orderTransactionState = conversation.orderTransactionState.name();
+		    this.highlightColor = conversation.highlightColor.name();
+		} else {
+		    this.orderTransactionState = OrderTransactionState.NA.name();
+            this.highlightColor = HighlightColor.NONE.name();
+		}
+		
+		// Last active order
 		ConversationOrder order = ConversationOrder.getActiveOrder(conversation);
 		if (order != null) {
 		    this.order = new ConversationOrderVM(order, localUser);		    

@@ -31,6 +31,7 @@ import models.Post;
 import models.Resource;
 import models.SocialRelation;
 import models.User;
+import models.Conversation.OrderTransactionState;
 import models.GameBadge.BadgeType;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -62,6 +63,7 @@ import common.utils.NanoSecondStopWatch;
 import common.utils.StringUtil;
 import common.utils.ValidationUtil;
 import domain.DefaultValues;
+import domain.HighlightColor;
 
 public class UserController extends Controller {
     private static final play.api.Logger logger = play.api.Logger.apply(UserController.class);
@@ -664,11 +666,64 @@ public class UserController extends Controller {
 	@Transactional
 	public static Result getUnreadMessageCount() {
 		final User localUser = Application.getLocalUser(session());
+		if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+		
 		Map<String, Long> vm = new HashMap<>();
 		vm.put("count", localUser.getUnreadConversationCount());
 		return ok(Json.toJson(vm));
 	}
 	
+	@Transactional
+	public static Result updateConversationOrderTransactionState(Long id, String state) {
+	    final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        Conversation conversation = Conversation.findById(id);
+        if (conversation == null) {
+            return notFound();
+        }
+        
+        try {
+            OrderTransactionState orderTransactionState = OrderTransactionState.valueOf(state);
+            conversation.orderTransactionState = orderTransactionState;
+            conversation.save();
+        } catch (Exception e) {
+            return notFound();
+        }
+        
+	    return ok();
+	}
+	
+	@Transactional
+	public static Result highlightConversation(Long id, String color) {
+	    final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        Conversation conversation = Conversation.findById(id);
+        if (conversation == null) {
+            return notFound();
+        }
+        
+        try {
+            HighlightColor highlightColor = HighlightColor.valueOf(color);
+            conversation.highlightColor = highlightColor;
+            conversation.save();
+        } catch (Exception e) {
+            return notFound();
+        }
+        
+	    return ok();
+	}
+
 	@Transactional
 	public static Result getMessageImageById(Long id) {
 	    response().setHeader("Cache-Control", "max-age=604800");
