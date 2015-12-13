@@ -70,7 +70,8 @@ public class FeaturedItem extends domain.Entity  implements Serializable, Creata
         CATEGORY,
         POST,
         USER,
-        HASHTAG
+        HASHTAG,
+        URL
     }
 	
 	public FeaturedItem() {

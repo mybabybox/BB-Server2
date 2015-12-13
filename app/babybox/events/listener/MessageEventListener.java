@@ -26,10 +26,9 @@ public class MessageEventListener extends EventListener {
                     new TransactionalRunnableTask() {
                         @Override
                         public void execute() {
-                            NotificationCounter.incrementConversationsCount(recipient.id);
-                            
-                            // transactional email for first message only
                             if (firstMessage) {
+                                NotificationCounter.incrementConversationsCount(recipient.id);
+                                
                                 // Sendgrid
                                 SendgridEmailClient.getInstatnce().sendMailOnConversation(
                                         sender, recipient, message.conversation.post.title, message.body);
