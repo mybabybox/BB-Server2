@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -107,12 +108,16 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 
 	// Seller ONLY !! 
 	
+	@Column(length=255)
+	public String note;
+	
 	@Enumerated(EnumType.STRING)
     public OrderTransactionState orderTransactionState = OrderTransactionState.NA;
 	
 	public enum OrderTransactionState {
 	    NA,
 	    ORDERED,
+	    CANCELLED,
 	    PAID,
 	    DELIVERED,
 	    SPECIAL_REQUEST,

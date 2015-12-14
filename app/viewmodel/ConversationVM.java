@@ -26,9 +26,12 @@ public class ConversationVM {
 	@JsonProperty("lastMessageHasImage") public Boolean lastMessageHasImage;
 	@JsonProperty("lastMessageDate") public Long lastMessageDate;
 	@JsonProperty("unread") public Long unread = 0L;
+	@JsonProperty("order") public ConversationOrderVM order;
+	
+	// seller
+	@JsonProperty("note") public String note;
 	@JsonProperty("orderTransactionState") public String orderTransactionState;
     @JsonProperty("highlightColor") public String highlightColor;
-    @JsonProperty("order") public ConversationOrderVM order;
 	
 	public ConversationVM(Conversation conversation, User localUser) {
 		User otherUser = conversation.otherUser(localUser);
@@ -48,9 +51,11 @@ public class ConversationVM {
 		
 		// Seller order management
 		if (this.postOwner) {
+		    this.note = conversation.note;
 		    this.orderTransactionState = conversation.orderTransactionState.name();
 		    this.highlightColor = conversation.highlightColor.name();
 		} else {
+		    this.note = "";
 		    this.orderTransactionState = OrderTransactionState.NA.name();
             this.highlightColor = HighlightColor.NONE.name();
 		}

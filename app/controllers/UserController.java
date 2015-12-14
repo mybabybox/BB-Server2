@@ -1,5 +1,6 @@
 package controllers;
 
+import static play.data.Form.form;
 import handler.FeedHandler;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import javax.inject.Inject;
 
 import models.Activity;
 import models.Collection;
+import models.Comment;
 import models.Conversation;
 import models.ConversationOrder;
 import models.Emoticon;
@@ -37,6 +39,7 @@ import models.GameBadge.BadgeType;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import babybox.shopping.social.exception.SocialObjectNotCommentableException;
 import play.data.DynamicForm;
 import play.db.jpa.Transactional;
 import play.libs.Json;
@@ -54,16 +57,20 @@ import viewmodel.GameBadgeVM;
 import viewmodel.MessageVM;
 import viewmodel.NotificationCounterVM;
 import viewmodel.PostVMLite;
+import viewmodel.ResponseStatusVM;
 import viewmodel.UserVM;
 import viewmodel.UserVMLite;
 import common.model.FeedFilter.FeedType;
+import common.utils.HtmlUtil;
 import common.utils.HttpUtil;
 import common.utils.ImageFileUtil;
 import common.utils.NanoSecondStopWatch;
 import common.utils.StringUtil;
 import common.utils.ValidationUtil;
+import controllers.Application.DeviceType;
 import domain.DefaultValues;
 import domain.HighlightColor;
+import domain.SocialObjectType;
 
 public class UserController extends Controller {
     private static final play.api.Logger logger = play.api.Logger.apply(UserController.class);
@@ -675,6 +682,33 @@ public class UserController extends Controller {
 		vm.put("count", localUser.getUnreadConversationCount());
 		return ok(Json.toJson(vm));
 	}
+	
+	@Transactional
+    public static Result updateConversationNote() {
+        final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        DynamicForm form = form().bindFromRequest();
+        Long conversationId = Long.parseLong(form.get("conversationId"));
+        String body = HtmlUtil.convertTextToHtml(form.get("body"));
+        
+        Conversation conversation = Conversation.findById(conversationId);
+        if (conversation == null) {
+            return notFound();
+        }
+        
+        try {
+            conversation.note = body;
+            conversation.save();
+        } catch (Exception e) {
+            return notFound();
+        }
+        
+        return ok();
+    }
 	
 	@Transactional
 	public static Result updateConversationOrderTransactionState(Long id, String state) {
