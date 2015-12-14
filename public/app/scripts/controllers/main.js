@@ -9,7 +9,6 @@ babybox.controller('FrontPageController',
 	$scope.userInfo = userInfo;
 	$scope.homeFeed=true;
 	$scope.products = productService.getHomeExploreFeed.get({offset:0});
-	console.log($scope.products);
 	$scope.gotoTop=function(){
 		$location.hash('');
 		$anchorScroll();
@@ -33,22 +32,17 @@ babybox.controller('FrontPageController',
 	$scope.noMore = true;
 	$scope.loadMore = function () {
 		if(($scope.products.length!=0) && ($scope.noMore==true)){
-			
+
 			var len = $scope.products.length;
-			console.log(len);
 			var off = $scope.products[len-1].offset;
-			console.log(off);
 			if($scope.homeFeed){
 				flag=true;
 				productService.getHomeExploreFeed.get({offset:off}, function(data){
-					console.log(data.length);
 					if(data.length == 0)
 						$scope.noMore=false;
 					angular.forEach(data, function(value, key) {
-						if(flag){
+						if(flag)
 							$scope.products.push(value);
-							console.log("pushed data");
-						}
 					});
 					flag=false;
 				});
@@ -56,7 +50,6 @@ babybox.controller('FrontPageController',
 			if($scope.homeFeed==false){
 				flag=true;
 				productService.getHomeFollowingFeed.get({offset:off}, function(data){
-					console.log(data.length);
 					if(data.length == 0)
 						$scope.noMore=false;
 					angular.forEach(data, function(value, key) {
@@ -72,21 +65,94 @@ babybox.controller('FrontPageController',
 });
 
 babybox.controller('CategoryPageController', 
-		function($scope, $route, $rootScope, ngDialog, $routeParams, $location,userInfo, category, products, categoryService, $anchorScroll, usSpinnerService) {
+		function($scope, $route, $rootScope, ngDialog, $routeParams, $location,userInfo, category, product, categoryService, $anchorScroll, usSpinnerService) {
 	
 	usSpinnerService.spin('loading...');
 	console.log("controller .. ")
 	$scope.userInfo = userInfo;
-	$scope.products = products;
+	$scope.products = product;
 	$scope.cat = category;
+	var catid = $scope.cat.id;
 	//we are routing this from scala file so we can't able to get $routeParams , so this is just a workaround
 	var url = $location.absUrl();
 	var values= url.split("/");
 	$scope.catType = values[values.length-1];
+	
+	if($scope.catType == 'popular')
+		$scope.noMore = true;
+	if($scope.catType == 'newest')
+		$scope.noMore = true;
+	if($scope.catType == 'high2low')
+		$scope.noMore = true;
+	if($scope.catType == 'low2high')
+		$scope.noMore = true;
+	
 	$scope.gotoTop=function(){
 		$location.hash('');
 		$anchorScroll();
 	};
+	
+	var catid = $scope.cat.id;
+	var flag = true;
+	
+	$scope.loadMore = function () {
+		if(($scope.products.length!=0) && ($scope.noMore == true)){
+			var len = $scope.products.length;
+			var off = $scope.products[len-1].offset;
+			if($scope.catType == 'popular'){
+				flag=true;
+				categoryService.getCategoryPopularFeed.get({id:catid , postType:"a", offset:off}, function(data){
+					if(data.length == 0)
+						$scope.noMore=false;
+					angular.forEach(data, function(value, key) {
+						if(flag)
+							$scope.products.push(value);
+					});
+					flag=false;
+				});
+			}
+
+			if($scope.catType == 'newest'){
+				flag=true;
+				categoryService.getCategoryNewestFeed.get({id:catid , postType:"a", offset:off}, function(data){
+					if(data.length == 0)
+						$scope.noMore=false;
+					angular.forEach(data, function(value, key) {
+						if(flag)
+							$scope.products.push(value);
+					});
+					flag=false;
+				});
+			}
+			
+			if($scope.catType == 'high2low'){
+				flag=true;
+				categoryService.getCategoryPriceHighLowFeed.get({id:catid , postType:"a", offset:off}, function(data){
+					if(data.length == 0)
+						$scope.noMore=false;
+					angular.forEach(data, function(value, key) {
+						if(flag)
+							$scope.products.push(value);
+					});
+					flag=false;
+				});
+			}
+			
+			if($scope.catType == 'low2high'){
+				flag=true;
+				categoryService.getCategoryPriceLowHighFeed.get({id:catid , postType:"a", offset:off}, function(data){
+					if(data.length == 0)
+						$scope.noMore=false;
+					angular.forEach(data, function(value, key) {
+						if(flag)
+							$scope.products.push(value);
+					});
+					flag=false;
+				});
+			}
+		}		
+	}
+	
 	
 });
 
@@ -108,7 +174,6 @@ babybox.controller('ProductPageController',
 				$scope.product.numLikes++;
 			}
 		} else {
-			console.log("login on like. . . ");
 			$window.location.href ='/login';
 		}
 	}

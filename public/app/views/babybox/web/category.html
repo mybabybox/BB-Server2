@@ -45,11 +45,12 @@
 		
 		<div class="popular_products_wrapper center-container swiper-container-horizontal">
 			<div class="swiper-wrapper">
+           <div infinite-scroll='loadMore()' infinite-scroll-distance='2'>
 				<ul class="item-list-pop swiper-slide swiper-slide-active"
 					data-cate="pop"
 					style="min-height: 629px; text-align: left; width: 102%;">
 					<li class="item-card simple null" 
-						ng-repeat="product in products" >
+						ng-repeat="product in products track by $index" >
 						<div class="margin-holder">
 							<div class="margin-holder-inner">
 								<a class="item-href normal" href="/product/{{product.id}}">
@@ -95,14 +96,7 @@
 						</div>
 					</div>
 				</li>
-				</ul>
-				<ul class="item-list-ctime swiper-slide swiper-slide-next"
-					data-cate="ctime"
-					style="min-height: 629px; text-align: left; width: 597px;">
-				</ul>
-				<ul class="item-list-distance swiper-slide" data-cate="distance"
-					style="min-height: 629px; text-align: left; width: 597px;">
-				</ul>
+            </div>
 			</div>
 		</div>
 	</div>

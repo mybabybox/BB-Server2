@@ -41,6 +41,23 @@ babybox.service('categoryService',function($resource){
                 get: {method:'get' ,isArray:true, params:{id:'@id',postType: '@postType',offset: '@offset'}}
             }
     );
+    
+    this.getCategoryPriceLowHighFeed = $resource(
+            '/get-category-price-low-high-feed/:id/:postType/:offset',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get' ,isArray:true, params:{id:'@id',postType: '@postType',offset: '@offset'}}
+            }
+    );
+    
+    this.getCategoryPriceHighLowFeed = $resource(
+            '/get-category-price-high-low-feed/:id/:postType/:offset',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get' ,isArray:true, params:{id:'@id',postType: '@postType',offset: '@offset'}}
+            }
+    );
+    
 });
 
 
