@@ -1,96 +1,100 @@
 <div class="header">
-	<div class='inner middle-centered-div'>	
-        <a href="/"><div class='ic_logo clickable_area'>
-    </div></a>
-		<div class="no-search-bar-holder flex1"></div>
-		<div class='page_name L16'></div>
-		
-		<span ng-if="!userInfo.isLoggedIn" style="padding-right: 15px;">
-		<a href="/login">
-		<div class='hold user_avatar ic_web_profile clickable_area'></div>
-		</a>
-		</span>
-		<span ng-if="userInfo.isLoggedIn" style="padding-right: 15px; padding-top: 0px;">
-		<a href="/profile/{{userInfo.id}}">
-		<div class="hold user_avatar clickable_area"  style="background-image:url(/image/get-mini-profile-image-by-id/{{userInfo.id}});"></div>
-		</a>
-		</span>
-	</div>
-		<div class='second-panel'>
-				<div class='signup-btn' data-i18n='label_signup'>
-				</div>
-				<div class='login-btn' data-i18n='label_login'>
-				</div>
-		</div>
-        <div class="clearfix"></div>
-	</div>
+ <div class='inner middle-centered-div'>
+  <a href="/"><div class='ic_logo clickable_area'></div></a>
+  <div class="no-search-bar-holder flex1"></div>
+  <div class='page_name L16'></div>
+
+  <span ng-if="!userInfo.isLoggedIn" style="padding-right: 15px;">
+   <a href="/login">
+    <div class='hold user_avatar ic_web_profile clickable_area'></div>
+  </a>
+  </span> <span ng-if="userInfo.isLoggedIn"
+   style="padding-right: 15px; padding-top: 0px;"> <a
+   href="/profile/{{userInfo.id}}">
+    <div class="hold user_avatar clickable_area"
+     style="background-image: url(/image/get-mini-profile-image-by-id/{{userInfo.id}});"></div>
+  </a>
+  </span>
+ </div>
+ <div class='second-panel'>
+  <div class='signup-btn' data-i18n='label_signup'></div>
+  <div class='login-btn' data-i18n='label_login'></div>
+ </div>
+ <div class="clearfix"></div>
+</div>
 </div>
 
 <div style="padding-top: 55px;">
-<div class="center-container" >
-	<div class="category-grids subcat-container row categories-wrapper center-container">
-		<div data-ng-repeat="cat in categories" class="col-xs-4 category-grid clickable_area ">
-		 	<a data-ng-href="/category/{{cat.id}}/popular">
-				<div class="ratio_4_3_box category-wrapper"
-					style="background-image : url({{cat.icon}})"></div>
-				<div class="middle-centered-div subcat-title">
-					<div class="title r14 category-grid-title">{{cat.name}}</div>
-				</div>
-			</a>
-		</div>
-		<div class="clearfix"></div>
-	</div>
-	<ul class='header_tabs M14 center-container'>
-		<li ng-class="homeFeed? 'active' :'' " class='header_tab_item popular clickable_area swiper-pagination-switch swiper-pagination-switch-0' ng-click="getHomeExploreProducts()" data-sorttype='popular'>
-			Explore
-		</li>
-		<li ng-class="homeFeed? '' :'active' " class='header_tab_item latest clickable_area swiper-pagination-switch swiper-pagination-switch-1' ng-click="getHomeFollowingProducts()"  data-sorttype='latest'>
-			Following
-		</li>
-	</ul>
-	<ul class='header_tabs_fixed M14 center-container'>
-		<li class='header_tab_item popular active clickable_area swiper-pagination-switch swiper-pagination-switch-0' data-sorttype='popular'>
-			Popular
-		</li>
-		<li class='header_tab_item latest clickable_area swiper-pagination-switch swiper-pagination-switch-1' data-sorttype='latest'>
-			Latest
-		</li>
-	
-		<li class='header_tab_item location clickable_area swiper-pagination-switch swiper-pagination-switch-2' data-sorttype='location'>
-			Nearby
-		</li>
-	</ul>
-	<div class="location-bar "></div>
-	<div class="location-bar_fixed "></div>
-	<div class="popular_products_wrapper center-container">
-		<div class="swiper-wrapper">
-			<ul class='item-list-pop swiper-slide' data-cate='pop'>
-			</ul>
-			<ul class='item-list-ctime swiper-slide' data-cate='ctime'>
-			</ul>
-			<ul class='item-list-distance swiper-slide' data-cate='distance'>
-			</ul>
-		</div>
-       <div class="popular_products_wrapper center-container swiper-container-horizontal" style="padding-left: 0px;">
-       	<div class="swiper-wrapper">
-               <div infinite-scroll='loadMore()' infinite-scroll-distance='2'>
-       		<ul class="item-list-pop swiper-slide swiper-slide-active"
-       			data-cate="pop"
-       			style="min-height: 629px; text-align: left; width:102%;">
-                
-            			<li class="item-card simple null"
-            				ng-repeat="product in products track by $index">
-            				<div data-ng-include style="width: 100%;"
-            					 data-src="'/assets/app/views/babybox/web/similar-product-info.html'"></div>
-            			</li>
-           	 </ul>
-       		</div>
-            </div>
-       </div>
-			<div id="back-to-top" style="z-index: 1000">
-				<a data-ng-click="gotoTop()"><span class="icon-title-arrow-up"></span>Top</a>
-			</div>
+ <div class="center-container">
+  <div
+   class="category-grids subcat-container row categories-wrapper center-container">
+   <div data-ng-repeat="cat in categories"
+    class="col-xs-4 category-grid clickable_area ">
+    <a data-ng-href="/category/{{cat.id}}/popular">
+     <div class="ratio_4_3_box category-wrapper"
+      style="background-image: url({{cat.icon}})"></div>
+     <div class="middle-centered-div subcat-title">
+      <div class="title r14 category-grid-title">{{cat.name}}</div>
+     </div>
+    </a>
+   </div>
+   <div class="clearfix"></div>
+  </div>
+  <ul class='header_tabs M14 center-container'>
+   <li ng-class="homeFeed? 'active' :'' "
+    class='header_tab_item popular clickable_area swiper-pagination-switch swiper-pagination-switch-0'
+    ng-click="getHomeExploreProducts()" data-sorttype='popular'>
+    Explore</li>
+   <li ng-class="homeFeed? '' :'active' "
+    class='header_tab_item latest clickable_area swiper-pagination-switch swiper-pagination-switch-1'
+    ng-click="getHomeFollowingProducts()" data-sorttype='latest'>
+    Following</li>
+  </ul>
+  <ul class='header_tabs_fixed M14 center-container'>
+   <li
+    class='header_tab_item popular active clickable_area swiper-pagination-switch swiper-pagination-switch-0'
+    data-sorttype='popular'>Popular</li>
+   <li
+    class='header_tab_item latest clickable_area swiper-pagination-switch swiper-pagination-switch-1'
+    data-sorttype='latest'>Latest</li>
 
-		</div>
-	</div>
+   <li
+    class='header_tab_item location clickable_area swiper-pagination-switch swiper-pagination-switch-2'
+    data-sorttype='location'>Nearby</li>
+  </ul>
+  <div class="location-bar "></div>
+  <div class="location-bar_fixed "></div>
+  <div class="popular_products_wrapper center-container">
+   <div class="swiper-wrapper">
+    <ul class='item-list-pop swiper-slide' data-cate='pop'>
+    </ul>
+    <ul class='item-list-ctime swiper-slide' data-cate='ctime'>
+    </ul>
+    <ul class='item-list-distance swiper-slide' data-cate='distance'>
+    </ul>
+   </div>
+   <div
+    class="popular_products_wrapper center-container swiper-container-horizontal"
+    style="padding-left: 0px;">
+    <div class="swiper-wrapper">
+     <div infinite-scroll='loadMore()' infinite-scroll-distance='2'>
+      <ul class="item-list-pop swiper-slide swiper-slide-active"
+       data-cate="pop"
+       style="min-height: 629px; text-align: left; width: 102%;">
+
+       <li class="item-card simple null"
+        ng-repeat="product in products track by $index">
+        <div data-ng-include style="width: 100%;"
+         data-src="'/assets/app/views/babybox/web/similar-product-info.html'"></div>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </div>
+   <div id="back-to-top" style="z-index: 1000">
+    <a data-ng-click="gotoTop()"><span class="icon-title-arrow-up"></span>Top</a>
+   </div>
+
+  </div>
+ </div>
 </div>

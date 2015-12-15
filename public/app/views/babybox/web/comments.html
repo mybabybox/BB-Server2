@@ -1,72 +1,71 @@
 <div class="header">
-	<div class='inner middle-centered-div'>	
-       <div ng-click="doBack()" class="icon_left ic_icon  ic_arrow_back clickable_area">
-		</div>
-		<div class="no-search-bar-holder flex1"></div>
-		<div class='page_name L16'></div>
-		<span ng-if="!userInfo.isLoggedIn">
-		<a href="/login">
-		<div class='hold user_avatar ic_web_profile clickable_area'></div>
-		</a>
-		</span>
-		<span ng-if="userInfo.isLoggedIn">
-		<a href="/profile/{{userInfo.id}}">
-		<div class='hold user_avatar ic_web_profile clickable_area'></div>
-		</a>
-		</span>
-		<div class='second-panel'>
-				<div class='signup-btn' data-i18n='label_signup'>
-				</div>
-				<div class='login-btn' data-i18n='label_login'>
-				</div>
-		</div>
-        <div class="clearfix"></div>
-	</div>
+ <div class='inner middle-centered-div'>
+  <div ng-click="doBack()"
+   class="icon_left ic_icon  ic_arrow_back clickable_area"></div>
+  <div class="no-search-bar-holder flex1"></div>
+  <div class='page_name L16'></div>
+  <span ng-if="!userInfo.isLoggedIn"> <a href="/login">
+    <div class='hold user_avatar ic_web_profile clickable_area'></div>
+  </a>
+  </span> <span ng-if="userInfo.isLoggedIn"> <a
+   href="/profile/{{userInfo.id}}">
+    <div class='hold user_avatar ic_web_profile clickable_area'></div>
+  </a>
+  </span>
+  <div class='second-panel'>
+   <div class='signup-btn' data-i18n='label_signup'></div>
+   <div class='login-btn' data-i18n='label_login'></div>
+  </div>
+  <div class="clearfix"></div>
+ </div>
 </div>
 
 
-<div class="page-holder center-container item-comments-index-container" style="margin-bottom: 78px;">
+<div class="page-holder center-container item-comments-index-container"
+ style="margin-bottom: 78px;">
  <div class="no-comment-background-container center-container hide">
   <div class="no-comment-background">
    <div class="no-comment-background-image ic_no_comment"></div>
-   <div class="no-comment-background-text">Be the first to leave a comment</div>
+   <div class="no-comment-background-text">Be the first to leave a
+    comment</div>
   </div>
  </div>
-  <div class="load-previous-button hide">
-  Load previous comments
- </div>
+ <div class="load-previous-button hide">Load previous comments</div>
 
  <div class="comments-list" style="padding-top: 25px;">
- <div class="item-comment item-comment-container" ng-repeat="comment in comments">
- <div class="left-part commenter-avatar-container" style="background-image:url(/image/get-mini-profile-image-by-id/{{comment.ownerId}})">
-  <div class="default-commenter-avatar ic_icon ic_avatar_default hide" data-user-pic=""></div>
- </div>
- <div class="middle-part">
-  <div class="commenter-name L14">
-  {{comment.ownerName}}
-  </div>
-
-  <div class="comment-content">
-  {{comment.body}}
-  </div>
-
-  <div class="comment-time-container">
-    <span class="buyer-review r12" data-i18n="label_buyer_review_camel">Buyer Review</span>
-    <span class="ic_icon ic_clock"></span>
-    <span class="comment-time r12">{{comment.createdDate  | date:'dd-MM-yyyy h:mm:a'}}</span>
-  </div>
- </div>
-
- <div class="right-part">
-  <span class="item-rating ic_icon ic_rate_good"></span>
+  <div class="item-comment item-comment-container"
+   ng-repeat="comment in comments">
+   <div class="left-part commenter-avatar-container"
+    style="background-image: url(/image/get-mini-profile-image-by-id/{{comment.ownerId}})">
+    <div class="default-commenter-avatar ic_icon ic_avatar_default hide"
+     data-user-pic=""></div>
    </div>
-   
-</div>
-</div>
+   <div class="middle-part">
+    <div class="commenter-name L14">{{comment.ownerName}}</div>
 
- <div class="comment-input-container fixed-bottom-holder center-container">
-  <textarea class="comment-textarea" rows="1" maxlength="200" style="height: 38px; overflow-y: hidden;"></textarea>
-  <div class="submit-comment-button ic_send"></div>
+    <div class="comment-content">{{comment.body}}</div>
+
+    <div class="comment-time-container">
+     <span class="buyer-review r12" data-i18n="label_buyer_review_camel">Buyer
+      Review</span> <span class="ic_icon ic_clock"></span> <span
+      class="comment-time r12">{{comment.createdDate |
+      date:'dd-MM-yyyy h:mm:a'}}</span>
+    </div>
+   </div>
+
+   <div class="right-part">
+    <span class="item-rating ic_icon ic_rate_good"></span>
+   </div>
+
+  </div>
+ </div>
+
+ <div
+  class="comment-input-container fixed-bottom-holder center-container">
+  <textarea data-ng-model="commentBody" class="comment-textarea"
+   rows="1" maxlength="200" style="height: 38px; overflow-y: hidden;"></textarea>
+  <div class="submit-comment-button ic_send"
+   ng-click="submit(commentBody)"></div>
  </div>
 
 </div>

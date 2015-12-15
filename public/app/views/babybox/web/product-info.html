@@ -1,295 +1,315 @@
 <div class="header">
-	<div class='inner middle-centered-div'>	
-       <div ng-click="doBack()" class="icon_left ic_icon  ic_arrow_back clickable_area">
-		</div>
-		<div class="no-search-bar-holder flex1"></div>
-		<div class='page_name L16'></div>
-		<span ng-if="!userInfo.isLoggedIn" style="padding-right: 15px;">
-		<a href="/login">
-		<div class='hold user_avatar ic_web_profile clickable_area'></div>
-		</a>
-		</span>
-		<span ng-if="userInfo.isLoggedIn" style="padding-right: 15px; padding-top: 0px;">
-		<a href="/profile/{{userInfo.id}}">
-		<div class="hold user_avatar clickable_area"  style="background-image:url(/image/get-mini-profile-image-by-id/{{userInfo.id}});"></div>
-		</a>
-		</span>
-		<div class='second-panel'>
-				<div class='signup-btn' data-i18n='label_signup'>
-				</div>
-				<div class='login-btn' data-i18n='label_login'>
-				</div>
-		</div>
-        <div class="clearfix"></div>
-	</div>
+ <div class='inner middle-centered-div'>
+  <div ng-click="doBack()"
+   class="icon_left ic_icon  ic_arrow_back clickable_area"></div>
+  <div class="no-search-bar-holder flex1"></div>
+  <div class='page_name L16'></div>
+  <span ng-if="!userInfo.isLoggedIn" style="padding-right: 15px;">
+   <a href="/login">
+    <div class='hold user_avatar ic_web_profile clickable_area'></div>
+  </a>
+  </span> <span ng-if="userInfo.isLoggedIn"
+   style="padding-right: 15px; padding-top: 0px;"> <a
+   href="/profile/{{userInfo.id}}">
+    <div class="hold user_avatar clickable_area"
+     style="background-image: url(/image/get-mini-profile-image-by-id/{{userInfo.id}});"></div>
+  </a>
+  </span>
+  <div class='second-panel'>
+   <div class='signup-btn' data-i18n='label_signup'></div>
+   <div class='login-btn' data-i18n='label_login'></div>
+  </div>
+  <div class="clearfix"></div>
+ </div>
 </div>
 <div class="page-holder center-container" id="item-page">
-	<div class="top-part">
-		
-		<div class="item-title">
-            <div id="title-name" class="title r16">{{product.title}}</div>
-			<div class="price">
-				<div class="price-inner m24" id="item-price"><span class="dollarfy_sign" dir="ltr" style="display: inline;">$</span> <span class="dollarfy_val" currency="HKD" val="3000000">{{product.price}}</span></div>
-				
-				<div class="slide-out-select shipping-fee-select collapsed  middle-centered-div" style="display: none;">
-					<div class="slide-out-select-display">
-						
-						<span>Shipping Fee</span>:
-						&nbsp;<span class="selected-shipping-fee"></span>&nbsp;<span class="ic_arrow_down_black shipping-fee-select-arrow"></span>
-						
-					</div>
-					<div class="slide-out-select-options"></div>
-				</div>
-				
-				<div class="shipping_fee_included L12 app_alert " for="shipping_fee_included" style="display: block;">
-                    
-					<span>Shipping fee included</span>
-                    
+ <div class="top-part">
 
-					<div class="ic_ex_enlarge">
-						<span class="butt ic_help"></span>
-					</div>
-				</div>
-			</div>
+  <div class="item-title">
+   <div id="title-name" class="title r16">{{product.title}}</div>
+   <div class="price">
+    <div class="price-inner m24" id="item-price">
+     <span class="dollarfy_sign" dir="ltr" style="display: inline;">$</span>
+     <span class="dollarfy_val" currency="HKD" val="3000000">{{product.price}}</span>
+    </div>
 
-		</div>
-		<div class="actions flex-it middle-centered-div">
-			<div id="likes" ng-click="like_Unlike(product.id)" class="web flex1 middle-centered-div like clickable_area">
-				<div ng-if="product.isLiked" id="like-icon" class="ic_icon ic_heart_filled"></div>
-				<div ng-if="!product.isLiked" id="like-icon" class="ic_icon ic_heart"></div>
-				<div class="text r14 flex1" data-i18n="label_like">Like</div>
-				<div class="r14 number-container">
-					<span class="number">{{product.numLikes}}</span>
-				</div>
-			</div>
-           
-            <a href="/comments/{{product.id}}" class="clickable_area flex1 middle-centered-div" >
-			<div id="comment-button" class="comment clickable_area flex1 middle-centered-div" >
-              
-				<div class="ic_icon ic_comment"></div>
-				<div class="text r14 flex1" data-i18n="label_comment">Comment</div>
-				<div class="r14 number-container">
-					<span class="number">{{product.numComments}}</span>
-				</div>
-                 
-			</div>
-            </a>
-			<div id="share-button" class="share hide"><div class="ic_icon ic_share"></div></div>
+    <div
+     class="slide-out-select shipping-fee-select collapsed  middle-centered-div"
+     style="display: none;">
+     <div class="slide-out-select-display">
 
-		</div>
+      <span>Shipping Fee</span>: &nbsp;<span
+       class="selected-shipping-fee"></span>&nbsp;<span
+       class="ic_arrow_down_black shipping-fee-select-arrow"></span>
 
-		
-	
-	<div id="shop-part" class="shop-part-container"><div class="shop-part  isSeller ">
-	
-	<a href="/profile/{{product.ownerId}}">
-	
-		<div class="top-holder">
-			<div class="avatar-box">
-				
-					<img ng-src="/image/get-mini-profile-image-by-id/{{product.ownerId}}">
-				
-			</div>
-			<div class="center-box">
-				<div class="head-line m15 truncate">
-					{{product.ownerName}}
-				</div>
-				<div class="gray-line r12" >Last active on: {{product.ownerLastLogin | date:'dd-MM-yyyy'}}</div>
-			</div>
-			<div class="view-box isPC r12" >
-				<span data-i18n="label_view_shop">View Shop</span>
-			</div>
-		</div>
-		
-		<ul class="bottom-holder isPC">
-			
-				<li class="products-box" >
-					<div class="space"></div>
-					<div class="box-left">
-						<span class="icon ic_detail_product_web">
-						</span>
-					</div>
-					<div class="box-right">
-						<div class="number m18">{{userInfo.numProducts}}</div>
-						
-							<div class="text" data-i18n="label_products">Products</div>
-						
-					</div>
-					<div class="space"></div>
-				</li>
-				<li class="border">&nbsp;
-				</li>
-				<li class="reviews-box" data-shopid="10022">
-					<div class="space"></div>
-					<div class="box-left">
-						<span class="icon ic_detail_positive_web">
-						</span>
-					</div>
-					<div class="box-right r12">
-						<div class="number m18">{{userInfo.numFollowers}}</div>
-						
-							<div class="text" data-i18n="label_positive_reviews">Followers</div>
-						
-					</div>
-					<div class="space"></div>
-				</li>
-				<li class="border">&nbsp;
-				</li>
-			
-		</ul>
-	
-	</a>
-	
-</div></div>
-	<div id="detail-part" class="info-part">
-		<div class="detail">
-			<div class="middle-centered-div detail-heading">
-				<div class="heading r14 flex1" data-i18n="label_product_info">Product Details</div>
-				<div class="time middle-centered-div" id="list-time">
-					<span class="ic_icon ic_clock"></span>
-					<span class="text"> {{product.createdDate | date:'ww'}}w</span>
-				</div>
-			</div>
-			<div class="description text L14">{{product.body}}</div>
-		</div>
-		<div class="table">
-			<div class="tr category-row middle-centered-div">
-				<div class="r14 th" data-i18n="label_category">Category</div>
-				<div class="heavy L14 td flex1">
-					<a class="middle-centered-div tr-padding" href="/category/{{product.categoryId}}/popular">
-						<div class="text flex1" id="item-category">{{product.categoryName}}</div>
-					</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div id="review-part" class="review-part">
-		<div id="review-container">
-		<div id="review-template" class="review" style="display: block;" data-ng-repeat="comment in product.latestComments">
-			<div class="flex-it">
-				<div class="left">
-					<a>
-						<div class="image-container">
-							<div class="image"><img src="/image/get-mini-profile-image-by-id/{{comment.ownerId}}">
-							</div>
-						</div>
-					</a>
-				</div>
-				<div class="right flex1 flex-it">
-					<div class="flex1">
-						<a><div class="name m14">{{comment.ownerName}}</div></a>
+     </div>
+     <div class="slide-out-select-options"></div>
+    </div>
 
-						<div class="comment text r14">{{comment.body}}</div>
-						<!-- <div class="param">
+    <div class="shipping_fee_included L12 app_alert "
+     for="shipping_fee_included" style="display: block;">
+
+     <span>Shipping fee included</span>
+
+
+     <div class="ic_ex_enlarge">
+      <span class="butt ic_help"></span>
+     </div>
+    </div>
+   </div>
+
+  </div>
+  <div class="actions flex-it middle-centered-div">
+   <div id="likes" ng-click="like_Unlike(product.id)"
+    class="web flex1 middle-centered-div like clickable_area">
+    <div ng-if="product.isLiked" id="like-icon"
+     class="ic_icon ic_heart_filled"></div>
+    <div ng-if="!product.isLiked" id="like-icon"
+     class="ic_icon ic_heart"></div>
+    <div class="text r14 flex1" data-i18n="label_like">Like</div>
+    <div class="r14 number-container">
+     <span class="number">{{product.numLikes}}</span>
+    </div>
+   </div>
+
+   <a href="/comments/{{product.id}}"
+    class="clickable_area flex1 middle-centered-div">
+    <div id="comment-button"
+     class="comment clickable_area flex1 middle-centered-div">
+
+     <div class="ic_icon ic_comment"></div>
+     <div class="text r14 flex1" data-i18n="label_comment">Comment</div>
+     <div class="r14 number-container">
+      <span class="number">{{product.numComments}}</span>
+     </div>
+
+    </div>
+   </a>
+   <div id="share-button" class="share hide">
+    <div class="ic_icon ic_share"></div>
+   </div>
+
+  </div>
+
+  <div id="shop-part" class="shop-part-container">
+   <div class="shop-part  isSeller ">
+
+    <a href="/profile/{{product.ownerId}}">
+
+     <div class="top-holder">
+      <div class="avatar-box">
+       <img
+        ng-src="/image/get-mini-profile-image-by-id/{{product.ownerId}}">
+      </div>
+      <div class="center-box">
+       <div class="head-line m15 truncate">{{product.ownerName}}</div>
+       <div class="gray-line r12">Last active on:
+        {{product.ownerLastLogin | date:'dd-MM-yyyy'}}</div>
+      </div>
+      <div class="view-box isPC r12">
+       <span data-i18n="label_view_shop">View Shop</span>
+      </div>
+     </div>
+
+     <ul class="bottom-holder isPC">
+
+      <li class="products-box">
+       <div class="space"></div>
+       <div class="box-left">
+        <span class="icon ic_detail_product_web"> </span>
+       </div>
+       <div class="box-right">
+        <div class="number m18">{{userInfo.numProducts}}</div>
+
+        <div class="text" data-i18n="label_products">Products</div>
+
+       </div>
+       <div class="space"></div>
+      </li>
+      <li class="border">&nbsp;</li>
+      <li class="reviews-box" data-shopid="10022">
+       <div class="space"></div>
+       <div class="box-left">
+        <span class="icon ic_detail_positive_web"> </span>
+       </div>
+       <div class="box-right r12">
+        <div class="number m18">{{userInfo.numFollowers}}</div>
+
+        <div class="text" data-i18n="label_positive_reviews">Followers</div>
+
+       </div>
+       <div class="space"></div>
+      </li>
+      <li class="border">&nbsp;</li>
+
+     </ul>
+
+    </a>
+
+   </div>
+  </div>
+  <div id="detail-part" class="info-part">
+   <div class="detail">
+    <div class="middle-centered-div detail-heading">
+     <div class="heading r14 flex1" data-i18n="label_product_info">Product
+      Details</div>
+     <div class="time middle-centered-div" id="list-time">
+      <span class="ic_icon ic_clock"></span> <span class="text">
+       {{product.createdDate | date:'ww'}}w</span>
+     </div>
+    </div>
+    <div class="description text L14">{{product.body}}</div>
+   </div>
+   <div class="table">
+    <div class="tr category-row middle-centered-div">
+     <div class="r14 th" data-i18n="label_category">Category</div>
+     <div class="heavy L14 td flex1">
+      <a class="middle-centered-div tr-padding"
+       href="/category/{{product.categoryId}}/popular">
+       <div class="text flex1" id="item-category">{{product.categoryName}}</div>
+      </a>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div id="review-part" class="review-part">
+   <div id="review-container">
+    <div id="review-template" class="review" style="display: block;"
+     data-ng-repeat="comment in product.latestComments">
+     <div class="flex-it">
+      <div class="left">
+       <a>
+        <div class="image-container">
+         <div class="image">
+          <img
+           src="/image/get-mini-profile-image-by-id/{{comment.ownerId}}">
+         </div>
+        </div>
+       </a>
+      </div>
+      <div class="right flex1 flex-it">
+       <div class="flex1">
+        <a><div class="name m14">{{comment.ownerName}}</div></a>
+
+        <div class="comment text r14">{{comment.body}}</div>
+        <!-- <div class="param">
 							<div class="buyer-review m12" data-i18n="label_bueyer_review">buyer review</div>
 							<div class="time">
 								<span class="ic_icon ic_clock"></span>
 								<span class="text r12">14w</span>
 							</div>
 						</div> -->
-					</div>
+       </div>
 
-				</div>
-				<div class="face ic_icon ic_rate_average">
-				</div>
-			</div>
+      </div>
+      <div class="face ic_icon ic_rate_average"></div>
+     </div>
 
 
-		</div></div>
-		<div class="view-all-comments" ng-if="product.numComments > 3">
-			<div class="no-comment r14" data-i18n="label_no_comments" style="display: none;">Be the first to leave a comment</div>
-			<div class="leave-a-comment r14" data-i18n="label_leave_a_comment" style="display: none;">Leave a comment</div>
-			<div class="ic_icon ic_comment_red">
-			</div>
-			<div class="text m14">
-				<span data-i18n="label_view_all">View all</span> <span class="number">{{product.numComments}}</span> <span class="comment_text" data-i18n="label_comments">Comments</span>
-			</div>
-		</div>
-	</div>
-	
-		<div id="second-layer" class="center-container">
-	<div class="quantity">
-		<div class="quantity-title m14">
-			<span data-i18n="label_quantity">Quantity</span>
-			(<span data-i18n="label_stock">Stock</span>: <span class="number">9</span>)
-		</div>
-		<div class="quantities">
-			<div class="minus clickable_area">
-				<div class="ic_minus">
-				</div>
-			</div>
-			<div class="number i48">
-				<span class="count">1</span>
-				<div class="border">
-				</div>
-			</div>
-			<div class="plus clickable_area">
-				<div class="ic_plus">
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="btn-bottom-holder center-container">
-		<div id="ok-button" class="btn-bottom clickable_area" data-i18n="label_BUYNOW">BUY NOW</div>
-	</div>
-</div>
-<div id="cover" class="cover">
-</div>
-<div id="message" class="center-container">
-	<div class="message-title" data-i18n="label_message">Message</div>
-	<div class="close-button" id="close-btn">X</div>
-	<div class="message-content r14">
+    </div>
+   </div>
+   <div class="view-all-comments" ng-if="product.numComments > 3">
+    <div class="no-comment r14" data-i18n="label_no_comments"
+     style="display: none;">Be the first to leave a comment</div>
+    <div class="leave-a-comment r14" data-i18n="label_leave_a_comment"
+     style="display: none;">Leave a comment</div>
+    <div class="ic_icon ic_comment_red"></div>
+    <div class="text m14">
+     <span data-i18n="label_view_all">View all</span> <span
+      class="number">{{product.numComments}}</span> <span
+      class="comment_text" data-i18n="label_comments">Comments</span>
+    </div>
+   </div>
+  </div>
 
-	</div>
-	<div class="message-button" id="msg-btn" data-i18n="label_sendmessage">Send Message</div>
-</div>
+  <div id="second-layer" class="center-container">
+   <div class="quantity">
+    <div class="quantity-title m14">
+     <span data-i18n="label_quantity">Quantity</span> (<span
+      data-i18n="label_stock">Stock</span>: <span class="number">9</span>)
+    </div>
+    <div class="quantities">
+     <div class="minus clickable_area">
+      <div class="ic_minus"></div>
+     </div>
+     <div class="number i48">
+      <span class="count">1</span>
+      <div class="border"></div>
+     </div>
+     <div class="plus clickable_area">
+      <div class="ic_plus"></div>
+     </div>
+    </div>
+   </div>
+   <div class="btn-bottom-holder center-container">
+    <div id="ok-button" class="btn-bottom clickable_area"
+     data-i18n="label_BUYNOW">BUY NOW</div>
+   </div>
+  </div>
+  <div id="cover" class="cover"></div>
+  <div id="message" class="center-container">
+   <div class="message-title" data-i18n="label_message">Message</div>
+   <div class="close-button" id="close-btn">X</div>
+   <div class="message-content r14"></div>
+   <div class="message-button" id="msg-btn"
+    data-i18n="label_sendmessage">Send Message</div>
+  </div>
 
-	<div class="recommend-products-wrapper center-container no-padding-top">
-		<div class="recommend-info L12">You May Also Like</div>
-		<div class="recommend-products" style="height: 168px;">
-			<div class="recommend-product clickable_area" data-ng-repeat="post in suggestedPost">
-			<a href="/product/{{post.id}}">
-				<img data-ng-src="/image/get-mini-post-image-by-id/{{post.images[0]}}">
-				<div class="recommend-product-price r10">
-					<span class="dollarfy_sign" val="HKD" style="display: inline;">$</span>
-					<span class="dollarfy_ext_int unit-price"  style="display: inline;">{{post.price}}</span>
-				</div>
-				<div class="status_band"></div></a>
-			</div>
-			
-		</div>
-	</div>
+  <div
+   class="recommend-products-wrapper center-container no-padding-top">
+   <div class="recommend-info L12">You May Also Like</div>
+   <div class="recommend-products" style="height: 168px;">
+    <div class="recommend-product clickable_area"
+     data-ng-repeat="post in suggestedPost">
+     <a href="/product/{{post.id}}"> <img
+      data-ng-src="/image/get-mini-post-image-by-id/{{post.images[0]}}">
+      <div class="recommend-product-price r10">
+       <span class="dollarfy_sign" val="HKD" style="display: inline;">$</span>
+       <span class="dollarfy_ext_int unit-price"
+        style="display: inline;">{{post.price}}</span>
+      </div>
+      <div class="status_band"></div></a>
+    </div>
 
-		<div id="float-bottom" class="float-bottom center-container" style="bottom: 0px;">
-		<div class="inner flex-it">
-			<div class="left flex1">
-				<div id="chat-to-offer" class="clickable_area">
-					<div class="ic_icon ic_offer_chat">
-					</div>
-					<div class="text m14 SG" data-i18n="label_chat_to_offer">Chat Now</div>
-				</div>
-				<div id="offer-count" class="r14">
-					<span data-i18n="label_you_have">You have</span> 0 <span data-i18n="label_offers">offers</span>
-				</div>
-			</div>
-			<div class="padding-12"></div>
-			<div class="right flex1">
-				<div id="buy-button" class="m14 clickable_area flex1" data-i18n="label_buy">Buy Now</div>
-				<div id="viewoffer" class="clickable_area" data-i18n="label_view_offers">View Offers</div>
-			</div>
-		</div>
-		<div class="snapshot_view bottom_view" style="display:none;">
-			<div class="text" data-i18n="msg_this_is_snapshot">This is a product snapshot</div>
-			<a class="view-href">
-				<div class="view-butt" data-i18n="labels_live_view">Live View</div>
-			</a>
-		</div>
-		<div class="banned_view bottom_view" style="display:none;">
-			<div class="text" data-i18n="label_this_product_banned">This product has been banned</div>
-			<a class="update-href">
-				<div class="view-butt" data-i18n="label_update">Update</div>
-			</a>
-		</div>
-	</div>
-</div>
+   </div>
+  </div>
+
+  <div id="float-bottom" class="float-bottom center-container"
+   style="bottom: 0px;">
+   <div class="inner flex-it">
+    <div class="left flex1">
+     <div id="chat-to-offer" class="clickable_area">
+      <div class="ic_icon ic_offer_chat"></div>
+      <div class="text m14 SG" data-i18n="label_chat_to_offer">Chat
+       Now</div>
+     </div>
+     <div id="offer-count" class="r14">
+      <span data-i18n="label_you_have">You have</span> 0 <span
+       data-i18n="label_offers">offers</span>
+     </div>
+    </div>
+    <div class="padding-12"></div>
+    <div class="right flex1">
+     <div id="buy-button" class="m14 clickable_area flex1"
+      data-i18n="label_buy">Buy Now</div>
+     <div id="viewoffer" class="clickable_area"
+      data-i18n="label_view_offers">View Offers</div>
+    </div>
+   </div>
+   <div class="snapshot_view bottom_view" style="display: none;">
+    <div class="text" data-i18n="msg_this_is_snapshot">This is a
+     product snapshot</div>
+    <a class="view-href">
+     <div class="view-butt" data-i18n="labels_live_view">Live View</div>
+    </a>
+   </div>
+   <div class="banned_view bottom_view" style="display: none;">
+    <div class="text" data-i18n="label_this_product_banned">This
+     product has been banned</div>
+    <a class="update-href">
+     <div class="view-butt" data-i18n="label_update">Update</div>
+    </a>
+   </div>
+  </div>
+ </div>
 </div>
