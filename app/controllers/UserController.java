@@ -790,18 +790,12 @@ public class UserController extends Controller {
 	}
   
     @Transactional
-    public static Result profile(Long id) {
-    	User user = User.findById(id);
-       	final User localUser = Application.getLocalUser(session());
+    public static Result viewProfile(Long id) {
+        User user = User.findById(id);
+        final User localUser = Application.getLocalUser(session());
     	
-    	
-    	if(!localUser.isLoggedIn()){
-    		return redirect("/login");
-    	}
     	NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    
-    	
-		
 		sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {
             logger.underlyingLogger().debug("[u="+user.getId()+"] getProfile(). Took "+sw.getElapsedMS()+"ms");

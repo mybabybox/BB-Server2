@@ -289,7 +289,7 @@ public class ProductController extends Controller{
 	}
 
 	@Transactional
-	public Result product(Long id) {
+	public Result viewProduct(Long id) {
 		final User localUser = Application.getLocalUser(session());
 		PostVM vm = getProductInfoVM(id);
 		Map<String, List<String>> images = new HashMap<>();
@@ -464,25 +464,13 @@ public class ProductController extends Controller{
 		return ok(Json.toJson(vms));
 	}
 
-	public static ArrayList getComments(Long id, Long offset){
-		final User localUser = Application.getLocalUser(session());
-		if (!localUser.isLoggedIn()) {
-			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-			//return notFound();
-		}
-		
-		Post post = Post.findById(id);
-		if (post == null) {
-			//return ok();
-		}
-		
+	public static List<CommentVM> getComments(User user, Post post, Long offset){
 		List<CommentVM> comments = new ArrayList<CommentVM>();
-		
 		for (Comment comment : post.getPostComments(offset)) {
-			CommentVM commentVM= new CommentVM(comment, localUser);
+			CommentVM commentVM = new CommentVM(comment, user);
 			comments.add(commentVM);
 		}
-		return (ArrayList) comments;
+		return comments;
 	}
 	
 	
@@ -499,30 +487,24 @@ public class ProductController extends Controller{
 			return ok();
 		}
 		
-		/*List<CommentVM> comments = new ArrayList<CommentVM>();
-		for (Comment comment : post.getPostComments(offset)) {
-			CommentVM commentVM = new CommentVM(comment, localUser);
-			comments.add(commentVM);
-		}*/
-		
-		return ok(Json.toJson(getComments(id,offset)));
+		return ok(Json.toJson(getComments(localUser, post, offset)));
 	}
 
 
 	@Transactional
-    public Result getAllComments(Long postid) {
+    public Result viewComments(Long postId) {
 		final User localUser = Application.getLocalUser(session());
 		if (!localUser.isLoggedIn()) {
 			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
 			return redirect("/login");
 		}
 		
-		Post post = Post.findById(postid);
+		Post post = Post.findById(postId);
 		if (post == null) {
 			return ok();
 		}
 		
-        return ok(views.html.babybox.web.comments.render(Json.stringify(Json.toJson(getComments(postid, 0L)))));
+        return ok(views.html.babybox.web.comments.render(Json.stringify(Json.toJson(getComments(localUser, post, 0L)))));
     }
 
 	

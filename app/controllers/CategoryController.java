@@ -116,7 +116,7 @@ public class CategoryController extends Controller{
     }
     
     @Transactional
-    public Result getCategoryPage(Long id, String catagoryFilter){
+    public Result viewCategory(Long id, String catagoryFilter){
         User localUser = Application.getLocalUser(session());
         Category category = Category.findById(id);
         CategoryVM categoryVM = new CategoryVM(category);
