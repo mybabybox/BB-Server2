@@ -44,6 +44,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
+import providers.MyUsernamePasswordAuthProvider;
 import service.SocialRelationHandler;
 import viewmodel.ActivityVM;
 import viewmodel.CollectionVM;
@@ -756,10 +757,16 @@ public class UserController extends Controller {
   
     @Transactional
     public static Result profile(Long id) {
+    	User user = User.findById(id);
+       	final User localUser = Application.getLocalUser(session());
+    	
+    	
+    	if(!localUser.isLoggedIn()){
+    		return redirect("/login");
+    	}
     	NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    
-    	User user = User.findById(id);
-    	final User localUser = Application.getLocalUser(session());
+    	
 		
 		sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {

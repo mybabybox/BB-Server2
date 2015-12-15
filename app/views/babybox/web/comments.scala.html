@@ -1,3 +1,5 @@
+@(comments:String)
+
 <!doctype html>
 <html lang="zh-hk">
     <head>
@@ -22,7 +24,7 @@
         <!--meta property="og:title" content="title" />
         <meta property="og:description" content="description" /-->
         
-        <link rel="stylesheet" href="assets/assets/css/module.stylesheet-complete.min.css" />
+      
         <link rel="stylesheet" href="@routes.Assets.versioned("components/library/bootstrap/css/bootstrap.min.css")" />
       	<link rel="stylesheet" href="@routes.Assets.versioned("app/bower_components/ng-file-upload/css/file-upload.css")" />
       	<link rel="stylesheet" href="@routes.Assets.versioned("app/bower_components/dropdowns-enhancement/css/dropdowns-enhancement.css")" />
@@ -33,7 +35,7 @@
     </head>
     <body id="main-app" class="menu-right-hidden" ng-app="babybox">
     <span us-spinner spinner-key="loading..." ></span>\
-        <div class="container-fluid menu-hidden">
+        <div class="container-fluid menu-hidden" ng-controller="CommentController">
             <div id="main-view" >
             	<div data-ng-include data-src="'/assets/app/views/babybox/web/comments.html'"></div>
             </div>
@@ -91,9 +93,17 @@
 		<link rel="stylesheet" href=@routes.Assets.versioned("app/custom-css/css/common.css")>
 		<link rel="stylesheet" href=@routes.Assets.versioned("app/custom-css/css/shop/item/shop_part.css")>
 		<link rel="stylesheet" href=@routes.Assets.versioned("app/custom-css/css/shop/item.css")>
-		<link rel="stylesheet" href=@routes.Assets.versioned("app/custom-css/css/swiper.css")>
-		<link rel="stylesheet" href=@routes.Assets.versioned("app/custom-css/babybox-override.css")>
+		<link rel="stylesheet" href=@routes.Assets.versioned("app/custom-css/css/common/item-comment.css")>
+		
 			        
     </body>
 </html>
+
+
+<script>
+  angular.module('babybox').factory('comments', function(){
+   return @Html(comments);
+  });
+  
+</script>
 

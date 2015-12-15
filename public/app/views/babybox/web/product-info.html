@@ -62,15 +62,18 @@
 					<span class="number">{{product.numLikes}}</span>
 				</div>
 			</div>
-
-			<div id="comment-button"  ng-click="loginComments()"  class="comment clickable_area flex1 middle-centered-div">
+           
+            <a href="/comments/{{product.id}}" class="clickable_area flex1 middle-centered-div" >
+			<div id="comment-button" class="comment clickable_area flex1 middle-centered-div" >
+              
 				<div class="ic_icon ic_comment"></div>
 				<div class="text r14 flex1" data-i18n="label_comment">Comment</div>
 				<div class="r14 number-container">
 					<span class="number">{{product.numComments}}</span>
 				</div>
+                 
 			</div>
-
+            </a>
 			<div id="share-button" class="share hide"><div class="ic_icon ic_share"></div></div>
 
 		</div>
@@ -91,7 +94,7 @@
 				<div class="head-line m15 truncate">
 					{{product.ownerName}}
 				</div>
-				<div class="gray-line r12" >Active 3 days ago</div>
+				<div class="gray-line r12" >Last active on: {{product.ownerLastLogin | date:'dd-MM-yyyy'}}</div>
 			</div>
 			<div class="view-box isPC r12" >
 				<span data-i18n="label_view_shop">View Shop</span>
@@ -107,7 +110,7 @@
 						</span>
 					</div>
 					<div class="box-right">
-						<div class="number m18">32</div>
+						<div class="number m18">{{userInfo.numProducts}}</div>
 						
 							<div class="text" data-i18n="label_products">Products</div>
 						
@@ -123,26 +126,14 @@
 						</span>
 					</div>
 					<div class="box-right r12">
-						<div class="number m18">85%</div>
+						<div class="number m18">{{userInfo.numFollowers}}</div>
 						
-							<div class="text" data-i18n="label_positive_reviews">Positive Reviews</div>
+							<div class="text" data-i18n="label_positive_reviews">Followers</div>
 						
 					</div>
 					<div class="space"></div>
 				</li>
 				<li class="border">&nbsp;
-				</li>
-				<li class="response-rate-box">
-					<div class="space"></div>
-					<div class="box-left">
-						<span class="icon ic_detail_response_web">
-						</span>
-					</div>
-					<div class="box-right r12">
-						<div class="number m18">27%</div>
-						<div class="text" data-i18n="label_chat_response">Chat Response</div>
-					</div>
-					<div class="space"></div>
 				</li>
 			
 		</ul>
@@ -156,7 +147,7 @@
 				<div class="heading r14 flex1" data-i18n="label_product_info">Product Details</div>
 				<div class="time middle-centered-div" id="list-time">
 					<span class="ic_icon ic_clock"></span>
-					<span class="text">27w</span>
+					<span class="text"> {{product.createdDate | date:'ww'}}w</span>
 				</div>
 			</div>
 			<div class="description text L14">{{product.body}}</div>

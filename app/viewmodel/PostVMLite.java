@@ -9,7 +9,8 @@ public class PostVMLite {
 	@JsonProperty("id") public Long id;
 	@JsonProperty("ownerId") public Long ownerId;
     @JsonProperty("ownerName") public String ownerName;
-    
+    @JsonProperty("ownerLastLogin") public Long ownerLastLogin;
+
 	@JsonProperty("title") public String title;
 	@JsonProperty("price") public double price;
 	@JsonProperty("sold") public boolean sold;
@@ -35,6 +36,7 @@ public class PostVMLite {
         this.id = post.id;
         this.ownerId = post.owner.id;
         this.ownerName = post.owner.displayName;
+        this.ownerLastLogin = post.owner.lastLogin.getTime();
         this.title = post.title;
         this.price = post.price;
         this.sold = post.sold;
@@ -87,6 +89,14 @@ public class PostVMLite {
         this.ownerName = ownerName;
     }
     
+    public Long getOwnerLastLogin() {
+		return ownerLastLogin;
+	}
+
+	public void setOwnerLastLogin(Long ownerLastLogin) {
+		this.ownerLastLogin = ownerLastLogin;
+	}
+	
     public String getTitle() {
         return title;
     }
