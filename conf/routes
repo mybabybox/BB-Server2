@@ -114,7 +114,7 @@ GET		/get-suggested-products/:id								@controllers.ProductController.getSugges
 # Category
 GET     /categories                                 controllers.CategoryController.getCategories()
 GET     /category/:id                               controllers.CategoryController.getCategory(id:Long)
-GET     /category/:id/:catagoryFilter               @controllers.CategoryController.getCategoryPage(id:Long, catagoryFilter:String)
+GET     /category/:id/:catagoryFilter               @controllers.CategoryController.viewCategory(id:Long, catagoryFilter:String)
 
 # Product
 POST    /post/new                                   controllers.ProductController.createProduct()
@@ -123,7 +123,7 @@ POST    /post/edit                                  controllers.ProductControlle
 POST    /web/post/edit                              controllers.ProductController.editProductWeb()
 GET     /get-all-feed-products       				@controllers.ProductController.getAllFeedProducts
 GET     /get-all-similar-products       			controllers.ProductController.getAllSimilarProducts
-GET     /product/:id            		     		@controllers.ProductController.product(id:Long)
+GET     /product/:id            		     		@controllers.ProductController.viewProduct(id:Long)
 GET     /like-post/:id          					controllers.ProductController.likePost(id:Long)
 GET     /unlike-post/:id        					controllers.ProductController.unlikePost(id:Long)
 GET     /sold-post/:id                              controllers.ProductController.soldPost(id:Long)
@@ -135,9 +135,10 @@ GET		/post/:id									@controllers.ProductController.getProductInfo(id:Long)
 GET     /post/delete/:id                            controllers.ProductController.deletePost(id:Long)
 GET     /comment/delete/:id                         controllers.ProductController.deleteComment(id:Long)
 GET     /comments/:postId/:offset                   controllers.ProductController.getPostComments(postId: Long,offset:Long)	
-GET 	/comments/:postId							@controllers.ProductController.getAllComments(postId:Long)		
+GET 	/comments/:postId							@controllers.ProductController.viewComments(postId:Long)
+		
 # User
-GET     /profile/:id                                controllers.UserController.profile(id:Long)
+GET     /profile/:id                                controllers.UserController.viewProfile(id:Long)
 GET     /get-user-posted-feed/:id/:offset       	@controllers.UserController.getUserPosts(id: Long, offset:Long)
 GET     /collections/:id							controllers.UserController.getUserCollections(id: Long)
 GET     /follow-user/:id          					controllers.UserController.followUser(id:Long)
