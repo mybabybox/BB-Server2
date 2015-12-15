@@ -177,14 +177,6 @@ babybox.controller('ProductPageController',
 			$window.location.href ='/login';
 		}
 	}
-	$scope.loginComments = function() {
-		if($scope.userInfo.id != -1){
-			$window.location.href ='/comments';
-		}
-		else {
-			$window.location.href ='/login';
-		}
-	}
 
 });
 
@@ -285,6 +277,11 @@ babybox.controller('ProfileController',
 	
 });
 
+babybox.controller('CommentController', 
+		function($scope, $route, $http, comments) {
+	$scope.comments = comments;
+	console.log($scope.comments)
+});
 
 /*babybox.controller('CreateCollectionController', 
 		function($scope, $route, $http, usSpinnerService) {

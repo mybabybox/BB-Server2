@@ -23,84 +23,50 @@
         <div class="clearfix"></div>
 	</div>
 </div>
-<div class="page-holder center-container" id="item-page">
-	<div class="top-part">
-		
-		  <div class="item-title">
-            <div id="title-name" class="title r16"></div>
-			
-		</div>
 
-	<div id="review-part" class="review-part">
-		<div id="review-container">
-		<div id="review-template" class="review" style="display: block;" >
-			<div class="flex-it">
-				<div class="left">
-					<a>
-						<div class="image-container">
-							<div class="image">							
-							</div>
-						</div>
-					</a>
-				</div>
-				<div class="right flex1 flex-it">
-					<div class="flex1">
-						<a><div class="name m14">@UserName</div></a>
 
-						<div class="comment text r14">This user is comment : 1</div>
-						<!-- <div class="param">
-							<div class="buyer-review m12" data-i18n="label_bueyer_review">buyer review</div>
-							<div class="time">
-								<span class="ic_icon ic_clock"></span>
-								<span class="text r12">14w</span>
-							</div>
-						</div> -->
-					</div>
+<div class="page-holder center-container item-comments-index-container" style="margin-bottom: 78px;">
+ <div class="no-comment-background-container center-container hide">
+  <div class="no-comment-background">
+   <div class="no-comment-background-image ic_no_comment"></div>
+   <div class="no-comment-background-text">Be the first to leave a comment</div>
+  </div>
+ </div>
+  <div class="load-previous-button hide">
+  Load previous comments
+ </div>
 
-				</div>
-				<div class="face ic_icon ic_rate_average"></div>
-			</div>
-		</div>
-		</div>
-		
-		<div id="review-container">
-		<div id="review-template" class="review" style="display: block;" >
-			<div class="flex-it">
-				<div class="left">
-					<a>
-						<div class="image-container">
-							<div class="image">
-							</div>
-						</div>
-					</a>
-				</div>
-				<div class="right flex1 flex-it">
-					<div class="flex1">
-						<a><div class="name m14">@UserName</div></a>
+ <div class="comments-list" style="padding-top: 25px;">
+ <div class="item-comment item-comment-container" ng-repeat="comment in comments">
+ <div class="left-part commenter-avatar-container" style="background-image:url(/image/get-mini-profile-image-by-id/{{comment.ownerId}})">
+  <div class="default-commenter-avatar ic_icon ic_avatar_default hide" data-user-pic=""></div>
+ </div>
+ <div class="middle-part">
+  <div class="commenter-name L14">
+  {{comment.ownerName}}
+  </div>
 
-						<div class="comment text r14">This user is comment : 2</div>
-						<!-- <div class="param">
-							<div class="buyer-review m12" data-i18n="label_bueyer_review">buyer review</div>
-							<div class="time">
-								<span class="ic_icon ic_clock"></span>
-								<span class="text r12">14w</span>
-							</div>
-						</div> -->
-					</div>
+  <div class="comment-content">
+  {{comment.body}}
+  </div>
 
-				</div>
-				<div class="face ic_icon ic_rate_average"></div>
-			</div>
-		</div>
-		</div>
-	</div>
-	
+  <div class="comment-time-container">
+    <span class="buyer-review r12" data-i18n="label_buyer_review_camel">Buyer Review</span>
+    <span class="ic_icon ic_clock"></span>
+    <span class="comment-time r12">{{comment.createdDate  | date:'dd-MM-yyyy h:mm:a'}}</span>
+  </div>
+ </div>
 
-<div id="cover" class="cover">
+ <div class="right-part">
+  <span class="item-rating ic_icon ic_rate_good"></span>
+   </div>
+   
+</div>
 </div>
 
+ <div class="comment-input-container fixed-bottom-holder center-container">
+  <textarea class="comment-textarea" rows="1" maxlength="200" style="height: 38px; overflow-y: hidden;"></textarea>
+  <div class="submit-comment-button ic_send"></div>
+ </div>
 
-
-
-</div>
 </div>

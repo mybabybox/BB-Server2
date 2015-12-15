@@ -463,6 +463,28 @@ public class ProductController extends Controller{
 		List<PostVMLite> vms = feedHandler.getPostVM(id, 0l, localUser, FeedType.PRODUCT_SUGGEST);
 		return ok(Json.toJson(vms));
 	}
+
+	public static ArrayList getComments(Long id, Long offset){
+		final User localUser = Application.getLocalUser(session());
+		if (!localUser.isLoggedIn()) {
+			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+			//return notFound();
+		}
+		
+		Post post = Post.findById(id);
+		if (post == null) {
+			//return ok();
+		}
+		
+		List<CommentVM> comments = new ArrayList<CommentVM>();
+		
+		for (Comment comment : post.getPostComments(offset)) {
+			CommentVM commentVM= new CommentVM(comment, localUser);
+			comments.add(commentVM);
+		}
+		return (ArrayList) comments;
+	}
+	
 	
 	@Transactional
 	public static Result getPostComments(Long id, Long offset) {
@@ -477,19 +499,33 @@ public class ProductController extends Controller{
 			return ok();
 		}
 		
-		List<CommentVM> comments = new ArrayList<CommentVM>();
+		/*List<CommentVM> comments = new ArrayList<CommentVM>();
 		for (Comment comment : post.getPostComments(offset)) {
 			CommentVM commentVM = new CommentVM(comment, localUser);
 			comments.add(commentVM);
-		}
-		return ok(Json.toJson(comments));
+		}*/
+		
+		return ok(Json.toJson(getComments(id,offset)));
 	}
 
+
 	@Transactional
-    public static Result comments() {
-        return ok(views.html.babybox.web.comments.render());
+    public Result getAllComments(Long postid) {
+		final User localUser = Application.getLocalUser(session());
+		if (!localUser.isLoggedIn()) {
+			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+			return redirect("/login");
+		}
+		
+		Post post = Post.findById(postid);
+		if (post == null) {
+			return ok();
+		}
+		
+        return ok(views.html.babybox.web.comments.render(Json.stringify(Json.toJson(getComments(postid, 0L)))));
     }
 
+	
 	@Transactional
 	public static Result getConversations(Long id) {
 		final User localUser = Application.getLocalUser(session());
