@@ -1,6 +1,7 @@
 package common.cache;
 
 import java.math.BigDecimal;
+import java.util.Random;
 
 import models.Post;
 
@@ -24,6 +25,9 @@ public class CalcFormula {
 	public static final int FEED_SCORE_COMPUTE_BASE = Play.application().configuration().getInt("feed.score.compute.base");
 	public static final int FEED_SCORE_COMPUTE_DECAY_START = Play.application().configuration().getInt("feed.score.compute.decay.start");
 	public static final int FEED_SCORE_COMPUTE_DECAY_VELOCITY = Play.application().configuration().getInt("feed.score.compute.decay.velocity");
+	public static final int FEED_SCORE_RANDOMIZE_PERCENT = Play.application().configuration().getInt("feed.score.randomize.percent");
+	
+	private Random random = new Random();
 	
 	@Transactional
 	public Long computeBaseScore(Post post) {
@@ -80,8 +84,17 @@ public class CalcFormula {
         return timeScore;
 	}
 	
+	public Double randomizeScore(Post post) {
+        Double timeScore = computeTimeScore(post);
+        int min = 100 - FEED_SCORE_RANDOMIZE_PERCENT;
+        int max = 100 + FEED_SCORE_RANDOMIZE_PERCENT;
+        int percent = (random.nextInt(max - min) + min) / 100;
+        Double randomizedScore = timeScore * percent;
+        logger.underlyingLogger().debug("randomizeScore completed with randomizedScore="+randomizedScore);
+        return randomizedScore;
+    }
+	
 	private Double getDiscountFactor(Double timeDiff) {
 	    return Math.exp(-FEED_SCORE_COMPUTE_DECAY_VELOCITY * timeDiff);
 	}
-
 }

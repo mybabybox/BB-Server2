@@ -40,13 +40,11 @@ public class CalcServer {
 	public static final Long FEED_SCORE_HIGH_BASE = Play.application().configuration().getLong("feed.score.high.base");
 	public static final Long FEED_HOME_COUNT_MAX = Play.application().configuration().getLong("feed.home.count.max");
 	public static final Long FEED_CATEGORY_EXPOSURE_MIN = Play.application().configuration().getLong("feed.category.exposure.min");
-	public static final int FEED_SCORE_RANDOMIZE_PERCENT = Play.application().configuration().getInt("feed.score.randomize.percent");
 	public static final int FEED_SNAPSHOT_EXPIRY = Play.application().configuration().getInt("feed.snapshot.expiry");
 	public static final int FEED_SOLD_CLEANUP_DAYS = Play.application().configuration().getInt("feed.sold.cleanup.days");
 	public static final int FEED_RETRIEVAL_COUNT = DefaultValues.FEED_INFINITE_SCROLL_COUNT;
 	
 	private CalcFormula formula = new CalcFormula();
-	private Random random = new Random();
 	
 	private static CalcServer instance;
     
@@ -296,14 +294,6 @@ public class CalcServer {
 		
 		sw.stop();
 		logger.underlyingLogger().debug("buildUserExploreQueue completed. Took "+sw.getElapsedSecs()+"s");
-	}
-	
-	private Double randomizeScore(Post post) {
-	    Double timeScore = calculateTimeScore(post, false);
-	    int min = 100 - FEED_SCORE_RANDOMIZE_PERCENT;
-	    int max = 100 + FEED_SCORE_RANDOMIZE_PERCENT;
-	    int percent = (random.nextInt(max - min) + min) / 100;
-	    return timeScore * percent;
 	}
 	
 	private void buildUserFollowingFeedQueue(Long userId) {
