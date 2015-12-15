@@ -103,8 +103,8 @@
       </div>
       <div class="center-box">
        <div class="head-line m15 truncate">{{product.ownerName}}</div>
-       <div class="gray-line r12">Last active on:
-        {{product.ownerLastLogin | date:'dd-MM-yyyy'}}</div>
+       <div class="gray-line r12" am-time-ago="product.ownerLastLogin">Active :
+       </div>
       </div>
       <div class="view-box isPC r12">
        <span data-i18n="label_view_shop">View Shop</span>
@@ -154,8 +154,8 @@
      <div class="heading r14 flex1" data-i18n="label_product_info">Product
       Details</div>
      <div class="time middle-centered-div" id="list-time">
-      <span class="ic_icon ic_clock"></span> <span class="text">
-       {{product.createdDate | date:'ww'}}w</span>
+      <span class="ic_icon ic_clock"></span> <span class="text" am-time-ago="product.createdDate">
+      </span>
      </div>
     </div>
     <div class="description text L14">{{product.body}}</div>

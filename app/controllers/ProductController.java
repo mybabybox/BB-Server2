@@ -504,7 +504,7 @@ public class ProductController extends Controller{
 			return ok();
 		}
 		
-        return ok(views.html.babybox.web.comments.render(Json.stringify(Json.toJson(getComments(localUser, post, 0L)))));
+        return ok(views.html.babybox.web.comments.render(Json.stringify(Json.toJson(getComments(localUser, post, 0L))), Json.stringify(Json.toJson(new UserVM(localUser)))));
     }
 
 	

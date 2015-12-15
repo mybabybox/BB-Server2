@@ -1,4 +1,4 @@
-@(comments:String)
+@(comments:String, userInfo: String)
 
 <!doctype html>
 <html lang="zh-hk">
@@ -27,7 +27,7 @@
 <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("app/images/favicon-1.ico")">
 </head>
 <body id="main-app" class="menu-right-hidden" ng-app="babybox">
- <span us-spinner spinner-key="loading..."></span>\
+ <span us-spinner spinner-key="loading..."></span>
  <div class="container-fluid menu-hidden" ng-controller="CommentController">
   <div id="main-view">
    <div data-ng-include data-src="'/assets/app/views/babybox/web/comments.html'"></div>
@@ -97,6 +97,8 @@
   angular.module('babybox').factory('comments', function(){
    return @Html(comments);
   });
-  
+  angular.module('babybox').factory('userInfo', function(){
+		return @Html(userInfo);
+	});
 </script>
 

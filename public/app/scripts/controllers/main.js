@@ -278,9 +278,27 @@ babybox.controller('ProfileController',
 });
 
 babybox.controller('CommentController', 
-		function($scope, $route, $http, comments) {
+		function($scope, $route, $location, $http, comments, userInfo) {
 	$scope.comments = comments;
-	console.log($scope.comments)
+	$scope.userInfo = userInfo;
+	var url = $location.absUrl();
+	var values= url.split("/");
+	$scope.pid = values[values.length-1];
+	$scope.submit = function(commentBody) {
+		var newCommentVM = {
+				"postId" : $scope.pid,
+				"body" : commentBody,
+		};
+		$http.post('/comment/new', newCommentVM) 
+		.success(function(response) {
+			$scope.comments.push({
+				body:commentBody,
+				ownerName: $scope.userInfo.displayName,
+				ownerId: $scope.userInfo.id
+			});
+			commentBody="";
+		});
+	}
 });
 
 /*babybox.controller('CreateCollectionController', 
