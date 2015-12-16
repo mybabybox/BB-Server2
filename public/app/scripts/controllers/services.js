@@ -157,6 +157,22 @@ babybox.service('followService',function($resource){
                 get: {method:'get', params:{id:'@id'}}
             }
     );
+    
+    this.userfollowers = $resource(
+    		'/followers/:id/:offset',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get',  params:{id:'@id',offset: '@offset'}}
+            }
+    );
+    this.userfollowings = $resource(
+    		'/followings/:id/:offset',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get',  params:{id:'@id',offset: '@offset'}}
+            }
+    );
+    
 });
 
 babybox.service('likeService',function($resource){

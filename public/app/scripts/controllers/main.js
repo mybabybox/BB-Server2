@@ -214,7 +214,6 @@ babybox.controller('ProfileController',
 	$scope.userInfo = userInfo;
 	$scope.user = profileUser;
 	$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
-
 	$scope.onFollowUser = function() {
 		if($scope.user.id != $scope.userInfo.id){
 			followService.followUser.get({id:profileUser.id});
@@ -271,10 +270,6 @@ babybox.controller('ProfileController',
 			}
 		}		
 	}
-	
-	
-	
-	
 });
 
 babybox.controller('CommentController', 
@@ -300,6 +295,49 @@ babybox.controller('CommentController',
 		});
 	}
 });
+
+babybox.controller('UserFollowController', 
+		function($scope, $route, $location, $http, followers, userInfo, followService) {
+	$scope.followers = followers;
+	$scope.user = userInfo
+	//followService.userfollowers.get({id:profileUser.id, offset:0});
+	$scope.onFollowUser = function(formFollower) {
+		if(formFollower.id != $scope.user.id){
+			followService.followUser.get({id:formFollower.id});
+			formFollower.isFollowing = !formFollower.isFollowing;
+			formFollower.numFollowings++;
+		}
+	}
+	$scope.onUnFollowUser = function(formFollower) {
+		followService.unFollowUser.get({id:formFollower.id});
+		formFollower.isFollowing = !formFollower.isFollowing;
+		formFollower.numFollowings--;
+	}
+
+	/*var flag = true;
+	$scope.noMore = true;
+	
+	$scope.loadMore = function () {	
+		if(($scope.followers.length!=0) && ($scope.noMore == true)){
+			var len = $scope.followers.length;
+			var off = $scope.followers[len-1].offset;
+				flag=true;
+				followService.userfollowers.get({id:$scope.user.id, offset:off}, function(data){
+					if(data.length == 0)
+						$scope.noMore = false;
+					angular.forEach(data, function(value, key) {
+						if(flag)
+							$scope.followers.push(value);
+					});
+					flag=false;
+				});
+			}
+			
+	}*/
+	
+	
+});
+
 
 /*babybox.controller('CreateCollectionController', 
 		function($scope, $route, $http, usSpinnerService) {

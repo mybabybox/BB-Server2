@@ -884,11 +884,6 @@ public class UserController extends Controller {
     @Transactional
     public static Result getFollowings(Long id, Long offset) {
     	final User localUser = Application.getLocalUser(session());
-        if (!localUser.isLoggedIn()) {
-            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-            return notFound();
-        }
-        
     	List<FollowSocialRelation> followings = FollowSocialRelation.getUserFollowings(id, offset);
     	List<UserVMLite> userFollowings = new ArrayList<UserVMLite>();
     	
@@ -899,17 +894,12 @@ public class UserController extends Controller {
     		    userFollowings.add(uservm);
     		}
     	}
-    	return ok(Json.toJson(userFollowings));
+    	return ok(views.html.babybox.web.followers.render(Json.stringify(Json.toJson(userFollowings)), Json.stringify(Json.toJson(new UserVM(localUser)))));
     }
     
     @Transactional
     public static Result getFollowers(Long id, Long offset) {
-    	final User localUser = Application.getLocalUser(session());
-        if (!localUser.isLoggedIn()) {
-            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-            return notFound();
-        }
-        
+    	final User localUser = Application.getLocalUser(session());    
     	List<FollowSocialRelation> followings = FollowSocialRelation.getUserFollowers(id, offset);
     	List<UserVMLite> userFollowers = new ArrayList<UserVMLite>();
     	
@@ -920,7 +910,7 @@ public class UserController extends Controller {
         		userFollowers.add(uservm);
     		}
     	}
-    	return ok(Json.toJson(userFollowers));
+    	return ok(views.html.babybox.web.followers.render(Json.stringify(Json.toJson(userFollowers)), Json.stringify(Json.toJson(new UserVM(localUser)))));
     }
     
     @Transactional

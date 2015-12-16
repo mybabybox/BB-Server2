@@ -108,7 +108,7 @@ label {
 #shop-followers li .btn-remove:active {
     color: #FF76A4;
     background: white;
-    border: 1px solid rgba(255, 87, 34, 0.4)
+    /* border: 1px solid rgba(255, 87, 34, 0.4) */
 }
 
 #shop-followers .loading-text {
