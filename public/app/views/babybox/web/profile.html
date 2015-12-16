@@ -92,10 +92,10 @@
    <div class="flex1 middle-centered-div shopname-wrapper">
     <div class="shopname truncate m16 flex1">{{user.displayName}}</div>
     <div ng-if="!user.isFollowing" ng-click="onFollowUser()">
-     <div class='btn-follow follow r10 clickable_area'>+ Follow</div>
+     <div ng-class="user.id==userInfo.id ? 'hide' : '' "   class='btn-follow follow r10 clickable_area'>+ Follow</div>
     </div>
     <div ng-if="user.isFollowing" ng-click="onUnFollowUser()">
-     <div class='btn-follow follow r10 active clickable_area'>Following</div>
+     <div ng-class="user.id==userInfo.id ? 'hide' : '' " class='btn-follow follow r10 active clickable_area'>Following</div>
     </div>
    </div>
 
