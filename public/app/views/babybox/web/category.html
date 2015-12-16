@@ -1,103 +1,107 @@
 <div class="header">
-	<div class='inner middle-centered-div'>	
-       <div ng-click="doBack()" class="icon_left ic_icon  ic_arrow_back clickable_area">
-		</div>
-		<div class="no-search-bar-holder flex1"></div>
-		<div class='page_name L16'>{{cat.name}}</div>
-		<span ng-if="!userInfo.isLoggedIn" style="padding-right: 15px;">
-		<a href="/login">
-		<div class='hold user_avatar ic_web_profile clickable_area'></div>
-		</a>
-		</span>
-		<span ng-if="userInfo.isLoggedIn"  style="padding-right: 15px; padding-top: 0px;">
-		<a href="/profile/{{userInfo.id}}">
-		<div class="hold user_avatar clickable_area"  style="background-image:url(/image/get-mini-profile-image-by-id/{{userInfo.id}});"></div>
-		</a>
-		</span>
-		<div class='second-panel'>
-				<div class='signup-btn' data-i18n='label_signup'>
-				</div>
-				<div class='login-btn' data-i18n='label_login'>
-				</div>
-		</div>
-        <div class="clearfix"></div>
-	</div>
+ <div class='inner middle-centered-div'>
+  <div ng-click="doBack()"
+   class="icon_left ic_icon  ic_arrow_back clickable_area"></div>
+  <div class="no-search-bar-holder flex1"></div>
+  <div class='page_name L16'>{{cat.name}}</div>
+  <span ng-if="!userInfo.isLoggedIn" style="padding-right: 15px;">
+   <a href="/login">
+    <div class='hold user_avatar ic_web_profile clickable_area'></div>
+  </a>
+  </span> <span ng-if="userInfo.isLoggedIn"
+   style="padding-right: 15px; padding-top: 0px;"> <a
+   href="/profile/{{userInfo.id}}">
+    <div class="hold user_avatar clickable_area"
+     style="background-image: url(/image/get-mini-profile-image-by-id/{{userInfo.id}});"></div>
+  </a>
+  </span>
+  <div class='second-panel'>
+   <div class='signup-btn' data-i18n='label_signup'></div>
+   <div class='login-btn' data-i18n='label_login'></div>
+  </div>
+  <div class="clearfix"></div>
+ </div>
 </div>
 
 <div style="padding-top: 55px;">
-	<div class="center-container" >
-		<div id="category-items" class='page-holder'>
-			<ul class='header_tabs M14 center-container'>
-				<li  ng-class="catType=='popular'? 'active':'' " class='header_tab_item popular clickable_area' data-sorttype='popular'>
-					<a data-ng-href="/category/{{cat.id}}/popular">Popular</a>
-				</li>
-				<li ng-class="catType=='newest'? 'active':'' "  class='header_tab_item latest  clickable_area' data-sorttype='latest'>
-					<a data-ng-href="/category/{{cat.id}}/newest">Newest</a>
-				</li>
-				<li  ng-class="catType=='high2low'? 'active':'' " class='header_tab_item location  clickable_area' data-sorttype='high2low'>
-					<a data-ng-href="/category/{{cat.id}}/high2low">$$->$</a>
-				</li>
-				<li  ng-class="catType=='low2high'? 'active':''" class='header_tab_item location  clickable_area' data-sorttype='low2high'>
-					<a data-ng-href="/category/{{cat.id}}/low2high">$->$$</a>
-				</li>
-			</ul>
-		</div>
-		
-		<div class="popular_products_wrapper center-container swiper-container-horizontal">
-			<div class="swiper-wrapper">
-           <div infinite-scroll='loadMore()' infinite-scroll-distance='2'>
-				<ul class="item-list-pop swiper-slide swiper-slide-active"
-					data-cate="pop"
-					style="min-height: 629px; text-align: left; width: 102%;">
-					<li class="item-card simple null" 
-						ng-repeat="product in products track by $index" >
-						<div class="margin-holder">
-							<div class="margin-holder-inner">
-								<a class="item-href normal" href="/product/{{product.id}}">
-									<div class="holder normal">
-										<div class="image-wrapper">
-											<img
-												data-ng-src="/image/get-post-image-by-id/{{product.images[0]}}">
-											<div class="mask"></div>
-					
-											<div class="status_band"></div>
-										</div>
-									</div>
-									<div class="bottom normal false">
-										<div class="item-detail">
-											<div class="name L14 truncate">{{product.title}}</div>
-											<div class="price m12 truncate">
-												<span class="dollarfy_sign" style="display: inline;">$</span><span
-													class="dollarfy_ext_int" style="display: inline;">{{product.price}}</span>
-											</div>
-										</div>
-										<div class="item-status">
-											<div class="likes half">
-												<div class="icon_like ic_offerlist_like"></div>
-												<span class="number r12">{{product.numLikes}}</span>
-												<div class="clickable"></div>
-											</div>
-											<div class="comments half">
-												<div class="ic_offerlist_comment"></div>
-												<span class="number r12">{{product.numComments}}</span>
-												<div class="clickable"></div>
-											</div>
-										</div>
-										<div class="action-text L12"
-											data-i18n="label_this_product_normal"></div>
-										<div class="action-btn unlike" data-shopid="49220"
-											data-itemid="217532">
-											<span class="ic_unlike_icon"></span><span class="text L12"
-												data-i18n="label_unlike">Unlike</span>
-										</div>
-									</div>
-								</a>
-							<div class="data-stock hidden">458</div>
-						</div>
-					</div>
-				</li>
+ <div class="center-container">
+  <div id="category-items" class='page-holder'>
+   <ul class='header_tabs M14 center-container'>
+    <li ng-class="catType=='popular'? 'active':'' "
+     class='header_tab_item popular clickable_area'
+     data-sorttype='popular'><a
+     data-ng-href="/category/{{cat.id}}/popular">Popular</a></li>
+    <li ng-class="catType=='newest'? 'active':'' "
+     class='header_tab_item latest  clickable_area'
+     data-sorttype='latest'><a
+     data-ng-href="/category/{{cat.id}}/newest">Newest</a></li>
+    <li ng-class="catType=='high2low'? 'active':'' "
+     class='header_tab_item location  clickable_area'
+     data-sorttype='high2low'><a
+     data-ng-href="/category/{{cat.id}}/high2low">$$->$</a></li>
+    <li ng-class="catType=='low2high'? 'active':''"
+     class='header_tab_item location  clickable_area'
+     data-sorttype='low2high'><a
+     data-ng-href="/category/{{cat.id}}/low2high">$->$$</a></li>
+   </ul>
+  </div>
+
+  <div
+   class="popular_products_wrapper center-container swiper-container-horizontal">
+   <div class="swiper-wrapper">
+    <div infinite-scroll='loadMore()' infinite-scroll-distance='2'>
+     <ul class="item-list-pop swiper-slide swiper-slide-active"
+      data-cate="pop"
+      style="min-height: 629px; text-align: left; width: 102%;">
+      <li class="item-card simple null"
+       ng-repeat="product in products track by $index">
+       <div class="margin-holder">
+        <div class="margin-holder-inner">
+         <a class="item-href normal" href="/product/{{product.id}}">
+          <div class="holder normal">
+           <div class="image-wrapper">
+            <img
+             data-ng-src="/image/get-post-image-by-id/{{product.images[0]}}">
+            <div class="mask"></div>
+
+            <div class="status_band"></div>
+           </div>
+          </div>
+          <div class="bottom normal false">
+           <div class="item-detail">
+            <div class="name L14 truncate">{{product.title}}</div>
+            <div class="price m12 truncate">
+             <span class="dollarfy_sign" style="display: inline;">$</span><span
+              class="dollarfy_ext_int" style="display: inline;">{{product.price}}</span>
             </div>
-			</div>
-		</div>
-	</div>
+           </div>
+           <div class="item-status">
+            <div class="likes half">
+             <div class="icon_like ic_offerlist_like"></div>
+             <span class="number r12">{{product.numLikes}}</span>
+             <div class="clickable"></div>
+            </div>
+            <div class="comments half">
+             <div class="ic_offerlist_comment"></div>
+             <span class="number r12">{{product.numComments}}</span>
+             <div class="clickable"></div>
+            </div>
+           </div>
+           <div class="action-text L12"
+            data-i18n="label_this_product_normal"></div>
+           <div class="action-btn unlike" data-shopid="49220"
+            data-itemid="217532">
+            <span class="ic_unlike_icon"></span><span class="text L12"
+             data-i18n="label_unlike">Unlike</span>
+           </div>
+          </div>
+         </a>
+         <div class="data-stock hidden">458</div>
+        </div>
+       </div>
+      </li>
+    </div>
+   </div>
+  </div>
+ </div>
 </div>
