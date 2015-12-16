@@ -534,12 +534,12 @@ public class User extends SocialObject implements Subject, Followable {
 		user.totalLogin = 1L;
 		user.fbLogin = false;
 		user.emailProvidedOnSignup = true;
-		user.emailValidated = true;
+		user.emailValidated = true;   // bypass play-authen
+		user.accountVerified = false; // verify account post signup
 		
 		if (authUser instanceof EmailIdentity) {
 			final EmailIdentity identity = (EmailIdentity) authUser;
 			user.email = identity.getEmail();
-			//user.emailValidated = false;
 			
 			if (StringUtils.isEmpty(user.email)) {
 			    user.emailProvidedOnSignup = false;
@@ -581,6 +581,7 @@ public class User extends SocialObject implements Subject, Followable {
 			user.fbLogin = true;
 			user.fbUserInfo = fbUserInfo;
 			//user.emailValidated = fbAuthUser.isVerified();
+			user.accountVerified = true;
 			user.save();
 			
 			// save fb friends
