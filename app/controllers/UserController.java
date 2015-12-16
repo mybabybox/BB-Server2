@@ -831,11 +831,6 @@ public class UserController extends Controller {
     @Transactional
     public Result getUserPosts(Long id, Long offset) {
     	final User localUser = Application.getLocalUser(session());
-        if (!localUser.isLoggedIn()) {
-            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-            return notFound();
-        }
-
         List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.USER_POSTED);
 		return ok(Json.toJson(vms));
     }
@@ -931,11 +926,6 @@ public class UserController extends Controller {
     @Transactional
     public Result getUserLikedPosts(Long id, Long offset){
     	final User localUser = Application.getLocalUser(session());
-        if (!localUser.isLoggedIn()) {
-            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-            return notFound();
-        }
-        
         List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.USER_LIKED);
 		return ok(Json.toJson(vms));
     }
