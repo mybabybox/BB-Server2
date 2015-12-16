@@ -76,7 +76,7 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
 		LIKED,
 		FOLLOWED,
 		SOLD,
-		NEW_BADGE
+		NEW_GAME_BADGE
 	}
 
 	public Activity() {}

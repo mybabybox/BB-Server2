@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import models.Activity.ActivityType;
 import common.utils.NanoSecondStopWatch;
 import domain.AuditListener;
 import domain.Creatable;
@@ -50,27 +51,41 @@ public class GameBadgeAwarded extends domain.Entity implements Serializable, Cre
     }
 
 	@Transactional
-	public static void recordGameBadge(Long userId, GameBadge.BadgeType badgeType) {
+	public static void recordGameBadge(User user, GameBadge.BadgeType badgeType) {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    
 	    GameBadge badge = GameBadge.findByBadgeType(badgeType);
 	    if (badge == null) {
-	        logger.underlyingLogger().error("[u="+userId+"] recordGameBadge() badgeType="+badgeType.name()+" does not exist !!");
+	        logger.underlyingLogger().error("[u="+user.id+"] recordGameBadge() badgeType="+badgeType.name()+" does not exist !!");
 	        return;
 	    }
 	    
-	    boolean awarded = isGameBadgeAwarded(userId, badge.id);
+	    boolean awarded = isGameBadgeAwarded(user.id, badge.id);
 	    if (awarded) {
-	        logger.underlyingLogger().warn("[u="+userId+"] recordGameBadge() badgeType="+badgeType.name()+" awarded already, skipped..");
+	        logger.underlyingLogger().warn("[u="+user.id+"] recordGameBadge() badgeType="+badgeType.name()+" awarded already, skipped..");
 	        return;
 	    }
 	    
-	    GameBadgeAwarded badgeAwarded = new GameBadgeAwarded(userId, badge.id);
+	    GameBadgeAwarded badgeAwarded = new GameBadgeAwarded(user.id, badge.id);
 	    badgeAwarded.save();
+        
+	    // activity
+	    User babyboxUser = SystemInfo.getInfo().getBabyBoxCustomerCare();
+        Activity activity = new Activity(
+                ActivityType.NEW_GAME_BADGE, 
+                user.id,
+                false, 
+                babyboxUser.id,
+                babyboxUser.id,
+                "",
+                badge.id,
+                badge.id,
+                badge.name);
+        activity.ensureUniqueAndCreate();
         
         sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {
-            logger.underlyingLogger().debug("[u="+userId+"] recordGameBadge() badgeType="+badgeType.name()+". Took "+sw.getElapsedMS()+"ms");
+            logger.underlyingLogger().debug("[u="+user.id+"] recordGameBadge() badgeType="+badgeType.name()+". Took "+sw.getElapsedMS()+"ms");
         }
 	}
 	

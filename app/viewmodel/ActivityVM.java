@@ -8,6 +8,7 @@ public class ActivityVM {
     @JsonProperty("id") public Long id;
     @JsonProperty("createdDate") public Long createdDate;
     @JsonProperty("activityType") public String activityType;
+    @JsonProperty("userIsOwner") public Boolean userIsOwner;
     @JsonProperty("actor") public Long actor;
     @JsonProperty("actorImage") public Long actorImage;
     @JsonProperty("actorName") public String actorName;
@@ -24,6 +25,7 @@ public class ActivityVM {
 		this.id = activity.id;
 		this.createdDate = activity.getCreatedDate().getTime();
 		this.activityType = activity.activityType.name();
+		this.userIsOwner = activity.userIsOwner;
         this.actor = activity.actor;
         this.actorImage = activity.actorImage;
         this.actorName = activity.actorName;

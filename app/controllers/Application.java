@@ -531,7 +531,7 @@ public class Application extends Controller {
         //GameAccount.setPointsForSignUp(user);
 
     	if (user.hasCompleteInfo()) {
-    	    GameBadgeAwarded.recordGameBadge(user.id, BadgeType.PROFILE_INFO);
+    	    GameBadgeAwarded.recordGameBadge(user, BadgeType.PROFILE_INFO);
     	}
     	
     	calcServer.clearUserQueues(user);

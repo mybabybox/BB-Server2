@@ -152,7 +152,7 @@ public class UserController extends Controller {
 			localUser.setPhotoProfile(fileTo);
 			
 			// game badge
-	        GameBadgeAwarded.recordGameBadge(localUser.id, BadgeType.PROFILE_PHOTO);
+	        GameBadgeAwarded.recordGameBadge(localUser, BadgeType.PROFILE_PHOTO);
 		} catch (IOException e) {
 		    logger.underlyingLogger().error("Error in uploadProfilePhoto", e);
 			return badRequest();
@@ -374,7 +374,7 @@ public class UserController extends Controller {
         */
         
         if (localUser.hasCompleteInfo()) {
-            GameBadgeAwarded.recordGameBadge(localUser.id, BadgeType.PROFILE_INFO);
+            GameBadgeAwarded.recordGameBadge(localUser, BadgeType.PROFILE_INFO);
         }
         
         return ok();

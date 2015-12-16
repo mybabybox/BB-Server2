@@ -35,9 +35,9 @@ public class LikeEventListener extends EventListener {
                             public void execute() {
                                 // game badge
                                 if (user.numLikes == 3) {
-                                    GameBadgeAwarded.recordGameBadge(user.id, BadgeType.LIKE_3);
+                                    GameBadgeAwarded.recordGameBadge(user, BadgeType.LIKE_3);
                                 } else if (user.numLikes == 10) {
-                                    GameBadgeAwarded.recordGameBadge(user.id, BadgeType.LIKE_10);
+                                    GameBadgeAwarded.recordGameBadge(user, BadgeType.LIKE_10);
                                 }
                                 
                                 // activity
