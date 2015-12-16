@@ -158,10 +158,6 @@ public class Application extends Controller {
         return ok(views.html.signup.render(MyUsernamePasswordAuthProvider.SIGNUP_FORM));
     }
     
-	public static User getBBAdmin() {
-	    return User.getBBAdmin();
-	}
-	
 	@Transactional
     public static Result getApplicationInfo() {
 	    return ok(Json.toJson(new ApplicationInfoVM(APPLICATION_BASE_URL))); 

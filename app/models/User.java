@@ -692,50 +692,6 @@ public class User extends SocialObject implements Subject, Followable {
 	}
 
 	@Transactional
-	public static User getBBAdmin() {
-		if (BB_ADMIN != null)
-			return BB_ADMIN;
-		User superAdmin = getSuperAdmin(BB_ADMIN_NAME);
-		if (superAdmin == null) {
-			superAdmin = getSuperAdmin();
-		}
-		BB_ADMIN = superAdmin;
-		return superAdmin;
-	}
-
-	@Transactional
-	public static User getSuperAdmin(String name) {
-		Query q = JPA.em().createQuery(
-				"SELECT u FROM User u where name = ?1 and active = ?2 and system = ?3 and deleted = false");
-		q.setParameter(1, name);
-		q.setParameter(2, true);
-		q.setParameter(3, true);
-		try {
-			User sysUser = (User)q.getSingleResult();
-			return sysUser;
-		} catch (NoResultException e) {
-			logger.underlyingLogger().error("SuperAdmin not found - "+name, e);
-			return null;
-		}
-	}
-
-	@Transactional
-	public static User getSuperAdmin() {
-		Query q = JPA.em().createQuery(
-				"SELECT u FROM User u where id = ?1 and active = ?2 and system = ?3 and deleted = false");
-		q.setParameter(1, 1);
-		q.setParameter(2, true);
-		q.setParameter(3, true);
-		try {
-			User sysUser = (User)q.getSingleResult();
-			return sysUser;
-		} catch (NoResultException e) {
-			logger.underlyingLogger().error("SuperAdmin not found", e);
-			return null;
-		}
-	}
-
-	@Transactional
 	public boolean isSystemUser() {
 		for (SecurityRole role : roles) {
 			if (SecurityRole.RoleType.SYSTEM_USER.name().equals(role.roleName)) {

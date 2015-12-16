@@ -4,7 +4,6 @@ import javax.persistence.Query;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 
-import controllers.Application;
 import models.Category;
 import models.Emoticon;
 import models.GameBadge;
@@ -405,7 +404,7 @@ public class DataBootstrap {
     private static Category createCategory(String name, String desc, String icon, int seq) {
     	Category category = null;
         try {
-        	category = Application.getBBAdmin().createCategory(name, desc, icon, seq);
+        	category = SystemInfo.getInfo().getBabyBoxAdmin().createCategory(name, desc, icon, seq);
             //category.setCoverPhoto(new File(Resource.STORAGE_PATH + "/default/box_cover.jpg"));
         } catch (Exception e) {
             logger.underlyingLogger().error(ExceptionUtils.getStackTrace(e));
