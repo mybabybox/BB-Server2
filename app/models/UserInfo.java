@@ -69,13 +69,10 @@ public class UserInfo {
 	
 	@Override
     public String toString() {
-        return "UserInfo{" +
-                "id=" + id +
-                ", birthYear=" + birthYear +
-                ", numChildren=" + numChildren +
-               // ", location=" + location.displayName +
-                ", parentType=" + parentType.name() +
-                ", gender=" + gender.name() +
-                '}';
+        return "id=" + id + "\n" +
+                "location=" + location.displayName + "\n" +
+                "birthYear=" + birthYear + "\n" +
+                "numChildren=" + numChildren + "\n" +
+                "parentType=" + parentType.name();
     }
 }

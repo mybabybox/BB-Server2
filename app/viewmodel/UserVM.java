@@ -10,8 +10,6 @@ public class UserVM extends UserVMLite {
 	@JsonProperty("firstName") public String firstName;
     @JsonProperty("lastName") public String lastName;
     @JsonProperty("email") public String email;
-    @JsonProperty("birthYear") public String birthYear;
-    @JsonProperty("gender") public String gender;
     @JsonProperty("aboutMe") public String aboutMe;
     @JsonProperty("location") public LocationVM location;
     @JsonProperty("setting") public SettingVM setting;
@@ -32,8 +30,6 @@ public class UserVM extends UserVMLite {
         this.firstName = user.firstName;
         this.lastName = user.lastName;
         if (user.userInfo != null) {
-        	this.gender = user.userInfo.gender.name();
-            this.birthYear = user.userInfo.birthYear;
             this.aboutMe = user.userInfo.aboutMe;
             this.location = new LocationVM(user.userInfo.location);
             if (user.id == localUser.id) {
@@ -75,22 +71,6 @@ public class UserVM extends UserVMLite {
         this.lastName = lastName;
     }
 
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getBirthYear() {
-        return birthYear;
-    }
-
-    public void setBirthYear(String birthYear) {
-        this.birthYear = birthYear;
-    }
-
     public LocationVM getLocation() {
         return location;
     }
@@ -106,6 +86,7 @@ public class UserVM extends UserVMLite {
                 "email=" + email + "\n" +
                 "emailProvidedOnSignup=" + emailProvidedOnSignup + "\n" +
                 "emailValidated=" + emailValidated + "\n" +
+                "accountVerified=" + accountVerified + "\n" +
                 "fbLogin=" + isFbLogin + "\n" +
                 "signupDate=" + createdDate + "\n" +
                 "lastLogin=" + lastLogin + "\n" +

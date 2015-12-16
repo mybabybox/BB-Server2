@@ -25,6 +25,7 @@ public class UserVMLite {
     @JsonProperty("isFbLogin") public boolean isFbLogin = false;
     @JsonProperty("emailProvidedOnSignup") public boolean emailProvidedOnSignup = false;
     @JsonProperty("emailValidated") public boolean emailValidated = false;
+    @JsonProperty("accountVerified") public boolean accountVerified = false;
     @JsonProperty("newUser") public boolean newUser = false;
     @JsonProperty("isAdmin") public boolean isAdmin = false;
 
@@ -55,6 +56,7 @@ public class UserVMLite {
         this.isFbLogin = user.fbLogin;
         this.emailProvidedOnSignup = user.emailProvidedOnSignup;
         this.emailValidated = user.emailValidated;
+        this.accountVerified = user.accountVerified;
         this.newUser = user.isNewUser();
         this.isAdmin = user.isSuperAdmin();
     }

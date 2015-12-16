@@ -216,6 +216,33 @@ public class Application extends Controller {
         String parentDisplayName = form.get("parent_displayname").trim();
         Location parentLocation = Location.getLocationById(Integer.valueOf(form.get("parent_location")));
 
+        // Default to dummy values
+        String parentBirthYear = DefaultValues.DUMMY_BIRTH_YEAR + "";
+        ParentType parentType = ParentType.NA;
+
+        if (!ValidationUtil.isDisplayNameValid(parentDisplayName)) {
+            return handleSaveSignupInfoError("\""+parentDisplayName+"\" 不可有空格", fb);
+        }
+        if (User.isDisplayNameExists(parentDisplayName)) {
+            return handleSaveSignupInfoError("\""+parentDisplayName+"\" 已被選用。請選擇另一個顯示名稱重試", fb);
+        }
+        if (parentLocation == null) {
+            return handleSaveSignupInfoError("請填寫您的地區", fb);
+        }
+        
+        localUser.displayName = parentDisplayName;
+        localUser.name = parentDisplayName;
+        
+        UserInfo userInfo = new UserInfo();
+        userInfo.location = parentLocation;
+        userInfo.birthYear = parentBirthYear;
+        userInfo.parentType = parentType;
+        userInfo.gender = TargetGender.FEMALE;
+        localUser.userInfo = userInfo;
+        localUser.userInfo.save();
+        
+        logger.underlyingLogger().info("[u="+localUser.id+"][name="+localUser.displayName+"] doSaveSignupInfo userInfo="+userInfo.toString());
+        
         /*
         String parentBirthYear = form.get("parent_birth_year");
         ParentType parentType = ParentType.valueOf(form.get("parent_type"));
@@ -223,13 +250,7 @@ public class Application extends Controller {
         if (ParentType.NA.equals(parentType)) {
             numChildren = 0;
         }
-        */
 
-        // Default to dummy values
-        String parentBirthYear = DefaultValues.DUMMY_BIRTH_YEAR + "";
-        ParentType parentType = ParentType.NA;
-        int numChildren = 0;
-                
         if (!ValidationUtil.isDisplayNameValid(parentDisplayName)) {
             return handleSaveSignupInfoError("\""+parentDisplayName+"\" 不可有空格", fb);
         }
@@ -244,8 +265,8 @@ public class Application extends Controller {
         localUser.name = parentDisplayName;
         
         UserInfo userInfo = new UserInfo();
-        userInfo.birthYear = parentBirthYear;
         userInfo.location = parentLocation;
+        userInfo.birthYear = parentBirthYear;
         userInfo.parentType = parentType;
         
         if (ParentType.MOM.equals(parentType) || ParentType.SOON_MOM.equals(parentType)) {
@@ -263,7 +284,6 @@ public class Application extends Controller {
         logger.underlyingLogger().info("[u="+localUser.id+"][name="+localUser.displayName+"] doSaveSignupInfo userInfo="+userInfo.toString());
         
         // UseChild
-        /*
         int maxChildren = (numChildren > 5)? 5 : numChildren;
         for (int i = 1; i <= maxChildren; i++) {
             String genderStr = form.get("bb_gender" + i);
