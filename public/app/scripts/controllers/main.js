@@ -31,32 +31,32 @@ babybox.controller('FrontPageController',
 	var flag = true;
 	$scope.noMore = true;
 	$scope.loadMore = function () {
-		if(($scope.products.length!=0) && ($scope.noMore==true)){
+		if(($scope.products.length!=0) && ($scope.noMore==true) && flag == true){
 
 			var len = $scope.products.length;
 			var off = $scope.products[len-1].offset;
 			if($scope.homeFeed){
-				flag=true;
+				flag=false;
 				productService.getHomeExploreFeed.get({offset:off}, function(data){
 					if(data.length == 0)
 						$scope.noMore=false;
 					angular.forEach(data, function(value, key) {
-						if(flag)
+						if(!flag)
 							$scope.products.push(value);
 					});
-					flag=false;
+					flag=true;
 				});
 			}
 			if($scope.homeFeed==false){
-				flag=true;
+				flag=false;
 				productService.getHomeFollowingFeed.get({offset:off}, function(data){
 					if(data.length == 0)
 						$scope.noMore=false;
 					angular.forEach(data, function(value, key) {
-						if(flag)
+						if(!flag)
 							$scope.products.push(value);
 					});
-					flag=false;
+					flag=true;
 				});
 			}
 		}		
@@ -71,6 +71,7 @@ babybox.controller('CategoryPageController',
 	console.log("controller .. ")
 	$scope.userInfo = userInfo;
 	$scope.products = product;
+	console.log($scope.products);
 	$scope.cat = category;
 	var catid = $scope.cat.id;
 	//we are routing this from scala file so we can't able to get $routeParams , so this is just a workaround
@@ -96,58 +97,58 @@ babybox.controller('CategoryPageController',
 	var flag = true;
 	
 	$scope.loadMore = function () {
-		if(($scope.products.length!=0) && ($scope.noMore == true)){
+		if(($scope.products.length!=0) && ($scope.noMore == true) && flag == true){
 			var len = $scope.products.length;
 			var off = $scope.products[len-1].offset;
 			if($scope.catType == 'popular'){
-				flag=true;
+				flag=false;
 				categoryService.getCategoryPopularFeed.get({id:catid , postType:"a", offset:off}, function(data){
 					if(data.length == 0)
 						$scope.noMore=false;
 					angular.forEach(data, function(value, key) {
-						if(flag)
+						if(!flag)
 							$scope.products.push(value);
 					});
-					flag=false;
+					flag=true;
 				});
 			}
 
 			if($scope.catType == 'newest'){
-				flag=true;
+				flag=false;
 				categoryService.getCategoryNewestFeed.get({id:catid , postType:"a", offset:off}, function(data){
 					if(data.length == 0)
 						$scope.noMore=false;
 					angular.forEach(data, function(value, key) {
-						if(flag)
+						if(!flag)
 							$scope.products.push(value);
 					});
-					flag=false;
+					flag=true;
 				});
 			}
 			
 			if($scope.catType == 'high2low'){
-				flag=true;
+				flag=false;
 				categoryService.getCategoryPriceHighLowFeed.get({id:catid , postType:"a", offset:off}, function(data){
 					if(data.length == 0)
 						$scope.noMore=false;
 					angular.forEach(data, function(value, key) {
-						if(flag)
+						if(!flag)
 							$scope.products.push(value);
 					});
-					flag=false;
+					flag=true;
 				});
 			}
 			
 			if($scope.catType == 'low2high'){
-				flag=true;
+				flag=false;
 				categoryService.getCategoryPriceLowHighFeed.get({id:catid , postType:"a", offset:off}, function(data){
 					if(data.length == 0)
 						$scope.noMore=false;
 					angular.forEach(data, function(value, key) {
-						if(flag)
+						if(!flag)
 							$scope.products.push(value);
 					});
-					flag=false;
+					flag=true;
 				});
 			}
 		}		
@@ -241,31 +242,31 @@ babybox.controller('ProfileController',
 	$scope.noMore = true;
 	
 	$scope.loadMore = function () {	
-		if(($scope.products.length!=0) && ($scope.noMore == true)){
+		if(($scope.products.length!=0) && ($scope.noMore == true) && flag == true){
 			var len = $scope.products.length;
 			var off = $scope.products[len-1].offset;
 			if($scope.activeflag){
-				flag=true;
+				flag=false;
 				userService.getUserPostedFeed.get({id:profileUser.id, offset:off}, function(data){
 					if(data.length == 0)
 						$scope.noMore = false;
 					angular.forEach(data, function(value, key) {
-						if(flag)
+						if(!flag)
 							$scope.products.push(value);
 					});
-					flag=false;
+					flag=true;
 				});
 			}
 			if($scope.activeflag == false){
-				flag=true;
+				flag=false;
 				userService.getUserLikedFeed.get({id:profileUser.id, offset:off}, function(data){
 					if(data.length == 0)
 						$scope.noMore = false;
 					angular.forEach(data, function(value, key) {
-						if(flag)
+						if(!flag)
 							$scope.products.push(value);
 					});
-					flag=false;
+					flag=true;
 				});
 			}
 		}		
@@ -273,9 +274,10 @@ babybox.controller('ProfileController',
 });
 
 babybox.controller('CommentController', 
-		function($scope, $route, $location, $http, comments, userInfo) {
+		function($scope, $route, $location, $http, comments, userInfo, productService) {
 	$scope.comments = comments;
 	$scope.userInfo = userInfo;
+	console.log($scope.comments);
 	var url = $location.absUrl();
 	var values= url.split("/");
 	$scope.pid = values[values.length-1];
@@ -294,6 +296,28 @@ babybox.controller('CommentController',
 			commentBody="";
 		});
 	}
+	var off = 1;
+	var flag = true;
+	$scope.noMore = true;
+	$scope.loadMore = function () {	
+		if(($scope.comments.length!=0) && ($scope.noMore == true) && flag == true){
+			flag=false;
+			productService.allComments.get({id:$scope.pid, offset:off}, function(data){
+				off++;
+				if(data.length == 0)
+					$scope.noMore = false;
+				angular.forEach(data, function(value, key) {	
+					if(!flag)
+						$scope.comments.push(value);
+				});
+				flag=true;
+
+			});
+		}
+	}
+
+
+
 });
 
 babybox.controller('UserFollowController', 
@@ -316,7 +340,7 @@ babybox.controller('UserFollowController',
 
 	/*var flag = true;
 	$scope.noMore = true;
-	
+
 	$scope.loadMore = function () {	
 		if(($scope.followers.length!=0) && ($scope.noMore == true)){
 			var len = $scope.followers.length;

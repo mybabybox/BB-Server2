@@ -35,8 +35,9 @@
  <!-- <div class="load-previous-button hide">Load previous comments</div> -->
 
  <div class="comments-list" style="padding-top: 45px;">
-  <div class="item-comment item-comment-container"
-   ng-repeat="comment in comments">
+ <div infinite-scroll='loadMore()' infinite-scroll-distance='2'>
+  <div  class="item-comment item-comment-container"
+   ng-repeat="comment in comments track by $index">
    <div class="left-part commenter-avatar-container"
     style="background-image: url(/image/get-mini-profile-image-by-id/{{comment.ownerId}})">
     <div class="default-commenter-avatar ic_icon ic_avatar_default hide"
@@ -58,7 +59,7 @@
    <div class="right-part">
     <span class="item-rating ic_icon ic_rate_good"></span>
    </div>
-
+</div>
   </div>
  </div>
 

@@ -92,6 +92,14 @@ babybox.service('productService',function($resource){
                 get: {method:'get' ,isArray:true, params:{offset: '@offset'}}
             }
     );
+    
+    this.allComments = $resource(
+            '/comments/:id/:offset',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get',isArray:true, params:{id:'@id',offset: '@offset'}}
+            }
+    );
 });
 
 babybox.service('collecctionService',function($resource){
