@@ -323,8 +323,7 @@ babybox.controller('CommentController',
 babybox.controller('UserFollowController', 
 		function($scope, $route, $location, $http, followers, userInfo, followService) {
 	$scope.followers = followers;
-	$scope.user = userInfo
-	//followService.userfollowers.get({id:profileUser.id, offset:0});
+	$scope.user = userInfo;
 	$scope.onFollowUser = function(formFollower) {
 		if(formFollower.id != $scope.user.id){
 			followService.followUser.get({id:formFollower.id});
