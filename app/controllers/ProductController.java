@@ -318,7 +318,7 @@ public class ProductController extends Controller{
 		if (post == null) {
 			return null;
 		}
-		onView(id);
+		onView(post, localUser);
 		PostVM vm = new PostVM(post, localUser);
 		return vm;
 	}
@@ -441,14 +441,11 @@ public class ProductController extends Controller{
     }
 
 	@Transactional
-	public static Result onView(Long id) {
-		final User localUser = Application.getLocalUser(session());
+	public static Result onView(Post post, User localUser) {
 		if (!localUser.isLoggedIn()) {
-			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
 			return notFound();
 		}
 		
-		Post post = Post.findById(id);
 		SocialRelationHandler.recordViewPost(post, localUser);
 		return ok();
 	}

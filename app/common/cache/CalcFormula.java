@@ -50,9 +50,6 @@ public class CalcFormula {
                 + 5 * post.numBuys 
                 + FEED_SCORE_COMPUTE_BASE);
         
-        if (post.baseScoreAdjust != null) {
-            post.baseScore += post.baseScoreAdjust;     // can be negative
-        }
         post.save();
         
         sw.stop();
@@ -76,6 +73,11 @@ public class CalcFormula {
         BigDecimal bd = new BigDecimal(timeScore);
         bd = bd.setScale(5, BigDecimal.ROUND_HALF_UP);
         post.timeScore = bd.doubleValue();
+        
+        // adjust score
+        if (post.baseScoreAdjust != null) {
+            post.timeScore += post.baseScoreAdjust;     // can be negative
+        }
         post.save();
         
         sw.stop();

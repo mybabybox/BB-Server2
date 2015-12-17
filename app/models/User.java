@@ -1008,10 +1008,10 @@ public class User extends SocialObject implements Subject, Followable {
 	@Override
 	public boolean onFollow(User user) {
 		if (logger.underlyingLogger().isDebugEnabled()) {
-			logger.underlyingLogger().debug("[localUser="+this.id+"][u="+user.id+"] User onFollow");
+			logger.underlyingLogger().debug("[localUser="+this.id+"][u="+user.id+"] onFollow");
 		}
 		
-		if (this.id == user.id) {
+		if (!user.isLoggedIn() || this.id == user.id) {
 		    return false;
 		}
 		
@@ -1031,8 +1031,12 @@ public class User extends SocialObject implements Subject, Followable {
 	@Override
 	public boolean onUnFollow(User user) {
 		if (logger.underlyingLogger().isDebugEnabled()) {
-			logger.underlyingLogger().debug("[localUser="+this.id+"][u="+user.id+"] User onUnFollow");
+			logger.underlyingLogger().debug("[localUser="+this.id+"][u="+user.id+"] onUnFollow");
 		}
+		
+		if (!user.isLoggedIn()) {
+            return false;
+        }
 		
 		if (isFollowing(user)) {
 			boolean unfollowed = 
@@ -1074,7 +1078,7 @@ public class User extends SocialObject implements Subject, Followable {
 		}
 	}
 
-	public Map<Long, Long> getUserCategoriesForFeed() {
+	public Map<Long, Long> getUserCategoriesRatioForFeed() {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    logger.underlyingLogger().debug(String.format("[u=%d] getUserCategoriesForFeed()", this.id));
 	    

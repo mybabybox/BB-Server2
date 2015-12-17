@@ -141,6 +141,14 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	
 	@Override
 	public boolean onLikedBy(User user) {
+	    if (logger.underlyingLogger().isDebugEnabled()) {
+            logger.underlyingLogger().debug("[p="+this.id+"][u="+user.id+"] onLikeBy");
+        }
+	    
+	    if (!user.isLoggedIn()) {
+            return false;
+        }
+	    
 		if (!isLikedBy(user)) {
 			boolean liked = recordLike(user);
 			if (liked) {
@@ -156,6 +164,14 @@ public class Post extends SocialObject implements Likeable, Commentable {
 
 	@Override
 	public boolean onUnlikedBy(User user) {
+	    if (logger.underlyingLogger().isDebugEnabled()) {
+            logger.underlyingLogger().debug("[p="+this.id+"][u="+user.id+"] onUnlikeBy");
+        }
+	    
+	    if (!user.isLoggedIn()) {
+            return false;
+        }
+	    
 		if (isLikedBy(user)) {
 			boolean unliked = 
 					LikeSocialRelation.unlike(
@@ -313,6 +329,10 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	}
 
 	public boolean onSold(User user) {
+	    if (!user.isLoggedIn()) {
+            return false;
+        }
+	    
 	    if (this.sold) {
 	        return false;
 	    }
@@ -324,6 +344,10 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	}
 	
 	public boolean onView(User user) {
+	    if (!user.isLoggedIn()) {
+            return false;
+        }
+	    
 		boolean viewed = recordView(user);
 		if (viewed) {
 			this.numViews++;

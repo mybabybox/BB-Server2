@@ -32,10 +32,6 @@ public class UserVMLite {
     public UserVMLite(User user, User localUser) {
         this.id = user.id;
         
-        if (!user.isLoggedIn()) {
-            return;
-        }
-        
         this.displayName = user.displayName;
         this.numLikes = user.numLikes;
         this.numFollowers = user.numFollowers;
@@ -45,6 +41,12 @@ public class UserVMLite {
         this.numConversationsAsSender = user.numConversationsAsSender;
         this.numConversationsAsRecipient = user.numConversationsAsRecipient;
         this.numCollections = user.numCollections;
+        
+        // Fill up below for logged in users only
+        if (!user.isLoggedIn()) {
+            return;
+        }
+        
         if (!user.equals(localUser)) {
         	this.isFollowing = user.isFollowedBy(localUser);
         }

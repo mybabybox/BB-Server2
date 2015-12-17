@@ -128,7 +128,6 @@ GET     /like-post/:id          					controllers.ProductController.likePost(id:L
 GET     /unlike-post/:id        					controllers.ProductController.unlikePost(id:Long)
 GET     /sold-post/:id                              controllers.ProductController.soldPost(id:Long)
 POST	/comment/new								controllers.ProductController.newComment
-GET     /view-product/:id        					controllers.ProductController.onView(id:Long)
 POST	/create-collection		             		controllers.ProductController.createCollection
 POST	/product/add-to-collection					controllers.ProductController.addToCollection
 GET		/post/:id									@controllers.ProductController.getProductInfo(id:Long)

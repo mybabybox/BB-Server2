@@ -43,7 +43,7 @@ public class CalcServer {
 	public static final Long FEED_HOME_COUNT_MAX = Play.application().configuration().getLong("feed.home.count.max");
 	public static final Long FEED_CATEGORY_EXPOSURE_MIN = Play.application().configuration().getLong("feed.category.exposure.min");
 	public static final int FEED_SNAPSHOT_EXPIRY = Play.application().configuration().getInt("feed.snapshot.expiry");
-	public static final int FEED_SNAPSHOT_EXPIRY_NOT_LOGIN = Play.application().configuration().getInt("feed.snapshot.not.login.expiry");
+	public static final int FEED_SNAPSHOT_NOT_LOGIN_EXPIRY = Play.application().configuration().getInt("feed.snapshot.not.login.expiry");
 	public static final int FEED_SOLD_CLEANUP_DAYS = Play.application().configuration().getInt("feed.sold.cleanup.days");
 	public static final int FEED_RETRIEVAL_COUNT = DefaultValues.FEED_INFINITE_SCROLL_COUNT;
 	
@@ -257,12 +257,12 @@ public class CalcServer {
 	
 	private void buildUserExploreFeedQueue(Long userId) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildUserExploreQueue starts");
+		logger.underlyingLogger().debug("buildUserExploreFeedQueue starts");
 		
 		User user = User.findById(userId);
 		Map<Long, Long> map = new HashMap<Long, Long>();
 		if (user != null) {
-			map = user.getUserCategoriesForFeed();
+			map = user.getUserCategoriesRatioForFeed();
 		}
 		
 		for (Category category : Category.getAllCategories()){
@@ -292,10 +292,10 @@ public class CalcServer {
 			logger.underlyingLogger().debug(
                     "     cat="+category.getId()+" name="+category.getName()+" catFeedSize="+postsSize+" %="+percentage+" %catFeedSize="+postIds.size());
 		}
-		jedisCache.expire(getKey(FeedType.HOME_EXPLORE, userId), (user == null) ? FEED_SNAPSHOT_EXPIRY_NOT_LOGIN : FEED_SNAPSHOT_EXPIRY);
+		jedisCache.expire(getKey(FeedType.HOME_EXPLORE, userId), (user == null) ? FEED_SNAPSHOT_NOT_LOGIN_EXPIRY : FEED_SNAPSHOT_EXPIRY);
 		
 		sw.stop();
-		logger.underlyingLogger().debug("buildUserExploreQueue completed. Took "+sw.getElapsedSecs()+"s");
+		logger.underlyingLogger().debug("buildUserExploreFeedQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 	
 	private void buildUserFollowingFeedQueue(Long userId) {

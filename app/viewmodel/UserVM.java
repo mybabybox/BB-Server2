@@ -22,6 +22,7 @@ public class UserVM extends UserVMLite {
     public UserVM(User user, User localUser) {
     	super(user, localUser);
     	
+    	// Fill up below for logged in users only
     	if (!user.isLoggedIn()) {
     	    return;
     	}

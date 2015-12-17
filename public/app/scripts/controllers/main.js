@@ -3,7 +3,7 @@
 var babybox = angular.module('babybox');
 
 babybox.controller('FrontPageController', 
-		function($scope, $route, feedService, productService, $rootScope, ngDialog, userInfo, viewService, $location, $anchorScroll, usSpinnerService) {
+		function($scope, $route, feedService, productService, $rootScope, ngDialog, userInfo, $location, $anchorScroll, usSpinnerService) {
 	
 	usSpinnerService.spin('loading...');
 	$scope.userInfo = userInfo;
@@ -210,7 +210,7 @@ babybox.controller('CommentOnProductController',
 
 
 babybox.controller('ProfileController', 
-		function($scope, $route, $rootScope, profileUser, userService, userInfo, followService, viewService, ngDialog) {
+		function($scope, $route, $rootScope, profileUser, userService, userInfo, followService, ngDialog) {
 	$scope.activeflag = true;
 	$scope.userInfo = userInfo;
 	$scope.user = profileUser;

@@ -200,7 +200,8 @@ babybox.service('likeService',function($resource){
             }
     );
     
- /*   this.login_like = $resource(
+    /*
+	this.login_like = $resource(
             '/login_like',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
@@ -209,19 +210,6 @@ babybox.service('likeService',function($resource){
     );
     */
 });
-
-babybox.service('viewService',function($resource){
-    this.viewProduct = $resource(
-            '/view-product/:id',
-            {alt:'json',callback:'JSON_CALLBACK'},
-            {
-                get: {method:'get', params:{id:'@id'}}
-            }
-    );
-    
-});
-
-
 
 
 /*

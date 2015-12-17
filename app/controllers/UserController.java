@@ -879,74 +879,55 @@ public class UserController extends Controller {
     @Transactional
     public static Result viewFollowings(Long id) {
     	final User localUser = Application.getLocalUser(session());
-    	List<FollowSocialRelation> followings = FollowSocialRelation.getUserFollowings(id, 0L);
-    	List<UserVMLite> userFollowings = new ArrayList<UserVMLite>();
-    	
-    	for (SocialRelation socialRelation : followings) {
-    		User user = User.findById(socialRelation.target);
-    		if (user != null) {
-    		    UserVMLite uservm = new UserVMLite(user, localUser);
-    		    userFollowings.add(uservm);
-    		}
-    	}
+    	List<UserVMLite> userFollowings = getFollowings(id, 0L, localUser);
     	return ok(views.html.babybox.web.followers.render(Json.stringify(Json.toJson(userFollowings)), Json.stringify(Json.toJson(new UserVM(localUser)))));
     }
     
     @Transactional
     public static Result viewFollowers(Long id) {
     	final User localUser = Application.getLocalUser(session());    
-    	List<FollowSocialRelation> followings = FollowSocialRelation.getUserFollowers(id, 0L);
-    	List<UserVMLite> userFollowers = new ArrayList<UserVMLite>();
-    	
-    	for(SocialRelation socialRelation : followings){
-    		User user = User.findById(socialRelation.actor);
-    		if (user != null) {
-        		UserVMLite uservm = new UserVMLite(user, localUser);
-        		userFollowers.add(uservm);
-    		}
-    	}
+    	List<UserVMLite> userFollowers = getFollowers(id, 0L, localUser);
     	return ok(views.html.babybox.web.followers.render(Json.stringify(Json.toJson(userFollowers)), Json.stringify(Json.toJson(new UserVM(localUser)))));
     }
     
     @Transactional
-    public static Result getFollowings(Long id,Long offset) {
+    public static Result getFollowings(Long id, Long offset) {
     	final User localUser = Application.getLocalUser(session());
-    	if (!localUser.isLoggedIn()) {
-            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-            return notFound();
-        }
-    	List<FollowSocialRelation> followings = FollowSocialRelation.getUserFollowings(id, offset);
-    	List<UserVMLite> userFollowings = new ArrayList<UserVMLite>();
-    	
-    	for (SocialRelation socialRelation : followings) {
-    		User user = User.findById(socialRelation.target);
-    		if (user != null) {
-    		    UserVMLite uservm = new UserVMLite(user, localUser);
-    		    userFollowings.add(uservm);
-    		}
-    	}
+    	List<UserVMLite> userFollowings = getFollowings(id, offset, localUser);
     	return ok(Json.toJson(userFollowings));
     }
     
     @Transactional
     public static Result getFollowers(Long id,Long offset) {
     	final User localUser = Application.getLocalUser(session());   
-    	
-    	if (!localUser.isLoggedIn()) {
-            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-            return notFound();
-        }
-    	List<FollowSocialRelation> followings = FollowSocialRelation.getUserFollowers(id, offset);
-    	List<UserVMLite> userFollowers = new ArrayList<UserVMLite>();
-    	
-    	for(SocialRelation socialRelation : followings){
-    		User user = User.findById(socialRelation.actor);
-    		if (user != null) {
-        		UserVMLite uservm = new UserVMLite(user, localUser);
-        		userFollowers.add(uservm);
-    		}
-    	}
+    	List<UserVMLite> userFollowers = getFollowers(id, offset, localUser);
     	return ok(Json.toJson(userFollowers));
+    }
+    
+    private static List<UserVMLite> getFollowings(Long id, Long offset, User localUser) {
+        List<FollowSocialRelation> followings = FollowSocialRelation.getUserFollowings(id, offset);
+        List<UserVMLite> userFollowings = new ArrayList<UserVMLite>();
+        for (SocialRelation socialRelation : followings) {
+            User user = User.findById(socialRelation.target);
+            if (user != null) {
+                UserVMLite uservm = new UserVMLite(user, localUser);
+                userFollowings.add(uservm);
+            }
+        }
+        return userFollowings;
+    }
+    
+    private static List<UserVMLite> getFollowers(Long id, Long offset, User localUser) {
+        List<FollowSocialRelation> followers = FollowSocialRelation.getUserFollowers(id, offset);
+        List<UserVMLite> userFollowers = new ArrayList<UserVMLite>();
+        for(SocialRelation socialRelation : followers){
+            User user = User.findById(socialRelation.actor);
+            if (user != null) {
+                UserVMLite uservm = new UserVMLite(user, localUser);
+                userFollowers.add(uservm);
+            }
+        }
+        return userFollowers;
     }
     
     @Transactional
