@@ -45,9 +45,10 @@
     class='header_tab_item popular clickable_area swiper-pagination-switch swiper-pagination-switch-0'
     ng-click="getHomeExploreProducts()" data-sorttype='popular'>
     Explore</li>
-   <li ng-class="homeFeed? '' :'active' "
+    
+   <li ng-if="userInfo.isLoggedIn" ng-class="homeFeed? '' :'active' "
     class='header_tab_item latest clickable_area swiper-pagination-switch swiper-pagination-switch-1'
-    ng-click="getHomeFollowingProducts()" data-sorttype='latest'>
+    ng-click="getHomeFollowingProducts()" data-sorttype='following'>
     Following</li>
   </ul>
   <ul class='header_tabs_fixed M14 center-container'>
