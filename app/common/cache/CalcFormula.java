@@ -70,14 +70,16 @@ public class CalcFormula {
             timeScore = timeScore * getDiscountFactor(timeDiff);
         }
         
-        BigDecimal bd = new BigDecimal(timeScore);
-        bd = bd.setScale(5, BigDecimal.ROUND_HALF_UP);
-        post.timeScore = bd.doubleValue();
-        
         // adjust score
         if (post.baseScoreAdjust != null) {
-            post.timeScore += post.baseScoreAdjust;     // can be negative
+            timeScore += post.baseScoreAdjust;     // can be negative
         }
+        
+        BigDecimal bd = new BigDecimal(timeScore);
+        bd = bd.setScale(5, BigDecimal.ROUND_HALF_UP);
+        timeScore = bd.doubleValue();
+        
+        post.timeScore = timeScore;
         post.save();
         
         sw.stop();
