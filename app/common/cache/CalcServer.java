@@ -3,6 +3,7 @@ package common.cache;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,22 +11,24 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
-
-import com.google.inject.Singleton;
-
 import models.Category;
 import models.FollowSocialRelation;
 import models.LikeSocialRelation;
 import models.Post;
 import models.SocialRelation;
 import models.User;
+
+import org.joda.time.DateTime;
+
 import play.Play;
 import play.db.jpa.JPA;
+
+import com.google.inject.Singleton;
 import common.model.FeedFilter.FeedType;
 import common.schedule.JobScheduler;
 import common.thread.ThreadLocalOverride;
 import common.utils.NanoSecondStopWatch;
+
 import domain.DefaultValues;
 
 @Singleton
@@ -40,6 +43,7 @@ public class CalcServer {
 	public static final Long FEED_HOME_COUNT_MAX = Play.application().configuration().getLong("feed.home.count.max");
 	public static final Long FEED_CATEGORY_EXPOSURE_MIN = Play.application().configuration().getLong("feed.category.exposure.min");
 	public static final int FEED_SNAPSHOT_EXPIRY = Play.application().configuration().getInt("feed.snapshot.expiry");
+	public static final int FEED_SNAPSHOT_EXPIRY_NOT_LOGIN = Play.application().configuration().getInt("feed.snapshot.not.login.expiry");
 	public static final int FEED_SOLD_CLEANUP_DAYS = Play.application().configuration().getInt("feed.sold.cleanup.days");
 	public static final int FEED_RETRIEVAL_COUNT = DefaultValues.FEED_INFINITE_SCROLL_COUNT;
 	
@@ -256,12 +260,11 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildUserExploreQueue starts");
 		
 		User user = User.findById(userId);
-		if (user == null) {
-			logger.underlyingLogger().error("buildUserExploreQueue failed!! User[id="+userId+"] not exists");
-			return;
+		Map<Long, Long> map = new HashMap<Long, Long>();
+		if (user != null) {
+			map = user.getUserCategoriesForFeed();
 		}
 		
-		Map<Long, Long> map = user.getUserCategoriesForFeed();
 		for (Category category : Category.getAllCategories()){
 			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_POPULAR,category.id), 0L);
 			final List<Long> postIds = new ArrayList<>();
@@ -283,13 +286,13 @@ public class CalcServer {
 			Integer length =  (int) ((postsSize * percentage) / 100);
 			postIds.subList(0, length);
 			for(Long postId : postIds){
-				jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE,user.id), Math.random() * FEED_SCORE_HIGH_BASE, postId.toString());
+				jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE, userId), formula.randomizeScore(Post.findById(postId)), postId.toString());
 			}
 			
 			logger.underlyingLogger().debug(
                     "     cat="+category.getId()+" name="+category.getName()+" catFeedSize="+postsSize+" %="+percentage+" %catFeedSize="+postIds.size());
 		}
-		jedisCache.expire(getKey(FeedType.HOME_EXPLORE,user.id), FEED_SNAPSHOT_EXPIRY);
+		jedisCache.expire(getKey(FeedType.HOME_EXPLORE, userId), (user == null) ? FEED_SNAPSHOT_EXPIRY_NOT_LOGIN : FEED_SNAPSHOT_EXPIRY);
 		
 		sw.stop();
 		logger.underlyingLogger().debug("buildUserExploreQueue completed. Took "+sw.getElapsedSecs()+"s");
