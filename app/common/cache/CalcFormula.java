@@ -87,12 +87,15 @@ public class CalcFormula {
 	}
 	
 	public Double randomizeScore(Post post) {
-        Double timeScore = computeTimeScore(post);
+	    Double timeScore = post.timeScore;
+	    if (timeScore == null || timeScore == 0D) {
+	        timeScore = computeTimeScore(post);
+	    }
         int min = 100 - FEED_SCORE_RANDOMIZE_PERCENT;
         int max = 100 + FEED_SCORE_RANDOMIZE_PERCENT;
-        int percent = (random.nextInt(max - min) + min) / 100;
+        Double percent = (random.nextInt(max - min) + min) / 100D;
         Double randomizedScore = timeScore * percent;
-        logger.underlyingLogger().debug("randomizeScore completed with randomizedScore="+randomizedScore);
+        logger.underlyingLogger().debug("randomizeScore completed with timeScore="+timeScore+" %="+percent+" randomizedScore="+randomizedScore);
         return randomizedScore;
     }
 	
