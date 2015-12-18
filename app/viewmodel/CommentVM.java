@@ -11,9 +11,7 @@ public class CommentVM {
 	@JsonProperty("ownerId") public Long ownerId;
 	@JsonProperty("ownerName") public String ownerName;
 	@JsonProperty("body") public String body;
-
 	@JsonProperty("isOwner") public boolean isOwner = false;
-
 	@JsonProperty("deviceType") public String deviceType;
 	
     public CommentVM(Comment comment, User user) {
@@ -22,8 +20,13 @@ public class CommentVM {
         this.ownerName = comment.owner.displayName;
         this.createdDate = comment.getCreatedDate().getTime();
         this.body = comment.body;
-        this.isOwner = (comment.owner.id == user.id);
         this.deviceType = comment.deviceType == null? "" : comment.deviceType.name();
+        
+        if (!user.isLoggedIn()) {
+            return;
+        }
+        
+        this.isOwner = (comment.owner.id == user.id);
     }
 
     public Long getId() {

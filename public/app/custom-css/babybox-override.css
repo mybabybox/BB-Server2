@@ -4,7 +4,7 @@ a.text-muted {
 a.text-muted:hover {
   color: #FF4C8A;
 }
-.right {
+.item-card .right {
 	position: absolute;
 	right: 0
 }

@@ -181,7 +181,6 @@ babybox.controller('ProductPageController',
 
 });
 
-
 babybox.controller('CommentOnProductController', 
 		function($scope, $route, $http, likeService) {
 	$scope.formData = {};

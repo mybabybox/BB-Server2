@@ -69,13 +69,6 @@ babybox.service('productService',function($resource){
                 get: {method:'get', params:{id:'@id'}}
             }
     );
-    this.getSimilarProduct = $resource(
-            '/get-all-similar-products',
-            {alt:'json',callback:'JSON_CALLBACK'},
-            {
-                get: {method:'get' ,isArray:true}
-            }
-    );
     
     this.getHomeFollowingFeed = $resource(
             '/get-home-following-feed/:offset',
@@ -102,7 +95,7 @@ babybox.service('productService',function($resource){
     );
 });
 
-babybox.service('collecctionService',function($resource){
+babybox.service('collectionService',function($resource){
     this.getFeedProduct = $resource(
             '/get-collection-by-user',
             {alt:'json',callback:'JSON_CALLBACK'},
@@ -121,25 +114,22 @@ babybox.service('userService',function($resource){
             }
     );
     
-   
-    	 this.getUserLikedFeed = $resource(
-                 '/get-user-liked-feed/:id/:offset',
-                 {alt:'json',callback:'JSON_CALLBACK'},
-                 {
-                     get: {method:'get', isArray:true, params:{id:'@id',offset: '@offset'}}
-                 }
-         );
-    
-    
-        this.getUserPostedFeed = $resource(
-                '/get-user-posted-feed/:id/:offset',
-                {alt:'json',callback:'JSON_CALLBACK'},
-                {
-                    get: {method:'get', isArray:true, params:{id:'@id',offset: '@offset'}}
-                }
-        );
+	this.getUserLikedFeed = $resource(
+			'/get-user-liked-feed/:id/:offset',
+			{alt:'json',callback:'JSON_CALLBACK'},
+			{
+				get: {method:'get', isArray:true, params:{id:'@id',offset: '@offset'}}
+			}
+	);
+	
+	this.getUserPostedFeed = $resource(
+	        '/get-user-posted-feed/:id/:offset',
+	        {alt:'json',callback:'JSON_CALLBACK'},
+	        {
+	            get: {method:'get', isArray:true, params:{id:'@id',offset: '@offset'}}
+	        }
+	);
         
-    
     this.getUserCollection = $resource(
             '/get-user-collections/:id',
             {alt:'json',callback:'JSON_CALLBACK'},

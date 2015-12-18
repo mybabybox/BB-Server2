@@ -1902,7 +1902,7 @@ label {
     margin: 0;
     display: inline-block;
     vertical-align: middle;
-    color: rgba(0, 0, 0, 0.12)
+    color: rgba(0, 0, 0, 0.26)
 }
 
 #item-page .review-part #review-container .review .right .face {
@@ -2249,7 +2249,7 @@ label {
 }
 
 .float-bottom .inner #buy-button:active {
-    background-color: #ee3900;
+    background-color: #FF99B8;
     color: #FFFFFF;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.08), 0px 2px 2px 0px rgba(0, 0, 0, 0.12)
 }

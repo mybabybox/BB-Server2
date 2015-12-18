@@ -32,32 +32,7 @@
      <span class="dollarfy_sign" dir="ltr" style="display: inline;">$</span>
      <span class="dollarfy_val" currency="HKD" val="3000000">{{product.price}}</span>
     </div>
-
-    <div
-     class="slide-out-select shipping-fee-select collapsed  middle-centered-div"
-     style="display: none;">
-     <div class="slide-out-select-display">
-
-      <span>Shipping Fee</span>: &nbsp;<span
-       class="selected-shipping-fee"></span>&nbsp;<span
-       class="ic_arrow_down_black shipping-fee-select-arrow"></span>
-
-     </div>
-     <div class="slide-out-select-options"></div>
-    </div>
-
-    <div class="shipping_fee_included L12 app_alert "
-     for="shipping_fee_included" style="display: block;">
-
-     <span>Shipping fee included</span>
-
-
-     <div class="ic_ex_enlarge">
-      <span class="butt ic_help"></span>
-     </div>
-    </div>
    </div>
-
   </div>
   <div class="actions flex-it middle-centered-div">
    <div id="likes" ng-click="like_Unlike(product.id)"
@@ -72,7 +47,7 @@
     </div>
    </div>
 
-   <a href="/comments/{{product.id}}"
+   <a href="/product-comments/{{product.id}}"
     class="clickable_area flex1 middle-centered-div">
     <div id="comment-button"
      class="comment clickable_area flex1 middle-centered-div">
@@ -91,6 +66,31 @@
 
   </div>
 
+  <div id="detail-part" class="info-part">
+   <div class="detail">
+    <div class="middle-centered-div detail-heading">
+     <div class="heading r14 flex1" data-i18n="label_product_info">Product Details</div>
+     <div class="time middle-centered-div" id="list-time">
+      <span class="ic_icon ic_clock"></span> 
+      <span class="gray-line r12" am-time-ago="product.createdDate">
+      </span>
+     </div>
+    </div>
+    <div class="description text L14">{{product.body}}</div>
+   </div>
+   <div class="table">
+    <div class="tr category-row middle-centered-div">
+     <div class="r14 th" data-i18n="label_category">Category</div>
+     <div class="heavy L14 td flex1">
+      <a class="middle-centered-div tr-padding"
+       href="/category/{{product.categoryId}}/popular">
+       <div class="text flex1" id="item-category">{{product.categoryName}}</div>
+      </a>
+     </div>
+    </div>
+   </div>
+  </div>
+  
   <div id="shop-part" class="shop-part-container">
    <div class="shop-part  isSeller ">
 
@@ -112,7 +112,6 @@
      </div>
 
      <ul class="bottom-holder isPC">
-
       <li class="products-box">
        <div class="space"></div>
        <div class="box-left">
@@ -120,9 +119,7 @@
        </div>
        <div class="box-right">
         <div class="number m18">{{product.ownerNumProducts}}</div>
-
         <div class="text" data-i18n="label_products">Products</div>
-
        </div>
        <div class="space"></div>
       </li>
@@ -134,44 +131,16 @@
        </div>
        <div class="box-right r12">
         <div class="number m18">{{product.ownerNumFollowers}}</div>
-
         <div class="text" data-i18n="label_positive_reviews">Followers</div>
-
        </div>
        <div class="space"></div>
       </li>
       <li class="border">&nbsp;</li>
-
      </ul>
-
     </a>
-
    </div>
   </div>
-  <div id="detail-part" class="info-part">
-   <div class="detail">
-    <div class="middle-centered-div detail-heading">
-     <div class="heading r14 flex1" data-i18n="label_product_info">Product
-      Details</div>
-     <div class="time middle-centered-div" id="list-time">
-      <span class="ic_icon ic_clock"></span> <span class="text" am-time-ago="product.createdDate">
-      </span>
-     </div>
-    </div>
-    <div class="description text L14">{{product.body}}</div>
-   </div>
-   <div class="table">
-    <div class="tr category-row middle-centered-div">
-     <div class="r14 th" data-i18n="label_category">Category</div>
-     <div class="heavy L14 td flex1">
-      <a class="middle-centered-div tr-padding"
-       href="/category/{{product.categoryId}}/popular">
-       <div class="text flex1" id="item-category">{{product.categoryName}}</div>
-      </a>
-     </div>
-    </div>
-   </div>
-  </div>
+  
   <div id="review-part" class="review-part">
    <div id="review-container">
     <div id="review-template" class="review" style="display: block;"
@@ -192,17 +161,17 @@
         <a><div class="name m14">{{comment.ownerName}}</div></a>
 
         <div class="comment text r14">{{comment.body}}</div>
-        <!-- <div class="param">
-							<div class="buyer-review m12" data-i18n="label_bueyer_review">buyer review</div>
-							<div class="time">
-								<span class="ic_icon ic_clock"></span>
-								<span class="text r12">14w</span>
-							</div>
-						</div> -->
+        <div class="param">
+			<!--div class="buyer-review m12" data-i18n="label_bueyer_review">buyer review</div-->
+			<div class="time">
+				<span class="ic_icon ic_clock"></span>
+				<span class="text r12">14w</span>
+			</div>
+		</div>
        </div>
 
       </div>
-      <div class="face ic_icon ic_rate_average"></div>
+      <!--div class="face ic_icon ic_rate_average"></div-->
      </div>
 
 
@@ -215,9 +184,11 @@
      style="display: none;">Leave a comment</div>
     <div class="ic_icon ic_comment_red"></div>
     <div class="text m14">
-     <span data-i18n="label_view_all">View all</span> <span
-      class="number">{{product.numComments}}</span> <span
-      class="comment_text" data-i18n="label_comments">Comments</span>
+        <a href="/product-comments/{{product.id}}"
+            <span data-i18n="label_view_all">View all</span>
+            <span class="number">{{product.numComments}}</span>
+            <span class="comment_text" data-i18n="label_comments">Comments</span>
+        </a>
     </div>
    </div>
   </div>
@@ -279,8 +250,7 @@
     <div class="left flex1">
      <div id="chat-to-offer" class="clickable_area">
       <div class="ic_icon ic_offer_chat"></div>
-      <div class="text m14 SG" data-i18n="label_chat_to_offer">Chat
-       Now</div>
+      <div class="text m14 SG" data-i18n="label_chat_to_offer">Chat Now</div>
      </div>
      <div id="offer-count" class="r14">
       <span data-i18n="label_you_have">You have</span> 0 <span

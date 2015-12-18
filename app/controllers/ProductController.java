@@ -254,11 +254,6 @@ public class ProductController extends Controller{
 	}
 	
 	@Transactional
-	public static Result getAllSimilarProducts() {
-		return ok();
-	}
-
-	@Transactional
 	public static Result getProductImageById(Long id) {
 		response().setHeader("Cache-Control", "max-age=604800");
 		Resource resource = Resource.findById(id);
@@ -291,16 +286,20 @@ public class ProductController extends Controller{
 	@Transactional
 	public Result viewProduct(Long id) {
 		final User localUser = Application.getLocalUser(session());
-		PostVM vm = getProductInfoVM(id);
+		PostVM product = getProductInfoVM(id);
 		Map<String, List<String>> images = new HashMap<>();
 		List<String> originalImages = new ArrayList<>();
 		List<String> miniImages = new ArrayList<>();
-		for(Long imageId : vm.images){
+		for(Long imageId : product.images){
 			originalImages.add("background-image:url('"+Application.APPLICATION_BASE_URL+"/image/get-post-image-by-id/"+imageId+"')");
 		}
 		images.put("original", originalImages);
-		List<PostVMLite> vms = feedHandler.getPostVM(id, 0l, localUser, FeedType.PRODUCT_SUGGEST);
-		return ok(views.html.babybox.web.product.render(Json.stringify(Json.toJson(vm)), Json.stringify(Json.toJson(new UserVM(localUser))), images, Json.stringify(Json.toJson(vms))));
+		List<PostVMLite> suggestedPosts = feedHandler.getPostVM(id, 0l, localUser, FeedType.PRODUCT_SUGGEST);
+		return ok(views.html.babybox.web.product.render(
+		        Json.stringify(Json.toJson(product)), 
+		        Json.stringify(Json.toJson(new UserVM(localUser))), 
+		        images, 
+		        Json.stringify(Json.toJson(suggestedPosts))));
 	}
 	
 	@Transactional
@@ -491,11 +490,6 @@ public class ProductController extends Controller{
 	@Transactional
     public Result viewComments(Long postId) {
 		final User localUser = Application.getLocalUser(session());
-		if (!localUser.isLoggedIn()) {
-			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
-			return redirect("/login");
-		}
-		
 		Post post = Post.findById(postId);
 		if (post == null) {
 			return ok();
