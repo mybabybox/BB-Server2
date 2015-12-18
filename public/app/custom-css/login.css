@@ -42,14 +42,15 @@ ul, li {
 .login-container {
     padding: 0;
     position: relative;
-    width: 950px;
+    max-width: 950px;
     height: 477px;
     margin: 0 auto;
 }
 .login-container div.login-box:first-child {
     float: left;
-    width: 70%;
+    min-width: 64%;
     margin-right: 2%;
+    margin-bottom: 2%;
     height: 100%;
     /*padding: 10% 3% 20% 5%;*/
     padding: 20px 50px 20px 50px;
@@ -67,8 +68,8 @@ ul, li {
     color: gray;
 }
 .login-container div {
-    float: right;
-    width: 28%;
+    float: left;
+    min-width: 28%;
 }
 .login-box img[alt=title-image] {
     width: 250px;

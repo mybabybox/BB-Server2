@@ -16,9 +16,11 @@
         <meta name="keywords" content="babybox, baby box, baby-box">
         
         <link rel="stylesheet" href="@routes.Assets.versioned("components/library/bootstrap/css/bootstrap.min.css")" />
+        <link rel="stylesheet" href="../assets/app/custom-css/bootstrap-override.css">
         <link rel="stylesheet" href="../assets/app/custom-css/babybox-override.css">
         <link rel="stylesheet" href="../assets/app/custom-css/textfield.css">
         <link rel="stylesheet" href="../assets/app/custom-css/login.css">
+        <link rel="stylesheet" href="../assets/app/custom-css/responsive.css">
         <script src="@routes.Assets.versioned("components/library/jquery/jquery.min.js")"></script>
         <script src="@routes.Application.jsRoutes" defer="defer"></script>
         <style>
@@ -38,17 +40,17 @@
                 <img src="../assets/app/images/logo-2.png" />
             </a>
         </div>
-        <div class="login-container">
-            <div class="login-box" id="login-promote">
+        <div class="login-container w3-row-padding">
+            <div class="login-box w3-third" id="login-promote">
                 <!--img src="../assets/app/images/login/login-pic.png" alt="title-image"/-->
                 <div><h2><b>歡迎來到 BabyBox!</b></h2></div>
                 <div><h3>一個屬於所有媽媽爸爸的社群</h3></div>
                 <h1><b>請立即加入BabyBox的大家庭!</b></h1>
             </div>
-            <div class="login-box" id="login-section">
+            <div class="login-box w3-third" id="login-section" >
                 <ul>
                     <li><img src="../assets/app/images/login/login_flag.png" /><h4>會員登入</h4></li>
-                    <li style="padding:5px;"><a href="/authenticate/facebook"><img style="width:216px;height:auto;" alt="Login via Faceebook" src="../assets/app/images/login/facebook_acc.jpg" /></a></li>
+                    <li style="padding:5px;"><a href="/authenticate/facebook"><img class="img_" alt="Login via Faceebook" src="../assets/app/images/login/facebook_acc.jpg" /></a></li>
                     <li style="padding-left:10px;"><span style="color:gray;font-size:12px;">註: BabyBox絕對不會發佈或留言到您的 facebook 帳戶中</span></li>
                     <hr style="margin-top:15px;"/>
                     <li id="login-info-wrapper">
@@ -91,3 +93,6 @@
 <script>
     ga_send_pv();
 </script>
+<style>
+.img_{max-width:100%;height:auto;}
+</style>
