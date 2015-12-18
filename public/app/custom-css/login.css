@@ -95,6 +95,10 @@ ul, li {
     top: 5px;
     margin-bottom: 25px;
 }
+.img_{
+	max-width:100%;
+	height:auto;
+}
 /*.login-container div.login-box ul h4{
     background-color: #f13b18;
     float: left;
