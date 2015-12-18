@@ -1229,6 +1229,12 @@ label {
     z-index: 10000
 }
 
+.sold{
+    width: 20% !important;
+    left: 80%;
+    top: 80%;
+    position: absolute;
+}
 .slide-out-select {
     -webkit-transition: all 1s ease-in-out;
     -moz-transition: all 1s ease-in-out;
