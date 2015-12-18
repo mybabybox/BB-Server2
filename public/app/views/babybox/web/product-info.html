@@ -259,10 +259,9 @@
    class="recommend-products-wrapper center-container no-padding-top">
    <div class="recommend-info L12">You May Also Like</div>
    <div class="recommend-products" style="height: 168px;">
-    <div class="recommend-product clickable_area"
-     data-ng-repeat="post in suggestedPost">
+    <div class="recommend-product clickable_area" data-ng-repeat="post in suggestedPost">
      <a href="/product/{{post.id}}"> <img
-      data-ng-src="/image/get-mini-post-image-by-id/{{post.images[0]}}">
+      data-ng-src="/image/get-post-image-by-id/{{post.images[0]}}">
       <div class="recommend-product-price r10">
        <span class="dollarfy_sign" val="HKD" style="display: inline;">$</span>
        <span class="dollarfy_ext_int unit-price"
