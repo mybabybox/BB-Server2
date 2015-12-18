@@ -1,3 +1,13 @@
+a.text-muted {
+  color: #FF76A4;
+}
+a.text-muted:hover {
+  color: #FF4C8A;
+}
+.right {
+	position: absolute;
+	right: 0
+}
 .settings-dropdown-menu {
 	min-width: 100px;
     position: absolute;

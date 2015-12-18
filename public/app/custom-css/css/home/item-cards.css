@@ -453,7 +453,7 @@ body {
     width: 100%;
     top: 100%;
     padding: 9px 12px;
-    height: 76px;
+    /*height: 76px;*/
     margin-top: -1px
 }
 
@@ -477,12 +477,13 @@ body {
 }
 
 .item-card .bottom .item-detail .price .dollarfy_ext_int {
-    margin-left: 2px
+    margin-left: 0px
 }
 
 .item-card .bottom .item-status {
     position: absolute;
-    bottom: 6px
+    bottom: 10px;
+    padding-right: 15px
 }
 
 .item-card .bottom .item-status .likes,
@@ -511,7 +512,7 @@ body {
 
 .item-card .bottom .item-status .comments:before {
     content: "";
-    width: 12px;
+    width: 5px;
     display: inline-block
 }
 
