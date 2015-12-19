@@ -43,7 +43,7 @@ ul, li {
     padding: 0;
     position: relative;
     max-width: 950px;
-    height: 477px;
+    height: 533px;
     margin: 0 auto;
 }
 .login-container div.login-box:first-child {
@@ -52,6 +52,7 @@ ul, li {
     margin-right: 2%;
     margin-bottom: 2%;
     height: 100%;
+    display:block;
     /*padding: 10% 3% 20% 5%;*/
     padding: 20px 50px 20px 50px;
 }
@@ -98,6 +99,7 @@ ul, li {
 .img_{
 	max-width:100%;
 	height:auto;
+	padding-left: none;
 }
 /*.login-container div.login-box ul h4{
     background-color: #f13b18;
