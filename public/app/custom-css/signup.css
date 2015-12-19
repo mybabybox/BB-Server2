@@ -15,6 +15,11 @@ ul, li {
 }
 .signup-info-sub-table {
 }
+.note{
+    font-size: 12px;
+    margin-top: 10px;
+    max-width: 280px;
+}
 .signup-info-sub-table tr td {
     font-size: 14px;
     font-weight: normal;

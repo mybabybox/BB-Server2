@@ -23,6 +23,7 @@
         <link rel="stylesheet" href="../assets/app/custom-css/textfield.css">
         <link rel="stylesheet" href="../assets/app/custom-css/login.css">
         <link rel="stylesheet" href="../assets/app/custom-css/signup.css">
+        <link rel="stylesheet" href="../assets/app/custom-css/responsive.css">
         
         <script type="text/javascript" src="@routes.Assets.versioned("components/library/jquery/jquery.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("components/library/jquery/jquery.validate.min.js")"></script>
@@ -74,8 +75,8 @@
                                     <tr>
                                         <td style="width:80px;">顯示名稱:</td>
                                         <td>
-                                            <div><input type="text" name="parent_displayname" id="parent_displayname" required="required" placeholder="暱稱" value="" style="padding:3px 10px;"></input></div>
-                                            <div style="color:red;font-size:12px;margin-top:10px;max-width:280px;">註: 其他用戶只會看到您的顯示名稱，請選用一個您喜愛的名稱。</div>
+                                            <div><input type="text" name="parent_displayname" id="parent_displayname" required="required" placeholder="暱稱" value=""></input></div>
+                                            <div class="note" style="color:red">註: 其他用戶只會看到您的顯示名稱，請選用一個您喜愛的名稱。</div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -91,7 +92,7 @@
                                                     </select>
                                                 </span>
                                             </div>
-                                            <div style="color:#777;font-size:12px;margin-top:10px;max-width:280px;">註: babybox 會按您的地區推介資訊給您</div>
+                                            <div style="color:#777;" class="note">註: babybox 會按您的地區推介資訊給您</div>
                                         </td>
                                     </tr>
                                     <!--tr>
@@ -281,7 +282,8 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </form>
+
+                     </form>
                     </li>
                 </ul>
             </div>
