@@ -116,8 +116,12 @@
   <div class='holder flex1'></div>
  </div>
 
- <div class='meta-data '>
+ <div class='shop-detailed-info'>
 
+  <div class="shop-description-wrapper padding15" ng-show="user.aboutMe != null">
+    <div class="shop-description r14">{{user.aboutMe}}</div>
+  </div>
+  
   <div class='shop-part-container inShop'>
    <div class='shop-part ' data-shopid=''>
 
@@ -142,12 +146,8 @@
       <div class="space"></div>
       <div class="box-left">
        <span class="icon ic_detail_product_web"> </span>
-      </div>
-      <div class="box-right">
-       <div class="number m18">{{user.numProducts}}</div>
-
-       <div class="text" data-i18n="label_products">Products</div>
-
+       <span class="text r14" data-i18n="label_products">Products</span>
+       <span class="number m16">{{user.numProducts}}</span>
       </div>
       <div class="space"></div>
      </li>
@@ -159,27 +159,22 @@
       <div class="space"></div>
       <div class="box-left">
        <span class="icon ic_detail_positive_web"> </span>
-      </div>
-      <div class="box-right r12">
-       <div class="number m18">{{user.numLikes}}</div>
-
-       <div class="text" data-i18n="label_positive_reviews">Like
-        Products</div>
-
+       <span class="text r14" data-i18n="label_positive_reviews">Likes</span>
+       <span class="number m16">{{user.numLikes}}</span>
       </div>
       <div class="space"></div>
      </li>
 
-
     </ul>
    </div>
   </div>
+  
  </div>
 </div>
 
 <div
  class="popular_products_wrapper center-container swiper-container-horizontal"
- style="padding-left: 0px;">
+ style="padding-top: 10px;padding-left: 0px;">
  <div class="swiper-wrapper">
   <div infinite-scroll='loadMore()' infinite-scroll-distance='2'
    style="width: 100%">

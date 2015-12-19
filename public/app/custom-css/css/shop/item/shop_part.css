@@ -251,11 +251,11 @@ label {
 }
 
 .shop-part-container {
-    border: 1px solid rgba(0, 0, 0, 0.09);
+    /*border: 1px solid rgba(0, 0, 0, 0.09);*/
     border-radius: 4px;
     position: relative;
     background: white;
-    margin: 12px
+    /*margin: 12px*/
 }
 
 .shop-part-container .shop-part a {
@@ -397,7 +397,7 @@ label {
 }
 
 .shop-part-container .shop-part .bottom-holder.isPC {
-    margin: 16px 0
+    margin: 0px 0 0 0
 }
 
 .shop-part-container .shop-part .bottom-holder.isPC li {
@@ -411,7 +411,8 @@ label {
     -webkit-box-align: center;
     -webkit-align-items: center;
     align-self: center;
-    -webkit-align-self: center
+    -webkit-align-self: center;
+    padding: 10px 0
 }
 
 .shop-part-container .shop-part .bottom-holder.isPC li .space {
@@ -426,9 +427,10 @@ label {
 }
 
 .shop-part-container .shop-part .bottom-holder.isPC li .box-left .icon {
-    width: 20px;
-    height: 20px;
-    background-size: 20px 20px
+    width: 16px;
+    height: 16px;
+    background-size: 16px 16px;
+    vertical-align: text-bottom
 }
 
 .shop-part-container .shop-part .bottom-holder.isPC li .box-right {
@@ -483,7 +485,7 @@ label {
 }
 
 .shop-part-container.inShop .shop-part .bottom-holder li.border {
-    height: 38px
+    height: 100%
 }
 
 .shop-part-container.old {
@@ -530,4 +532,40 @@ label {
 
 .shop-part-container.old .text .param .product {
     margin-left: 10px
+}
+
+.shop-detailed-info {
+    background: white;
+}
+
+.shop-detailed-info .shop-description-wrapper, .shop-detailed-info .shop-status {
+    width: 1px;
+    min-width: 100%;
+    border-bottom: 1px solid rgba(0,0,0,0.09);
+}
+
+.shop-detailed-info .shop-description {
+    text-align: left;
+    white-space: pre-wrap;
+}
+
+.shop-detailed-info .shop-description-wrapper, .shop-detailed-info .shop-status {
+    width: 1px;
+    min-width: 100%;
+    border-bottom: 1px solid rgba(0,0,0,0.09);
+}
+
+.shop-detailed-info .shop-link {
+    color: #ff5722;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shop-detailed-info .shop-verified-status {
+    margin-top: 4px;
+}
+
+.shop-detailed-info .shop-verified-status span {
+    margin: 0 2px;
 }

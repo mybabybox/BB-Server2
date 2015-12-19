@@ -795,7 +795,7 @@ ul.header_tabs_fixed li.header_tab_item {
 ul.header_tabs li.header_tab_item.active,
 ul.header_tabs_fixed li.header_tab_item.active {
     color: #FF76A4;
-    border-bottom: 3px solid #FF76A4;
+    border-bottom: 2px solid #FF76A4;
     font-weight: bold;
 }
 

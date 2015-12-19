@@ -723,7 +723,7 @@ label {
 
 .recommend-products-wrapper .recommend-products .recommend-product {
     display: inline-block;
-    width: 168px;
+    width: 120px;
     height: 100%;
     vertical-align: top;
     margin-left: 3px;
@@ -1230,9 +1230,9 @@ label {
 }
 
 .sold{
-    width: 20% !important;
-    left: 80%;
-    top: 80%;
+    width: 30% !important;
+    left: 70%;
+    top: 70%;
     position: absolute;
 }
 .slide-out-select {
