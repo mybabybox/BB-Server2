@@ -157,17 +157,17 @@ babybox.service('followService',function($resource){
     );
     
     this.userfollowers = $resource(
-    		'/followers/:id/:offset',
+    		 '/get-followers/:id/:offset',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
-                get: {method:'get',  params:{id:'@id',offset: '@offset'}}
+                get: {method:'get', isArray:true, params:{id:'@id',offset: '@offset'}}
             }
     );
     this.userfollowings = $resource(
-    		'/followings/:id/:offset',
+    		'/get-followings/:id/:offset',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
-                get: {method:'get',  params:{id:'@id',offset: '@offset'}}
+                get: {method:'get', isArray:true, params:{id:'@id',offset: '@offset'}}
             }
     );
     

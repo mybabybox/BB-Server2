@@ -25,6 +25,7 @@
 
 
 <div id="shop-followers" class="has-toolbar page-holder center-container" style="padding-top: 44px;">
+<div infinite-scroll='loadMore()' infinite-scroll-distance='2'>
  <ul class="follower-list" ng-repeat="follower in followers">
   <li class="clickable_area middle-centered-div">
   <a href="" class="shop-href">
@@ -51,4 +52,5 @@
   </div>
  </li>
 </ul>
+</div>
 </div>

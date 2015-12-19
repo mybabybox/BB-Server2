@@ -322,7 +322,16 @@ babybox.controller('CommentController',
 babybox.controller('UserFollowController', 
 		function($scope, $route, $location, $http, followers, userInfo, followService) {
 	$scope.followers = followers;
+	console.log($scope.followers);
 	$scope.user = userInfo;
+	var url = $location.absUrl();
+	var values= url.split("/");
+	$scope.follow = values[values.length-2];
+	if($scope.follow == 'followers')
+		$scope.noMore = true;
+	if($scope.follow == 'followings')
+		$scope.noMore = true;
+	
 	$scope.onFollowUser = function(formFollower) {
 		if(formFollower.id != $scope.user.id){
 			followService.followUser.get({id:formFollower.id});
@@ -336,28 +345,41 @@ babybox.controller('UserFollowController',
 		formFollower.numFollowings--;
 	}
 
-	/*var flag = true;
+	var off = 1;
+	var flag = true;
 	$scope.noMore = true;
-
 	$scope.loadMore = function () {	
-		if(($scope.followers.length!=0) && ($scope.noMore == true)){
-			var len = $scope.followers.length;
-			var off = $scope.followers[len-1].offset;
-				flag=true;
+		if(($scope.followers.length!=0) && ($scope.noMore == true) && flag == true){
+			if($scope.follow == 'followers'){
+				flag=false;
 				followService.userfollowers.get({id:$scope.user.id, offset:off}, function(data){
+					off++;
 					if(data.length == 0)
 						$scope.noMore = false;
 					angular.forEach(data, function(value, key) {
-						if(flag)
+						if(!flag)
 							$scope.followers.push(value);
 					});
-					flag=false;
+					flag=true;
 				});
 			}
-			
-	}*/
-	
-	
+			if($scope.follow == 'followings'){
+				flag=false;
+				followService.userfollowings.get({id:$scope.user.id, offset:off}, function(data){
+					console.log(data);
+					console.log('followings');
+					off++;
+					if(data.length == 0)
+						$scope.noMore = false;
+					angular.forEach(data, function(value, key) {
+						if(!flag)
+							$scope.followers.push(value);
+					});
+					flag=true;
+				});
+			}	
+		}	
+	}
 });
 
 
