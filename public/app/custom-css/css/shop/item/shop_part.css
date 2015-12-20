@@ -251,11 +251,11 @@ label {
 }
 
 .shop-part-container {
-    /*border: 1px solid rgba(0, 0, 0, 0.09);*/
+    border: 1px solid rgba(0, 0, 0, 0.09);
     border-radius: 4px;
     position: relative;
     background: white;
-    /*margin: 12px*/
+    margin: 12px
 }
 
 .shop-part-container .shop-part a {

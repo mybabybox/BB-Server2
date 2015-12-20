@@ -62,7 +62,7 @@ ul, li {
 }
 .login-container div.login-box:first-child h1 {
     position: absolute;
-    bottom: 45%;
+    bottom: 60%;
     left: 10%;
 }
 .login-container div.login-box:first-child p {
@@ -93,58 +93,13 @@ ul, li {
     font-size: normal;
     position: relative;
     left: -15px;
-    top: 5px;
+    top: 8px;
     margin-bottom: 25px;
 }
-.img_{
-	max-width:100%;
+.login-btn-img {
+	width:235px;
 	height:auto;
-	padding-left: none;
 }
-/*.login-container div.login-box ul h4{
-    background-color: #f13b18;
-    float: left;
-    color: white;
-    font-weight: bold;
-    padding: 10px 30px 10px 10px;
-    position: relative;
-    left: -25px;
-    box-shadow: 2px 2px 3px gray;
-}
-.login-container div.login-box ul h4:before {
-    content: "";
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 10px 10px 0;
-    border-color: transparent #802412 transparent transparent;
-    position: relative;
-    left: -10px;
-    top: 10px;
-}
-.login-container div.login-box ul h4:after {
-    content: "";
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 10px 10px 0;
-    border-color: #f13b18;
-    position: relative;
-    left: -96px;
-    top: -1px;
-}
-.login-container div.login-box ul h4+p {
-    width: 10px;
-    height: 39px; 
-    float: left;
-    position: relative;
-    left: -30px;
-    top: 10px;
-    text-indent: -9999px;
-    background-image: url(../images/login/sawtooth.jpg);
-    background-repeat: repeat-y;
-    background-position: top right;
-}*/
 .login-container div.login-box ul li img[alt=login-via-facebook] {
     display: block;
     position: relative;
@@ -181,18 +136,19 @@ ul, li {
 }
 #login-info-wrapper .general-textfield {
     border-radius: 20px;
-    width: 95%;
+    width: 80%;
     border: thin solid #bcbcbc;
     padding: 7px 15px 7px 7px;
-    margin-bottom: 15px;
     float: left;
     height: 32px;
+    margin-bottom: 15px;
+    margin-left: 35px;
 }
 #login-info-wrapper .general-textfield:focus {
     border: thin solid #a37cde;
 }
 #login-info-wrapper p {
-    padding: 0 7px;
+    padding: 0 30px;
     color: gray;
     font-size: 11px;
     float: left;
@@ -211,49 +167,11 @@ ul, li {
     font-size: 13px;
     float: left;
 }
-/*#login-btn {
-    width: 80%;
-    background-color: #432dc2;
-    color: white;
-    font-weight: bold;
-    padding: 5px;
-    border: none;
-    border-radius: 5px;
-    outline: none;
-}
-#signup-btn {
-    font-size: 18px;
-    width: 80%;
-    background-color: #1AAD38;
-    color: white;
-    font-weight: bold;
-    padding: 5px;
-    border: none;
-    border-radius: 5px;
-    outline: none;
-    margin-top: 0px;
-}*/
-#login-btn {
-    font-size: 16px;
-    font-weight: bold;
-    width: 80%;
-    padding: 5px;
-    background-repeat: no-repeat;
-    border: 1px solid #e1e8ed;
-    border-radius: 4px;
-    cursor: pointer;
-    display: inline-block;
-    background-color: #4A26BD;
-    background-image: linear-gradient(#6D57E2,#4015AC);
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffcc4d, endColorstr=#ffac33, GradientType=0)";
-    border-color: #582FAF;
-    color: #FFFFFF;
-}
-#signup-btn {
-    margin-top: 10px;
+#login-btn, #signup-btn {
     font-size: 18px;
     font-weight: bold;
     width: 80%;
+    height: 42px;
     padding: 5px;
     background-repeat: no-repeat;
     border: 1px solid #e1e8ed;
@@ -268,12 +186,11 @@ ul, li {
     text-shadow: 0 1px 0 rgba(255,255,255,0.5);
 }
 #login-newacc {
-    margin-top: 10px;
+    margin-top: 25px;
 }
 #login-newacc p {
     color: gray;
     font-size: small;
-    margin-left: 10px;
 }
 #login-footer {
     width: 100%;
