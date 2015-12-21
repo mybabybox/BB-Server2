@@ -238,7 +238,7 @@ public class CalcServer {
             return;
         }
         Double timeScore = calculateTimeScore(post, true);
-        jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_POPULAR,post.category.id),  timeScore.doubleValue()*1000000D, post.id.toString());
+        jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_POPULAR,post.category.id),  timeScore.doubleValue() * FEED_SCORE_HIGH_BASE, post.id.toString());
     }
 	
 	private void addToCategoryNewestQueue(Post post) {

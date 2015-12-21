@@ -192,6 +192,12 @@ ul, li {
     color: gray;
     font-size: small;
 }
+#login-newacc a {
+    color: #FF76A4;
+}
+#login-newacc a:hover {
+    color: #FF99B8;
+}
 #login-footer {
     width: 100%;
     position: relative;
