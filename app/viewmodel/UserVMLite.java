@@ -7,6 +7,9 @@ import models.User;
 public class UserVMLite {
 	@JsonProperty("id") public Long id;
     @JsonProperty("displayName") public String displayName;
+    @JsonProperty("firstName") public String firstName;
+    @JsonProperty("lastName") public String lastName;
+    @JsonProperty("email") public String email;
     @JsonProperty("numLikes") public Long numLikes = 0L;
     @JsonProperty("numFollowings") public Long numFollowings = 0L;
     @JsonProperty("numFollowers") public Long numFollowers = 0L;
@@ -31,8 +34,10 @@ public class UserVMLite {
 
     public UserVMLite(User user, User localUser) {
         this.id = user.id;
-        
         this.displayName = user.displayName;
+        this.email = user.email;
+        this.firstName = user.firstName;
+        this.lastName = user.lastName;
         this.numLikes = user.numLikes;
         this.numFollowers = user.numFollowers;
         this.numFollowings = user.numFollowings;
@@ -79,6 +84,30 @@ public class UserVMLite {
         this.displayName = displayName;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
     public Long getNumFollowings() {
         return numFollowings;
     }
