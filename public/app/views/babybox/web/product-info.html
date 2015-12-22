@@ -248,8 +248,8 @@
    style="bottom: 0px;">
    <div class="inner flex-it">
     <div class="left flex1">
-     <div id="chat-to-offer" class="clickable_area">
-      <div class="ic_icon ic_offer_chat"></div>
+     <div id="chat-to-offer"  class="clickable_area" ng-click="openPopup()">
+      <div class="ic_icon ic_offer_chat" ></div>
       <div class="text m14 SG" data-i18n="label_chat_to_offer">Chat Now</div>
      </div>
      <div id="offer-count" class="r14">
@@ -260,7 +260,7 @@
     <div class="padding-12"></div>
     <div class="right flex1">
      <div id="buy-button" class="m14 clickable_area flex1"
-      data-i18n="label_buy">Buy Now</div>
+      data-i18n="label_buy" ng-click="openPopup()">Buy Now</div>
      <div id="viewoffer" class="clickable_area"
       data-i18n="label_view_offers">View Offers</div>
     </div>
@@ -281,4 +281,33 @@
    </div>
   </div>
  </div>
+</div>
+
+  <button id="popupBtn" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" style="display: none;">
+</button>
+<div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="lure-hold" style="display: block;">
+  <div>
+  <button type="button" class="close close_btn but_no_close" id="Close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> 
+  </div>
+    <div class="dogi-logo">
+        <div class="ic_logo_get"></div>
+    </div>
+ <div class="show-text L13">Download Babybox for free now and enjoy shopping like never before!</div>
+ <div class="bottom">
+        <div class="get_app_btns_wrapper">
+            <div class="full" style="display: none;">
+                <a id="get_app_link" target="_blank" href="" data-i18n="label_get" class="btn">Download Now</a>
+            </div>
+            <div class="half"><a id="get_ios_app_link" target="_blank" href="" class="btn">
+                    <div class="ic_IPhone icon"></div>
+                    <div data-i18n="label_iphone">iPhone</div>
+                </a>
+            </div><div class="half"><a id="get_android_app_link" target="_blank" href="" class="btn">
+                    <div class="ic_Android icon"></div>
+                    <div data-i18n="label_android">Android</div>
+                </a></div>
+        </div>
+ </div>
+</div>
 </div>
