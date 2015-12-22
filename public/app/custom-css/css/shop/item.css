@@ -1598,6 +1598,11 @@ label {
     color: #3b3f53
 }
 
+#item-page .top-part .actions .like .text-link,
+#item-page .top-part .actions .comment .text-link {
+    color: #FF76A4
+}
+
 #item-page .top-part .actions .share {
     height: 36px;
     width: 36px;
@@ -1728,6 +1733,7 @@ label {
 }
 
 #item-page .info-part .detail .description.text {
+    white-space: pre-wrap;
     word-wrap: break-word;
     position: relative;
     margin: 16px 0;
@@ -1786,6 +1792,11 @@ label {
 
 #item-page .info-part .table .td .text {
     color: #3b3f53;
+    line-height: 36px
+}
+
+#item-page .info-part .table .td .text-link {
+    color: #FF76A4;
     line-height: 36px
 }
 

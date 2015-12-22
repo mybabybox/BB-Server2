@@ -547,6 +547,7 @@ label {
 .shop-detailed-info .shop-description {
     text-align: left;
     white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
 .shop-detailed-info .shop-description-wrapper, .shop-detailed-info .shop-status {
