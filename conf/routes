@@ -111,32 +111,42 @@ GET		/get-home-explore-feed/:offset							@controllers.UserController.getHomeExp
 GET     /get-home-following-feed/:offset                        @controllers.UserController.getHomeFollowingFeed(offset: Long)
 GET		/get-suggested-products/:id								@controllers.ProductController.getSuggestedProducts(id :Long)						
 
-# Category
+# TODO Remove /categories and /category/:id
 GET     /categories                                 controllers.CategoryController.getCategories()
 GET     /category/:id                               controllers.CategoryController.getCategory(id:Long)
+
+# Category
 GET     /category/:id/:catagoryFilter               @controllers.CategoryController.viewCategory(id:Long, catagoryFilter:String)
 
+GET     /get-categories                             controllers.CategoryController.getCategories()
+GET     /get-category/:id                           controllers.CategoryController.getCategory(id:Long)
+
 # Product
+GET     /product/:id                                @controllers.ProductController.viewProduct(id:Long)
+POST    /product/new/form                           controllers.ProductController.createProductWithForm()
+POST    /product/edit/form                          controllers.ProductController.editProductWithForm()
+GET     /product-comments/:postId                   @controllers.ProductController.viewComments(postId:Long)
+
+GET     /post/:id                                   @controllers.ProductController.getProductInfo(id:Long)
 POST    /post/new                                   controllers.ProductController.createProduct()
-POST	/web/post/new		 		             	controllers.ProductController.createProductWeb()
 POST    /post/edit                                  controllers.ProductController.editProduct()
-POST    /web/post/edit                              controllers.ProductController.editProductWeb()
+GET     /post/delete/:id                            controllers.ProductController.deletePost(id:Long)
 GET     /get-all-feed-products       				@controllers.ProductController.getAllFeedProducts
-GET     /product/:id            		     		@controllers.ProductController.viewProduct(id:Long)
 GET     /like-post/:id          					controllers.ProductController.likePost(id:Long)
 GET     /unlike-post/:id        					controllers.ProductController.unlikePost(id:Long)
 GET     /sold-post/:id                              controllers.ProductController.soldPost(id:Long)
 POST	/comment/new								controllers.ProductController.newComment
 POST	/create-collection		             		controllers.ProductController.createCollection
 POST	/product/add-to-collection					controllers.ProductController.addToCollection
-GET		/post/:id									@controllers.ProductController.getProductInfo(id:Long)
-GET     /post/delete/:id                            controllers.ProductController.deletePost(id:Long)
 GET     /comment/delete/:id                         controllers.ProductController.deleteComment(id:Long)
 GET     /comments/:postId/:offset                   controllers.ProductController.getPostComments(postId: Long,offset:Long)	
-GET 	/product-comments/:postId                   @controllers.ProductController.viewComments(postId:Long)
 		
 # User
+GET     /seller/:id                                 controllers.UserController.viewProfile(id:Long)
 GET     /profile/:id                                controllers.UserController.viewProfile(id:Long)
+GET     /followings/:id                             controllers.UserController.viewFollowings(id:Long)
+GET     /followers/:id                              controllers.UserController.viewFollowers(id:Long)
+
 GET     /get-user-posted-feed/:id/:offset       	@controllers.UserController.getUserPosts(id: Long, offset:Long)
 GET     /collections/:id							controllers.UserController.getUserCollections(id: Long)
 GET     /follow-user/:id          					controllers.UserController.followUser(id:Long)
@@ -144,9 +154,6 @@ GET     /unfollow-user/:id        					controllers.UserController.unfollowUser(i
 GET		/get-user/:id								controllers.UserController.getUserInfoById(id:Long)
 GET     /get-followings/:id/:offset                 controllers.UserController.getFollowings(id:Long,offset:Long)
 GET     /get-followers/:id/:offset                  controllers.UserController.getFollowers(id:Long,offset:Long)
-GET     /followings/:id                             controllers.UserController.viewFollowings(id:Long)
-GET     /followers/:id                              controllers.UserController.viewFollowers(id:Long)
-
 GET     /get-user-liked-feed/:id/:offset			@controllers.UserController.getUserLikedPosts(id: Long,offset:Long)
 GET     /notification-counter                       controllers.UserController.getNotificationCounter
 GET     /reset-activities-count                     controllers.UserController.resetActivitiesCount

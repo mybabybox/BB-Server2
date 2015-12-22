@@ -52,7 +52,7 @@ public class ProductController extends Controller{
     FeedHandler feedHandler;
     
 	@Transactional
-	public static Result createProductWeb() {
+	public static Result createProductWithForm() {
 		DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
 		String catId = dynamicForm.get("catId");
 	    String title = dynamicForm.get("title");
@@ -128,7 +128,7 @@ public class ProductController extends Controller{
 	}
 	
 	@Transactional
-    public static Result editProductWeb() {
+    public static Result editProductWithForm() {
         DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
         String postId = dynamicForm.get("postId");
         String catId = dynamicForm.get("catId");
