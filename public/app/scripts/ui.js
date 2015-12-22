@@ -22,22 +22,12 @@ var showAndroidAppDownloadTips = function() {
 var META_DESCRIPTION_CHAR_LIMIT = 150;
 
 var writeMetaCanonical = function(absUrl) {
-	//log('orignial: '+absUrl);
-	if (absUrl.match(/\/frontpage#!/)) {
-		absUrl = absUrl.replace(/\/frontpage#!/, "/#!");
-	} else if (absUrl.match(/\/home#!/)) {
-		absUrl = absUrl.replace(/\/home#!\/communities-discover/, "/#!/communities-discover");
-		absUrl = absUrl.replace(/\/home#!\/community/, "/#!/community");
-		absUrl = absUrl.replace(/\/home#!\/post-landing/, "/#!/post-landing");
-		absUrl = absUrl.replace(/\/home#!\/qna-landing/, "/#!/qna-landing");
-	}
-	//log('replace: 'absUrl);
-	
+	//log('url=: '+absUrl);
 	$('link[rel=canonical]').attr('href', absUrl);
 }
 
 var writeMetaTitleDescription = function(title, description, image) {
-	title = title + " | babybox";
+	title = title + " | BabyBox 媽媽即拍即賣";
 	document.title = title;
 	$('meta[name=description]').attr('content', description.substring(0,META_DESCRIPTION_CHAR_LIMIT));
 	$('meta[name=keywords]').attr('content', title + ', ' + $('meta[name=keywords]').attr('content'));
@@ -127,10 +117,21 @@ var isMobile = function() {
 
 var startsWith = function(str, s) {
 	return str.indexOf(s, 0) === 0;
+	//return str.slice(0, s.length) == s;
 }
 
 var highlightLink = function(id) {
     $('#'+id).select();
+}
+
+var formatToExternalUrl = function(url) {
+    if (!startsWith(url,'http')) {
+    	if (!startsWith(url,'/')) {
+    		url = '/' + url;
+    	}
+    	url = DefaultValues.BASE_URL + url;
+    }
+    return url;
 }
 
 //

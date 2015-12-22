@@ -39,7 +39,6 @@ POST    /login                      controllers.Application.doLogin
 POST    /login-popup                controllers.Application.doLoginPopup
 POST    /saveSignupInfo             controllers.Application.saveSignupInfo
 POST    /saveSignupInfoFb           controllers.Application.saveSignupInfoFb
-GET     /get-application-info       controllers.Application.getApplicationInfo
 GET     /init-new-user              @controllers.Application.initNewUser
 
 GET     /logout                     com.feth.play.module.pa.controllers.Authenticate.logout

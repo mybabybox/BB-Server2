@@ -41,7 +41,6 @@ import providers.MyLoginUsernamePasswordAuthUser;
 import providers.MyUsernamePasswordAuthProvider;
 import providers.MyUsernamePasswordAuthProvider.MyLogin;
 import providers.MyUsernamePasswordAuthProvider.MySignup;
-import viewmodel.ApplicationInfoVM;
 import viewmodel.FeaturedItemVM;
 import viewmodel.UserVM;
 import Decoder.BASE64Encoder;
@@ -158,11 +157,6 @@ public class Application extends Controller {
         return ok(views.html.signup.render(MyUsernamePasswordAuthProvider.SIGNUP_FORM));
     }
     
-	@Transactional
-    public static Result getApplicationInfo() {
-	    return ok(Json.toJson(new ApplicationInfoVM(APPLICATION_BASE_URL))); 
-	}
-	
 	@Transactional
     public static Result getUserTargetProfile() {
 	    final User localUser = getLocalUser(session());

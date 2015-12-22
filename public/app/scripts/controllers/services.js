@@ -460,16 +460,6 @@ babybox.service('unFriendService',function($resource){
     );
 });
 
-babybox.service('applicationInfoService',function($resource){
-    this.ApplicationInfo = $resource(
-            '/get-application-info',
-            {alt:'json',callback:'JSON_CALLBACK'},
-            {
-                get: {method:'GET'}
-            }
-    );
-});
-
 babybox.service('userInfoService',function($resource){
     this.UserInfo = $resource(
             '/get-user-info',

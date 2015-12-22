@@ -2,23 +2,26 @@
 
 var babybox = angular.module('babybox');
 
-babybox.controller('FrontPageController', 
+babybox.controller('HomeController', 
 		function($scope, $route, feedService, productService, $rootScope, ngDialog, userInfo, $location, $anchorScroll, usSpinnerService) {
 	
 	usSpinnerService.spin('loading...');
+	
+	// meta
+	$scope.$on('$viewContentLoaded', function() {
+		writeMetaCanonical($location.absUrl());
+	});
+	
 	$scope.userInfo = userInfo;
 	$scope.homeFeed=true;
+	
 	$scope.products = productService.getHomeExploreFeed.get({offset:0});
-	$scope.gotoTop=function(){
-		$location.hash('');
-		$anchorScroll();
-	};
 	
 	$scope. getHomeExploreProducts= function () {
 		$scope.products = productService.getHomeExploreFeed.get({offset:0});
 		$scope.homeFeed=true;
 		$scope.noMore = true;
-		};
+	};
 	
 	$scope.getHomeFollowingProducts = function () {
 		$scope.products = productService.getHomeFollowingFeed.get({offset:0});
@@ -62,22 +65,35 @@ babybox.controller('FrontPageController',
 		}		
 	}
 	
+	// UI helper
+	
+	$scope.gotoTop=function(){
+		$location.hash('');
+		$anchorScroll();
+	};
 });
 
 babybox.controller('CategoryPageController', 
 		function($scope, $route, $rootScope, ngDialog, $routeParams, $location,userInfo, category, product, categoryService, $anchorScroll, usSpinnerService) {
 	
 	usSpinnerService.spin('loading...');
-	console.log("controller .. ")
+	
 	$scope.userInfo = userInfo;
 	$scope.products = product;
-	console.log($scope.products);
+	//console.log($scope.products);
+	
 	$scope.cat = category;
 	var catid = $scope.cat.id;
+	
 	//we are routing this from scala file so we can't able to get $routeParams , so this is just a workaround
 	var url = $location.absUrl();
 	var values= url.split("/");
 	$scope.catType = values[values.length-1];
+	
+	writeMetaTitleDescription(
+			$scope.cat.name, 
+			$scope.cat.description, 
+			formatToExternalUrl($scope.cat.icon));
 	
 	if($scope.catType == 'popular')
 		$scope.noMore = true;
@@ -154,22 +170,27 @@ babybox.controller('CategoryPageController',
 		}		
 	}
 	
-	
 });
 
 babybox.controller('ProductPageController', 
-		function($scope, $route, $rootScope, $location, $http,  $window, likeService, userService, productService, product, userInfo, suggestedPost) {
+		function($scope, $route, $rootScope, $location, $http, $window, likeService, userService, productService, product, userInfo, suggestedPost) {
+	
 	$scope.product = product;
 	$scope.userInfo = userInfo;
 	$scope.suggestedPost = suggestedPost;
+	
+	writeMetaTitleDescription(
+			$scope.product.title, 
+			$scope.product.body, 
+			formatToExternalUrl("/image/get-post-image-by-id/"+$scope.product.images[0]));
+	
 	$scope.like_Unlike = function(id) {
 		if($scope.userInfo.id != -1){
 			if($scope.product.isLiked){
 				likeService.unLikeProduct.get({id:id});
 				$scope.product.isLiked = !$scope.product.isLiked;
 				$scope.product.numLikes--;
-			}
-			else{
+			}else{
 				likeService.likeProduct.get({id:id});
 				$scope.product.isLiked = !$scope.product.isLiked;
 				$scope.product.numLikes++;
@@ -210,10 +231,15 @@ babybox.controller('CommentOnProductController',
 
 babybox.controller('ProfileController', 
 		function($scope, $route, $rootScope, profileUser, userService, userInfo, followService, ngDialog) {
+	
 	$scope.activeflag = true;
 	$scope.userInfo = userInfo;
 	$scope.user = profileUser;
+	
+	//writeMetaTitleDescription($scope.user.displayName, "看看 BabyBox 商店");
+	
 	$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
+	
 	$scope.onFollowUser = function() {
 		if($scope.user.id != $scope.userInfo.id){
 			followService.followUser.get({id:profileUser.id});
@@ -315,8 +341,6 @@ babybox.controller('CommentController',
 		}
 	}
 
-
-
 });
 
 babybox.controller('UserFollowController', 
@@ -382,8 +406,8 @@ babybox.controller('UserFollowController',
 	}
 });
 
-
-/*babybox.controller('CreateCollectionController', 
+/*
+ * babybox.controller('CreateCollectionController', 
 		function($scope, $route, $http, usSpinnerService) {
 	$scope.formData = {};
 	$scope.createCollection = function() {
@@ -396,11 +420,12 @@ babybox.controller('UserFollowController',
 	}
 });
 */
+
 babybox.controller('CreateProductController',function($scope, $location, $http, $upload, $validator, usSpinnerService, userInfo){
 	$scope.userInfo = userInfo;
 	$scope.formData = {};
 	$scope.selectedFiles =[];
-	$scope.submitBtn = "建立社群";
+	$scope.submitBtn = "發出";
 	$scope.submit = function() {
 		console.log($scope.formData);		
 		var newPostVM = {
@@ -446,7 +471,6 @@ babybox.controller('CreateProductController',function($scope, $location, $http, 
 	}
 
 });
-
 
 
 /*
