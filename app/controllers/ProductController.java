@@ -296,11 +296,19 @@ public class ProductController extends Controller{
 		}
 		images.put("original", originalImages);
 		List<PostVMLite> suggestedPosts = feedHandler.getPostVM(id, 0l, localUser, FeedType.PRODUCT_SUGGEST);
+		
+		Map map = new HashMap();
+		map.put("url", "get-post-image-by-id/"+product.images[0]);
+		map.put("title", product.getTitle());
+		map.put("desc", product.getBody());
+		String metatag = Application.generateHeaderMeta(map);
 		return ok(views.html.babybox.web.product.render(
 		        Json.stringify(Json.toJson(product)), 
 		        Json.stringify(Json.toJson(new UserVM(localUser))), 
 		        images, 
-		        Json.stringify(Json.toJson(suggestedPosts))));
+		        Json.stringify(Json.toJson(suggestedPosts)),
+		        metatag));
+		/*return ok(metatag);*/
 	}
 	
 	@Transactional

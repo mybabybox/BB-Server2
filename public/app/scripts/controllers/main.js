@@ -236,7 +236,7 @@ babybox.controller('CommentOnProductController',
 
 
 babybox.controller('ProfileController', 
-		function($scope, $location, $route, $rootScope, profileUser, userService, userInfo, followService, ngDialog) {
+		function($scope, $location, $route,  $rootScope, $window, profileUser, userService, userInfo, followService, ngDialog) {
 	
 	$scope.activeflag = true;
 	$scope.userInfo = userInfo;
@@ -248,11 +248,13 @@ babybox.controller('ProfileController',
 	$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
 	
 	$scope.onFollowUser = function() {
-		if($scope.user.id != $scope.userInfo.id){
+		if($scope.userInfo.id != -1){
 			followService.followUser.get({id:profileUser.id});
 			$scope.user.isFollowing = !$scope.user.isFollowing;
 			$scope.user.numFollowings++;
 		}
+		else
+			$window.location.href ='/login';
 	}
 	$scope.onUnFollowUser = function() {
 		followService.unFollowUser.get({id:profileUser.id});

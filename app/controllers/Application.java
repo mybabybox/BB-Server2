@@ -6,7 +6,9 @@ import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.crypto.Cipher;
@@ -109,6 +111,12 @@ public class Application extends Controller {
 			return DeviceType.NA;
 		}
 	}
+	
+	public static String generateHeaderMeta(Map map){
+		String metatags ="<meta property= og:image content="+ map.get("url")+"/>  <meta property=og:title content="+ map.get("title")+"> <meta property=og:description content="+ map.get("desc")+">";
+		return metatags;
+	}
+	
 	
 	@Transactional
     public Result index() {
@@ -426,7 +434,13 @@ public class Application extends Controller {
     @Restrict(@Group(SecurityRole.USER))
     public static Result profile() {
     	 final User localUser = getLocalUser(session());
-    	 return ok(views.html.babybox.web.profile.render(Json.stringify(Json.toJson(new UserVM(localUser))), Json.stringify(Json.toJson(new UserVM(localUser)))));
+    	 Map map = new HashMap();
+ 		map.put("url", "/image/get-profile-image-by-id/"+localUser.getId());
+ 		map.put("title", localUser.getDisplayName());
+ 		map.put("desc", localUser.getEmail());
+ 		String metatag = Application.generateHeaderMeta(map);
+ 		
+    	 return ok(views.html.babybox.web.profile.render(Json.stringify(Json.toJson(new UserVM(localUser))), Json.stringify(Json.toJson(new UserVM(localUser))),metatag ));
     }
     
 	@Transactional

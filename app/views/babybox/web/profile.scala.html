@@ -1,4 +1,4 @@
-@(profileUser:String, userInfo:String)
+@(profileUser:String, userInfo:String, metatag:String)
 
 <!doctype html>
 <html lang="zh-hk">
@@ -22,6 +22,8 @@
 <meta property="og:image" content="http://www.baby-box.hk/assets/app/images/login/login-main-bg.jpg" />
 <!--meta property="og:title" content="title" />
 <meta property="og:description" content="description" /-->
+ 
+@Html(metatag)
 <link rel="icon" type="image/png" href="@routes.Assets.versioned("app/images/favicon-1.ico")">
 <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("app/images/favicon-1.ico")">
 </head>
