@@ -11414,7 +11414,7 @@ a:hover {
 }
 
 .ic_logo_get {
-    background-image: url(../images/img_logo_get.png);
+    background-image: url(../images/logo_babybox_s@3x.png);
     display: inline-block;
     width: 48px;
     height: 48px;
@@ -11423,13 +11423,13 @@ a:hover {
 
 @media (-webkit-min-device-pixel-ratio: 2) and (-webkit-max-device-pixel-ratio: 2.99) {
     .ic_logo_get {
-        background-image: url(../images/img_logo_get%402x.png)
+        background-image: url(../images/logo_babybox_s@2x.png)
     }
 }
 
 @media (-webkit-min-device-pixel-ratio: 3) {
     .ic_logo_get {
-        background-image: url(../images/img_logo_get%403x.png)
+        background-image: url(../images/logo_babybox_s@2x.png)
     }
 }
 

@@ -199,6 +199,10 @@ babybox.controller('ProductPageController',
 		}
 	}
 
+	$scope.openPopup = function(){
+		$('#popupBtn').click();
+	}
+	
 });
 
 babybox.controller('CommentOnProductController', 
