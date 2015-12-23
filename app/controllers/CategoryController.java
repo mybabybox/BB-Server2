@@ -105,13 +105,6 @@ public class CategoryController extends Controller{
         CategoryVM categoryVM = new CategoryVM(category);
         List<PostVMLite> postVMs = new ArrayList<>();
         
-        Map map = new HashMap();
-		map.put("url", category.icon);
-		map.put("title", category.getName());
-		map.put("desc", category.getName());
-		String metatag = Application.generateHeaderMeta(map);
-		
-		
         switch(catagoryFilter){
         case "popular":
             postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_POPULAR);
@@ -126,6 +119,12 @@ public class CategoryController extends Controller{
             postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_PRICE_LOW_HIGH);
             break;
         }
-        return ok(views.html.babybox.web.category.render(Json.stringify(Json.toJson(categoryVM)), Json.stringify(Json.toJson(postVMs)), Json.stringify(Json.toJson(new UserVM(localUser))),metatag));
+        
+        String metaTags = Application.generateHeaderMeta(category.name, category.description, category.icon);
+        return ok(views.html.babybox.web.category.render(
+                Json.stringify(Json.toJson(categoryVM)), 
+                Json.stringify(Json.toJson(postVMs)), 
+                Json.stringify(Json.toJson(new UserVM(localUser))),
+                metaTags));
     }
 }

@@ -2,84 +2,78 @@
 
 <!DOCTYPE html>
 <html lang="zh-hk">
-<head>
-<title>BabyBox 媽媽即拍即賣</title>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-
-<!--meta http-equiv="Pragma" content="no-cache">
-        <meta http-equiv="Cache-Control" content="no-cache">
-        <meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT"-->
-
-<!-- seo -->
-<meta name="fragment" content="!">
-<meta name="robots" content="index, follow" />
-<meta name="description" content="BabyBox 媽媽即拍即賣">
-<meta name="keywords" content="babybox, baby box, baby-box">
-<link rel="canonical" href="http://www.baby-box.hk/home" />
-
-<!-- properties for facebook post preview -->
-<meta property="og:image" content="http://www.baby-box.hk/assets/app/images/login/login-main-bg.jpg" />
-<!--meta property="og:title" content="title" />
-        <meta property="og:description" content="description" /-->
-
-<link rel="stylesheet"
- href="assets/assets/css/module.stylesheet-complete.min.css" />
-<link rel="stylesheet" href="@routes.Assets.versioned(" components/library/bootstrap/css/bootstrap.min.css")" />
-<link rel="stylesheet" href="@routes.Assets.versioned(" app/bower_components/ng-file-upload/css/file-upload.css")" />
-
-<link rel="icon" type="image/png" href="@routes.Assets.versioned("app/images/favicon-1.ico")">
-<link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("app/images/favicon-1.ico")">
-</head>
-<body>
- <!-- Google Code for tracking -->
- <!--script type="text/javascript">
-          var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-          document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-        </script>
-        <script type="text/javascript">
-          try{
-            var pageTracker = _gat._getTracker("UA-32231169-3");
-            pageTracker._trackPageview();
-          } catch(err) {console.log('failed');}
+	<head>
+	    <title>BabyBox 媽媽即拍即賣</title>
+	    <meta name="description" content="Everymom is a Seller!">
+	    <meta property="og:title" content="BabyBox 媽媽即拍即賣" />
+	    <meta property="og:description" content="Everymom is a Seller!" />
+	    <meta property="og:image" content="http://www.baby-box.hk/assets/app/images/login/login-main-bg.jpg" />
+	    <link rel="canonical" href="http://www.baby-box.hk" />
+	    
+	    <!--meta http-equiv="Pragma" content="no-cache">
+	    <meta http-equiv="Cache-Control" content="no-cache">
+	    <meta http-equiv="Expires" content="Sat, 01 Dec 2001 00:00:00 GMT"-->
+	    
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport"content="width=device-width, initial-scale=1.0, user-scalable=no">
+	    
+	    <!-- seo -->
+	    <meta name="fragment" content="!">
+	    <meta name="robots" content="index, follow" />
+	    
+	    <link rel="icon" type="image/png" href="@routes.Assets.versioned("app/images/favicon-1.ico")">
+	    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("app/images/favicon-1.ico")">
+	</head>
+	
+	<body>
+		<!-- Google Code for tracking -->
+		<!--script type="text/javascript">
+	          var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	          document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	        </script>
+	        <script type="text/javascript">
+	          try{
+	            var pageTracker = _gat._getTracker("UA-32231169-3");
+	            pageTracker._trackPageview();
+	          } catch(err) {console.log('failed');}
         </script-->
-
- <script>
-		var isMobile = {
-			Android : function() {
-				return navigator.userAgent.match(/Android/i);
-			},
-			BlackBerry : function() {
-				return navigator.userAgent.match(/BlackBerry/i);
-			},
-			iOS : function() {
-				return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-			},
-			Opera : function() {
-				return navigator.userAgent.match(/Opera Mini/i);
-			},
-			Windows : function() {
-				return navigator.userAgent.match(/IEMobile/i);
-			},
-			any : function() {
-				return (isMobile.Android() || isMobile.BlackBerry()
-						|| isMobile.iOS() || isMobile.Opera() || isMobile
-						.Windows());
+	
+        <script>
+			var isMobile = {
+				Android : function() {
+					return navigator.userAgent.match(/Android/i);
+				},
+				BlackBerry : function() {
+					return navigator.userAgent.match(/BlackBerry/i);
+				},
+				iOS : function() {
+					return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+				},
+				Opera : function() {
+					return navigator.userAgent.match(/Opera Mini/i);
+				},
+				Windows : function() {
+					return navigator.userAgent.match(/IEMobile/i);
+				},
+				any : function() {
+					return (isMobile.Android() || isMobile.BlackBerry()
+							|| isMobile.iOS() || isMobile.Opera() || isMobile
+							.Windows());
+				}
+			};
+	
+			window.location.href = "@androidUrl";
+	
+			/*
+			if (isMobile.Android()) {
+			    window.location.href = "@androidUrl";
+			} else if (isMobile.iOS()) {
+			    window.location.href = "@iosUrl";
+			} else {
+			    window.location.href = "@babyboxUrl";
 			}
-		};
-
-		window.location.href = "@androidUrl";
-
-		/*
-		if (isMobile.Android()) {
-		    window.location.href = "@androidUrl";
-		} else if (isMobile.iOS()) {
-		    window.location.href = "@iosUrl";
-		} else {
-		    window.location.href = "@babyboxUrl";
-		}
-		 */
-	</script>
-</body>
+			 */
+        </script>
+	</body>
 </html>

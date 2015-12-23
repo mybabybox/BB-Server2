@@ -60,6 +60,7 @@ import common.cache.CalcServer;
 import common.cache.LocationCache;
 import common.cache.FeaturedItemCache;
 import common.model.TargetGender;
+import common.utils.HtmlUtil;
 import common.utils.UserAgentUtil;
 import common.utils.ValidationUtil;
 import domain.DefaultValues;
@@ -112,11 +113,19 @@ public class Application extends Controller {
 		}
 	}
 	
-	public static String generateHeaderMeta(Map map){
-		String metatags ="<meta property= og:image content="+ map.get("url")+"/>  <meta property=og:title content="+ map.get("title")+"> <meta property=og:description content="+ map.get("desc")+">";
-		return metatags;
+	public static String generateHeaderMeta(String title, String description, String image) {
+	    title = title + " | BabyBox 媽媽即拍即賣";
+	    if (StringUtils.isEmpty(description)) {
+	        description = "Everymom is a Seller!";
+	    }
+	    String metaTags =
+	            "<title>"+title+"</title>"+
+	            "<meta name='description' content='"+description+"'/>"+
+	            "<meta property='og:title' content='"+title+"'/>"+
+	            "<meta property='og:description' content='"+description+"'/>"+
+	            "<meta property='og:image' content='"+HtmlUtil.fullUrl(image)+"'/>";
+		return metaTags;
 	}
-	
 	
 	@Transactional
     public Result index() {
@@ -433,14 +442,12 @@ public class Application extends Controller {
 
     @Restrict(@Group(SecurityRole.USER))
     public static Result profile() {
-    	 final User localUser = getLocalUser(session());
-    	 Map map = new HashMap();
- 		map.put("url", "/image/get-profile-image-by-id/"+localUser.getId());
- 		map.put("title", localUser.getDisplayName());
- 		map.put("desc", localUser.getEmail());
- 		String metatag = Application.generateHeaderMeta(map);
- 		
-    	 return ok(views.html.babybox.web.profile.render(Json.stringify(Json.toJson(new UserVM(localUser))), Json.stringify(Json.toJson(new UserVM(localUser))),metatag ));
+        final User localUser = getLocalUser(session());
+ 		String metaTags = generateHeaderMeta(localUser.getDisplayName(), "", "/image/get-profile-image-by-id/"+localUser.getId());
+ 		return ok(views.html.babybox.web.profile.render(
+ 		        Json.stringify(Json.toJson(new UserVM(localUser))), 
+ 		        Json.stringify(Json.toJson(new UserVM(localUser))), 
+ 		        metaTags));
     }
     
 	@Transactional

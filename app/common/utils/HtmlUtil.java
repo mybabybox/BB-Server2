@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import common.collection.Pair;
+import controllers.Application;
 import models.Emoticon;
 
 /**
@@ -102,5 +103,17 @@ public class HtmlUtil {
     
     public static String appendTitle(String title) {
         return "<h2>"+title+"</h2>";
+    }
+    
+    public static String fullUrl(String url) {
+        if (url.startsWith("http")) {
+            return url;
+        }
+        
+        if (!url.startsWith("/")) {
+            url = "/"+url;
+        }
+        
+        return Application.APPLICATION_BASE_URL + url;
     }
 }

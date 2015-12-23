@@ -73,6 +73,14 @@ babybox.controller('HomeController',
 babybox.controller('CategoryPageController', 
 		function($scope, $location, $route, $rootScope, ngDialog, $routeParams,userInfo, category, product, categoryService, $anchorScroll, usSpinnerService) {
 	
+	writeMetaCanonical($location.absUrl());
+	/*
+	writeMetaTitleDescription(
+			category.name, 
+			category.description, 
+			formatToExternalUrl(category.icon));
+	*/
+	
 	usSpinnerService.spin('loading...');
 	
 	$scope.userInfo = userInfo;
@@ -87,12 +95,6 @@ babybox.controller('CategoryPageController',
 	var values= url.split("/");
 	$scope.catType = values[values.length-1];
 
-	writeMetaCanonical($location.absUrl());
-	writeMetaTitleDescription(
-			$scope.cat.name, 
-			$scope.cat.description, 
-			formatToExternalUrl($scope.cat.icon));
-	
 	if($scope.catType == 'popular')
 		$scope.noMore = true;
 	if($scope.catType == 'newest')
@@ -172,17 +174,19 @@ babybox.controller('CategoryPageController',
 
 babybox.controller('ProductPageController', 
 		function($scope, $location, $route, $rootScope, $http, $window, likeService, userService, productService, product, userInfo, suggestedPost) {
+
+	writeMetaCanonical($location.absUrl());
+	/*
+	writeMetaTitleDescription(
+			product.title, 
+			product.body, 
+			formatToExternalUrl("/image/get-post-image-by-id/"+product.images[0]));
+	*/
 	
 	$scope.product = product;
 	$scope.userInfo = userInfo;
 	$scope.suggestedPost = suggestedPost;
 
-	writeMetaCanonical($location.absUrl());
-	writeMetaTitleDescription(
-			$scope.product.title, 
-			$scope.product.body, 
-			formatToExternalUrl("/image/get-post-image-by-id/"+$scope.product.images[0]));
-	
 	$scope.like_Unlike = function(id) {
 		if($scope.userInfo.id != -1){
 			if($scope.product.isLiked){
@@ -236,15 +240,15 @@ babybox.controller('CommentOnProductController',
 
 
 babybox.controller('ProfileController', 
-		function($scope, $location, $route,  $rootScope, $window, profileUser, userService, userInfo, followService, ngDialog) {
+		function($scope, $location, $route, $rootScope, $window, profileUser, userService, userInfo, followService, ngDialog) {
+
+	writeMetaCanonical($location.absUrl());
+	//writeMetaTitleDescription(profileUser.displayName, "看看 BabyBox 商店");
 	
 	$scope.activeflag = true;
 	$scope.userInfo = userInfo;
 	$scope.user = profileUser;
 
-	writeMetaCanonical($location.absUrl());
-	//writeMetaTitleDescription($scope.user.displayName, "看看 BabyBox 商店");
-	
 	$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
 	
 	$scope.onFollowUser = function() {

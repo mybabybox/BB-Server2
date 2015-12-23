@@ -801,16 +801,11 @@ public class UserController extends Controller {
             logger.underlyingLogger().debug("[u="+user.getId()+"] getProfile(). Took "+sw.getElapsedMS()+"ms");
         }
         
-        Map map = new HashMap();
-		map.put("url", "/image/get-profile-image-by-id/"+user.getId());
-		map.put("title", user.getDisplayName());
-		map.put("desc", user.getEmail());
-		String metatag = Application.generateHeaderMeta(map);
-		
-    	return ok(views.html.babybox.web.profile.render(
+		String metaTags = Application.generateHeaderMeta(user.displayName, "", "/image/get-profile-image-by-id/"+user.getId());
+		return ok(views.html.babybox.web.profile.render(
     	        Json.stringify(Json.toJson(new UserVM(user,localUser))), 
     	        Json.stringify(Json.toJson(new UserVM(localUser))),
-    	        metatag));
+    	        metaTags));
 		
     }
     
