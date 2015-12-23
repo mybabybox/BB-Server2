@@ -180,25 +180,28 @@ public class ProductController extends Controller{
         
         Post post = Post.findById(id);
         if (post == null) {
+            logger.underlyingLogger().error(String.format("[u=%d][p=%d] editProduct() Post not found", localUser.id, id));
             return notFound();
         }
         
         Category oldCategory = post.category;
         Category category = Category.findById(catId);
         if (category == null) {
+            logger.underlyingLogger().error(String.format("[u=%d][p=%d][cat=%d] editProduct() Category not found", localUser.id, id, catId));
             return notFound();
         }
         
-        Post editPost = localUser.editProduct(post, title, body, category, price, conditionType);
-        if (editPost == null) {
-            return badRequest("Failed to edit product. Invalid parameters.");
+        post = localUser.editProduct(post, title, body, category, price, conditionType);
+        if (post == null) {
+            logger.underlyingLogger().error(String.format("[u=%d][p=%d] editProduct() Failed to edit post", localUser.id, id));
+            return badRequest();
         }
         
         // category changed, handle event
         if (catId != oldCategory.id) {
-            SocialRelationHandler.recordEditPost(editPost, oldCategory);
+            SocialRelationHandler.recordEditPost(post, oldCategory);
         }
-        ResponseStatusVM response = new ResponseStatusVM(SocialObjectType.POST, editPost.id, localUser.id, true);
+        ResponseStatusVM response = new ResponseStatusVM(SocialObjectType.POST, post.id, localUser.id, true);
         
         sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {
