@@ -3,14 +3,11 @@
 var babybox = angular.module('babybox');
 
 babybox.controller('HomeController', 
-		function($scope, $route, feedService, productService, $rootScope, ngDialog, userInfo, $location, $anchorScroll, usSpinnerService) {
+		function($scope, $location, $route, feedService, productService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService) {
+
+	writeMetaCanonical($location.absUrl());
 	
 	usSpinnerService.spin('loading...');
-	
-	// meta
-	$scope.$on('$viewContentLoaded', function() {
-		writeMetaCanonical($location.absUrl());
-	});
 	
 	$scope.userInfo = userInfo;
 	$scope.homeFeed=true;
@@ -74,7 +71,7 @@ babybox.controller('HomeController',
 });
 
 babybox.controller('CategoryPageController', 
-		function($scope, $route, $rootScope, ngDialog, $routeParams, $location,userInfo, category, product, categoryService, $anchorScroll, usSpinnerService) {
+		function($scope, $location, $route, $rootScope, ngDialog, $routeParams,userInfo, category, product, categoryService, $anchorScroll, usSpinnerService) {
 	
 	usSpinnerService.spin('loading...');
 	
@@ -89,7 +86,8 @@ babybox.controller('CategoryPageController',
 	var url = $location.absUrl();
 	var values= url.split("/");
 	$scope.catType = values[values.length-1];
-	
+
+	writeMetaCanonical($location.absUrl());
 	writeMetaTitleDescription(
 			$scope.cat.name, 
 			$scope.cat.description, 
@@ -173,12 +171,13 @@ babybox.controller('CategoryPageController',
 });
 
 babybox.controller('ProductPageController', 
-		function($scope, $route, $rootScope, $location, $http, $window, likeService, userService, productService, product, userInfo, suggestedPost) {
+		function($scope, $location, $route, $rootScope, $http, $window, likeService, userService, productService, product, userInfo, suggestedPost) {
 	
 	$scope.product = product;
 	$scope.userInfo = userInfo;
 	$scope.suggestedPost = suggestedPost;
-	
+
+	writeMetaCanonical($location.absUrl());
 	writeMetaTitleDescription(
 			$scope.product.title, 
 			$scope.product.body, 
@@ -203,7 +202,10 @@ babybox.controller('ProductPageController',
 });
 
 babybox.controller('CommentOnProductController', 
-		function($scope, $route, $http, likeService) {
+		function($scope, $location, $route, $http, likeService) {
+
+	writeMetaCanonical($location.absUrl());
+	
 	$scope.formData = {};
 	$scope.comArray=[];
 	$scope.submit = function() {
@@ -230,12 +232,13 @@ babybox.controller('CommentOnProductController',
 
 
 babybox.controller('ProfileController', 
-		function($scope, $route, $rootScope, profileUser, userService, userInfo, followService, ngDialog) {
+		function($scope, $location, $route, $rootScope, profileUser, userService, userInfo, followService, ngDialog) {
 	
 	$scope.activeflag = true;
 	$scope.userInfo = userInfo;
 	$scope.user = profileUser;
-	
+
+	writeMetaCanonical($location.absUrl());
 	//writeMetaTitleDescription($scope.user.displayName, "看看 BabyBox 商店");
 	
 	$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
@@ -299,7 +302,10 @@ babybox.controller('ProfileController',
 });
 
 babybox.controller('CommentController', 
-		function($scope, $route, $location, $http, comments, userInfo, productService) {
+		function($scope, $location, $route, $http, comments, userInfo, productService) {
+	
+	writeMetaCanonical($location.absUrl());
+	
 	$scope.comments = comments;
 	$scope.userInfo = userInfo;
 	console.log($scope.comments);
@@ -344,7 +350,10 @@ babybox.controller('CommentController',
 });
 
 babybox.controller('UserFollowController', 
-		function($scope, $route, $location, $http, followers, userInfo, followService) {
+		function($scope, $location, $route, $http, followers, userInfo, followService) {
+	
+	writeMetaCanonical($location.absUrl());
+	
 	$scope.followers = followers;
 	console.log($scope.followers);
 	$scope.user = userInfo;
@@ -407,8 +416,11 @@ babybox.controller('UserFollowController',
 });
 
 /*
- * babybox.controller('CreateCollectionController', 
-		function($scope, $route, $http, usSpinnerService) {
+ babybox.controller('CreateCollectionController', 
+		function($scope, $location, $route, $http, usSpinnerService) {
+	
+	writeMetaCanonical($location.absUrl());
+	
 	$scope.formData = {};
 	$scope.createCollection = function() {
 		console.log($scope.formData);
@@ -421,7 +433,11 @@ babybox.controller('UserFollowController',
 });
 */
 
-babybox.controller('CreateProductController',function($scope, $location, $http, $upload, $validator, usSpinnerService, userInfo){
+babybox.controller('CreateProductController',
+		function($scope, $location, $http, $upload, $validator, usSpinnerService, userInfo){
+	
+	writeMetaCanonical($location.absUrl());
+	
 	$scope.userInfo = userInfo;
 	$scope.formData = {};
 	$scope.selectedFiles =[];
@@ -474,7 +490,8 @@ babybox.controller('CreateProductController',function($scope, $location, $http, 
 
 
 /*
-babybox.controller('PrivacySettingsController', function($scope, $http, userSettingsService, usSpinnerService) {
+babybox.controller('PrivacySettingsController', 
+	function($scope, $location, $routes, $http, userSettingsService, usSpinnerService) {
 
     $scope.privacyFormData = userSettingsService.privacySettings.get();
     $scope.privacySettingsSaved = false;

@@ -13,7 +13,7 @@ import com.google.inject.Singleton;
 import common.serialize.JsonSerializer;
 
 @Singleton
-public class JedisCache{
+public class JedisCache {
     private static final play.api.Logger logger = play.api.Logger.apply(JedisCache.class);
     
     private static final String SYS_PREFIX = Play.application().configuration().getString("keyprefix", "prod_");
@@ -27,9 +27,11 @@ public class JedisCache{
     public static final String CATEGORY_PRICE_LOW_HIGH_PREFIX = SYS_PREFIX + "category_price_low_high_";
     public static final String CATEGORY_PRICE_HIGH_LOW_PREFIX = SYS_PREFIX + "category_price_high_low_";
     
-    // Obsolete...
-    public final static String TODAY_WEATHER_KEY = "TODAY_WEATHER";
-    public static final String ARTICLE_SLIDER_PREFIX = SYS_PREFIX + "user_sc_";
+    //private static final Double POS_INF = 99999999999999999999.9;
+    //private static final Double NEG_INF = -99999999999999999999.9;
+    
+    private static final Double POS_INF = Double.POSITIVE_INFINITY;
+    private static final Double NEG_INF = Double.NEGATIVE_INFINITY;
     
     @Inject
     JedisPool jedisPool;
@@ -181,7 +183,7 @@ public class JedisCache{
         Jedis j = null;
         try {
             j = getResource();
-            return j.zrangeByScore(key, ++min, 99999999999999999999.9, 0, CalcServer.FEED_RETRIEVAL_COUNT);
+            return j.zrangeByScore(key, ++min, POS_INF, 0, CalcServer.FEED_RETRIEVAL_COUNT);
         } finally {
             returnResource(j);
         }
@@ -192,9 +194,9 @@ public class JedisCache{
         try {
             j = getResource();
             if(max == 0){
-                max = 999999999999999999999.9;
+                max = POS_INF;
             }
-            return j.zrevrangeByScore(key, --max, 0, 0, CalcServer.FEED_RETRIEVAL_COUNT); 
+            return j.zrevrangeByScore(key, --max, NEG_INF, 0, CalcServer.FEED_RETRIEVAL_COUNT); 
         } finally {
             returnResource(j);
         }
