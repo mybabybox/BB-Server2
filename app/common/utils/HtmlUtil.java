@@ -66,7 +66,6 @@ public class HtmlUtil {
             }
         }
 
-        resultText = convertTextToHtml(resultText);
         String resultTagWords = (tagWords.length() > 0) ? tagWords.toString() : null;
         return new Pair<>(resultText, resultTagWords);
     }

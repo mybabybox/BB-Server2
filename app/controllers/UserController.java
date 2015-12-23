@@ -694,7 +694,7 @@ public class UserController extends Controller {
         
         DynamicForm form = form().bindFromRequest();
         Long conversationId = Long.parseLong(form.get("conversationId"));
-        String body = HtmlUtil.convertTextToHtml(form.get("body"));
+        String body = form.get("body");
         
         Conversation conversation = Conversation.findById(conversationId);
         if (conversation == null) {

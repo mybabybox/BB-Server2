@@ -30,6 +30,8 @@ public class DefaultValues {
     
     public static final int DEFAULT_ADJUST_POST_SCORE = 10;
     
+    public static final int MAX_ITEMS_COUNT = 1000;
+    
     public static Map<String, String> PARENT_BIRTH_YEARS = new LinkedHashMap<String, String>();
     public static Map<String, String> CHILD_BIRTH_YEARS = new LinkedHashMap<String, String>();
     

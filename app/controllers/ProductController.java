@@ -18,6 +18,7 @@ import models.Collection;
 import models.Comment;
 import models.Conversation;
 import models.Post;
+import models.ReportedPost;
 import models.Post.ConditionType;
 import models.Resource;
 import models.User;
@@ -34,6 +35,7 @@ import viewmodel.CommentVM;
 import viewmodel.ConversationVM;
 import viewmodel.PostVM;
 import viewmodel.PostVMLite;
+import viewmodel.ReportedPostVM;
 import viewmodel.ResponseStatusVM;
 import viewmodel.UserVM;
 import common.model.FeedFilter.FeedType;
@@ -43,6 +45,7 @@ import common.utils.ImageFileUtil;
 import common.utils.NanoSecondStopWatch;
 import controllers.Application.DeviceType;
 import domain.DefaultValues;
+import domain.ReportedType;
 import domain.SocialObjectType;
 
 public class ProductController extends Controller{
@@ -130,28 +133,28 @@ public class ProductController extends Controller{
 	@Transactional
     public static Result editProductWithForm() {
         DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
-        String postId = dynamicForm.get("postId");
+        String id = dynamicForm.get("id");
         String catId = dynamicForm.get("catId");
         String title = dynamicForm.get("title");
         String body = dynamicForm.get("body");
         String price = dynamicForm.get("price");
         String conditionType = dynamicForm.get("conditionType");
-        return editProduct(Long.parseLong(postId), title, body, Long.parseLong(catId), 
+        return editProduct(Long.parseLong(id), title, body, Long.parseLong(catId), 
                 Double.parseDouble(price), Post.parseConditionType(conditionType));
     }
     
     @Transactional
     public static Result editProduct() {
         Http.MultipartFormData multipartFormData = request().body().asMultipartFormData();
-        Long postId = HttpUtil.getMultipartFormDataLong(multipartFormData, "postId");
+        Long id = HttpUtil.getMultipartFormDataLong(multipartFormData, "id");
         Long catId = HttpUtil.getMultipartFormDataLong(multipartFormData, "catId");
         String title = HttpUtil.getMultipartFormDataString(multipartFormData, "title");
         String body = HttpUtil.getMultipartFormDataString(multipartFormData, "body");
         Double price = HttpUtil.getMultipartFormDataDouble(multipartFormData, "price");
         String conditionType = HttpUtil.getMultipartFormDataString(multipartFormData, "conditionType");
         
-        if (postId == null) {
-            postId = -1L;
+        if (id == null) {
+            id = -1L;
         }
 
         if (catId == null) {
@@ -161,10 +164,10 @@ public class ProductController extends Controller{
         if (price == null) {
             price = -1D;
         }
-        return editProduct(postId, title, body, catId, price, Post.parseConditionType(conditionType));
+        return editProduct(id, title, body, catId, price, Post.parseConditionType(conditionType));
     }
 
-    private static Result editProduct(Long postId, String title, String body, Long catId, 
+    private static Result editProduct(Long id, String title, String body, Long catId, 
             Double price, Post.ConditionType conditionType) {
         
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
@@ -175,7 +178,7 @@ public class ProductController extends Controller{
             return notFound();
         }
         
-        Post post = Post.findById(postId);
+        Post post = Post.findById(id);
         if (post == null) {
             return notFound();
         }
@@ -199,7 +202,7 @@ public class ProductController extends Controller{
         
         sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {
-            logger.underlyingLogger().debug("[u="+localUser.getId()+"][p="+postId+"] editProduct(). Took "+sw.getElapsedMS()+"ms");
+            logger.underlyingLogger().debug("[u="+localUser.getId()+"][p="+id+"] editProduct(). Took "+sw.getElapsedMS()+"ms");
         }
         
         return ok(Json.toJson(response));
@@ -231,11 +234,6 @@ public class ProductController extends Controller{
 		}
 		collection.products.add(Post.findById(productId));
 		return ok();
-	}
-
-	@Transactional
-	public Result getAllFeedProducts() {
-		return ok(Json.toJson(getPostVMsFromPosts(Post.getEligiblePostsForFeeds())));
 	}
 
 	private static List<PostVMLite> getPostVMsFromPosts(List<Post> posts) {
@@ -377,7 +375,7 @@ public class ProductController extends Controller{
         
 		DynamicForm form = form().bindFromRequest();
 		Long postId = Long.parseLong(form.get("postId"));
-		String body = HtmlUtil.convertTextToHtml(form.get("body"));
+		String body = form.get("body");
 		
 		Post post = Post.findById(postId);
 		try {
@@ -486,7 +484,6 @@ public class ProductController extends Controller{
 		return ok(Json.toJson(getComments(localUser, post, offset)));
 	}
 
-
 	@Transactional
     public Result viewComments(Long postId) {
 		final User localUser = Application.getLocalUser(session());
@@ -498,7 +495,6 @@ public class ProductController extends Controller{
         return ok(views.html.babybox.web.comments.render(Json.stringify(Json.toJson(getComments(localUser, post, 0L))), Json.stringify(Json.toJson(new UserVM(localUser)))));
     }
 
-	
 	@Transactional
 	public static Result getConversations(Long id) {
 		final User localUser = Application.getLocalUser(session());
@@ -532,6 +528,99 @@ public class ProductController extends Controller{
 		return badRequest();
 	}
 	
+	@Transactional
+    public static Result reportPost() {
+	    final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        DynamicForm form = form().bindFromRequest();
+        Long postId = Long.parseLong(form.get("postId"));
+        String body = form.get("body");
+        String reportedType = form.get("reportedType");
+        
+        try {
+            ReportedPost reportedPost = new ReportedPost(postId, localUser.id, body, ReportedType.valueOf(reportedType));
+            reportedPost.save();
+            return ok();
+        } catch (Exception e) {
+        }
+        return badRequest();
+	}
+	
+	@Transactional
+    public static Result getReportedPosts() {
+	    final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        if (!localUser.isSuperAdmin()) {
+            return badRequest();
+        }
+        
+        List<ReportedPost> reportedPosts = ReportedPost.getReportedPosts();
+        List<ReportedPostVM> vms = new ArrayList<>();
+        for (ReportedPost reportedPost : reportedPosts) {
+            vms.add(new ReportedPostVM(reportedPost));
+        }
+        return ok(Json.toJson(vms));
+	}
+	   
+    @Transactional
+    public static Result deleteReportedPost(Long id) {
+        final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        if (!localUser.isSuperAdmin()) {
+            return badRequest();
+        }
+        
+        ReportedPost reportedPost = ReportedPost.findById(id);
+        if (reportedPost != null) {
+            reportedPost.deleted = true;
+            reportedPost.save();
+        }
+        return badRequest();
+    }
+    
+	@Transactional
+    public static Result updateReportedPostNote() {
+        final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        if (!localUser.isSuperAdmin()) {
+            return badRequest();
+        }
+        
+        DynamicForm form = form().bindFromRequest();
+        Long id = Long.parseLong(form.get("id"));
+        String note = form.get("note");
+        
+        ReportedPost reportedPost = ReportedPost.findById(id);
+        if (reportedPost == null) {
+            return notFound();
+        }
+        
+        try {
+            reportedPost.note = note;
+            reportedPost.save();
+        } catch (Exception e) {
+            return notFound();
+        }
+        
+        return ok();
+    }
+    
 	@Transactional
 	public static Result adjustUpPostScore(Long id) {
 	    final User localUser = Application.getLocalUser(session());

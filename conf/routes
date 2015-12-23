@@ -130,7 +130,6 @@ GET     /post/:id                                   @controllers.ProductControll
 POST    /post/new                                   controllers.ProductController.createProduct()
 POST    /post/edit                                  controllers.ProductController.editProduct()
 GET     /post/delete/:id                            controllers.ProductController.deletePost(id:Long)
-GET     /get-all-feed-products       				@controllers.ProductController.getAllFeedProducts
 GET     /like-post/:id          					controllers.ProductController.likePost(id:Long)
 GET     /unlike-post/:id        					controllers.ProductController.unlikePost(id:Long)
 GET     /sold-post/:id                              controllers.ProductController.soldPost(id:Long)
@@ -162,6 +161,12 @@ GET		/get-activities/:offset				    	controllers.UserController.getActivities(of
 # Game
 GET     /game-badges/:id                            controllers.UserController.getGameBadges(id:Long)
 GET     /game-badges-awarded/:id                    controllers.UserController.getGameBadgesAwarded(id:Long)
+
+# Report post
+POST    /report-post                                controllers.ProductController.reportPost()
+GET     /get-reported-posts                         controllers.ProductController.getReportedPosts()
+GET     /reported-post/delete/:id                   controllers.ProductController.deleteReportedPost(id:Long)
+POST    /update-reported-post-note                  controllers.ProductController.updateReportedPostNote()
 
 # image upload
 POST    /image/upload-profile-photo                 controllers.UserController.uploadProfilePhoto
