@@ -8340,7 +8340,7 @@ a:hover {
 
 .lure-hold .bottom .get_app_btns_wrapper .half {
     display: inline-block;
-    width: 50%;
+    width: 49%;
     text-align: center;
     padding: 0 16px 0 24px
 }
@@ -8381,11 +8381,12 @@ a:hover {
 
 .lure-hold .bottom .btn .icon {
     position: relative;
-    top: 4px
+    top: 3px
 }
 
 .lure-hold .bottom .btn div {
-    display: inline-block
+    display: inline-block;
+    vertical-align: top
 }
 
 .lure-hold .bottom .full {
