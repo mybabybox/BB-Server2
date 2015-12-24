@@ -7,14 +7,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>babybox - 會員登記</title>
+        <title>BabyBox - 會員登記</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
         
         <!-- seo -->
         <meta name="robots" content="index, follow" />
-        <meta name="description" content="babybox - Everymom is a Seller!">
+        <meta name="description" content="BabyBox - Everymom is a Seller!">
         <meta name="keywords" content="babybox, baby box, baby-box">
         
         <title>Master Template</title>
@@ -50,7 +50,8 @@
             <div class="signup-info-box" id="signup-info-section">
                 <ul>
                     <li>
-                        <h3>@user.firstName 您好!</h3>
+                        <!--h3>@user.firstName 您好!</h3-->
+                        <h3>歡迎登入 BabyBox</h3>
                         
                         <form id="signup-info" name="signup-info" method="post" action="/saveSignupInfoFb">
                             <table class="signup-info-table">
@@ -74,8 +75,8 @@
                                     <tr>
                                         <td style="width:80px;">顯示名稱:</td>
                                         <td>
-                                            <div><input type="text" name="parent_displayname" id="parent_displayname" required="required" placeholder="暱稱" value="" style="padding:3px 10px;"></input></div>
-                                            <div style="color:red;font-size:12px;margin-top:10px;max-width:250px;">註: 其他用戶只會看到您的顯示名稱，請選用一個您喜愛的名稱。</div>
+                                            <div><input type="text" name="parent_displayname" id="parent_displayname" required="required" placeholder="" value="" style="padding:3px 10px;"></input></div>
+                                            <div style="color:red;font-size:12px;margin-top:10px;max-width:250px;">您的顯示名稱，選用一個您喜愛的暱稱</div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -91,7 +92,7 @@
                                                     </select>
                                                 </span>
                                             </div>
-                                            <div style="color:#777;font-size:12px;margin-top:10px;max-width:280px;">註: babybox 會按您的地區推介資訊給您</div>
+                                            <div style="color:#777;font-size:12px;margin-top:10px;max-width:280px;">BabyBox 會按地區推介商品給您</div>
                                         </td>
                                     </tr>
                                     <!--tr>
@@ -276,7 +277,7 @@
                                     <tr>
                                         <td></td>
                                         <td>
-                                            <input type="submit" name="signup-info-btn" id="signup-info-btn" value="完成! 立刻進入 babybox" />
+                                            <input type="submit" name="signup-info-btn" id="signup-info-btn" value="完成!" />
                                         </td>
                                     </tr>
                                 </tbody>

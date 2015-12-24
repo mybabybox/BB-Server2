@@ -205,7 +205,8 @@ public abstract class OAuth2AuthProvider<U extends AuthUserIdentity, I extends O
             final String callbackState = request.getQueryString(Constants.STATE);
             if(!storedState.equals(UUID.fromString(callbackState))) {
                 // the return callback may have been forged
-                throw new AuthException(Messages.get("playauthenticate.core.exception.oauth2.state_param_forged"));
+                //throw new AuthException(Messages.get("playauthenticate.core.exception.oauth2.state_param_forged"));
+                throw new AuthException();
             }
 			final String code = request.getQueryString(Constants.CODE);
 			final I info = getAccessToken(code, request);
