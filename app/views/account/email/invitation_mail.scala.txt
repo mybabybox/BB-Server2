@@ -6,7 +6,7 @@ Your friend has invited you to BabyBox!
 Click here to signup for a new BabyBox account now: <a href="@url">click here</a>
 
 
-🎁BabyBox - 媽媽即拍即賣
+🎁BabyBox 媽媽即拍即賣
 
 -------------------
 立即登入BabyBox查看 (請勿回覆此電郵)

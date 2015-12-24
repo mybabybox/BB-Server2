@@ -5,7 +5,7 @@
 @verificationUrl
 
 
-BabyBox - 媽媽即拍即賣
+BabyBox 媽媽即拍即賣
 
 -------------------
 立即登入BabyBox查看

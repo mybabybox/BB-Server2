@@ -80,6 +80,9 @@ public class Application extends Controller {
     public static final String APPLICATION_BASE_URL = 
             Play.application().configuration().getString("application.baseUrl");
     
+    public static final long FACEBOOK_APP_ID = 
+            Play.application().configuration().getLong("facebook.app.id", 0L);
+    
     public static final int SIGNUP_DAILY_THRESHOLD = 
             Play.application().configuration().getInt("signup.daily.threshold", 1000);
     public static final int SIGNUP_DAILY_LIMIT = 
@@ -120,10 +123,13 @@ public class Application extends Controller {
 	    }
 	    String metaTags =
 	            "<title>"+title+"</title>"+
-	            "<meta name='description' content='"+description+"'/>"+
-	            "<meta property='og:title' content='"+title+"'/>"+
-	            "<meta property='og:description' content='"+description+"'/>"+
-	            "<meta property='og:image' content='"+HtmlUtil.fullUrl(image)+"'/>";
+	            "<meta name='description' content='"+description+"' />"+
+	            "<meta property='og:title' content='"+title+"' />"+
+	            "<meta property='og:description' content='"+description+"' />"+
+	            "<meta property='og:image' itemprop='image' content='"+HtmlUtil.fullUrl(image)+"' />"+
+	            "<meta property='og:type' content='website' />"+
+	            "<meta property='og:site_name' content='"+APPLICATION_BASE_URL+"' />"+
+	            "<meta property='fb:app_id' content='"+FACEBOOK_APP_ID+"' />";
 		return metaTags;
 	}
 	

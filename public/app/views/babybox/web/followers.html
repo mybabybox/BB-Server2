@@ -48,7 +48,7 @@
    <div ng-if="user.isLoggedIn && follower.id != user.id" class="btn-follow follow L14" >+ <span class="L14">Follow</span></div>
   </div>
   <div ng-if="follower.isFollowing" ng-click="onUnFollowUser(follower)">
-   <div ng-if="user.isLoggedIn && follower.id != user.isLoggedIn" class="btn-follow follow L14 active" >+ <span class="L14">Following</span></div>
+   <div ng-if="user.isLoggedIn && follower.id != user.isLoggedIn" class="btn-follow follow L14 active" ><span class="L14">Following</span></div>
   </div>
  </li>
 </ul>
