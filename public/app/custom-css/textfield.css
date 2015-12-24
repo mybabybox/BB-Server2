@@ -7,8 +7,8 @@
 }
 .general-textfield:focus {
     outline: none;
-    box-shadow: 0 0 3px #a37cde !important;
-    border: thin solid #a37cde !important;
+    box-shadow: 0 0 3px #FF99B8 !important;
+    border: thin solid #FF99B8 !important;
 }
 .general-textfield+.icon-box {
     position: relative;

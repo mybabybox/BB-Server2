@@ -191,7 +191,7 @@ $(document).ready(function() {
                 required : "請選擇您的出生年份"
             },
             parent_location : {
-                required : "請選擇您居住的地區"
+                required : "請選擇您的地區"
             },
             parent_type : {
                 required : "請選擇您現在的身份"

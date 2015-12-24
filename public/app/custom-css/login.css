@@ -145,7 +145,7 @@ ul, li {
     margin-left: 35px;
 }
 #login-info-wrapper .general-textfield:focus {
-    border: thin solid #a37cde;
+    border: thin solid #FF99B8;
 }
 #login-info-wrapper p {
     padding: 0 30px;

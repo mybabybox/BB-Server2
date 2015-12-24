@@ -26,7 +26,6 @@
         
         <script type="text/javascript" src="@routes.Assets.versioned("components/library/jquery/jquery.min.js")"></script>
         <script type="text/javascript" src="@routes.Assets.versioned("components/library/jquery/jquery.validate.min.js")"></script>
-        
         <script type="text/javascript" src="@routes.Assets.versioned("app/scripts/signup_info.js")"></script>
         
         <style>
@@ -75,8 +74,8 @@
                                     <tr>
                                         <td style="width:80px;">顯示名稱:</td>
                                         <td>
-                                            <div><input type="text" name="parent_displayname" id="parent_displayname" required="required" placeholder="" value="" style="padding:3px 10px;"></input></div>
-                                            <div style="color:red;font-size:12px;margin-top:10px;max-width:250px;">您的顯示名稱，選用一個您喜愛的暱稱</div>
+                                            <div><input type="text" name="parent_displayname" id="parent_displayname" required="required" placeholder="" value="" class="form-control general-textfield" style="width:150px;"></input></div>
+                                            <div style="color:#777;" class="note">您的顯示名稱，選用一個您喜愛的暱稱</div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -92,7 +91,7 @@
                                                     </select>
                                                 </span>
                                             </div>
-                                            <div style="color:#777;font-size:12px;margin-top:10px;max-width:280px;">BabyBox 會按地區推介商品給您</div>
+                                            <div style="color:#777;" class="note">BabyBox 會按地區推介商品給您</div>
                                         </td>
                                     </tr>
                                     <!--tr>
@@ -275,8 +274,7 @@
                                     </tr-->
                                     <tr class="padding10"><td></td></tr>
                                     <tr>
-                                        <td></td>
-                                        <td>
+                                        <td colspan="2" style="text-align:center;">
                                             <input type="submit" name="signup-info-btn" id="signup-info-btn" value="完成!" />
                                         </td>
                                     </tr>

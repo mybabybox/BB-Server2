@@ -15,7 +15,7 @@ ul, li {
 }
 .signup-info-sub-table {
 }
-.note{
+.note {
     font-size: 12px;
     margin-top: 10px;
     max-width: 280px;
@@ -38,7 +38,6 @@ ul, li {
     width: 100px;
 }
 .signup-info-table {
-    width: 550px;
 }
 .signup-info-table tr td {
     font-size: 14px;
@@ -82,6 +81,8 @@ ul, li {
     padding: 15px;
     height:100%
 }
+.signup-info-box h1,
+.signup-info-box h2,
 .signup-info-box h3 {
     color: #44318B;
     border-bottom: 1px solid #B5B3F0;
@@ -232,7 +233,7 @@ ul, li {
     margin-bottom: 15px;
 }
 #signup-info-info-wrapper .general-textfield:focus {
-    border: thin solid #a37cde;
+    border: thin solid #FF99B8;
 }
 #signup-info-info-wrapper p {
     padding: 0 7px;
