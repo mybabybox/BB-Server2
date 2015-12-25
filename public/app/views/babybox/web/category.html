@@ -3,7 +3,7 @@
   <div ng-click="doBack()"
    class="icon_left ic_icon  ic_arrow_back clickable_area"></div>
   <div class="no-search-bar-holder flex1"></div>
-  <div class='page_name L16'>{{cat.name}}</div>
+  <div class='page_name L16'><a href="/"><div class='ic_logo_shortcut clickable_area'></div></a></div>
   <span ng-if="!userInfo.isLoggedIn" style="padding-right: 15px;">
    <a href="/login">
     <div class='hold user_avatar ic_web_profile clickable_area'></div>
@@ -23,7 +23,23 @@
  </div>
 </div>
 
-<div style="padding-top: 55px;">
+<div class='header-holder'></div>
+
+<div id="category-page" class="has-toolbar page-holder center-container">
+ <header>
+  <div class="mask"></div>
+  <div class="flex-it header-container">
+   <div class='avatar-container'>
+    <div class="avatar" style="background-image: url({{cat.icon}});"></div>
+   </div>
+   <div class="flex1 categoryname-wrapper">
+    <div class="categoryname truncate m18 flex1">{{cat.name}}</div>
+   </div>
+
+  </div>
+
+ </header>
+ 
  <div class="center-container">
   <div id="category-items" class='page-holder'>
    <ul class='header_tabs M14 center-container'>

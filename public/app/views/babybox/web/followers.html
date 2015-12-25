@@ -3,16 +3,16 @@
   <div ng-click="doBack()"
    class="icon_left ic_icon  ic_arrow_back clickable_area"></div>
   <div class="no-search-bar-holder flex1"></div>
-  <div class='page_name L16'></div>
-  <span ng-if="!user.isLoggedIn" style="padding-right: 15px;">
+  <div class='page_name L16'>Followers</div>
+  <span ng-if="!userInfo.isLoggedIn" style="padding-right: 15px;">
    <a href="/login">
     <div class='hold user_avatar ic_web_profile clickable_area'></div>
   </a>
-  </span> <span ng-if="user.isLoggedIn"
+  </span> <span ng-if="userInfo.isLoggedIn"
    style="padding-right: 15px; padding-top: 0px;"> <a
-   href="/profile/{{user.id}}">
+   href="/profile/{{userInfo.id}}">
     <div class="hold user_avatar clickable_area"
-     style="background-image: url(/image/get-mini-profile-image-by-id/{{user.id}});"></div>
+     style="background-image: url(/image/get-mini-profile-image-by-id/{{userInfo.id}});"></div>
   </a>
   </span>
   <div class='second-panel'>
@@ -45,10 +45,10 @@
      </div>
  </div>
  <div ng-if="!follower.isFollowing" ng-click="onFollowUser(follower)">
-   <div ng-if="user.isLoggedIn && follower.id != user.id" class="btn-follow follow L14" >+ <span class="L14">Follow</span></div>
+   <div ng-if="userInfo.isLoggedIn && follower.id != userInfo.id" class="btn-follow follow L14" >+ <span class="L14">Follow</span></div>
   </div>
   <div ng-if="follower.isFollowing" ng-click="onUnFollowUser(follower)">
-   <div ng-if="user.isLoggedIn && follower.id != user.isLoggedIn" class="btn-follow follow L14 active" ><span class="L14">Following</span></div>
+   <div ng-if="userInfo.isLoggedIn && follower.id != userInfo.isLoggedIn" class="btn-follow follow L14 active" ><span class="L14">Following</span></div>
   </div>
  </li>
 </ul>

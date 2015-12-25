@@ -366,7 +366,7 @@ babybox.controller('UserFollowController',
 	
 	$scope.followers = followers;
 	console.log($scope.followers);
-	$scope.user = userInfo;
+	$scope.userInfo = userInfo;
 	var url = $location.absUrl();
 	var values= url.split("/");
 	$scope.follow = values[values.length-2];

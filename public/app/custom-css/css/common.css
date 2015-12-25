@@ -8559,13 +8559,6 @@ a:hover {
     height: 32px
 }
 
-.ic_issue {
-    background-image: url(../images/ic_issue.png);
-    background-size: 24px 24px;
-    width: 24px;
-    height: 24px
-}
-
 .babybox_logo0 {
     background-image: url(../images/logo_babybox.png);
     background-size: 120px 120px;
@@ -11415,7 +11408,7 @@ a:hover {
 }
 
 .ic_logo_get {
-    background-image: url(../images/logo_babybox_s@3x.png);
+    background-image: url(../images/logo_babybox_w@3x.png);
     display: inline-block;
     width: 48px;
     height: 48px;
@@ -11447,6 +11440,44 @@ a:hover {
         width: 48px;
         height: 48px;
         background-size: 48px 48px
+    }
+}
+
+.ic_logo_shortcut {
+    background-image: url(../images/logo_babybox_s@3x.png);
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-size: 32px 32px;
+    position: relative;
+    top: 5px
+}
+
+@media (-webkit-min-device-pixel-ratio: 2) and (-webkit-max-device-pixel-ratio: 2.99) {
+    .ic_logo_shortcut {
+        background-image: url(../images/logo_babybox_s@2x.png)
+    }
+}
+
+@media (-webkit-min-device-pixel-ratio: 3) {
+    .ic_logo_shortcut {
+        background-image: url(../images/logo_babybox_s@2x.png)
+    }
+}
+
+@media (-webkit-min-device-pixel-ratio: 2) and (-webkit-max-device-pixel-ratio: 2.99) {
+    .ic_logo_shortcut {
+        width: 32px;
+        height: 32px;
+        background-size: 32px 32px
+    }
+}
+
+@media (-webkit-min-device-pixel-ratio: 3) {
+    .ic_logo_shortcut {
+        width: 32px;
+        height: 32px;
+        background-size: 32px 32px
     }
 }
 

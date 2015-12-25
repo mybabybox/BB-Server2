@@ -3,7 +3,7 @@
   <div ng-click="doBack()"
    class="icon_left ic_icon  ic_arrow_back clickable_area"></div>
   <div class="no-search-bar-holder flex1"></div>
-  <div class='page_name L16'>{{user.displayName}}</div>
+  <div class='page_name L16'><a href="/"><div class='ic_logo_shortcut clickable_area'></div></a></div>
   <div class="right-side">
    <span ng-if="userInfo.isLoggedIn"> <a
     style="position: relative; top: 0px;"
@@ -61,9 +61,7 @@
   <div class="mask"></div>
   <div class="flex-it header-container">
    <div class='avatar-container'>
-    <!-- <div class="avatar" > <img data-ng-src="/image/get-thumbnail-profile-image-by-id/{{user.id}}" /></div> -->
-    <div class="avatar"
-     style="background-image: url(/image/get-thumbnail-profile-image-by-id/{{user.id}});"></div>
+    <div class="avatar" style="background-image: url(/image/get-thumbnail-profile-image-by-id/{{user.id}});"></div>
    </div>
    <div class="flex1 middle-centered-div shopname-wrapper">
     <div class="shopname truncate m16 flex1">{{user.displayName}}</div>

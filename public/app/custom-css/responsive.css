@@ -229,7 +229,7 @@ input[type=checkbox].w3-check:disabled+.w3-validate,input[type=radio].w3-radio:d
 .w3-padding-64{padding-top:64px !important;padding-bottom:64px !important}
 .w3-padding-top{padding-top:8px !important}.w3-padding-bottom{padding-bottom:8px !important}
 .w3-padding-left{padding-left:16px !important}.w3-padding-right{padding-right:16px !important}
-.w3-row-padding,.w3-row-padding>.w3-half,.w3-row-padding>.w3-third,.w3-row-padding>.w3-twothird,.w3-row-padding>.w3-quarter,.w3-row-padding>.w3-col{padding:0 8px}
+.w3-row-padding,.w3-row-padding>.w3-half,.w3-row-padding>.w3-third,.w3-row-padding>.w3-twothird,.w3-row-padding>.w3-quarter,.w3-row-padding>.w3-col{padding:0 15px}
 .w3-spin{animation:w3-spin 2s infinite linear;-webkit-animation:w3-spin 2s infinite linear}
 @-webkit-keyframes w3-spin{
 0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}
