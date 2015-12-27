@@ -5,7 +5,6 @@ import javax.persistence.Query;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
 import models.Category;
-import models.Emoticon;
 import models.GameBadge;
 import models.GameBadgeAwarded;
 import models.Icon;
@@ -30,7 +29,6 @@ public class DataBootstrap {
     public static void bootstrap() {
         bootstrapTermsAndConditions();
         bootstrapIcon();
-        bootstrapEmoticon();
         bootstrapSystemInfo();
         bootstrapUser();
         bootstrapLocation();
@@ -136,62 +134,6 @@ public class DataBootstrap {
         tnc.save();
     }
 
-    private static void bootstrapEmoticon() {
-        Query q = JPA.em().createQuery("Select count(i) from Emoticon i");
-        Long count = (Long)q.getSingleResult();
-        if (count > 0) {
-            return;
-        }
-
-        logger.underlyingLogger().info("bootstrapEmoticon()");
-        
-        Emoticon emoticon = null; 
-        emoticon = new Emoticon("angel", "O:)", 6, "/assets/app/images/emoticons/angel.png");
-        emoticon.save();
-        emoticon = new Emoticon("bad", "X-(", 12, "/assets/app/images/emoticons/bad.png");
-        emoticon.save();
-        emoticon = new Emoticon("blush", "^_^", 4, "/assets/app/images/emoticons/blush.png");
-        emoticon.save();
-        emoticon = new Emoticon("cool", "B)", 9, "/assets/app/images/emoticons/cool.png");
-        emoticon.save();
-        emoticon = new Emoticon("cry", ":'(", 11, "/assets/app/images/emoticons/cry.png");
-        emoticon.save();
-        emoticon = new Emoticon("dry", ":_", 15, "/assets/app/images/emoticons/dry.png");
-        emoticon.save();
-        emoticon = new Emoticon("frown", ":(", 10, "/assets/app/images/emoticons/frown.png");
-        emoticon.save();
-        emoticon = new Emoticon("gasp", ":O", 19, "/assets/app/images/emoticons/gasp.png");
-        emoticon.save();
-        emoticon = new Emoticon("grin", ":D", 3, "/assets/app/images/emoticons/grin.png");
-        emoticon.save();
-        //emoticon = new Emoticon("happy", "^^D", "/assets/app/images/emoticons/happy.png");
-        //emoticon.save();
-        emoticon = new Emoticon("huh", "O_o", 17, "/assets/app/images/emoticons/huh.png");
-        emoticon.save();
-        emoticon = new Emoticon("laugh", "XD", 16, "/assets/app/images/emoticons/laugh.png");
-        emoticon.save();
-        emoticon = new Emoticon("love", "**)", 5, "/assets/app/images/emoticons/love.png");
-        emoticon.save();
-        emoticon = new Emoticon("mad", "X(", 13, "/assets/app/images/emoticons/mad.png");
-        emoticon.save();
-        emoticon = new Emoticon("ohmy", ";O", 14, "/assets/app/images/emoticons/ohmy.png");
-        emoticon.save();
-        emoticon = new Emoticon("ok", ":|", 20, "/assets/app/images/emoticons/ok.png");
-        emoticon.save();
-        emoticon = new Emoticon("smile", ":)", 1, "/assets/app/images/emoticons/smile.png");
-        emoticon.save();
-        emoticon = new Emoticon("teat", ":+O", 21, "/assets/app/images/emoticons/teat.png");
-        emoticon.save();
-        emoticon = new Emoticon("teeth", "^^]", 8, "/assets/app/images/emoticons/teeth.png");
-        emoticon.save();
-        emoticon = new Emoticon("tongue", ":p", 7, "/assets/app/images/emoticons/tongue.png");
-        emoticon.save();
-        emoticon = new Emoticon("wacko", ":S", 18, "/assets/app/images/emoticons/wacko.png");
-        emoticon.save();
-        emoticon = new Emoticon("wink", ";)", 2, "/assets/app/images/emoticons/wink.png");
-        emoticon.save();
-	}
-
     private static void bootstrapIcon() {
         Query q = JPA.em().createQuery("Select count(i) from Icon i");
         Long count = (Long)q.getSingleResult();
@@ -203,56 +145,56 @@ public class DataBootstrap {
         
         Icon icon = null;
         
-        // Category icons
-        icon = new Icon("feedback", IconType.CATEGORY, "/assets/app/images/general/icons/category/feedback.png");
+        // CountryCode icons
+        icon = new Icon("International", "intl", "/assets/app/images/country/intl.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("cat", IconType.CATEGORY, "/assets/app/images/general/icons/category/cat.png");
+        icon = new Icon("Australia", "au", "/assets/app/images/country/au.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("helmet", IconType.CATEGORY, "/assets/app/images/general/icons/category/helmet.png");
+        icon = new Icon("Canada", "ca", "/assets/app/images/country/ca.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("book", IconType.CATEGORY, "/assets/app/images/general/icons/category/book.png");
+        icon = new Icon("Switzerland", "ch", "/assets/app/images/country/ch.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("gift_box", IconType.CATEGORY, "/assets/app/images/general/icons/category/gift_box.png");
+        icon = new Icon("Germany", "de", "/assets/app/images/country/de.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("balloons", IconType.CATEGORY, "/assets/app/images/general/icons/category/balloons.png");
+        icon = new Icon("Denmark", "dk", "/assets/app/images/country/dk.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("camera", IconType.CATEGORY, "/assets/app/images/general/icons/category/camera.png");
+        icon = new Icon("Spain", "es", "/assets/app/images/country/es.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("music_note", IconType.CATEGORY, "/assets/app/images/general/icons/category/music_note.png");
+        icon = new Icon("France", "fr", "/assets/app/images/country/fr.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("plane", IconType.CATEGORY, "/assets/app/images/general/icons/category/plane.png");
+        icon = new Icon("United Kingdom", "gb", "/assets/app/images/country/gb.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("shopping_bag", IconType.CATEGORY, "/assets/app/images/general/icons/category/shopping_bag.png");
+        icon = new Icon("Hong Kong", "hk", "/assets/app/images/country/hk.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("spoon_fork", IconType.CATEGORY, "/assets/app/images/general/icons/category/spoon_fork.png");
+        icon = new Icon("Indonesia", "id", "/assets/app/images/country/id.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("ball", IconType.CATEGORY, "/assets/app/images/general/icons/category/ball.png");
+        icon = new Icon("Ireland", "ie", "/assets/app/images/country/ie.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("boy", IconType.CATEGORY, "/assets/app/images/general/icons/category/boy.png");
+        icon = new Icon("India", "in", "/assets/app/images/country/in.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("girl", IconType.CATEGORY, "/assets/app/images/general/icons/category/girl.png");
+        icon = new Icon("Iceland", "is", "/assets/app/images/country/is.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("bottle", IconType.CATEGORY, "/assets/app/images/general/icons/category/bottle.png");
+        icon = new Icon("Italy", "it", "/assets/app/images/country/it.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("bed", IconType.CATEGORY, "/assets/app/images/general/icons/category/bed.png");
+        icon = new Icon("Japna", "jp", "/assets/app/images/country/jp.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("stroller", IconType.CATEGORY, "/assets/app/images/general/icons/category/stroller.png");
+        icon = new Icon("South Korea", "kr", "/assets/app/images/country/kr.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("teddy", IconType.CATEGORY, "/assets/app/images/general/icons/category/teddy.png");
+        icon = new Icon("Malaysia", "my", "/assets/app/images/country/my.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("icecream", IconType.CATEGORY, "/assets/app/images/general/icons/category/icecream.png");
+        icon = new Icon("Netherlands", "nl", "/assets/app/images/country/nl.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("sun", IconType.CATEGORY, "/assets/app/images/general/icons/category/sun.png");
+        icon = new Icon("Norway", "no", "/assets/app/images/country/no.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("rainbow", IconType.CATEGORY, "/assets/app/images/general/icons/category/rainbow.png");
+        icon = new Icon("New Zealand", "nz", "/assets/app/images/country/nz.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("cloud", IconType.CATEGORY, "/assets/app/images/general/icons/category/cloud.png");
+        icon = new Icon("Sweden", "se", "/assets/app/images/country/se.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("loc_area", IconType.CATEGORY, "/assets/app/images/general/icons/category/loc_city.png");
+        icon = new Icon("Thailand", "th", "/assets/app/images/country/th.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("loc_area", IconType.CATEGORY, "/assets/app/images/general/icons/category/loc_area.png");
+        icon = new Icon("Taiwan", "tw", "/assets/app/images/country/us.png", IconType.COUNTRY);
         icon.save();
-        icon = new Icon("loc_district", IconType.CATEGORY, "/assets/app/images/general/icons/category/loc_district.png");
+        icon = new Icon("America", "us", "/assets/app/images/country/us.png", IconType.COUNTRY);
         icon.save();
     }
     

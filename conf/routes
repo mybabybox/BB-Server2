@@ -186,7 +186,6 @@ GET     /image/get-mini-post-image-by-id/:id        controllers.ProductControlle
 GET     /image/get-message-image-by-id/:id          controllers.UserController.getMessageImageById(id :Long)
 GET     /image/get-original-message-image-by-id/:id controllers.UserController.getOriginalMessageImageById(id :Long)
 GET     /image/get-mini-message-image-by-id/:id     controllers.UserController.getMiniMessageImageById(id :Long)
-GET     /image/getEmoticons                         controllers.UserController.getEmoticons()
 
 # Other
 GET     /get-all-districts                          controllers.Application.getAllDistricts

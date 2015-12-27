@@ -5,10 +5,9 @@ import java.util.regex.Pattern;
 
 import common.collection.Pair;
 import controllers.Application;
-import models.Emoticon;
 
 /**
- *  Handle Html, Link, Emoticon conversion.
+ *  Handle Html, Link conversion.
  */
 public class HtmlUtil {
     public static boolean IN_TEST = false;
@@ -76,19 +75,6 @@ public class HtmlUtil {
         return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;").replace("'", "&apos;");
     }
 
-    private static String processEmoticons(String text) {
-        if (IN_TEST) {
-            return text;
-        }
-
-        if (text != null) {
-            for (Emoticon emoticon : Emoticon.getEmoticons()) {
-                text = text.replace(emoticon.code, String.format("<img class='emoticon' src='%s'>", emoticon.url));
-            }
-        }
-        return text;
-    }
-    
     public static String appendImage(String src, int width, int height) {
         return "<img src='"+src+"' width='"+width+"' height='"+height+"' border='0' style='display:block;border:none;outline:none;text-decoration:none'></img>";
     }

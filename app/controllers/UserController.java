@@ -21,7 +21,6 @@ import models.Collection;
 import models.Comment;
 import models.Conversation;
 import models.ConversationOrder;
-import models.Emoticon;
 import models.FollowSocialRelation;
 import models.GameBadge;
 import models.GameBadgeAwarded;
@@ -53,7 +52,6 @@ import viewmodel.ActivityVM;
 import viewmodel.CollectionVM;
 import viewmodel.ConversationOrderVM;
 import viewmodel.ConversationVM;
-import viewmodel.EmoticonVM;
 import viewmodel.GameBadgeVM;
 import viewmodel.MessageVM;
 import viewmodel.NotificationCounterVM;
@@ -459,24 +457,6 @@ public class UserController extends Controller {
 		}
 	}
 	
-	@Transactional
-    public static Result getEmoticons() {
-        NanoSecondStopWatch sw = new NanoSecondStopWatch();
-        List<Emoticon> emoticons = Emoticon.getEmoticons();
-        
-        List<EmoticonVM> emoticonVMs = new ArrayList<>();
-        for(Emoticon emoticon : emoticons) {
-            EmoticonVM vm = new EmoticonVM(emoticon);
-            emoticonVMs.add(vm);
-        }
-
-        sw.stop();
-        if (logger.underlyingLogger().isDebugEnabled()) {
-            logger.underlyingLogger().debug("getEmoticons. Took "+sw.getElapsedMS()+"ms");
-        }
-        return ok(Json.toJson(emoticonVMs));
-    }
-	   
 	@Transactional
 	public static Result getMessages(Long conversationId, Long offset) {
         NanoSecondStopWatch sw = new NanoSecondStopWatch();

@@ -2,6 +2,8 @@ package viewmodel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import domain.CountryCode;
+import models.Icon;
 import models.Post;
 import models.User;
 
@@ -29,7 +31,8 @@ public class PostVMLite {
 	
 	// seller fields
 	@JsonProperty("freeDelivery") public Boolean freeDelivery;
-	@JsonProperty("country") public String country;
+	@JsonProperty("countryCode") public String countryCode;
+	@JsonProperty("countryIcon") public String countryIcon;
 	
 	// admin fields
 	@JsonProperty("baseScore") public Long baseScore = 0L;
@@ -67,6 +70,14 @@ public class PostVMLite {
         }
         
         this.freeDelivery = post.freeDelivery;
+        this.countryCode = post.countryCode.name();
+        
+        if (post.countryCode != null && post.countryCode != CountryCode.NA) {
+            Icon icon = Icon.getCountryIcon(post.countryCode.name());
+            if (icon != null) {
+                this.countryIcon = icon.getUrl();
+            }
+        }
     }
     
     public Long getId() {
@@ -205,11 +216,19 @@ public class PostVMLite {
         this.freeDelivery = freeDelivery;
     }
 
-    public String getCountry() {
-        return country;
+    public String getCountryCode() {
+        return countryCode;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+    
+    public String getCountryIcon() {
+        return countryIcon;
+    }
+
+    public void setCountryIcon(String countryIcon) {
+        this.countryIcon = countryIcon;
     }
 }
