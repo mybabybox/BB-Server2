@@ -765,10 +765,10 @@ ul.header_tabs_fixed {
     display: -ms-flexbox;
     display: -webkit-flex;
     display: flex;
-    border-top: 1px solid rgba(0, 0, 0, 0.09);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
     border-bottom: 1px solid rgba(0, 0, 0, 0.09);
     background: #fafafa;
-    margin-bottom: 12px;
+    margin: 8px 0;
     height: 40px;
     line-height: 40px;
     font-size: 15px

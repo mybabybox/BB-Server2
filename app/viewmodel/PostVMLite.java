@@ -27,6 +27,10 @@ public class PostVMLite {
     
 	@JsonProperty("offset") public Long offset;
 	
+	// seller fields
+	@JsonProperty("freeDelivery") public Boolean freeDelivery;
+	@JsonProperty("country") public String country;
+	
 	// admin fields
 	@JsonProperty("baseScore") public Long baseScore = 0L;
 	@JsonProperty("timeScore") public Double timeScore = 0D;
@@ -61,6 +65,8 @@ public class PostVMLite {
 	        this.baseScore = post.baseScore;
 	        this.timeScore = post.timeScore;
         }
+        
+        this.freeDelivery = post.freeDelivery;
     }
     
     public Long getId() {
@@ -189,5 +195,21 @@ public class PostVMLite {
 
     public void setIsLiked(boolean isLiked) {
         this.isLiked = isLiked;
+    }
+
+    public Boolean getFreeDelivery() {
+        return freeDelivery;
+    }
+
+    public void setFreeDelivery(Boolean freeDelivery) {
+        this.freeDelivery = freeDelivery;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

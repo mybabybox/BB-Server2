@@ -29,6 +29,7 @@ import common.cache.CalcServer;
 import common.utils.StringUtil;
 import controllers.Application.DeviceType;
 import domain.Commentable;
+import domain.CountryCode;
 import domain.DefaultValues;
 import domain.Likeable;
 import domain.SocialObjectType;
@@ -80,6 +81,12 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	@Temporal(TemporalType.TIMESTAMP)
     public Date soldDate;
     
+	// Seller fields
+	public Boolean freeDelivery = false;
+	
+	@Enumerated(EnumType.ORDINAL)
+	public CountryCode countryCode = CountryCode.NA;
+	
 	public int numViews = 0;
 	public int numComments = 0;
 	public int numLikes = 0;
@@ -119,7 +126,8 @@ public class Post extends SocialObject implements Likeable, Commentable {
 		this.deviceType = deviceType;
 	}
 
-	public Post(User owner, String title, String body, Category category, Double price, ConditionType conditionType, DeviceType deviceType) {
+	public Post(User owner, String title, String body, Category category, Double price, ConditionType conditionType, 
+	        Boolean freeDelivery, CountryCode countryCode, DeviceType deviceType) {
 		this.owner = owner;
 		this.title = title;
 		this.body = body;
@@ -127,6 +135,8 @@ public class Post extends SocialObject implements Likeable, Commentable {
 		this.price = price;
 		this.postType = PostType.PRODUCT;
 		this.conditionType = conditionType;
+		this.freeDelivery = freeDelivery;
+		this.countryCode = countryCode;
 		this.objectType = SocialObjectType.POST;
 		this.deviceType = deviceType;
 	}
@@ -134,6 +144,14 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	public static ConditionType parseConditionType(String conditionType) {
         try {
             return Enum.valueOf(ConditionType.class, conditionType);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+	
+	public static CountryCode parseCountryCode(String countryCode) {
+        try {
+            return Enum.valueOf(CountryCode.class, countryCode);
         } catch (Exception e) {
             return null;
         }

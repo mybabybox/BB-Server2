@@ -32,7 +32,9 @@ public class SecurityRole extends domain.Entity implements Role {
 	public static enum RoleType {
 	    USER,
 	    SYSTEM_USER,
-	    SUPER_ADMIN
+	    SUPER_ADMIN,
+	    PROMOTED_SELLER,
+	    VERIFIED_SELLER
 	}
 	
 	@Override

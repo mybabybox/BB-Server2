@@ -44,6 +44,7 @@ import common.utils.HttpUtil;
 import common.utils.ImageFileUtil;
 import common.utils.NanoSecondStopWatch;
 import controllers.Application.DeviceType;
+import domain.CountryCode;
 import domain.DefaultValues;
 import domain.ReportedType;
 import domain.SocialObjectType;
@@ -62,9 +63,13 @@ public class ProductController extends Controller{
 	    String body = dynamicForm.get("body");
 	    String price = dynamicForm.get("price");
 	    String conditionType = dynamicForm.get("conditionType");
+	    Boolean freeDelivery = Boolean.valueOf(dynamicForm.get("freeDelivery"));
+	    String countryCode = dynamicForm.get("countryCode");
 	    String deviceType = dynamicForm.get("deviceType");
 	    List<FilePart> images = request().body().asMultipartFormData().getFiles();
-		return createProduct(title, body, Long.parseLong(catId), Double.parseDouble(price), Post.parseConditionType(conditionType), images, Application.parseDeviceType(deviceType));
+		return createProduct(
+		        title, body, Long.parseLong(catId), Double.parseDouble(price), Post.parseConditionType(conditionType), images, 
+		        freeDelivery, Post.parseCountryCode(countryCode), Application.parseDeviceType(deviceType));
 	}
 	
 	@Transactional
@@ -75,6 +80,8 @@ public class ProductController extends Controller{
 	    String body = HttpUtil.getMultipartFormDataString(multipartFormData, "body");
 	    Double price = HttpUtil.getMultipartFormDataDouble(multipartFormData, "price");
 	    String conditionType = HttpUtil.getMultipartFormDataString(multipartFormData, "conditionType");
+	    Boolean freeDelivery = HttpUtil.getMultipartFormDataBoolean(multipartFormData, "freeDelivery");
+	    String countryCode = HttpUtil.getMultipartFormDataString(multipartFormData, "countryCode");
 	    String deviceType = HttpUtil.getMultipartFormDataString(multipartFormData, "deviceType");
 	    List<FilePart> images = HttpUtil.getMultipartFormDataFiles(multipartFormData, "image", DefaultValues.MAX_POST_IMAGES);
 	    
@@ -85,10 +92,24 @@ public class ProductController extends Controller{
 	    if (price == null) {
 	        price = -1D;
 	    }
-		return createProduct(title, body, catId, price, Post.parseConditionType(conditionType), images, Application.parseDeviceType(deviceType));
+	    
+	    if (freeDelivery == null) {
+	        freeDelivery = false;
+	    }
+	    
+	    if (countryCode == null) {
+	        countryCode = CountryCode.NA.name();
+	    }
+	    
+		return createProduct(
+		        title, body, catId, price, Post.parseConditionType(conditionType), images, 
+		        freeDelivery, Post.parseCountryCode(countryCode), Application.parseDeviceType(deviceType));
 	}
 
-	private static Result createProduct(String title, String body, Long catId, Double price, ConditionType conditionType, List<FilePart> images, DeviceType deviceType) {
+	private static Result createProduct(
+	        String title, String body, Long catId, Double price, ConditionType conditionType,
+	        List<FilePart> images, Boolean freeDelivery, CountryCode countryCode, DeviceType deviceType) {
+	    
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    
 		final User localUser = Application.getLocalUser(session());
@@ -103,7 +124,7 @@ public class ProductController extends Controller{
         }
         
 		try {
-			Post newPost = localUser.createProduct(title, body, category, price, conditionType, deviceType);
+			Post newPost = localUser.createProduct(title, body, category, price, conditionType, freeDelivery, countryCode, deviceType);
 			if (newPost == null) {
 				return badRequest("Failed to create product. Invalid parameters.");
 			}
@@ -139,8 +160,11 @@ public class ProductController extends Controller{
         String body = dynamicForm.get("body");
         String price = dynamicForm.get("price");
         String conditionType = dynamicForm.get("conditionType");
+        Boolean freeDelivery = Boolean.valueOf(dynamicForm.get("freeDelivery"));
+        String countryCode = dynamicForm.get("countryCode");
         return editProduct(Long.parseLong(id), title, body, Long.parseLong(catId), 
-                Double.parseDouble(price), Post.parseConditionType(conditionType));
+                Double.parseDouble(price), Post.parseConditionType(conditionType), 
+                freeDelivery, Post.parseCountryCode(countryCode));
     }
     
     @Transactional
@@ -152,6 +176,8 @@ public class ProductController extends Controller{
         String body = HttpUtil.getMultipartFormDataString(multipartFormData, "body");
         Double price = HttpUtil.getMultipartFormDataDouble(multipartFormData, "price");
         String conditionType = HttpUtil.getMultipartFormDataString(multipartFormData, "conditionType");
+        Boolean freeDelivery = HttpUtil.getMultipartFormDataBoolean(multipartFormData, "freeDelivery");
+        String countryCode = HttpUtil.getMultipartFormDataString(multipartFormData, "countryCode");
         
         if (id == null) {
             id = -1L;
@@ -164,11 +190,22 @@ public class ProductController extends Controller{
         if (price == null) {
             price = -1D;
         }
-        return editProduct(id, title, body, catId, price, Post.parseConditionType(conditionType));
+        
+        if (freeDelivery == null) {
+            freeDelivery = false;
+        }
+        
+        if (countryCode == null) {
+            countryCode = CountryCode.NA.name();
+        }
+        
+        return editProduct(id, title, body, catId, price, Post.parseConditionType(conditionType), 
+                freeDelivery, Post.parseCountryCode(countryCode));
     }
 
-    private static Result editProduct(Long id, String title, String body, Long catId, 
-            Double price, Post.ConditionType conditionType) {
+    private static Result editProduct(
+            Long id, String title, String body, Long catId, Double price, Post.ConditionType conditionType, 
+            Boolean freeDelivery, CountryCode countryCode) {
         
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
         
@@ -191,7 +228,7 @@ public class ProductController extends Controller{
             return notFound();
         }
         
-        post = localUser.editProduct(post, title, body, category, price, conditionType);
+        post = localUser.editProduct(post, title, body, category, price, conditionType, freeDelivery, countryCode);
         if (post == null) {
             logger.underlyingLogger().error(String.format("[u=%d][p=%d] editProduct() Failed to edit post", localUser.id, id));
             return badRequest();

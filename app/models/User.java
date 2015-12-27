@@ -60,6 +60,7 @@ import common.utils.DateTimeUtil;
 import common.utils.ImageFileUtil;
 import common.utils.NanoSecondStopWatch;
 import controllers.Application.DeviceType;
+import domain.CountryCode;
 import domain.DefaultValues;
 import domain.Followable;
 import domain.SocialObjectType;
@@ -352,14 +353,17 @@ public class User extends SocialObject implements Subject, Followable {
     }
 	
 	@Transactional
-	public Post createProduct(String title, String body, Category category, Double price, ConditionType conditionType, DeviceType deviceType) {
+	public Post createProduct(
+	        String title, String body, Category category, Double price, ConditionType conditionType, 
+	        Boolean freeDelivery, CountryCode countryCode, DeviceType deviceType) {
+	    
 		if (Strings.isNullOrEmpty(title) || 
 				Strings.isNullOrEmpty(body) || category == null || price == -1D) {
 			logger.underlyingLogger().warn("Missing parameters to createProduct");
 			return null;
 		}
 		
-		Post post = new Post(this, title, body, category, price, conditionType, deviceType);
+		Post post = new Post(this, title, body, category, price, conditionType, freeDelivery, countryCode, deviceType);
 		post.save();
 		
 		recordPostProduct(this, post);
@@ -370,8 +374,9 @@ public class User extends SocialObject implements Subject, Followable {
 	}
 	
 	@Transactional
-    public Post editProduct(Post post, String title, String body, Category category, 
-            Double price, Post.ConditionType conditionType) {
+    public Post editProduct(
+            Post post, String title, String body, Category category, Double price, Post.ConditionType conditionType, 
+            Boolean freeDelivery, CountryCode countryCode) {
 	    
 	    if (Strings.isNullOrEmpty(title) ||
 	            post == null || Strings.isNullOrEmpty(body) || category == null || price == -1D) {
@@ -384,6 +389,8 @@ public class User extends SocialObject implements Subject, Followable {
         post.category = category;
         post.price = price;
         post.conditionType = conditionType;
+        post.freeDelivery = freeDelivery;
+        post.countryCode = countryCode;
         post.merge();
         
         return post;
@@ -691,7 +698,7 @@ public class User extends SocialObject implements Subject, Followable {
 		}
 		return false;
 	}
-
+	
 	@Transactional
 	public boolean isSystemUser() {
 		for (SecurityRole role : roles) {
@@ -705,6 +712,34 @@ public class User extends SocialObject implements Subject, Followable {
 		return false;
 	}
 
+	@Transactional
+    public boolean isPromotedSeller() {
+        if (roles == null) {
+            return false;
+        }
+        
+        for (SecurityRole role : roles) {
+            if (SecurityRole.RoleType.PROMOTED_SELLER.name().equals(role.roleName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+	
+	@Transactional
+    public boolean isVerifiedSeller() {
+        if (roles == null) {
+            return false;
+        }
+        
+        for (SecurityRole role : roles) {
+            if (SecurityRole.RoleType.VERIFIED_SELLER.name().equals(role.roleName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+	
 	public static boolean isEmailExists(String email) {
         final User user = User.findByEmail(email);
         if (user != null) {
