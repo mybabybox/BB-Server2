@@ -30,6 +30,7 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
+import models.Country.CountryCode;
 import models.Post.ConditionType;
 import models.TokenAction.Type;
 
@@ -60,7 +61,6 @@ import common.utils.DateTimeUtil;
 import common.utils.ImageFileUtil;
 import common.utils.NanoSecondStopWatch;
 import controllers.Application.DeviceType;
-import domain.CountryCode;
 import domain.DefaultValues;
 import domain.Followable;
 import domain.SocialObjectType;

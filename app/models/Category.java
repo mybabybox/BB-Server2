@@ -22,7 +22,6 @@ import domain.Likeable;
 import domain.Postable;
 import domain.SocialObjectType;
 import play.db.jpa.JPA;
-import play.db.jpa.Transactional;
 
 @Entity
 public class Category extends SocialObject implements Likeable, Postable, Comparable<Category> {

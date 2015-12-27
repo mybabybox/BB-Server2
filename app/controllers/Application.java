@@ -15,6 +15,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Inject;
 
+import models.Country;
 import models.GameBadge.BadgeType;
 import models.GameBadgeAwarded;
 import models.Location;
@@ -43,6 +44,7 @@ import providers.MyLoginUsernamePasswordAuthUser;
 import providers.MyUsernamePasswordAuthProvider;
 import providers.MyUsernamePasswordAuthProvider.MyLogin;
 import providers.MyUsernamePasswordAuthProvider.MySignup;
+import viewmodel.CountryVM;
 import viewmodel.FeaturedItemVM;
 import viewmodel.UserVM;
 import Decoder.BASE64Encoder;
@@ -57,6 +59,7 @@ import com.feth.play.module.pa.providers.password.UsernamePasswordAuthUser;
 import com.feth.play.module.pa.user.AuthUser;
 
 import common.cache.CalcServer;
+import common.cache.CountryCache;
 import common.cache.LocationCache;
 import common.cache.FeaturedItemCache;
 import common.model.TargetGender;
@@ -740,6 +743,19 @@ public class Application extends Controller {
     public static Result getAllDistricts() {
         return ok(Json.toJson(LocationCache.getHongKongDistrictsVM()));
     }
+	
+	@Transactional
+    public static Result getAllCountries() {
+	    List<CountryVM> vms = new ArrayList<>();
+	    try {
+	        List<Country> countries = CountryCache.getCountries();
+	        for (Country country : countries) {
+	            vms.add(new CountryVM(country));
+	        }
+	    } catch (Exception e) {
+        }
+        return ok(Json.toJson(vms));
+    }
 
 	@Transactional
     public static Result getFeaturedItems(String itemType) {
@@ -750,7 +766,6 @@ public class Application extends Controller {
 	            vms.add(new FeaturedItemVM(featuredItem));
 	        }
 	    } catch (Exception e) {
-	        
 	    }
         return ok(Json.toJson(vms));
     }

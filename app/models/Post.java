@@ -29,7 +29,6 @@ import common.cache.CalcServer;
 import common.utils.StringUtil;
 import controllers.Application.DeviceType;
 import domain.Commentable;
-import domain.CountryCode;
 import domain.DefaultValues;
 import domain.Likeable;
 import domain.SocialObjectType;
@@ -85,7 +84,7 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	public Boolean freeDelivery = false;
 	
 	@Enumerated(EnumType.ORDINAL)
-	public CountryCode countryCode = CountryCode.NA;
+	public Country.CountryCode countryCode = Country.CountryCode.NA;
 	
 	public int numViews = 0;
 	public int numComments = 0;
@@ -127,7 +126,7 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	}
 
 	public Post(User owner, String title, String body, Category category, Double price, ConditionType conditionType, 
-	        Boolean freeDelivery, CountryCode countryCode, DeviceType deviceType) {
+	        Boolean freeDelivery, Country.CountryCode countryCode, DeviceType deviceType) {
 		this.owner = owner;
 		this.title = title;
 		this.body = body;
@@ -149,9 +148,9 @@ public class Post extends SocialObject implements Likeable, Commentable {
         }
     }
 	
-	public static CountryCode parseCountryCode(String countryCode) {
+	public static Country.CountryCode parseCountryCode(String countryCode) {
         try {
-            return Enum.valueOf(CountryCode.class, countryCode);
+            return Enum.valueOf(Country.CountryCode.class, countryCode);
         } catch (Exception e) {
             return null;
         }

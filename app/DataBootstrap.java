@@ -5,12 +5,12 @@ import javax.persistence.Query;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
 import models.Category;
+import models.Country;
+import models.Country.CountryCode;
 import models.GameBadge;
 import models.GameBadgeAwarded;
-import models.Icon;
 import models.SystemInfo;
 import models.GameBadge.BadgeType;
-import models.Icon.IconType;
 import models.Location;
 import models.Location.LocationCode;
 import models.SecurityRole;
@@ -28,7 +28,7 @@ public class DataBootstrap {
     
     public static void bootstrap() {
         bootstrapTermsAndConditions();
-        bootstrapIcon();
+        bootstrapCountry();
         bootstrapSystemInfo();
         bootstrapUser();
         bootstrapLocation();
@@ -134,68 +134,67 @@ public class DataBootstrap {
         tnc.save();
     }
 
-    private static void bootstrapIcon() {
-        Query q = JPA.em().createQuery("Select count(i) from Icon i");
+    private static void bootstrapCountry() {
+        Query q = JPA.em().createQuery("Select count(c) from Country c");
         Long count = (Long)q.getSingleResult();
         if (count > 0) {
             return;
         }
         
-        logger.underlyingLogger().info("bootstrapIcon()");
+        logger.underlyingLogger().info("bootstrapCountry()");
         
-        Icon icon = null;
+        Country country = null;
         
-        // CountryCode icons
-        icon = new Icon("International", "intl", "/assets/app/images/country/intl.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Australia", "au", "/assets/app/images/country/au.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Canada", "ca", "/assets/app/images/country/ca.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Switzerland", "ch", "/assets/app/images/country/ch.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Germany", "de", "/assets/app/images/country/de.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Denmark", "dk", "/assets/app/images/country/dk.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Spain", "es", "/assets/app/images/country/es.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("France", "fr", "/assets/app/images/country/fr.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("United Kingdom", "gb", "/assets/app/images/country/gb.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Hong Kong", "hk", "/assets/app/images/country/hk.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Indonesia", "id", "/assets/app/images/country/id.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Ireland", "ie", "/assets/app/images/country/ie.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("India", "in", "/assets/app/images/country/in.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Iceland", "is", "/assets/app/images/country/is.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Italy", "it", "/assets/app/images/country/it.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Japna", "jp", "/assets/app/images/country/jp.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("South Korea", "kr", "/assets/app/images/country/kr.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Malaysia", "my", "/assets/app/images/country/my.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Netherlands", "nl", "/assets/app/images/country/nl.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Norway", "no", "/assets/app/images/country/no.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("New Zealand", "nz", "/assets/app/images/country/nz.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Sweden", "se", "/assets/app/images/country/se.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Thailand", "th", "/assets/app/images/country/th.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("Taiwan", "tw", "/assets/app/images/country/us.png", IconType.COUNTRY);
-        icon.save();
-        icon = new Icon("America", "us", "/assets/app/images/country/us.png", IconType.COUNTRY);
-        icon.save();
+        country = new Country("International", CountryCode.INTL, "/assets/app/images/country/intl.png");
+        country.save();
+        country = new Country("Australia", CountryCode.AU, "/assets/app/images/country/au.png");
+        country.save();
+        country = new Country("Canada", CountryCode.CA, "/assets/app/images/country/ca.png");
+        country.save();
+        country = new Country("Switzerland", CountryCode.CH, "/assets/app/images/country/ch.png");
+        country.save();
+        country = new Country("Germany", CountryCode.DE, "/assets/app/images/country/de.png");
+        country.save();
+        country = new Country("Denmark", CountryCode.DK, "/assets/app/images/country/dk.png");
+        country.save();
+        country = new Country("Spain", CountryCode.ES, "/assets/app/images/country/es.png");
+        country.save();
+        country = new Country("France", CountryCode.FR, "/assets/app/images/country/fr.png");
+        country.save();
+        country = new Country("United Kingdom", CountryCode.GB, "/assets/app/images/country/gb.png");
+        country.save();
+        country = new Country("Hong Kong", CountryCode.HK, "/assets/app/images/country/hk.png");
+        country.save();
+        country = new Country("Indonesia", CountryCode.ID, "/assets/app/images/country/id.png");
+        country.save();
+        country = new Country("Ireland", CountryCode.IE, "/assets/app/images/country/ie.png");
+        country.save();
+        country = new Country("India", CountryCode.IN, "/assets/app/images/country/in.png");
+        country.save();
+        country = new Country("Iceland", CountryCode.IS, "/assets/app/images/country/is.png");
+        country.save();
+        country = new Country("Italy", CountryCode.IT, "/assets/app/images/country/it.png");
+        country.save();
+        country = new Country("Japna", CountryCode.JP, "/assets/app/images/country/jp.png");
+        country.save();
+        country = new Country("South Korea", CountryCode.KR, "/assets/app/images/country/kr.png");
+        country.save();
+        country = new Country("Malaysia", CountryCode.MY, "/assets/app/images/country/my.png");
+        country.save();
+        country = new Country("Netherlands", CountryCode.NL, "/assets/app/images/country/nl.png");
+        country.save();
+        country = new Country("Norway", CountryCode.NO, "/assets/app/images/country/no.png");
+        country.save();
+        country = new Country("New Zealand", CountryCode.NZ, "/assets/app/images/country/nz.png");
+        country.save();
+        country = new Country("Sweden", CountryCode.SE, "/assets/app/images/country/se.png");
+        country.save();
+        country = new Country("Thailand", CountryCode.TH, "/assets/app/images/country/th.png");
+        country.save();
+        country = new Country("Taiwan", CountryCode.TW, "/assets/app/images/country/us.png");
+        country.save();
+        country = new Country("America", CountryCode.US, "/assets/app/images/country/us.png");
+        country.save();
     }
     
     private static void bootstrapSystemInfo() {

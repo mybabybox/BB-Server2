@@ -2,8 +2,8 @@ package viewmodel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import domain.CountryCode;
-import models.Icon;
+import models.Country;
+import models.Country.CountryCode;
 import models.Post;
 import models.User;
 
@@ -73,9 +73,9 @@ public class PostVMLite {
         this.countryCode = post.countryCode.name();
         
         if (post.countryCode != null && post.countryCode != CountryCode.NA) {
-            Icon icon = Icon.getCountryIcon(post.countryCode.name());
-            if (icon != null) {
-                this.countryIcon = icon.getUrl();
+            Country country = Country.getCountry(post.countryCode);
+            if (country != null) {
+                this.countryIcon = country.getIcon();
             }
         }
     }
