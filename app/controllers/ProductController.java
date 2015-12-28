@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.inject.Inject;
 
 import babybox.shopping.social.exception.SocialObjectNotCommentableException;
@@ -97,7 +99,7 @@ public class ProductController extends Controller{
 	        freeDelivery = false;
 	    }
 	    
-	    if (countryCode == null) {
+	    if (StringUtils.isEmpty(countryCode)) {
 	        countryCode = CountryCode.NA.name();
 	    }
 	    
@@ -195,7 +197,7 @@ public class ProductController extends Controller{
             freeDelivery = false;
         }
         
-        if (countryCode == null) {
+        if (StringUtils.isEmpty(countryCode)) {
             countryCode = CountryCode.NA.name();
         }
         

@@ -189,7 +189,7 @@ GET     /image/get-mini-message-image-by-id/:id     controllers.UserController.g
 
 # Other
 GET     /get-all-districts                          controllers.Application.getAllDistricts
-GET     /get-all-countries                          controllers.Application.getAllCountries
+GET     /get-countries                              controllers.Application.getCountries
 GET     /get-featured-items/:itemType               controllers.Application.getFeaturedItems(itemType:String)
 
 # mobile

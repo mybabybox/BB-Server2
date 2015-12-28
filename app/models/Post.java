@@ -20,6 +20,7 @@ import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import models.Country.CountryCode;
 import play.db.jpa.JPA;
 import babybox.shopping.social.exception.SocialObjectNotCommentableException;
 
@@ -148,11 +149,11 @@ public class Post extends SocialObject implements Likeable, Commentable {
         }
     }
 	
-	public static Country.CountryCode parseCountryCode(String countryCode) {
+	public static CountryCode parseCountryCode(String countryCode) {
         try {
-            return Enum.valueOf(Country.CountryCode.class, countryCode);
+            return Enum.valueOf(CountryCode.class, countryCode);
         } catch (Exception e) {
-            return null;
+            return CountryCode.NA;
         }
     }
 	

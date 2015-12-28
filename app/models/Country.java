@@ -32,6 +32,8 @@ public class Country extends domain.Entity {
     
     public String icon;
 
+    public int seq;
+    
     public Boolean deleted = false;
     
     @Enumerated(EnumType.STRING)
@@ -72,10 +74,11 @@ public class Country extends domain.Entity {
         this.name = name;
         this.code = code;
         this.icon = icon;
+        this.seq = code.ordinal();
     }
     
     public static List<Country> loadCountries() {
-        Query q = JPA.em().createQuery("Select c from Country c where deleted=0");
+        Query q = JPA.em().createQuery("Select c from Country c where deleted = false order by seq");
         return (List<Country>)q.getResultList();
     }
 

@@ -745,7 +745,7 @@ public class Application extends Controller {
     }
 	
 	@Transactional
-    public static Result getAllCountries() {
+    public static Result getCountries() {
 	    List<CountryVM> vms = new ArrayList<>();
 	    try {
 	        List<Country> countries = CountryCache.getCountries();
