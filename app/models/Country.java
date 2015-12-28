@@ -50,7 +50,6 @@ public class Country extends domain.Entity {
         TH,    // Thailand
         MY,    // Malaysia
         ID,    // Indonesia
-        IN,    // India
         AU,    // Australia
         NZ,    // New Zealand
         DE,    // Germany
