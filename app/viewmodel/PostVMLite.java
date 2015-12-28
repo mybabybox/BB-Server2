@@ -30,6 +30,7 @@ public class PostVMLite {
 	@JsonProperty("offset") public Long offset;
 	
 	// seller fields
+	@JsonProperty("originalPrice") public double originalPrice;
 	@JsonProperty("freeDelivery") public Boolean freeDelivery;
 	@JsonProperty("countryCode") public String countryCode;
 	@JsonProperty("countryIcon") public String countryIcon;
@@ -69,6 +70,7 @@ public class PostVMLite {
 	        this.timeScore = post.timeScore;
         }
         
+        this.originalPrice = post.originalPrice;
         this.freeDelivery = post.freeDelivery;
         this.countryCode = post.countryCode.name();
         

@@ -355,7 +355,7 @@ public class User extends SocialObject implements Subject, Followable {
 	@Transactional
 	public Post createProduct(
 	        String title, String body, Category category, Double price, ConditionType conditionType, 
-	        Boolean freeDelivery, CountryCode countryCode, DeviceType deviceType) {
+	        Double originalPrice, Boolean freeDelivery, CountryCode countryCode, DeviceType deviceType) {
 	    
 		if (Strings.isNullOrEmpty(title) || 
 				Strings.isNullOrEmpty(body) || category == null || price == -1D) {
@@ -363,7 +363,9 @@ public class User extends SocialObject implements Subject, Followable {
 			return null;
 		}
 		
-		Post post = new Post(this, title, body, category, price, conditionType, freeDelivery, countryCode, deviceType);
+		Post post = new Post(
+		        this, title, body, category, price, conditionType, 
+		        originalPrice, freeDelivery, countryCode, deviceType);
 		post.save();
 		
 		recordPostProduct(this, post);
@@ -376,7 +378,7 @@ public class User extends SocialObject implements Subject, Followable {
 	@Transactional
     public Post editProduct(
             Post post, String title, String body, Category category, Double price, Post.ConditionType conditionType, 
-            Boolean freeDelivery, CountryCode countryCode) {
+            Double originalPrice, Boolean freeDelivery, CountryCode countryCode) {
 	    
 	    if (Strings.isNullOrEmpty(title) ||
 	            post == null || Strings.isNullOrEmpty(body) || category == null || price == -1D) {
@@ -389,6 +391,7 @@ public class User extends SocialObject implements Subject, Followable {
         post.category = category;
         post.price = price;
         post.conditionType = conditionType;
+        post.originalPrice = originalPrice;
         post.freeDelivery = freeDelivery;
         post.countryCode = countryCode;
         post.merge();

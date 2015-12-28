@@ -82,6 +82,8 @@ public class Post extends SocialObject implements Likeable, Commentable {
     public Date soldDate;
     
 	// Seller fields
+	public Double originalPrice = 0.0;
+	
 	public Boolean freeDelivery = false;
 	
 	@Enumerated(EnumType.ORDINAL)
@@ -127,7 +129,7 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	}
 
 	public Post(User owner, String title, String body, Category category, Double price, ConditionType conditionType, 
-	        Boolean freeDelivery, Country.CountryCode countryCode, DeviceType deviceType) {
+	        Double originalPrice, Boolean freeDelivery, Country.CountryCode countryCode, DeviceType deviceType) {
 		this.owner = owner;
 		this.title = title;
 		this.body = body;
@@ -135,6 +137,7 @@ public class Post extends SocialObject implements Likeable, Commentable {
 		this.price = price;
 		this.postType = PostType.PRODUCT;
 		this.conditionType = conditionType;
+		this.originalPrice = originalPrice;
 		this.freeDelivery = freeDelivery;
 		this.countryCode = countryCode;
 		this.objectType = SocialObjectType.POST;
