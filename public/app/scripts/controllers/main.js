@@ -413,7 +413,6 @@ babybox.controller('UserFollowController',
 	writeMetaCanonical($location.absUrl());
 	
 	$scope.followers = followers;
-	console.log($scope.followers);
 	$scope.userInfo = userInfo;
 	var url = $location.absUrl();
 	var values= url.split("/");
