@@ -11675,9 +11675,9 @@ a:hover {
 
 @media (-webkit-min-device-pixel-ratio: 3) {
     .ic_offerlist_like {
-        width: 15px;
-        height: 15px;
-        background-size: 15px 15px
+        width: 12px;
+        height: 12px;
+        background-size: 12px 12px
     }
 }
 

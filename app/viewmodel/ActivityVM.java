@@ -29,11 +29,15 @@ public class ActivityVM {
         this.actor = activity.actor;
         this.actorImage = activity.actorImage;
         this.actorName = activity.actorName;
-        this.actorType = activity.actorType.name();
+        if (activity.actorType != null) {
+            this.actorType = activity.actorType.name();
+        }
         this.target = activity.target;
         this.targetImage = activity.targetImage;
         this.targetName = activity.targetName;
-        this.targetType = activity.targetType.name();
+        if (activity.targetType != null) {
+            this.targetType = activity.targetType.name();
+        }
         this.viewed = activity.viewed;
 	}
 }

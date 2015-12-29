@@ -13,21 +13,24 @@
    </div>
    <div class="bottom normal false">
     <div class="item-detail">
-     <div class="name L14 truncate">{{product.title}}</div>
+     <div class="name L14 truncate">
+        <img class="logo" src="{{product.countryIcon}}" ng-if="product.countryIcon && product.countryIcon != ''">{{product.title}}
+     </div>
      <div class="price m12 truncate">
-      <span class="dollarfy_sign" style="display: inline;">$</span>
-      <span class="dollarfy_ext_int" style="display: inline;">{{product.price}}</span>
+      <span class="dollarfy_ext_int" style="display: inline;">${{product.price}}</span>
+      <span class="dollarfy_ext_int_strike" style="display: inline;" ng-if="product.originalPrice > 0">${{product.originalPrice}}</span>
+      <img class="item-tag" src="/assets/app/images/general/icons/free_delivery.png" ng-if="product.freeDelivery">
       <span class="item-status right">
         <div class="likes half">
          <div class="icon_like ic_offerlist_like"></div>
          <span class="number r12">{{product.numLikes}}</span>
          <div class="clickable"></div>
         </div>
-        <div class="comments half">
+        <!--div class="comments half">
          <div class="ic_offerlist_comment"></div>
          <span class="number r12">{{product.numComments}}</span>
          <div class="clickable"></div>
-        </div>
+        </div-->
       </span>
      </div>
     </div>

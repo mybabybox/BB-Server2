@@ -69,53 +69,8 @@
      <ul class="item-list-pop swiper-slide swiper-slide-active"
       data-cate="pop"
       style="min-height: 629px; text-align: left; width: 102%;">
-      <li class="item-card simple null"
-       ng-repeat="product in products track by $index">
-       <div class="margin-holder">
-        <div class="margin-holder-inner">
-         <a class="item-href normal" href="/product/{{product.id}}">
-          <div class="holder normal">
-           <div class="image-wrapper">
-            <img
-             data-ng-src="/image/get-post-image-by-id/{{product.images[0]}}">
-             <img data-ng-if="product.sold" class="sold" src="../../../assets/app/images/general/icons/sold.png">
-            <div class="mask"></div>
-
-            <div class="status_band"></div>
-           </div>
-          </div>
-          <div class="bottom normal false">
-           <div class="item-detail">
-            <div class="name L14 truncate">{{product.title}}</div>
-            <div class="price m12 truncate">
-             <span class="dollarfy_sign" style="display: inline;">$</span><span
-              class="dollarfy_ext_int" style="display: inline;">{{product.price}}</span>
-            </div>
-           </div>
-           <span class="item-status right">
-	         <div class="likes half">
-	          <div class="icon_like ic_offerlist_like"></div>
-	          <span class="number r12">{{product.numLikes}}</span>
-	          <div class="clickable"></div>
-	         </div>
-	         <div class="comments half">
-	          <div class="ic_offerlist_comment"></div>
-	          <span class="number r12">{{product.numComments}}</span>
-	          <div class="clickable"></div>
-	         </div>
-	       </span>
-           <div class="action-text L12"
-            data-i18n="label_this_product_normal"></div>
-           <div class="action-btn unlike" data-shopid="49220"
-            data-itemid="217532">
-            <span class="ic_unlike_icon"></span><span class="text L12"
-             data-i18n="label_unlike">Unlike</span>
-           </div>
-          </div>
-         </a>
-         <div class="data-stock hidden">458</div>
-        </div>
-       </div>
+      <li class="item-card simple null" ng-repeat="product in products track by $index">
+        <div data-ng-include style="width: 100%;" data-src="'/assets/app/views/babybox/web/feed-product-info.html'"></div>
       </li>
     </div>
    </div>

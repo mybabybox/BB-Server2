@@ -1497,6 +1497,25 @@ label {
     margin-left: 4px
 }
 
+#item-page .top-part .item-title .logo {
+    float: left;
+    display: inline;
+    width: 30px;
+    height: 18px;
+    margin: 2px 6px 0 0;
+    border: 1px solid #eee;
+    transition: opacity .3s,transform .3s;
+}
+
+#item-page .top-part .item-title .item-tag {
+    display: inline;
+    width: 30px;
+    height: 18px;
+    margin: 0 0 2px 6px;
+    transition: opacity .3s,transform .3s;
+    vertical-align: text-bottom;
+}
+
 #item-page .top-part .item-title .title {
     position: relative;
     padding-top: 8px;
@@ -1510,18 +1529,26 @@ label {
 
 #item-page .top-part .item-title .price {
     position: relative;
-    margin-top: 4px
+    margin-top: 0
 }
 
 #item-page .top-part .item-title .price .price-inner {
-    font-size: 16px;
-    font-weight: bold;
-    color: #2CBA28
+
 }
 
 #item-page .top-part .item-title .price .price-inner .dollarfy_sign,
 #item-page .top-part .item-title .price .price-inner .dollarfy_val {
-    font-weight: 500
+	font-size: 17px;
+    font-weight: bold;
+    color: #2CBA28
+}
+
+#item-page .top-part .item-title .price .price-inner .dollarfy_sign_strike,
+#item-page .top-part .item-title .price .price-inner .dollarfy_val_strike {
+    font-size: 15px;
+    font-weight: normal;
+    color: #999;
+    text-decoration: line-through
 }
 
 #item-page .top-part .item-title .price .shipping-fee-select {

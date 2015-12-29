@@ -122,6 +122,10 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
 			this.actorType = SocialObjectType.USER;
 			this.targetType = SocialObjectType.POST;
 			break;
+		case NEW_GAME_BADGE:
+		    this.actorType = SocialObjectType.USER;
+            this.targetType = null;
+		    break;
 		default:
 		    logger.underlyingLogger().error("setActorTargetType: set to default.. unknown activityType="+activityType.name());
 		    this.actorType = SocialObjectType.USER;

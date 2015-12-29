@@ -203,7 +203,7 @@ body {
     padding-top: 100%;
     background: white;
     margin-top: 25px;
-    margin-bottom: 60px
+    margin-bottom: 45px
 }
 
 .item-card .mask-for-owner {
@@ -452,7 +452,7 @@ body {
     position: absolute;
     width: 100%;
     top: 100%;
-    padding: 9px 12px;
+    padding: 3px 7px;
     /*height: 76px;*/
     margin-top: -1px
 }
@@ -461,29 +461,60 @@ body {
     text-align: left
 }
 
+.item-card .bottom .item-detail .logo {
+    float: left;
+    display: inline;
+    width: 26px;
+    height: 16px;
+    margin: 1px 4px 0 0;
+    border: 1px solid #eee;
+    transition: opacity .3s,transform .3s;
+}
+
+.item-card .bottom .item-detail .item-tag {
+    display: inline;
+    width: 26px;
+    height: 16px;
+    margin: 0 0 0 4px;
+    transition: opacity .3s,transform .3s;
+    vertical-align: text-bottom;
+}
+
 .item-card .bottom .item-detail .name {
     position: relative;
     color: rgba(0, 0, 0, 0.87)
 }
 
 .item-card .bottom .item-detail .price {
+    margin-top: 2px;
+}
+
+.item-card .bottom .item-detail .price .dollarfy_sign, 
+.item-card .bottom .item-detail .price .dollarfy_sign_strike {
+    margin-right: 0px;
+}
+
+.item-card .bottom .item-detail .price .dollarfy_sign, 
+.item-card .bottom .item-detail .price .dollarfy_ext_int {
     font-size: 14px;
     color: #2CBA28;
-    margin-top: 2px
-}
-
-.item-card .bottom .item-detail .price span {
-    font-weight: bold
-}
-
-.item-card .bottom .item-detail .price .dollarfy_ext_int {
+    font-weight: normal;
     margin-left: 0px
+}
+
+.item-card .bottom .item-detail .price .dollarfy_sign_strike, 
+.item-card .bottom .item-detail .price .dollarfy_ext_int_strike {
+    font-size: 12px;
+    color: #999;
+    font-weight: normal;
+    margin-left: 1px;
+    text-decoration: line-through
 }
 
 .item-card .bottom .item-status {
     position: absolute;
-    bottom: 10px;
-    padding-right: 15px
+    bottom: 5px;
+    padding-right: 5px
 }
 
 .item-card .bottom .item-status .likes,
@@ -507,7 +538,7 @@ body {
 .item-card .bottom .item-status .comments .number {
     display: inline-block;
     vertical-align: middle;
-    color: #b6b8c4
+    color: #aaa
 }
 
 .item-card .bottom .item-status .comments:before {

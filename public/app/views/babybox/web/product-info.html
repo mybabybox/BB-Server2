@@ -27,11 +27,14 @@
  <div class="top-part">
 
   <div class="item-title">
-   <div id="title-name" class="title r16">{{product.title}}</div>
+   <div id="title-name" class="title r16">
+    <img class="logo" src="{{product.countryIcon}}" ng-if="product.countryIcon && product.countryIcon != ''">{{product.title}}
+   </div>
    <div class="price">
     <div class="price-inner m24" id="item-price">
-     <span class="dollarfy_sign" dir="ltr" style="display: inline;">$</span>
-     <span class="dollarfy_val" currency="HKD" val="3000000">{{product.price}}</span>
+     <span class="dollarfy_val">${{product.price}}</span>
+     <span class="dollarfy_val_strike" ng-if="product.originalPrice > 0">${{product.originalPrice}}</span>
+     <img class="item-tag" src="/assets/app/images/general/icons/free_delivery.png" ng-if="product.freeDelivery">
     </div>
    </div>
   </div>
