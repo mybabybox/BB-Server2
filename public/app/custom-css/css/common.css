@@ -2369,8 +2369,6 @@ pre code {
 .container-fluid {
     margin-right: auto;
     margin-left: auto;
-    padding-left: 8px;
-    padding-right: 8px
 }
 
 .container-fluid:before,

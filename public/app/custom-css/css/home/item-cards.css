@@ -64,6 +64,94 @@ label {
     max-width: 100%
 }
 
+.popular_product_label_wrapper {
+    width: 100%;
+    position: relative;
+    margin-left: 12px;
+    margin-right: 12px;
+    text-align: center;
+    margin-top: 12px
+}
+
+.popular_product_label_wrapper:before {
+    content: "";
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    top: 8px;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.09)
+}
+
+.popular_product_label_wrapper .popular_product_label {
+    z-index: 2;
+    display: inline-block;
+    text-align: center;
+    background-color: #efefef;
+    color: rgba(0, 0, 0, 0.26)
+}
+
+.popular_products_wrapper {
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-top: 8px;
+    overflow: hidden
+}
+
+.popular_products_wrapper ul {
+    margin-right: 2px
+}
+
+.popular_products_wrapper .col-xs-4 {
+    padding-left: 0;
+    padding-right: 3px;
+    padding-bottom: 3px
+}
+
+.popular_products_wrapper .col-xs-4 .item-card {
+    box-sizing: content-box;
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat no-repeat
+}
+
+.popular_products_wrapper .col-xs-4 .item-card .status-band {
+    position: absolute;
+    right: 3px;
+    top: 0
+}
+
+.popular_products_wrapper .col-xs-4 .item-card .status-band:empty {
+    display: none
+}
+
+.popular_products_wrapper .col-xs-4 .item-card .status-band .badge-fixed-width {
+    vertical-align: top
+}
+
+.popular_products_wrapper .col-xs-4 .item-card .product-price {
+    bottom: 3px;
+    right: 3px;
+    position: absolute;
+    padding: 0 4px;
+    min-width: 36px;
+    line-height: 16px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.54)
+}
+
+.popular_products_wrapper .col-xs-4 .item-card .dummy {
+    padding-top: 100%
+}
+
+.popular_products_wrapper .col-xs-4 .item-card img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%
+}
+
 .badge-fixed-width {
     display: inline-block;
     box-sizing: border-box;
