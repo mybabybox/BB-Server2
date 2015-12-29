@@ -63,6 +63,14 @@ babybox.controller('HomeController',
 	}
 	
 	// UI helper
+	$(window).scroll(function(e){
+		$scope.position = window.pageYOffset;
+		if($scope.position > 750) {
+			$("#back-to-top").show();
+		} else {
+			$("#back-to-top").hide();
+		}
+		});
 	
 	$scope.gotoTop=function(){
 		$location.hash('');
@@ -169,6 +177,19 @@ babybox.controller('CategoryPageController',
 			}
 		}		
 	}
+	$(window).scroll(function(e){
+		$scope.position = window.pageYOffset;
+		if($scope.position > 750) {
+			$("#back-to-top").show();
+		} else {
+			$("#back-to-top").hide();
+		}
+		});
+	
+	$scope.gotoTop=function(){
+		$location.hash('');
+		$anchorScroll();
+	};
 	
 });
 
@@ -240,7 +261,7 @@ babybox.controller('CommentOnProductController',
 
 
 babybox.controller('ProfileController', 
-		function($scope, $location, $route, $rootScope, $window, profileUser, userService, userInfo, followService, ngDialog) {
+		function($scope, $location, $route, $rootScope, $window, $anchorScroll, profileUser, userService, userInfo, followService, ngDialog) {
 
 	writeMetaCanonical($location.absUrl());
 	//writeMetaTitleDescription(profileUser.displayName, "看看 BabyBox 商店");
@@ -309,10 +330,24 @@ babybox.controller('ProfileController',
 			}
 		}		
 	}
+	$(window).scroll(function(e){
+		$scope.position = window.pageYOffset;
+		if($scope.position > 750) {
+			$("#back-to-top").show();
+		} else {
+			$("#back-to-top").hide();
+		}
+		console.log($scope.position);
+		});
+	
+	$scope.gotoTop=function(){
+		$location.hash('');
+		$anchorScroll();
+	};
 });
 
 babybox.controller('CommentController', 
-		function($scope, $location, $route, $http, comments, userInfo, productService) {
+		function($scope, $location, $route, $http, $anchorScroll, comments, userInfo, productService) {
 	
 	writeMetaCanonical($location.absUrl());
 	
@@ -357,10 +392,23 @@ babybox.controller('CommentController',
 		}
 	}
 
+	$(window).scroll(function(e){
+		$scope.position = window.pageYOffset;
+		if($scope.position > 750) {
+			$("#back-to-top").show();
+		} else {
+			$("#back-to-top").hide();
+		}
+		});
+	
+	$scope.gotoTop=function(){
+		$location.hash('');
+		$anchorScroll();
+	};
 });
 
 babybox.controller('UserFollowController', 
-		function($scope, $location, $route, $http, followers, userInfo, followService) {
+		function($scope, $location, $route, $anchorScroll, $http, followers, userInfo, followService) {
 	
 	writeMetaCanonical($location.absUrl());
 	
@@ -376,7 +424,7 @@ babybox.controller('UserFollowController',
 		$scope.noMore = true;
 	
 	$scope.onFollowUser = function(formFollower) {
-		if(formFollower.id != $scope.user.id){
+		if(formFollower.id != $scope.userInfo.id){
 			followService.followUser.get({id:formFollower.id});
 			formFollower.isFollowing = !formFollower.isFollowing;
 			formFollower.numFollowings++;
@@ -395,7 +443,7 @@ babybox.controller('UserFollowController',
 		if(($scope.followers.length!=0) && ($scope.noMore == true) && flag == true){
 			if($scope.follow == 'followers'){
 				flag=false;
-				followService.userfollowers.get({id:$scope.user.id, offset:off}, function(data){
+				followService.userfollowers.get({id:$scope.userInfo.id, offset:off}, function(data){
 					off++;
 					if(data.length == 0)
 						$scope.noMore = false;
@@ -408,7 +456,7 @@ babybox.controller('UserFollowController',
 			}
 			if($scope.follow == 'followings'){
 				flag=false;
-				followService.userfollowings.get({id:$scope.user.id, offset:off}, function(data){
+				followService.userfollowings.get({id:$scope.userInfo.id, offset:off}, function(data){
 					console.log(data);
 					console.log('followings');
 					off++;
@@ -423,6 +471,19 @@ babybox.controller('UserFollowController',
 			}	
 		}	
 	}
+	$(window).scroll(function(e){
+		$scope.position = window.pageYOffset;
+		if($scope.position > 750) {
+			$("#back-to-top").show();
+		} else {
+			$("#back-to-top").hide();
+		}
+		});
+	
+	$scope.gotoTop=function(){
+		$location.hash('');
+		$anchorScroll();
+	};
 });
 
 /*
