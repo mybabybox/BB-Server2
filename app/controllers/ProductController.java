@@ -347,7 +347,7 @@ public class ProductController extends Controller{
 		List<String> originalImages = new ArrayList<>();
 		List<String> miniImages = new ArrayList<>();
 		for(Long imageId : product.images){
-			originalImages.add("background-image:url('"+Application.APPLICATION_BASE_URL+"/image/get-post-image-by-id/"+imageId+"')");
+			originalImages.add("background-image:url('"+Application.APPLICATION_BASE_URL+"/image/get-original-post-image-by-id/"+imageId+"')");
 		}
 		images.put("original", originalImages);
 		List<PostVMLite> suggestedPosts = feedHandler.getPostVM(id, 0l, localUser, FeedType.PRODUCT_SUGGEST);

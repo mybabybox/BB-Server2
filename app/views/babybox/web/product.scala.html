@@ -32,36 +32,32 @@
 	
 	<body id="main-app" class="menu-right-hidden" ng-app="babybox" ng-controller="ProductPageController">
 	 <span us-spinner spinner-key="loading..."></span>
-	 <div ng-controller="ProductPageController">
+	 <div class="container-fluid menu-hidden">
 	  <div id="main-view">
-	
-	   <div class="themeA-container" style="padding-top: 55px">
-	    <div class="page-holder center-container" id="item-page">
-	     <div class="top-part">
-	      <div id='top-image'>
-	       <!-- Swiper -->
-	       <div class="swiper-container gallery-top">
-	        <div class="swiper-wrapper">
-	         @for(image <- images.get("original")) {
-	          <div class="swiper-slide" style="@image"></div>
-	          
-	         }
-	        </div>
-	        <!-- Add Arrows -->
-	        <div class="swiper-button-next swiper-button"></div>
-	        <div class="swiper-button-prev swiper-button"></div>
+	   <div class='header-holder'></div>
+	   <div class="page-holder center-container" id="item-page">
+	    <div class="top-part">
+	     <div id='top-image'>
+	      <!-- Swiper -->
+	      <div class="swiper-container gallery-top">
+	       <div class="swiper-wrapper">
+	        @for(image <- images.get("original")) {
+	         <div class="swiper-slide" style="@image"></div>
+	        }
 	       </div>
-	
+	       <!-- Add Arrows -->
+	       <div class="swiper-button-next swiper-button"></div>
+	       <div class="swiper-button-prev swiper-button"></div>
 	      </div>
-	     </div>
-	     <div data-ng-include
-	      data-src="'/assets/app/views/babybox/web/product-info.html'"></div>
-	    </div>
-	   </div>
 	
+	     </div>
+	    </div>
+	    <div data-ng-include
+	     data-src="'/assets/app/views/babybox/web/product-info.html'"></div>
+	   </div>
 	  </div>
 	 </div>
-	 </div>
+
 	 <script type="text/javascript" src="@routes.Assets.versioned("app/scripts/pre-angular.js")"></script>
 	 <script type="text/javascript" src="@routes.Assets.versioned("components/library/jquery/jquery.min.js")"></script>
 	 <script type="text/javascript" src="@routes.Assets.versioned("components/library/jquery/jquery.validate.min.js")"></script>
@@ -136,6 +132,7 @@
 	text-align: center;
 	font-size: 18px;
 	background: #fff;
+	background-size: 350px auto;
 	/* Center slide text vertically */
 	display: -webkit-box;
 	display: -ms-flexbox;

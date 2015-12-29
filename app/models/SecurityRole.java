@@ -19,8 +19,6 @@ public class SecurityRole extends domain.Entity implements Role {
     private static final long serialVersionUID = 1L;
     
     public static final String USER = "USER";
-    public static final String SYSTEM_USER = "SYSTEM_USER";
-    public static final String SUPER_ADMIN = "SUPER_ADMIN";
     
     public SecurityRole() {}
 
