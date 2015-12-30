@@ -50,6 +50,7 @@ public class UserVMLite {
         this.numCollections = user.numCollections;
         
         // Fill up below for logged in users only
+        this.isLoggedIn = user.isLoggedIn();
         if (!user.isLoggedIn()) {
             return;
         }
@@ -61,7 +62,6 @@ public class UserVMLite {
         this.createdDate = user.getCreatedDate().getTime();
         this.lastLogin = user.lastLogin.getTime();
         this.totalLogin = user.totalLogin;
-        this.isLoggedIn = user.isLoggedIn();
         this.isFbLogin = user.fbLogin;
         this.emailProvidedOnSignup = user.emailProvidedOnSignup;
         this.emailValidated = user.emailValidated;

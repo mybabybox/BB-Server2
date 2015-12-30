@@ -26,7 +26,7 @@ import play.db.jpa.JPA;
  * INSERT INTO FeaturedItem  
  * (CREATED_DATE,name,description,image,seq,itemType,destinationType,destinationObjId,destinationObjName,deleted)  
  * values 
- * (NOW(),'Goon Promotion 1','','http://localhost:9000/assets/app/images/promotion/goon-banner-1.jpg',1,'HOME_SLIDER','CATEGORY',5,'',false);
+ * (NOW(),'Goon Promotion 1','','http://www.baby-box.com.hk/assets/app/images/promotion/goon-banner-1.jpg',1,'HOME_SLIDER','CATEGORY',5,'',false);
  */
 @Entity
 @EntityListeners(AuditListener.class)

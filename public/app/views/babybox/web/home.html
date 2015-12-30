@@ -33,7 +33,7 @@
     <div class="ratio_8_7_box category-wrapper"
      style="background-image: url({{cat.icon}})"></div>
     <div class="middle-centered-div subcat-title">
-     <div class="title r14 category-grid-title">{{ cat.name | translate }}</div>
+     <div class="title r14 category-grid-title">{{cat.name}}</div>
     </div>
    </a>
   </div>
@@ -43,12 +43,12 @@
   <li ng-class="homeFeed? 'active' :'' "
    class='header_tab_item popular clickable_area swiper-pagination-switch swiper-pagination-switch-0'
    ng-click="getHomeExploreProducts()" data-sorttype='popular'>
-   Explore</li>
+   EXPLORE|translate</li>
    
   <li ng-if="userInfo.isLoggedIn" ng-class="homeFeed? '' :'active' "
    class='header_tab_item latest clickable_area swiper-pagination-switch swiper-pagination-switch-1'
    ng-click="getHomeFollowingProducts()" data-sorttype='following'>
-   Following</li>
+   FOLLOWING|translate</li>
  </ul>
  <ul class='header_tabs_fixed M14 center-container'>
   <li

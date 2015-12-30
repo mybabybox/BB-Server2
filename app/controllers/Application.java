@@ -154,8 +154,7 @@ public class Application extends Controller {
         
         if (!User.isLoggedIn(user)){
             return login();
-        }
-        if (User.isLoggedIn(user) && user.userInfo == null) {
+        } else if (user.userInfo == null) {
             if (user.fbLogin) {
                 return ok(views.html.signup_info_fb.render(user));
             }

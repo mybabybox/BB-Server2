@@ -4,6 +4,7 @@ var babybox = angular.module('babybox');
 
 babybox.controller('HomeController', 
 		function($scope, $translate, $location, $route, feedService, productService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService) {
+	
 	writeMetaCanonical($location.absUrl());
 	
 	usSpinnerService.spin('loading...');
@@ -12,7 +13,6 @@ babybox.controller('HomeController',
 	$scope.homeFeed=true;
 	
 	$scope.products = productService.getHomeExploreFeed.get({offset:0});
-	console.log($scope.products);
 	$scope. getHomeExploreProducts= function () {
 		$scope.products = productService.getHomeExploreFeed.get({offset:0});
 		$scope.homeFeed=true;
@@ -37,12 +37,13 @@ babybox.controller('HomeController',
 			if($scope.homeFeed){
 				flag=false;
 				productService.getHomeExploreFeed.get({offset:off}, function(data){
-					if(data.length == 0)
+					if(data.length == 0) {
 						$scope.noMore=false;
+					}
 					angular.forEach(data, function(value, key) {
-						console.log(data);
-						if(!flag)
+						if(!flag) {
 							$scope.products.push(value);
+						}
 					});
 					flag=true;
 				});
@@ -50,8 +51,9 @@ babybox.controller('HomeController',
 			if($scope.homeFeed==false){
 				flag=false;
 				productService.getHomeFollowingFeed.get({offset:off}, function(data){
-					if(data.length == 0)
+					if(data.length == 0) {
 						$scope.noMore=false;
+					}
 					angular.forEach(data, function(value, key) {
 						if(!flag)
 							$scope.products.push(value);
@@ -195,7 +197,7 @@ babybox.controller('CategoryPageController',
 });
 
 babybox.controller('ProductPageController', 
-		function($scope, $location,$translate, $route, $rootScope, $http, $window, likeService, userService, productService, product, userInfo, suggestedPost) {
+		function($scope, $location, $translate, $route, $rootScope, $http, $window, likeService, userService, productService, product, userInfo, suggestedPost) {
 
 	writeMetaCanonical($location.absUrl());
 	/*
@@ -210,7 +212,7 @@ babybox.controller('ProductPageController',
 	$scope.suggestedPost = suggestedPost;
 
 	$scope.like_Unlike = function(id) {
-		if($scope.userInfo.id != -1){
+		if ($scope.userInfo.isLoggedIn) {
 			if($scope.product.isLiked){
 				likeService.unLikeProduct.get({id:id});
 				$scope.product.isLiked = !$scope.product.isLiked;
@@ -220,6 +222,8 @@ babybox.controller('ProductPageController',
 				$scope.product.isLiked = !$scope.product.isLiked;
 				$scope.product.numLikes++;
 			}
+		} else if ($scope.userInfo.newUser) {
+			$window.location.href ='/home'; 
 		} else {
 			$window.location.href ='/login';
 		}
@@ -232,7 +236,7 @@ babybox.controller('ProductPageController',
 });
 
 babybox.controller('CommentOnProductController', 
-		function($scope, $location,$translate, $route, $http, likeService) {
+		function($scope, $location, $translate, $route, $http, likeService) {
 
 	writeMetaCanonical($location.absUrl());
 	
@@ -267,10 +271,11 @@ babybox.controller('ProfileController',
 	writeMetaCanonical($location.absUrl());
 	//writeMetaTitleDescription(profileUser.displayName, "看看 BabyBox 商店");
 
-	 $scope.toggleLang = function () {
-	        $translate.use() === 'en'? $translate.use('de') : $translate.use('en');
-	        location.reload();
-	    };
+	$scope.toggleLang = function () {
+		$translate.use() === 'zh'? $translate.use('en') : $translate.use('zh');
+		location.reload();
+	};
+	 
 	$scope.activeflag = true;
 	$scope.userInfo = userInfo;
 	$scope.user = profileUser;
@@ -278,14 +283,17 @@ babybox.controller('ProfileController',
 	$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
 	
 	$scope.onFollowUser = function() {
-		if($scope.userInfo.id != -1){
+		if ($scope.userInfo.isLoggedIn) {
 			followService.followUser.get({id:profileUser.id});
 			$scope.user.isFollowing = !$scope.user.isFollowing;
 			$scope.user.numFollowings++;
-		}
-		else
+		} else if ($scope.userInfo.newUser) {
+			$window.location.href ='/home';
+		} else {
 			$window.location.href ='/login';
+		}
 	}
+	
 	$scope.onUnFollowUser = function() {
 		followService.unFollowUser.get({id:profileUser.id});
 		$scope.user.isFollowing = !$scope.user.isFollowing;
@@ -352,7 +360,7 @@ babybox.controller('ProfileController',
 });
 
 babybox.controller('CommentController', 
-		function($scope, $location, $route,$translate, $http, $anchorScroll, comments, userInfo, productService) {
+		function($scope, $location, $route, $translate, $http, $anchorScroll, comments, userInfo, productService) {
 	
 	writeMetaCanonical($location.absUrl());
 	
@@ -413,7 +421,7 @@ babybox.controller('CommentController',
 });
 
 babybox.controller('UserFollowController', 
-		function($scope, $translate,$location, $route, $anchorScroll, $http, followers, userInfo, followService) {
+		function($scope, $translate, $location, $route, $anchorScroll, $http, followers, userInfo, followService) {
 	
 	writeMetaCanonical($location.absUrl());
 	

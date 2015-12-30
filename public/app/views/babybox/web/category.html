@@ -33,11 +33,9 @@
     <div class="avatar" style="background-image: url({{cat.icon}});"></div>
    </div>
    <div class="flex1 categoryname-wrapper">
-    <div class="categoryname truncate m18 flex1">{{ cat.name | translate }}</div>
+    <div class="categoryname truncate m18 flex1">{{cat.name}}</div>
    </div>
-
   </div>
-
  </header>
  
  <div class="center-container">
@@ -45,20 +43,16 @@
    <ul class='header_tabs M14 center-container' style="margin-top:0px">
     <li ng-class="catType=='popular'? 'active':'' "
      class='header_tab_item popular clickable_area'
-     data-sorttype='popular'><a
-     data-ng-href="/category/{{cat.id}}/popular">Popular</a></li>
+     data-sorttype='popular'><a data-ng-href="/category/{{cat.id}}/popular">POPULAR|translate</a></li>
     <li ng-class="catType=='newest'? 'active':'' "
      class='header_tab_item latest  clickable_area'
-     data-sorttype='latest'><a
-     data-ng-href="/category/{{cat.id}}/newest">Newest</a></li>
-    <li ng-class="catType=='high2low'? 'active':'' "
-     class='header_tab_item location  clickable_area'
-     data-sorttype='high2low'><a
-     data-ng-href="/category/{{cat.id}}/high2low">$$->$</a></li>
+     data-sorttype='latest'><a data-ng-href="/category/{{cat.id}}/newest">NEWEST|translate</a></li>
     <li ng-class="catType=='low2high'? 'active':''"
      class='header_tab_item location  clickable_area'
-     data-sorttype='low2high'><a
-     data-ng-href="/category/{{cat.id}}/low2high">$->$$</a></li>
+     data-sorttype='low2high'><a data-ng-href="/category/{{cat.id}}/low2high">$->$$</a></li>
+    <li ng-class="catType=='high2low'? 'active':'' "
+     class='header_tab_item location  clickable_area'
+     data-sorttype='high2low'><a data-ng-href="/category/{{cat.id}}/high2low">$$->$</a></li>
    </ul>
   </div>
 
