@@ -17,7 +17,9 @@ angular.module('babybox', [
   'ui.tinymce',
   'ui.utils',
   'ngSanitize',
-  'angularMoment'
+  'angularMoment',
+  'pascalprecht.translate',
+  'ngCookies'
 ])
 .config(function ($routeProvider, $locationProvider) {
 	/*
@@ -77,6 +79,34 @@ babybox.config(['$httpProvider', function($httpProvider) {
            };
     });
     
+babybox.config(['$translateProvider', function ($translateProvider) {
+	  $translateProvider.translations('en', {
+	    "童裝童鞋": "Kids shoes",
+	    "玩具教材": "Toys Textbooks ",
+	    "嬰兒食品": "Baby Food ",
+	    "BB用品": "BB Supplies",
+	    "生活百貨": "Life Stores",
+	    "其它": "Other",
+	    "header1":"Download Now BabyBox Mobile App",
+	    "header2":"BabyBox mother shoot that sell"
+	  });
+	 
+	  $translateProvider.translations('de', {
+	    "童裝童鞋": "童裝童鞋",
+	    "玩具教材": "玩具教材",
+	    "嬰兒食品": "嬰兒食品",
+	    "BB用品": "BB用品",
+	    "生活百貨": "生活百貨",
+	    "其它": "其它",	
+	    "header1":"立即下載 BabyBox 手機 App",	
+	    "header2":"BabyBox 媽媽即拍即賣"
+	  });
+	 
+	 // $translateProvider.preferredLanguage('en');
+	  $translateProvider.useLocalStorage();
+	}]);
+
+
 //babybox.config(['$httpProvider', function($httpProvider) {
 //    if (!$httpProvider.defaults.headers.get) {
 //        $httpProvider.defaults.headers.get = {};    

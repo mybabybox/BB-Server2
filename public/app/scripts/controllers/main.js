@@ -3,8 +3,7 @@
 var babybox = angular.module('babybox');
 
 babybox.controller('HomeController', 
-		function($scope, $location, $route, feedService, productService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService) {
-
+		function($scope, $translate, $location, $route, feedService, productService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService) {
 	writeMetaCanonical($location.absUrl());
 	
 	usSpinnerService.spin('loading...');
@@ -13,7 +12,7 @@ babybox.controller('HomeController',
 	$scope.homeFeed=true;
 	
 	$scope.products = productService.getHomeExploreFeed.get({offset:0});
-	
+	console.log($scope.products);
 	$scope. getHomeExploreProducts= function () {
 		$scope.products = productService.getHomeExploreFeed.get({offset:0});
 		$scope.homeFeed=true;
@@ -41,6 +40,7 @@ babybox.controller('HomeController',
 					if(data.length == 0)
 						$scope.noMore=false;
 					angular.forEach(data, function(value, key) {
+						console.log(data);
 						if(!flag)
 							$scope.products.push(value);
 					});
@@ -79,9 +79,10 @@ babybox.controller('HomeController',
 });
 
 babybox.controller('CategoryPageController', 
-		function($scope, $location, $route, $rootScope, ngDialog, $routeParams,userInfo, category, product, categoryService, $anchorScroll, usSpinnerService) {
+		function($scope, $location, $translate, $route, $rootScope, ngDialog, $routeParams,userInfo, category, product, categoryService, $anchorScroll, usSpinnerService) {
 	
 	writeMetaCanonical($location.absUrl());
+	
 	/*
 	writeMetaTitleDescription(
 			category.name, 
@@ -194,7 +195,7 @@ babybox.controller('CategoryPageController',
 });
 
 babybox.controller('ProductPageController', 
-		function($scope, $location, $route, $rootScope, $http, $window, likeService, userService, productService, product, userInfo, suggestedPost) {
+		function($scope, $location,$translate, $route, $rootScope, $http, $window, likeService, userService, productService, product, userInfo, suggestedPost) {
 
 	writeMetaCanonical($location.absUrl());
 	/*
@@ -231,7 +232,7 @@ babybox.controller('ProductPageController',
 });
 
 babybox.controller('CommentOnProductController', 
-		function($scope, $location, $route, $http, likeService) {
+		function($scope, $location,$translate, $route, $http, likeService) {
 
 	writeMetaCanonical($location.absUrl());
 	
@@ -261,11 +262,15 @@ babybox.controller('CommentOnProductController',
 
 
 babybox.controller('ProfileController', 
-		function($scope, $location, $route, $rootScope, $window, $anchorScroll, profileUser, userService, userInfo, followService, ngDialog) {
+		function($scope, $location, $translate, $route, $rootScope, $window, $anchorScroll, profileUser, userService, userInfo, followService, ngDialog) {
 
 	writeMetaCanonical($location.absUrl());
 	//writeMetaTitleDescription(profileUser.displayName, "看看 BabyBox 商店");
-	
+
+	 $scope.toggleLang = function () {
+	        $translate.use() === 'en'? $translate.use('de') : $translate.use('en');
+	        location.reload();
+	    };
 	$scope.activeflag = true;
 	$scope.userInfo = userInfo;
 	$scope.user = profileUser;
@@ -347,7 +352,7 @@ babybox.controller('ProfileController',
 });
 
 babybox.controller('CommentController', 
-		function($scope, $location, $route, $http, $anchorScroll, comments, userInfo, productService) {
+		function($scope, $location, $route,$translate, $http, $anchorScroll, comments, userInfo, productService) {
 	
 	writeMetaCanonical($location.absUrl());
 	
@@ -408,7 +413,7 @@ babybox.controller('CommentController',
 });
 
 babybox.controller('UserFollowController', 
-		function($scope, $location, $route, $anchorScroll, $http, followers, userInfo, followService) {
+		function($scope, $translate,$location, $route, $anchorScroll, $http, followers, userInfo, followService) {
 	
 	writeMetaCanonical($location.absUrl());
 	
