@@ -213,17 +213,19 @@ babybox.controller('ProductPageController',
 
 	$scope.like_Unlike = function(id) {
 		if ($scope.userInfo.isLoggedIn) {
-			if($scope.product.isLiked){
-				likeService.unLikeProduct.get({id:id});
-				$scope.product.isLiked = !$scope.product.isLiked;
-				$scope.product.numLikes--;
-			}else{
-				likeService.likeProduct.get({id:id});
-				$scope.product.isLiked = !$scope.product.isLiked;
-				$scope.product.numLikes++;
+			if ($scope.userInfo.newUser) {
+				$window.location.href ='/home';
+			} else {
+				if($scope.product.isLiked){
+					likeService.unLikeProduct.get({id:id});
+					$scope.product.isLiked = !$scope.product.isLiked;
+					$scope.product.numLikes--;
+				}else{
+					likeService.likeProduct.get({id:id});
+					$scope.product.isLiked = !$scope.product.isLiked;
+					$scope.product.numLikes++;
+				}
 			}
-		} else if ($scope.userInfo.newUser) {
-			$window.location.href ='/home'; 
 		} else {
 			$window.location.href ='/login';
 		}
@@ -284,11 +286,13 @@ babybox.controller('ProfileController',
 	
 	$scope.onFollowUser = function() {
 		if ($scope.userInfo.isLoggedIn) {
-			followService.followUser.get({id:profileUser.id});
-			$scope.user.isFollowing = !$scope.user.isFollowing;
-			$scope.user.numFollowings++;
-		} else if ($scope.userInfo.newUser) {
-			$window.location.href ='/home';
+			if ($scope.userInfo.newUser) {
+				$window.location.href ='/home';
+			} else {
+				followService.followUser.get({id:profileUser.id});
+				$scope.user.isFollowing = !$scope.user.isFollowing;
+				$scope.user.numFollowings++;
+			}
 		} else {
 			$window.location.href ='/login';
 		}
