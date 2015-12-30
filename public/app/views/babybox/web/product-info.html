@@ -45,7 +45,7 @@
      class="ic_icon ic_heart_filled"></div>
     <div ng-if="!product.isLiked" id="like-icon"
      class="ic_icon ic_heart"></div>
-    <div class="text r14 flex1" data-i18n="label_like">Like</div>
+    <div class="text r14 flex1" data-i18n="label_like">{{'LIKE'|translate}}</div>
     <div class="r14 number-container">
      <span class="number">{{product.numLikes}}</span>
     </div>
@@ -57,7 +57,7 @@
      class="comment clickable_area flex1 middle-centered-div">
 
      <div class="ic_icon ic_comment"></div>
-     <div class="text r14 flex1" data-i18n="label_comment">Comment</div>
+     <div class="text r14 flex1" data-i18n="label_comment">{{'COMMENTS'|translate}}</div>
      <div class="r14 number-container">
       <span class="number">{{product.numComments}}</span>
      </div>
@@ -73,7 +73,7 @@
   <div id="detail-part" class="info-part">
    <div class="detail">
     <div class="middle-centered-div detail-heading">
-     <div class="heading r14 flex1" data-i18n="label_product_info">Product Details</div>
+     <div class="heading r14 flex1" data-i18n="label_product_info">{{'PRODUCT_DETAILS'|translate}}</div>
      <div class="time middle-centered-div" id="list-time">
       <span class="ic_icon ic_clock"></span> 
       <span class="gray-line r12" am-time-ago="product.createdDate">
@@ -84,7 +84,7 @@
    </div>
    <div class="table">
     <div class="tr category-row middle-centered-div">
-     <div class="r14 th" data-i18n="label_category">Category</div>
+     <div class="r14 th" data-i18n="label_category">{{'CATEGORY'|translate}}</div>
      <div class="heavy L14 td flex1">
       <a class="middle-centered-div tr-padding"
        href="/category/{{product.categoryId}}/popular">
@@ -111,7 +111,7 @@
        </div>
       </div>
       <div class="view-box isPC r12">
-       <span data-i18n="label_view_shop">View Shop</span>
+       <span data-i18n="label_view_shop">{{'VIEW_SELLER'|translate}}</span>
       </div>
      </div>
 
@@ -123,7 +123,7 @@
        </div>
        <div class="box-right">
         <div class="number m18">{{product.ownerNumProducts}}</div>
-        <div class="text" data-i18n="label_products">Products</div>
+        <div class="text" data-i18n="label_products">{{'PRODUCTS'|translate}}</div>
        </div>
        <div class="space"></div>
       </li>
@@ -135,7 +135,7 @@
        </div>
        <div class="box-right r12">
         <div class="number m18">{{product.ownerNumFollowers}}</div>
-        <div class="text" data-i18n="label_positive_reviews">Followers</div>
+        <div class="text" data-i18n="label_positive_reviews">{{'SELLER_FOLLOWERS'|translate}}</div>
        </div>
        <div class="space"></div>
       </li>
@@ -185,10 +185,10 @@
      style="display: none;">Leave a comment</div>
     <div class="ic_icon ic_comment_red"></div>
     <div class="text m14">
-        <a href="/product-comments/{{product.id}}"
-            <span data-i18n="label_view_all">View all</span>
+        <a href="/product-comments/{{product.id}}">
+            <span data-i18n="label_view_all">{{'VIEW_ALL'|translate}}</span>
             <span class="number">{{product.numComments}}</span>
-            <span class="comment_text" data-i18n="label_comments">Comments</span>
+            <span class="comment_text" data-i18n="label_comments">{{'COMMENTS'|translate}}</span>
         </a>
     </div>
    </div>
@@ -215,21 +215,13 @@
    </div>
    <div class="btn-bottom-holder center-container">
     <div id="ok-button" class="btn-bottom clickable_area"
-     data-i18n="label_BUYNOW">BUY NOW</div>
+     data-i18n="label_BUYNOW">{{'BUY_NOW'|translate}}</div>
    </div>
   </div>
-  <div id="cover" class="cover"></div>
-  <div id="message" class="center-container">
-   <div class="message-title" data-i18n="label_message">Message</div>
-   <div class="close-button" id="close-btn">X</div>
-   <div class="message-content r14"></div>
-   <div class="message-button" id="msg-btn"
-    data-i18n="label_sendmessage">Send Message</div>
-  </div>
-
+  
   <div
    class="recommend-products-wrapper center-container no-padding-top">
-   <div class="recommend-info L12">You May Also Like</div>
+   <div class="recommend-info L12">{{'YOU_MAY_ALSO_LIKE'|translate}}</div>
    <div class="recommend-products">
     <div class="recommend-product clickable_area" data-ng-repeat="post in suggestedPost">
      <a href="/product/{{post.id}}"> <img
@@ -251,7 +243,7 @@
     <div class="left flex1">
      <div id="chat-to-offer"  class="clickable_area" ng-click="openPopup()">
       <div class="ic_icon ic_offer_chat" ></div>
-      <div class="text m14 SG" data-i18n="label_chat_to_offer">Chat Now</div>
+      <div class="text m14 SG" data-i18n="label_chat_to_offer">{{'CHAT_NOW'|translate}}</div>
      </div>
      <div id="offer-count" class="r14">
       <span data-i18n="label_you_have">You have</span> 0 <span
@@ -261,24 +253,8 @@
     <div class="padding-12"></div>
     <div class="right flex1">
      <div id="buy-button" class="m14 clickable_area flex1"
-      data-i18n="label_buy" ng-click="openPopup()">Buy Now</div>
-     <div id="viewoffer" class="clickable_area"
-      data-i18n="label_view_offers">View Offers</div>
+      data-i18n="label_buy" ng-click="openPopup()">{{'BUY_NOW'|translate}}</div>
     </div>
-   </div>
-   <div class="snapshot_view bottom_view" style="display: none;">
-    <div class="text" data-i18n="msg_this_is_snapshot">This is a
-     product snapshot</div>
-    <a class="view-href">
-     <div class="view-butt" data-i18n="labels_live_view">Live View</div>
-    </a>
-   </div>
-   <div class="banned_view bottom_view" style="display: none;">
-    <div class="text" data-i18n="label_this_product_banned">This
-     product has been banned</div>
-    <a class="update-href">
-     <div class="view-butt" data-i18n="label_update">Update</div>
-    </a>
    </div>
   </div>
  </div>
@@ -294,14 +270,14 @@
     <div class="dogi-logo">
         <div class="ic_logo_get"></div>
     </div>
- <div class="show-text L13">Download BabyBox for free now and list your product in 30 seconds. Everymom is a Seller!</div>
+ <div class="show-text L13">{{'APP_DOWNLOAD_MESSAGE'|translate}}</div>
  <div class="show-text L13" style="margin-top:10px;font-weight:bold;display:none;" id="iphone_coming_soon_text">
-    BabyBox iPhone App is coming very soon!
+    {{'APP_IOS_COMING_SOON'|translate}}
  </div>
  <div class="bottom">
         <div class="get_app_btns_wrapper">
             <div class="full" style="display: none;">
-                <a id="get_app_link" target="_blank" href="" data-i18n="label_get" class="btn">Download Now</a>
+                <a id="get_app_link" target="_blank" href="" data-i18n="label_get" class="btn">{{'DOWNLOAD_NOW'|translate}}</a>
             </div>
             <div class="half">
                 <a id="get_ios_app_link" target="_blank" href="" onclick="document.getElementById('iphone_coming_soon_text').style.display=''" class="btn">

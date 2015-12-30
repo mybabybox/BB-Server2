@@ -12,11 +12,8 @@
      <div ng-class="user.id==userInfo.id ? 'hold ic_web_setting' : '' "></div>
    </a>
     <ul class="dropdown-menu settings-dropdown-menu">
-     <li><a href="/logout">Logout</a></li>
-     <li><a href="" ng-click="toggleLang()">Change Language</a>
-     
-     
-     </li>
+     <li><a href="/logout">{{'LOGOUT'|translate}}</a></li>
+     <!--li><a href="" ng-click="toggleLang()">Change Language</a></li-->
     </ul>
    </span>
   </div>
@@ -70,10 +67,10 @@
    <div class="flex1 middle-centered-div shopname-wrapper">
     <div class="shopname truncate m16 flex1">{{user.displayName}}</div>
     <div ng-if="!user.isFollowing" ng-click="onFollowUser()">
-     <div ng-class="user.id==userInfo.id ? 'hide' : '' "   class='btn-follow follow r10 clickable_area'>+ Follow</div>
+     <div ng-class="user.id==userInfo.id ? 'hide' : '' "   class='btn-follow follow r10 clickable_area'>{{'FOLLOW'|translate}}</div>
     </div>
     <div ng-if="user.isFollowing" ng-click="onUnFollowUser()">
-     <div ng-class="user.id==userInfo.id ? 'hide' : '' " class='btn-follow follow r10 active clickable_area'>Following</div>
+     <div ng-class="user.id==userInfo.id ? 'hide' : '' " class='btn-follow follow r10 active clickable_area'>{{'FOLLOWING'|translate}}</div>
     </div>
    </div>
 
@@ -82,13 +79,13 @@
  </header>
  <div class="shop-stats middle-centered-div">
   <div class='followers r12'>
-   <a href="/followers/{{user.id}}" class='followerhref'><span data-i18n='label_follower'>Followers</span><span
+   <a href="/followers/{{user.id}}" class='followerhref'><span data-i18n='label_follower'>{{'FOLLOWERS'|translate}}</span><span
     class='number r12'>{{user.numFollowers}}</span></a>
   </div>
   <div class='holder withborder flex1' style="padding-left: 33px;"></div>
   <div class='holder flex1'></div>
   <div class='following r12'>
-   <a href="/followings/{{user.id}}" class='followinghref'><span data-i18n='label_following'>Following</span><span
+   <a href="/followings/{{user.id}}" class='followinghref'><span data-i18n='label_following'>{{'FOLLOWINGS'|translate}}</span><span
     class='number r12'>{{user.numFollowings}}</span></a>
   </div>
   <div class='holder flex1'></div>
@@ -107,7 +104,7 @@
       <div class="space"></div>
       <div class="box-left">
        <span class="icon ic_detail_product_web"> </span>
-       <span class="text r14" data-i18n="label_products">Products</span>
+       <span class="text r14" data-i18n="label_products">{{'PRODUCTS'|translate}}</span>
        <span class="number m16">{{user.numProducts}}</span>
       </div>
       <div class="space"></div>
@@ -120,7 +117,7 @@
       <div class="space"></div>
       <div class="box-left">
        <span class="icon ic_offerlist_like"> </span>
-       <span class="text r14" data-i18n="label_positive_reviews">Likes</span>
+       <span class="text r14" data-i18n="label_positive_reviews">{{'LIKES'|translate}}</span>
        <span class="number m16">{{user.numLikes}}</span>
       </div>
       <div class="space"></div>

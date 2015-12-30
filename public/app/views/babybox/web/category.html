@@ -43,10 +43,10 @@
    <ul class='header_tabs M14 center-container' style="margin-top:0px">
     <li ng-class="catType=='popular'? 'active':'' "
      class='header_tab_item popular clickable_area'
-     data-sorttype='popular'><a data-ng-href="/category/{{cat.id}}/popular">POPULAR|translate</a></li>
+     data-sorttype='popular'><a data-ng-href="/category/{{cat.id}}/popular">{{'POPULAR'|translate}}</a></li>
     <li ng-class="catType=='newest'? 'active':'' "
      class='header_tab_item latest  clickable_area'
-     data-sorttype='latest'><a data-ng-href="/category/{{cat.id}}/newest">NEWEST|translate</a></li>
+     data-sorttype='latest'><a data-ng-href="/category/{{cat.id}}/newest">{{'NEWEST'|translate}}</a></li>
     <li ng-class="catType=='low2high'? 'active':''"
      class='header_tab_item location  clickable_area'
      data-sorttype='low2high'><a data-ng-href="/category/{{cat.id}}/low2high">$->$$</a></li>
