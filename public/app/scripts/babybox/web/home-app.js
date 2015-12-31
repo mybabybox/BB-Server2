@@ -145,7 +145,10 @@ babybox.config(['$translateProvider', function ($translateProvider) {
 	    "APP_IOS_COMING_SOON":"BabyBox iPhone App is coming very soon!",
 	    "DOWNLOAD_NOW":"Download Now"
 	});
-	 
+
+	// http://angular-translate.github.io/docs/#/guide/19_security
+	$translateProvider.useSanitizeValueStrategy('escape');
+	
 	$translateProvider.preferredLanguage('zh');
 	//$translateProvider.useLocalStorage();		// use cookies setting
 }]);
