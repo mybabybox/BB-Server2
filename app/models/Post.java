@@ -423,8 +423,4 @@ public class Post extends SocialObject implements Likeable, Commentable {
             return null;
         }
 	}
-	
-	public List<Conversation> findConversations() {
-		return Conversation.findPostConversations(this, this.owner);
-	}
 }

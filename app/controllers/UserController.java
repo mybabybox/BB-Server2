@@ -467,7 +467,7 @@ public class UserController extends Controller {
 		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("messages", vms);
-		map.put("counter", localUser.getUnreadConversationCount());
+		map.put("counter", Conversation.getUnreadConversationCount(localUser));
 
         sw.stop();
         logger.underlyingLogger().info("[u="+localUser.id+"][c="+conversationId+"] getMessages(offset="+offset+") size="+vms.size()+". Took "+sw.getElapsedMS()+"ms");
@@ -540,8 +540,8 @@ public class UserController extends Controller {
         }
 
 		List<ConversationVM> vms = new ArrayList<>();
-        List<Conversation> conversations = localUser.findConversations();
-        if (conversations != null) {
+        List<Conversation> conversations = Conversation.getUserConversations(localUser);
+        if (conversations != null && conversations.size() > 0) {
             Long count = 0L;
             for (Conversation conversation : conversations) {
                 // archived, dont show
@@ -562,9 +562,38 @@ public class UserController extends Controller {
         }
         
         sw.stop();
-        logger.underlyingLogger().info("[u="+localUser.id+"] getAllConversations. Took "+sw.getElapsedMS()+"ms");
+        logger.underlyingLogger().info("[u="+localUser.id+"] getConversations. Took "+sw.getElapsedMS()+"ms");
 		return ok(Json.toJson(vms));
 	}
+	
+	@Transactional
+    public static Result getLatestConversations() {
+        NanoSecondStopWatch sw = new NanoSecondStopWatch();
+
+        final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        if (!localUser.isSuperAdmin()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User is not super admin. Failed to get latest conversations !!", localUser.id));
+            return badRequest();
+        }
+
+        List<ConversationVM> vms = new ArrayList<>();
+        List<Conversation> conversations = Conversation.getLatestConversations();
+        if (conversations != null && conversations.size() > 0) {
+            for (Conversation conversation : conversations) {
+                ConversationVM vm = new ConversationVM(conversation, localUser);
+                vms.add(vm);
+            }
+        }
+        
+        sw.stop();
+        logger.underlyingLogger().info("[u="+localUser.id+"] getLatestConversations. Took "+sw.getElapsedMS()+"ms");
+        return ok(Json.toJson(vms));
+    }
 	
 	@Transactional
 	public static Result getConversation(Long id) {
@@ -581,6 +610,11 @@ public class UserController extends Controller {
 			return notFound();
 		}
 
+		if (conversation.user1.id != localUser.id && conversation.user2.id != localUser.id && !localUser.isSuperAdmin()) {
+            logger.underlyingLogger().error(String.format("[u=%d][conv=%d] User is not owner of conversation. Failed to get conversation !!", localUser.id, conversation.id));
+            return badRequest();
+        }
+		
         sw.stop();
         logger.underlyingLogger().info("[u="+localUser.id+"] getConversation. Took "+sw.getElapsedMS()+"ms");
 		return ok(Json.toJson(new ConversationVM(conversation, localUser)));
@@ -654,7 +688,7 @@ public class UserController extends Controller {
         }
 		
 		Map<String, Long> vm = new HashMap<>();
-		vm.put("count", localUser.getUnreadConversationCount());
+		vm.put("count", Conversation.getUnreadConversationCount(localUser));
 		return ok(Json.toJson(vm));
 	}
 	
@@ -1165,7 +1199,7 @@ public class UserController extends Controller {
         }
         
         if (!localUser.isSuperAdmin()) {
-            logger.underlyingLogger().error(String.format("[u=%d] User is not super admin. Failed to delete account !!", localUser.id));
+            logger.underlyingLogger().error(String.format("[u=%d] User is not super admin. Failed to get users by signup !!", localUser.id));
             return badRequest();
         }
         
@@ -1189,7 +1223,7 @@ public class UserController extends Controller {
         }
         
         if (!localUser.isSuperAdmin()) {
-            logger.underlyingLogger().error(String.format("[u=%d] User is not super admin. Failed to delete account !!", localUser.id));
+            logger.underlyingLogger().error(String.format("[u=%d] User is not super admin. Failed to get users by login !!", localUser.id));
             return badRequest();
         }
         

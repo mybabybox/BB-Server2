@@ -468,8 +468,7 @@ public class ProductController extends Controller{
             logger.underlyingLogger().debug(String.format("[u=%d][c=%d][p=%d] deletePost", localUser.id, post.category.id, id));
         }
 
-        if (localUser.equals(post.owner) || 
-                localUser.isSuperAdmin()) {
+        if (localUser.equals(post.owner) || localUser.isSuperAdmin()) {
         	localUser.deleteProduct(post);
         	SocialRelationHandler.recordDeletePost(post, localUser);
             return ok();
@@ -486,8 +485,7 @@ public class ProductController extends Controller{
 
         try {
 	        Comment comment = Comment.findById(id);
-	        if (localUser.equals(comment.owner) ||
-	                localUser.isSuperAdmin()) {
+	        if (localUser.equals(comment.owner) || localUser.isSuperAdmin()) {
 	        	Post post = Post.findById(comment.socialObject);
 	            post.onDeleteComment(localUser, comment);
 	            SocialRelationHandler.recordDeleteComment(comment, post);
@@ -570,10 +568,10 @@ public class ProductController extends Controller{
 			return notFound();
 		}
 		
-		if (post.owner.id == localUser.id || localUser.isSuperAdmin()) {
+		if (post.owner.id == localUser.id) {
 			List<ConversationVM> vms = new ArrayList<>();
-			List<Conversation> conversations = post.findConversations();
-			if (conversations != null) {
+			List<Conversation> conversations = Conversation.getPostConversations(post);
+			if (conversations != null && conversations.size() > 0) {
 				for (Conversation conversation : conversations) {
 					// archived, dont show
 					if (conversation.isArchivedBy(localUser)) {
@@ -620,6 +618,7 @@ public class ProductController extends Controller{
         }
         
         if (!localUser.isSuperAdmin()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User is not super admin. Failed to get reported post !!", localUser.id));
             return badRequest();
         }
         
@@ -640,6 +639,7 @@ public class ProductController extends Controller{
         }
         
         if (!localUser.isSuperAdmin()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User is not super admin. Failed to delete reported post !!", localUser.id));
             return badRequest();
         }
         
@@ -660,6 +660,7 @@ public class ProductController extends Controller{
         }
         
         if (!localUser.isSuperAdmin()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User is not super admin. Failed to update reported post note !!", localUser.id));
             return badRequest();
         }
         

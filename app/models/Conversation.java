@@ -1,6 +1,7 @@
 package models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -258,7 +259,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		}
 	}
 	
-	public static List<Conversation> findUserConversations(User user) {
+	public static List<Conversation> getUserConversations(User user) {
 		Query q = JPA.em().createQuery(
 		        "SELECT c from Conversation c where deleted = 0 and (" + 
 		        "(user1 = ?1 and (user1ArchiveDate < lastMessageDate or user1ArchiveDate is null)) or " + 
@@ -269,26 +270,38 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		    q.setMaxResults(DefaultValues.MAX_CONVERSATIONS_COUNT);   // safety measure as no infinite scroll
 			return q.getResultList();
 		} catch (NoResultException e) {
-			return null;
+		    return new ArrayList<>();
 		}
 	}
 	
-	public static List<Conversation> findPostConversations(Post post, User user) {
+	public static List<Conversation> getPostConversations(Post post) {
 		Query q = JPA.em().createQuery(
 				"SELECT c from Conversation c where deleted = 0 and post = ?1 and (" + 
 				        "(user1 = ?2 and (user1ArchiveDate < lastMessageDate or user1ArchiveDate is null)) or " + 
 				        "(user2 = ?2 and (user2ArchiveDate < lastMessageDate or user2ArchiveDate is null)) ) order by lastMessageDate desc");
 		q.setParameter(1, post);
-		q.setParameter(2, user);
+		q.setParameter(2, post.owner);
 		
 		try {
 		    q.setMaxResults(DefaultValues.MAX_CONVERSATIONS_COUNT);   // safety measure as no infinite scroll
 			return q.getResultList();
 		} catch (NoResultException e) {
-			return null;
+			return new ArrayList<>();
 		}
 	}
 
+	public static List<Conversation> getLatestConversations() {
+        Query q = JPA.em().createQuery(
+                "SELECT c from Conversation c where deleted = 0 order by lastMessageDate desc");
+        
+        try {
+            q.setMaxResults(DefaultValues.MAX_CONVERSATIONS_COUNT);   // safety measure as no infinite scroll
+            return q.getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        }
+    }
+	
 	public static Conversation openConversation(Post post, User localUser) {
 		if (post == null || localUser == null) {
 			return null;
@@ -366,12 +379,12 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		conversation.setArchiveDate(user);
 	}
 	
-	public static Long getUnreadConversationCount(Long userId) {
+	public static Long getUnreadConversationCount(User user) {
         Query q = JPA.em().createQuery(
                 "Select count(c) from Conversation c where c.deleted = 0 and (" + 
                         "(c.user1.id = ?1 and c.user1NumMessages > 0 and (c.user1ReadDate < lastMessageDate or c.user1ReadDate is null)) or " + 
                         "(c.user2.id = ?1 and c.user2NumMessages > 0 and (c.user2ReadDate < lastMessageDate or c.user2ReadDate is null)) )");
-        q.setParameter(1, userId);
+        q.setParameter(1, user.id);
         Long ret = (Long) q.getSingleResult();
         return ret;
     }

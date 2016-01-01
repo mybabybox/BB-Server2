@@ -1002,18 +1002,6 @@ public class User extends SocialObject implements Subject, Followable {
 		this.permissions = permissions;
 	}
 
-	public List<Conversation> findConversations() {
-		return Conversation.findUserConversations(this);
-	}
-
-	public Conversation findConversationWith(User u) {
-		return Conversation.findByUsers(this, u);
-	}
-
-	public Long getUnreadConversationCount() {
-		return Conversation.getUnreadConversationCount(this.id);
-	}
-
 	public boolean isLoggedIn() {
 		return isLoggedIn(this);
 	}

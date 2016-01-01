@@ -308,3 +308,4 @@ GET     /api/adjust-down-post-score/:id             controllers.ProductControlle
 GET     /api/reset-adjust-post-score/:id            controllers.ProductController.resetAdjustPostScore(id:Long)
 GET     /api/get-users-by-signup/:offset            controllers.UserController.getUsersBySignup(offset:Long)
 GET     /api/get-users-by-login/:offset             controllers.UserController.getUsersByLogin(offset:Long)
+GET     /api/get-latest-conversations               controllers.UserController.getLatestConversations()
