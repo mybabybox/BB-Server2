@@ -1180,8 +1180,19 @@ public class User extends SocialObject implements Subject, Followable {
 		}
 	}
 	
-	public static List<User> getUsers(Long offset) {
+	public static List<User> getUsersBySignup(Long offset) {
         Query q = JPA.em().createQuery("Select u from User u where deleted = false order by CREATED_DATE desc");
+        try {
+            q.setFirstResult((int) (offset * DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT));
+            q.setMaxResults(DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT);
+            return (List<User>) q.getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        }
+    }
+	
+	public static List<User> getUsersByLogin(Long offset) {
+        Query q = JPA.em().createQuery("Select u from User u where deleted = false order by lastLogin desc");
         try {
             q.setFirstResult((int) (offset * DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT));
             q.setMaxResults(DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT);

@@ -1169,7 +1169,7 @@ public class UserController extends Controller {
             return badRequest();
         }
         
-        List<User> users = User.getUsers(offset);
+        List<User> users = User.getUsersBySignup(offset);
         List<UserVMLite> vms = new ArrayList<>();
         for (User user : users) {
             if (user != null) {
@@ -1193,7 +1193,7 @@ public class UserController extends Controller {
             return badRequest();
         }
         
-        List<User> users = User.getUsers(offset);
+        List<User> users = User.getUsersByLogin(offset);
         List<UserVMLite> vms = new ArrayList<>();
         for (User user : users) {
             if (user != null) {
