@@ -49,6 +49,7 @@ import play.mvc.Result;
 import providers.MyUsernamePasswordAuthProvider;
 import service.SocialRelationHandler;
 import viewmodel.ActivityVM;
+import viewmodel.AdminConversationVM;
 import viewmodel.CollectionVM;
 import viewmodel.ConversationOrderVM;
 import viewmodel.ConversationVM;
@@ -459,8 +460,8 @@ public class UserController extends Controller {
 		List<MessageVM> vms = new ArrayList<>();
 		Conversation conversation = Conversation.findById(conversationId); 
 		List<Message> messages =  conversation.getMessages(localUser, offset);
-		if(messages != null ){
-			for(Message message : messages) {
+		if (messages != null) {
+			for (Message message : messages) {
 				MessageVM vm = new MessageVM(message);
 				vms.add(vm);
 			}
@@ -473,6 +474,29 @@ public class UserController extends Controller {
         logger.underlyingLogger().info("[u="+localUser.id+"][c="+conversationId+"] getMessages(offset="+offset+") size="+vms.size()+". Took "+sw.getElapsedMS()+"ms");
 		return ok(Json.toJson(map));
 	}
+	
+	@Transactional
+    public static Result getMessagesForAdmin(Long conversationId, Long offset) {
+        NanoSecondStopWatch sw = new NanoSecondStopWatch();
+
+        final User localUser = Application.getLocalUser(session());
+        List<MessageVM> vms = new ArrayList<>();
+        Conversation conversation = Conversation.findById(conversationId); 
+        List<Message> messages =  conversation.getMessagesForAdmin(offset);
+        if (messages != null) {
+            for (Message message : messages) {
+                MessageVM vm = new MessageVM(message);
+                vms.add(vm);
+            }
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("messages", vms);
+        map.put("counter", 0L);
+
+        sw.stop();
+        logger.underlyingLogger().info("[u="+localUser.id+"][c="+conversationId+"] getMessagesForAdmin(offset="+offset+") size="+vms.size()+". Took "+sw.getElapsedMS()+"ms");
+        return ok(Json.toJson(map));
+    }
 	
 	@Transactional
     public static Result newMessage() {
@@ -581,11 +605,11 @@ public class UserController extends Controller {
             return badRequest();
         }
 
-        List<ConversationVM> vms = new ArrayList<>();
+        List<AdminConversationVM> vms = new ArrayList<>();
         List<Conversation> conversations = Conversation.getLatestConversations();
         if (conversations != null && conversations.size() > 0) {
             for (Conversation conversation : conversations) {
-                ConversationVM vm = new ConversationVM(conversation, localUser);
+                AdminConversationVM vm = new AdminConversationVM(conversation);
                 vms.add(vm);
             }
         }

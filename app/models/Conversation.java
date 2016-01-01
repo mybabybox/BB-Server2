@@ -234,7 +234,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 				"SELECT m from Message m where conversation_id = ?1 and CREATED_DATE > ?2 and m.deleted = 0 order by CREATED_DATE desc");
 		q.setParameter(1, this);
 
-		if (this.user1 == user) {
+		if (this.user1.id == user.id) {
 			setReadDate(user1);
 			if(this.user1ArchiveDate == null){
 				q.setParameter(2, new Date(0));
@@ -258,6 +258,20 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 			return null;
 		}
 	}
+	
+	public List<Message> getMessagesForAdmin(Long offset) {
+        Query q = JPA.em().createQuery(
+                "SELECT m from Message m where conversation_id = ?1 and m.deleted = 0 order by CREATED_DATE desc");
+        q.setParameter(1, this);
+
+        try {
+            q.setFirstResult((int) (offset * DefaultValues.CONVERSATION_MESSAGES_COUNT));
+            q.setMaxResults(DefaultValues.CONVERSATION_MESSAGES_COUNT);
+            return (List<Message>) q.getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 	
 	public static List<Conversation> getUserConversations(User user) {
 		Query q = JPA.em().createQuery(
@@ -292,7 +306,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 
 	public static List<Conversation> getLatestConversations() {
         Query q = JPA.em().createQuery(
-                "SELECT c from Conversation c where deleted = 0 order by lastMessageDate desc");
+                "SELECT c from Conversation c where numMessages > 0 and deleted = 0 order by lastMessageDate desc");
         
         try {
             q.setMaxResults(DefaultValues.MAX_CONVERSATIONS_COUNT);   // safety measure as no infinite scroll
@@ -327,7 +341,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		        "SELECT m FROM Message m WHERE m.CREATED_DATE = (SELECT MAX(CREATED_DATE) FROM Message WHERE conversation_id = ?1 and deleted = 0) and m.CREATED_DATE > ?2 and m.deleted = 0");
         q.setParameter(1, this.id);
         
-        if(this.user1 == user){
+        if (this.user1.id == user.id) {
         	if(this.user1ArchiveDate == null){
         		q.setParameter(2, new Date(0));
         	} else {
@@ -367,7 +381,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 	}
 
 	public boolean isReadBy(User user) {
-		if (this.user1 == user) {
+		if (this.user1.id == user.id) {
 			return user1ReadDate == null || (user1ReadDate.getTime() >= lastMessageDate.getTime());
 		} else { 
 			return user2ReadDate == null || (user2ReadDate.getTime() >= lastMessageDate.getTime());
@@ -390,7 +404,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
     }
 
 	public Long getUnreadCount(User user) {
-		if (this.user1 == user) {
+		if (this.user1.id == user.id) {
 			return ((Integer)user1NumMessages).longValue();
 		}
 		return ((Integer)user2NumMessages).longValue();
@@ -415,7 +429,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 	private void setReadDate(User user) {
 		logger.underlyingLogger().debug("[conv="+this.id+"][u="+user.id+"] setReadTime");
 		
-		if (this.user1 == user) {
+		if (this.user1.id == user.id) {
 		    // unread messages, decrement conversationsCount
 		    if (this.user1NumMessages > 0) {
 		        NotificationCounter.decrementConversationsCount(user1.id);
@@ -437,7 +451,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 	private void setArchiveDate(User user){
 		logger.underlyingLogger().debug("[conv="+this.id+"][u="+user.id+"] setArchiveTime");
 		
-		if (this.user1 == user) {
+		if (this.user1.id == user.id) {
 		    // unread messages, decrement conversationsCount
             if (this.user1NumMessages > 0) {
                 NotificationCounter.decrementConversationsCount(user1.id);
@@ -465,7 +479,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 			return true;
 		}
 		
-		if (this.user1 == user) {
+		if (this.user1.id == user.id) {
 			return user1ArchiveDate != null && user1ArchiveDate.getTime() >= lastMessageDate.getTime();	
 		} else {
 			return user2ArchiveDate != null && user2ArchiveDate.getTime() >= lastMessageDate.getTime();

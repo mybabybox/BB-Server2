@@ -16,9 +16,6 @@ import play.db.jpa.JPA;
 
 @Entity
 public class Message extends SocialObject implements Comparable<Message> {
-	/*
-	@Id
-	public Long id;*/
 	
 	@Required
 	@ManyToOne
