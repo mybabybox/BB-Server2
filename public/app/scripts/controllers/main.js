@@ -3,7 +3,7 @@
 var babybox = angular.module('babybox');
 
 babybox.controller('HomeController', 
-		function($scope, $translate, $location, $route, feedService, productService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService) {
+		function($scope, $translate, $location, $route, categoryService, productService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService) {
 	
 	writeMetaCanonical($location.absUrl());
 	
@@ -25,7 +25,7 @@ babybox.controller('HomeController',
 		$scope.noMore = true;
 	};
 
-	$scope.categories = feedService.getAllCategories.get();
+	$scope.categories = categoryService.getAllCategories.get();
 
 	var flag = true;
 	$scope.noMore = true;

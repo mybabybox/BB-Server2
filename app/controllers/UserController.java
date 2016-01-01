@@ -128,12 +128,6 @@ public class UserController extends Controller {
 		return ok(Json.toJson(userVM));
 	}
 	
-	@Transactional(readOnly=true)
-	public static Result aboutUser() {
-		final User localUser = Application.getLocalUser(session());
-		return ok(Json.toJson(localUser));
-	}
-	
 	@Transactional
 	public static Result uploadProfilePhoto() {
 		final User localUser = Application.getLocalUser(session());
@@ -213,101 +207,101 @@ public class UserController extends Controller {
 	}
 
 	@Transactional
-	public static Result updateUserProfileData() {
+	public static Result editUserInfo() {
 	    final User localUser = Application.getLocalUser(session());
 	    
-	    logger.underlyingLogger().info(String.format("[u=%d] updateUserProfileData", localUser.id));
+	    logger.underlyingLogger().info(String.format("[u=%d] editUserInfo", localUser.id));
 	    
 	    // Basic info
 	    DynamicForm form = DynamicForm.form().bindFromRequest();
-	    String parentEmail = form.get("parent_email");
-	    String parentDisplayName = form.get("parent_displayname");
-	    String parentFirstName = form.get("parent_firstname");
-	    String parentLastName = form.get("parent_lastname");
-	    String parentAboutMe = form.get("parent_aboutme");
-	    if (StringUtils.isEmpty(parentDisplayName) || StringUtils.isEmpty(parentFirstName) || StringUtils.isEmpty(parentLastName)) {
+	    String email = form.get("email");
+	    String displayName = form.get("displayName");
+	    String firstName = form.get("firstName");
+	    String lastName = form.get("lastName");
+	    String aboutMe = form.get("aboutMe");
+	    if (StringUtils.isEmpty(displayName) || StringUtils.isEmpty(firstName) || StringUtils.isEmpty(lastName)) {
 	        logger.underlyingLogger().error(String.format(
-	                "[u=%d][displayname=%s][firstname=%s][lastname=%s] displayname, firstname or lastname missing", 
-	                localUser.id, parentDisplayName, parentFirstName, parentLastName));
+	                "[u=%d][displayName=%s][firstName=%s][lastName=%s] displayName, firstName or lastName missing", 
+	                localUser.id, displayName, firstName, lastName));
             return badRequest("請填寫您的顯示名稱與姓名");
         }
 	    
-	    parentDisplayName = parentDisplayName.trim();
-	    parentFirstName = parentFirstName.trim();
-	    parentLastName = parentLastName.trim();
-	    if (parentAboutMe != null) {
-	        parentAboutMe = parentAboutMe.trim();
+	    displayName = displayName.trim();
+	    firstName = firstName.trim();
+	    lastName = lastName.trim();
+	    if (aboutMe != null) {
+	        aboutMe = aboutMe.trim();
 	    }
 	    
-	    if (!localUser.displayName.equals(parentDisplayName)) {
-	        if (StringUtil.hasWhitespace(parentDisplayName)) {
+	    if (!localUser.displayName.equals(displayName)) {
+	        if (StringUtil.hasWhitespace(displayName)) {
                 logger.underlyingLogger().error(String.format(
-                        "[u=%d][displayname=%s] displayname contains whitespace", localUser.id, parentDisplayName));
-                return badRequest("\""+parentDisplayName+"\" 不可有空格");
+                        "[u=%d][displayName=%s] displayName contains whitespace", localUser.id, displayName));
+                return badRequest("\""+displayName+"\" 不可有空格");
             }
-	        if (!ValidationUtil.isDisplayNameValid(parentDisplayName)) {
+	        if (!ValidationUtil.isDisplayNameValid(displayName)) {
                 logger.underlyingLogger().error(String.format(
-                        "[u=%d][displayname=%s] displayname incorrect format", localUser.id, parentDisplayName));
-                return badRequest("\""+parentDisplayName+"\" 格式不正確");
+                        "[u=%d][displayName=%s] displayName incorrect format", localUser.id, displayName));
+                return badRequest("\""+displayName+"\" 格式不正確");
 	        }
-	        if (User.isDisplayNameExists(parentDisplayName)) {
+	        if (User.isDisplayNameExists(displayName)) {
                 logger.underlyingLogger().error(String.format(
-                        "[u=%d][displayname=%s] displayname already exists", localUser.id, parentDisplayName));
-                return badRequest("\""+parentDisplayName+"\" 已被選用。請選擇另一個顯示名稱重試");
+                        "[u=%d][displayName=%s] displayName already exists", localUser.id, displayName));
+                return badRequest("\""+displayName+"\" 已被選用。請選擇另一個顯示名稱重試");
             }
         }
         
 	    // Email - handle email ONLY for fb signup with no email provided
 	    boolean emailAllowedToChange = localUser.fbLogin && !localUser.emailProvidedOnSignup;
         if (emailAllowedToChange && 
-                (localUser.email == null || !localUser.email.equals(parentEmail))) {
-            if (StringUtils.isEmpty(parentEmail)) {
+                (localUser.email == null || !localUser.email.equals(email))) {
+            if (StringUtils.isEmpty(email)) {
                 logger.underlyingLogger().error(
                         String.format("[u=%d] email is missing", localUser.id));
                 return badRequest("請填寫電郵");
             }
-            if (StringUtil.hasWhitespace(parentEmail)) {
+            if (StringUtil.hasWhitespace(email)) {
                 logger.underlyingLogger().error(String.format(
-                        "[u=%d][email=%s] email contains whitespace", localUser.id, parentEmail));
-                return badRequest("\""+parentEmail+"\" 不可有空格");
+                        "[u=%d][email=%s] email contains whitespace", localUser.id, email));
+                return badRequest("\""+email+"\" 不可有空格");
             }
-            if (!ValidationUtil.isEmailValid(parentEmail)) {
+            if (!ValidationUtil.isEmailValid(email)) {
                 logger.underlyingLogger().error(String.format(
-                        "[u=%d][email=%s] email incorrect format", localUser.id, parentEmail));
-                return badRequest("\""+parentEmail+"\" 格式不正確");
+                        "[u=%d][email=%s] email incorrect format", localUser.id, email));
+                return badRequest("\""+email+"\" 格式不正確");
             }
-            if (User.isEmailExists(parentEmail)) {
+            if (User.isEmailExists(email)) {
                 logger.underlyingLogger().error(
                         String.format("[u=%d][email=%s] email already exists", 
-                                localUser.id, parentEmail));
-                return badRequest("\""+parentEmail+"\" 已登記。請確認你的電郵重試");
+                                localUser.id, email));
+                return badRequest("\""+email+"\" 已登記。請確認你的電郵重試");
             }
             
             // set email
-            localUser.email = parentEmail;
+            localUser.email = email;
         }
         
 		// UserInfo
-        Location parentLocation = Location.getLocationById(Integer.valueOf(form.get("parent_location")));
-        if (parentLocation == null) {
+        Location location = Location.getLocationById(Integer.valueOf(form.get("location")));
+        if (location == null) {
             logger.underlyingLogger().error(String.format(
-                    "[u=%d][birthYear=%s][location=%s] location missing", localUser.id, parentLocation.displayName));
+                    "[u=%d][birthYear=%s][location=%s] location missing", localUser.id, location.displayName));
             return badRequest("請填寫地區");
         }
         
-        localUser.displayName = parentDisplayName;
-        localUser.name = parentDisplayName;
-        localUser.firstName = parentFirstName;
-        localUser.lastName = parentLastName;
+        localUser.displayName = displayName;
+        localUser.name = displayName;
+        localUser.firstName = firstName;
+        localUser.lastName = lastName;
         
-        localUser.userInfo.location = parentLocation;
-        localUser.userInfo.aboutMe = parentAboutMe;
+        localUser.userInfo.location = location;
+        localUser.userInfo.aboutMe = aboutMe;
         localUser.userInfo.save();
         localUser.save();
         
         /*
-        ParentType parentType = ParentType.valueOf(form.get("parent_type"));
-        int numChildren = Integer.valueOf(form.get("num_children"));
+        ParentType parentType = ParentType.valueOf(form.get("parentType"));
+        int numChildren = Integer.valueOf(form.get("numChildren"));
         if (ParentType.NA.equals(parentType)) {
             numChildren = 0;
         }
@@ -342,15 +336,15 @@ public class UserController extends Controller {
         // UseChild
         int maxChildren = (numChildren > 5)? 5 : numChildren;
         for (int i = 1; i <= maxChildren; i++) {
-            String genderStr = form.get("bb_gender" + i);
+            String genderStr = form.get("bbGender" + i);
             if (genderStr == null) {
                 return badRequest("請選擇寶寶性別");
             }
             
-            TargetGender bbGender = TargetGender.valueOf(form.get("bb_gender" + i));
-            String bbBirthYear = form.get("bb_birth_year" + i);
-            String bbBirthMonth = form.get("bb_birth_month" + i);
-            String bbBirthDay = form.get("bb_birth_day" + i);
+            TargetGender bbGender = TargetGender.valueOf(form.get("bbGender" + i));
+            String bbBirthYear = form.get("bbBirthYear" + i);
+            String bbBirthMonth = form.get("bbBirthMonth" + i);
+            String bbBirthDay = form.get("bbBirthDay" + i);
             
             if (bbBirthDay == null) {
                 bbBirthDay = "";
@@ -536,7 +530,7 @@ public class UserController extends Controller {
     }
 
 	@Transactional
-	public static Result getAllConversations() {
+	public static Result getConversations() {
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
 
 		final User localUser = Application.getLocalUser(session());
@@ -808,10 +802,17 @@ public class UserController extends Controller {
 	}
 	
     @Transactional
-    public Result getUserPosts(Long id, Long offset) {
+    public Result getUserPostedFeed(Long id, Long offset) {
     	final User localUser = Application.getLocalUser(session());
         List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.USER_POSTED);
 		return ok(Json.toJson(vms));
+    }
+    
+    @Transactional
+    public Result getUserLikedFeed(Long id, Long offset){
+        final User localUser = Application.getLocalUser(session());
+        List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.USER_LIKED);
+        return ok(Json.toJson(vms));
     }
     
     @Transactional
@@ -822,6 +823,12 @@ public class UserController extends Controller {
 			vms.add(vm);
 		}
 		return ok(Json.toJson(vms));
+    }
+    
+    @Transactional
+    public static Result getCollection(Long id) {
+        Collection collection = Collection.findById(id);
+        return ok(Json.toJson(new CollectionVM(collection)));
     }
     
     @Transactional
@@ -912,13 +919,6 @@ public class UserController extends Controller {
             }
         }
         return userFollowers;
-    }
-    
-    @Transactional
-    public Result getUserLikedPosts(Long id, Long offset){
-    	final User localUser = Application.getLocalUser(session());
-        List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.USER_LIKED);
-		return ok(Json.toJson(vms));
     }
     
     @Transactional
@@ -1157,7 +1157,31 @@ public class UserController extends Controller {
     }
     
     @Transactional
-    public static Result getUsers(Long offset) {
+    public static Result getUsersBySignup(Long offset) {
+        final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        if (!localUser.isSuperAdmin()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User is not super admin. Failed to delete account !!", localUser.id));
+            return badRequest();
+        }
+        
+        List<User> users = User.getUsers(offset);
+        List<UserVMLite> vms = new ArrayList<>();
+        for (User user : users) {
+            if (user != null) {
+                UserVMLite vm = new UserVMLite(user, localUser);
+                vms.add(vm);
+            }
+        }
+        return ok(Json.toJson(vms));
+    }
+    
+    @Transactional
+    public static Result getUsersByLogin(Long offset) {
         final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));

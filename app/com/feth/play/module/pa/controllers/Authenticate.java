@@ -21,7 +21,7 @@ public class Authenticate extends AuthenticateBase {
 	private static final play.api.Logger logger = play.api.Logger.apply(Authenticate.class);
 
 	@Transactional
-	public static Result mobileAuthenticate(final String provider) {
+	public static Result authenticateMobile(final String provider) {
 		noCache(response());
 		final String payload = request().getQueryString(PAYLOAD_KEY);
 		Result result = PlayAuthenticate.handleAuthentication(provider, ctx(), payload);

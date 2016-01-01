@@ -46,6 +46,7 @@ import providers.MyUsernamePasswordAuthProvider.MyLogin;
 import providers.MyUsernamePasswordAuthProvider.MySignup;
 import viewmodel.CountryVM;
 import viewmodel.FeaturedItemVM;
+import viewmodel.LocationVM;
 import viewmodel.UserVM;
 import Decoder.BASE64Encoder;
 import Decoder.BASE64Decoder;
@@ -488,7 +489,7 @@ public class Application extends Controller {
 	}
 	
     @Transactional
-	public static Result doMobileLogin() throws AuthException {
+	public static Result doLoginMobile() throws AuthException {
 		com.feth.play.module.pa.controllers.Authenticate.noCache(response());
 		final Form<MyLogin> filledForm = MyUsernamePasswordAuthProvider.LOGIN_FORM.bindFromRequest();
 		if (filledForm.hasErrors()) {
@@ -739,8 +740,16 @@ public class Application extends Controller {
 	//
 	
 	@Transactional
-    public static Result getAllDistricts() {
-        return ok(Json.toJson(LocationCache.getHongKongDistrictsVM()));
+    public static Result getDistricts() {
+	    List<LocationVM> vms = new ArrayList<>();
+        try {
+            List<Location> districts = LocationCache.getHongKongDistricts();
+            for (Location district : districts) {
+                vms.add(new LocationVM(district));
+            }
+        } catch (Exception e) {
+        }
+        return ok(Json.toJson(vms));
     }
 	
 	@Transactional
