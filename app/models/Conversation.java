@@ -304,12 +304,12 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		}
 	}
 
-	public static List<Conversation> getLatestConversations() {
+	public static List<Conversation> getLatestConversations(Long offset) {
         Query q = JPA.em().createQuery(
                 "SELECT c from Conversation c where numMessages > 0 and deleted = 0 order by lastMessageDate desc");
-        
         try {
-            q.setMaxResults(DefaultValues.MAX_CONVERSATIONS_COUNT);   // safety measure as no infinite scroll
+            q.setFirstResult((int) (offset * DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT));
+            q.setMaxResults(DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT);
             return q.getResultList();
         } catch (NoResultException e) {
             return new ArrayList<>();

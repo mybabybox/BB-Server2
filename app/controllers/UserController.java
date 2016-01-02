@@ -591,7 +591,7 @@ public class UserController extends Controller {
 	}
 	
 	@Transactional
-    public static Result getLatestConversations() {
+    public static Result getLatestConversations(Long offset) {
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
 
         final User localUser = Application.getLocalUser(session());
@@ -606,7 +606,7 @@ public class UserController extends Controller {
         }
 
         List<AdminConversationVM> vms = new ArrayList<>();
-        List<Conversation> conversations = Conversation.getLatestConversations();
+        List<Conversation> conversations = Conversation.getLatestConversations(offset);
         if (conversations != null && conversations.size() > 0) {
             for (Conversation conversation : conversations) {
                 AdminConversationVM vm = new AdminConversationVM(conversation);
