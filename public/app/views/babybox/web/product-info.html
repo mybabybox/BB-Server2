@@ -53,21 +53,17 @@
 
    <a href="/comments/{{product.id}}"
     class="clickable_area flex1 middle-centered-div">
-    <div id="comment-button"
-     class="comment clickable_area flex1 middle-centered-div">
-
+    <div id="comment-button" class="comment clickable_area flex1 middle-centered-div">
      <div class="ic_icon ic_comment"></div>
      <div class="text r14 flex1" data-i18n="label_comment">{{'COMMENTS'|translate}}</div>
      <div class="r14 number-container">
       <span class="number">{{product.numComments}}</span>
      </div>
-
     </div>
    </a>
    <div id="share-button" class="share hide">
     <div class="ic_icon ic_share"></div>
    </div>
-
   </div>
 
   <div id="detail-part" class="info-part">
@@ -157,23 +153,21 @@
      data-ng-repeat="comment in product.latestComments">
      <div class="flex-it">
       <div class="left">
-       <a>
+       <a href="/profile/{{comment.ownerId}}">
         <div class="image-container">
-         <div class="image" style="background-image: url(/image/get-mini-profile-image-by-id/{{comment.ownerId}});">
-          </div>
+         <div class="image" style="background-image: url(/image/get-mini-profile-image-by-id/{{comment.ownerId}});"></div>
         </div>
        </a>
       </div>
       <div class="right flex1 flex-it">
        <div class="flex1">
-        <a><div class="name m14">{{comment.ownerName}}</div></a>
-
-        <div class="comment text r14">{{comment.body}}</div>
+        <a href="/profile/{{comment.ownerId}}"><div class="name m14">{{comment.ownerName}}</div></a>
+        <div class="comment text r13">{{comment.body}}</div>
         <div class="param">
 			<!--div class="buyer-review m12" data-i18n="label_bueyer_review">buyer review</div-->
 			<div class="time">
 				<span class="ic_icon ic_clock"></span>
-				<span class="text r12">14w</span>
+				<span class="text r12" am-time-ago="comment.createdDate"></span>
 			</div>
 		</div>
        </div>

@@ -82,7 +82,7 @@
    <a href="/followers/{{user.id}}" class='followerhref'><span data-i18n='label_follower'>{{'FOLLOWERS'|translate}}</span><span
     class='number r12'>{{user.numFollowers}}</span></a>
   </div>
-  <div class='holder withborder flex1' style="padding-left: 33px;"></div>
+  <div class='holder withborder flex1'></div>
   <div class='holder flex1'></div>
   <div class='following r12'>
    <a href="/followings/{{user.id}}" class='followinghref'><span data-i18n='label_following'>{{'FOLLOWINGS'|translate}}</span><span
@@ -109,8 +109,6 @@
       </div>
       <div class="space"></div>
      </li>
-
-     <li class="border">&nbsp;</li>
 
      <li ng-class="activeflag? '': 'activetab' " class="reviews-box"
       ng-click="likedProducts()">

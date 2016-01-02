@@ -445,16 +445,24 @@ babybox.controller('UserFollowController',
 		function($scope, $translate, $location, $route, $anchorScroll, $http, followers, userInfo, followService) {
 	
 	writeMetaCanonical($location.absUrl());
-	
+
 	$scope.followers = followers;
 	$scope.userInfo = userInfo;
+	
 	var url = $location.absUrl();
-	var values= url.split("/");
+	if (url.indexOf('followers') > -1) {
+		$scope.follow = 'followers'
+	} else if (url.indexOf('followings') > -1) {
+		$scope.follow = 'followings'
+	}
+	/*
+	var values = url.split("/");
 	$scope.follow = values[values.length-2];
 	if($scope.follow == 'followers')
 		$scope.noMore = true;
 	if($scope.follow == 'followings')
 		$scope.noMore = true;
+	*/
 	
 	$scope.onFollowUser = function(formFollower) {
 		if(formFollower.id != $scope.userInfo.id){
@@ -492,8 +500,6 @@ babybox.controller('UserFollowController',
 			if($scope.follow == 'followings'){
 				flag = false;
 				followService.userfollowings.get({id:$scope.userInfo.id, offset:off}, function(data){
-					console.log(data);
-					console.log('followings');
 					off++;
 					if (data.length == 0) {
 						$scope.noMore = false;
