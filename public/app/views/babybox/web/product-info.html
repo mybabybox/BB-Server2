@@ -84,12 +84,19 @@
    </div>
    <div class="table">
     <div class="tr category-row middle-centered-div">
+     <div class="r14 th" data-i18n="label_category">{{'CONDITION'|translate}}</div>
+     <div class="heavy L14 td flex1">
+      <span class="middle-centered-div tr-padding">
+       <div class="text flex1" id="item-category">{{product.conditionType|translate}}</div>
+      </span>
+     </div>
+    </div>
+    <div class="tr category-row middle-centered-div">
      <div class="r14 th" data-i18n="label_category">{{'CATEGORY'|translate}}</div>
      <div class="heavy L14 td flex1">
-      <a class="middle-centered-div tr-padding"
-       href="/category/{{product.categoryId}}/popular">
+      <a class="middle-centered-div tr-padding" href="/category/{{product.categoryId}}/popular">
        <div class="text-link flex1" id="item-category">{{product.categoryName}}</div>
-      </a>
+      </a>      
      </div>
     </div>
    </div>
