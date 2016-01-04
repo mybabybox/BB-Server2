@@ -80,19 +80,4 @@ public class Message extends SocialObject implements Comparable<Message> {
         }
     }
 
-	public static Resource getMessageImageById(Long resourceId, User localUser) {
-		 try {
-	    		Query q = JPA.em().createQuery("Select r from Resource r, Folder f, Message m, Conversation c"
-	    				+ " where r.id = ?1 and r.folder = f "
-	    				+ "and m.folder = f and f.name = 'message-ps' "
-	    				+ "and m.conversation = c "
-	    				+ "and (c.user1 = ?2 or c.user2 = ?2)");
-	    		q.setParameter(1, resourceId);
-	    		q.setParameter(2, localUser);
-	    		return (Resource) q.getSingleResult();
-		    } catch (NoResultException e) {
-	            return null;
-	        }
-		
-	}
 }

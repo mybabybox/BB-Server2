@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -792,47 +793,47 @@ public class UserController extends Controller {
 	}
 
 	@Transactional
-	public static Result getMessageImageById(Long id) {
+	public static Result getMessageImageById(String ids) {
 	    response().setHeader("Cache-Control", "max-age=604800");
 	    final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
             return notFound();
         }
-        Resource resource = Message.getMessageImageById(id, localUser);
-        if(resource == null){
-        	return  ok("unauthorized");
+        List<String> id = Arrays.asList(ids.split("_"));
+        if(!id.contains(localUser.id+"")){
+        	return ok("unauthorized");
         }
-	    return ok( resource.getThumbnailFile());
+	    return ok(Resource.findById(Long.parseLong(id.get(2))).getThumbnailFile());
 	}
 
     @Transactional
-    public static Result getOriginalMessageImageById(Long id) {
+    public static Result getOriginalMessageImageById(String ids) {
         response().setHeader("Cache-Control", "max-age=604800");
         final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
             return notFound();
         }
-        Resource resource = Message.getMessageImageById(id, localUser);
-        if(resource == null){
+        List<String> id = Arrays.asList(ids.split("_"));
+        if(!id.contains(localUser.id+"")){
         	return ok("unauthorized");
         }
-        return ok(resource.getRealFile());
+        return ok(Resource.findById(Long.parseLong(id.get(2))).getRealFile());
     }
 
     @Transactional
-    public static Result getMiniMessageImageById(Long id) {
+    public static Result getMiniMessageImageById(String ids) {
     	final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
             return notFound();
         }
-        Resource resource = Message.getMessageImageById(id, localUser);
-        if(resource == null){
+        List<String> id = Arrays.asList(ids.split("_"));
+        if(!id.contains(localUser.id)){
         	return ok("unauthorized");
         }
-    	return ok(new File(resource.getMini()));
+    	return ok(new File(Resource.findById(Long.parseLong(id.get(2))).getMini()));
     }
 	
     @Transactional
