@@ -794,18 +794,45 @@ public class UserController extends Controller {
 	@Transactional
 	public static Result getMessageImageById(Long id) {
 	    response().setHeader("Cache-Control", "max-age=604800");
-		return ok(Resource.findById(id).getThumbnailFile());
+	    final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        Resource resource = Message.getMessageImageById(id, localUser);
+        if(resource == null){
+        	return  ok("unauthorized");
+        }
+	    return ok( resource.getThumbnailFile());
 	}
 
     @Transactional
     public static Result getOriginalMessageImageById(Long id) {
         response().setHeader("Cache-Control", "max-age=604800");
-        return ok(Resource.findById(id).getRealFile());
+        final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        Resource resource = Message.getMessageImageById(id, localUser);
+        if(resource == null){
+        	return ok("unauthorized");
+        }
+        return ok(resource.getRealFile());
     }
 
     @Transactional
     public static Result getMiniMessageImageById(Long id) {
-    	return ok(new File(Resource.findById(id).getMini()));
+    	final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        Resource resource = Message.getMessageImageById(id, localUser);
+        if(resource == null){
+        	return ok("unauthorized");
+        }
+    	return ok(new File(resource.getMini()));
     }
 	
     @Transactional
