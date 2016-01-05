@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -25,6 +26,10 @@ import domain.SocialObjectType;
 @Entity
 public class Resource extends SocialObject {
 
+    public static final int MESSAGE_IMAGE_IDS_TOKEN_INDEX_USER1 = 0;
+    public static final int MESSAGE_IMAGE_IDS_TOKEN_INDEX_USER2 = 1;
+    public static final int MESSAGE_IMAGE_IDS_TOKEN_INDEX_RES = 2;
+    
     public static final String STORAGE_PATH = 
             Play.application().configuration().getString("storage.path");
     public static final int STORAGE_PARTITION_DIR_MAX = 
@@ -115,6 +120,24 @@ public class Resource extends SocialObject {
 		}
 		return null;
 	}
+    
+    public static Long parseMessageImageId(String ids, User user) {
+        List<String> idTokens = Arrays.asList(ids.split("_"));
+        if (idTokens == null || idTokens.size() != 3) {
+            return -1L;
+        }
+        
+        try {
+            Long user1Id = Long.parseLong(idTokens.get(MESSAGE_IMAGE_IDS_TOKEN_INDEX_USER1));
+            Long user2Id = Long.parseLong(idTokens.get(MESSAGE_IMAGE_IDS_TOKEN_INDEX_USER2));
+            // authorized
+            if (user1Id.equals(user.id) || user2Id.equals(user.id)) {
+                return Long.parseLong(idTokens.get(MESSAGE_IMAGE_IDS_TOKEN_INDEX_RES));
+            }
+        } catch (NumberFormatException e) {
+        }
+        return -1L;
+    }
 
     ///////////////////////// SQL Query /////////////////////////
 	public static Resource findById(Long id) {

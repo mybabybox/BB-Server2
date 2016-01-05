@@ -105,14 +105,14 @@ label {
 }
 
 #shop-page header .btn-follow:active {
-    background-color: #ee3900;
+    background-color: #FF99B8;
     color: #FFFFFF;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.08), 0px 2px 2px 0px rgba(0, 0, 0, 0.12)
 }
 
 #shop-page header .btn-follow:active {
     box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.08), 0 2px 2px 0 rgba(0, 0, 0, 0.12);
-    background-color: #ee3900
+    background-color: #FF99B8
 }
 
 #shop-page header .btn-follow.active {

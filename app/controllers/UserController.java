@@ -800,11 +800,12 @@ public class UserController extends Controller {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
             return notFound();
         }
-        List<String> id = Arrays.asList(ids.split("_"));
-        if(!id.contains(localUser.id+"")){
-        	return ok("unauthorized");
+        
+        Long resId = Resource.parseMessageImageId(ids, localUser);
+        if (resId == -1L) {
+            return unauthorized();
         }
-	    return ok(Resource.findById(Long.parseLong(id.get(2))).getThumbnailFile());
+	    return ok(Resource.findById(resId).getThumbnailFile());
 	}
 
     @Transactional
@@ -815,11 +816,12 @@ public class UserController extends Controller {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
             return notFound();
         }
-        List<String> id = Arrays.asList(ids.split("_"));
-        if(!id.contains(localUser.id+"")){
-        	return ok("unauthorized");
+        
+        Long resId = Resource.parseMessageImageId(ids, localUser);
+        if (resId == -1L) {
+            return unauthorized();
         }
-        return ok(Resource.findById(Long.parseLong(id.get(2))).getRealFile());
+        return ok(Resource.findById(resId).getRealFile());
     }
 
     @Transactional
@@ -829,11 +831,12 @@ public class UserController extends Controller {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
             return notFound();
         }
-        List<String> id = Arrays.asList(ids.split("_"));
-        if(!id.contains(localUser.id)){
-        	return ok("unauthorized");
+        
+        Long resId = Resource.parseMessageImageId(ids, localUser);
+        if (resId == -1L) {
+            return unauthorized();
         }
-    	return ok(new File(Resource.findById(Long.parseLong(id.get(2))).getMini()));
+    	return ok(new File(Resource.findById(resId).getMini()));
     }
 	
     @Transactional
