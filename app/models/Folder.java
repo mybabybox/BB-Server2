@@ -100,12 +100,14 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
 	 * @param source
 	 * @param description
 	 * @param type
+	 * @param authorizedUsers
 	 * @return
 	 * @throws IOException
 	 */
 	public Resource addFile(final java.io.File source,
                             final String description,
-			                final SocialObjectType type) throws IOException {
+			                final SocialObjectType type,
+			                final List<User> authorizedUsers) throws IOException {
         logger.underlyingLogger().info("addFile("+type.name()+") - start.");
         NanoSecondStopWatch fullSw = new NanoSecondStopWatch();
 
@@ -115,6 +117,8 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
 		resource.folder = this;
 		resource.owner = this.owner;
 		resource.save();
+		
+		resource.setAuthorizedUsers(authorizedUsers);
 
         final File parentFile = new java.io.File(resource.getPath()).getParentFile();
         if (!parentFile.exists()) {
@@ -335,8 +339,13 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
 
 	public Resource addFile(java.io.File file, SocialObjectType type)
 			throws IOException {
-		return addFile(file, description, type);
+		return addFile(file, "", type, null);
 	}
+	
+	public Resource addFile(java.io.File source, SocialObjectType type, List<User> authorizedUsers) 
+            throws IOException {
+        return addFile(source, "", type, authorizedUsers);
+    }
 
 	public Resource addExternalFile(URL url, String description,
 			SocialObjectType type) throws IOException {

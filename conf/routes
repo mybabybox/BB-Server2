@@ -105,9 +105,9 @@ GET     /image/get-thumbnail-cover-image-by-id/:id  controllers.UserController.g
 GET     /image/get-post-image-by-id/:id             controllers.ProductController.getProductImageById(id :Long)
 GET     /image/get-original-post-image-by-id/:id    controllers.ProductController.getOriginalProductImageById(id :Long)
 GET     /image/get-mini-post-image-by-id/:id        controllers.ProductController.getMiniProductImageById(id :Long)
-GET     /image/get-message-image-by-id/:id          controllers.UserController.getMessageImageById(ids :String)
-GET     /image/get-original-message-image-by-id/:id controllers.UserController.getOriginalMessageImageById(ids :String)
-GET     /image/get-mini-message-image-by-id/:id     controllers.UserController.getMiniMessageImageById(ids :String)
+GET     /image/get-message-image-by-id/:id          controllers.UserController.getMessageImageById(id :Long)
+GET     /image/get-original-message-image-by-id/:id controllers.UserController.getOriginalMessageImageById(id :Long)
+GET     /image/get-mini-message-image-by-id/:id     controllers.UserController.getMiniMessageImageById(id :Long)
 
 #
 # API

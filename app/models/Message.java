@@ -2,6 +2,8 @@ package models;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -63,8 +65,12 @@ public class Message extends SocialObject implements Comparable<Message> {
 	}
 	
 	public Resource addMessagePhoto(File source, User owner) throws IOException {
+	    List<User> authorizedUsers = new ArrayList<>();
+	    authorizedUsers.add(sender);
+	    authorizedUsers.add(receiver());
+	    
 		ensureAlbumExist(owner);
-		Resource photo = this.folder.addFile(source, SocialObjectType.MESSAGE_PHOTO);
+		Resource photo = this.folder.addFile(source, SocialObjectType.MESSAGE_PHOTO, authorizedUsers);
 		photo.save();
 		
 		conversation.lastMessageHasImage = true;

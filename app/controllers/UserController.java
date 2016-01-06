@@ -411,7 +411,7 @@ public class UserController extends Controller {
 		final User user = User.findById(id);
 		
 		if(User.isLoggedIn(user) && user.getPhotoProfile() != null) {
-			return ok(new File(user.getPhotoProfile().getMini()));
+			return ok(user.getPhotoProfile().getMiniFile());
 		} 
 		
 		try {
@@ -520,7 +520,7 @@ public class UserController extends Controller {
 	        Message message = newMessage(conversationId, localUser, body, system);
 	        
 	        List<FilePart> images = HttpUtil.getMultipartFormDataFiles(multipartFormData, "image", DefaultValues.MAX_MESSAGE_IMAGES);
-	        for (FilePart image : images){
+	        for (FilePart image : images) {
 				String fileName = image.getFilename();
 				File file = image.getFile();
 				File fileTo = ImageFileUtil.copyImageFileToTemp(file, fileName);
@@ -793,50 +793,59 @@ public class UserController extends Controller {
 	}
 
 	@Transactional
-	public static Result getMessageImageById(String ids) {
+	public static Result getMessageImageById(Long id) {
 	    response().setHeader("Cache-Control", "max-age=604800");
 	    final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
-            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            logger.underlyingLogger().error(String.format("[u=%d] getMessageImageById() User not logged in", localUser.id));
             return notFound();
         }
         
-        Long resId = Resource.parseMessageImageId(ids, localUser);
-        if (resId == -1L) {
-            return unauthorized();
+        Resource resource = Resource.findById(id);
+        if (resource != null && 
+                (resource.isUserAuthorized(localUser) || localUser.isSuperAdmin())) {
+            return ok(resource.getThumbnailFile());
         }
-	    return ok(Resource.findById(resId).getThumbnailFile());
+        
+        logger.underlyingLogger().error(String.format("[u=%d][res=%d] getMessageImageById() User not authorized", localUser.id, id));
+        return unauthorized();
 	}
 
     @Transactional
-    public static Result getOriginalMessageImageById(String ids) {
+    public static Result getOriginalMessageImageById(Long id) {
         response().setHeader("Cache-Control", "max-age=604800");
         final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
-            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            logger.underlyingLogger().error(String.format("[u=%d] getOriginalMessageImageById() User not logged in", localUser.id));
             return notFound();
         }
         
-        Long resId = Resource.parseMessageImageId(ids, localUser);
-        if (resId == -1L) {
-            return unauthorized();
+        Resource resource = Resource.findById(id);
+        if (resource != null && 
+                (resource.isUserAuthorized(localUser) || localUser.isSuperAdmin())) {
+            return ok(resource.getRealFile());
         }
-        return ok(Resource.findById(resId).getRealFile());
+        
+        logger.underlyingLogger().error(String.format("[u=%d][res=%d] getOriginalMessageImageById() User not authorized", localUser.id, id));
+        return unauthorized();
     }
 
     @Transactional
-    public static Result getMiniMessageImageById(String ids) {
+    public static Result getMiniMessageImageById(Long id) {
     	final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
-            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            logger.underlyingLogger().error(String.format("[u=%d] getMiniMessageImageById() User not logged in", localUser.id));
             return notFound();
         }
         
-        Long resId = Resource.parseMessageImageId(ids, localUser);
-        if (resId == -1L) {
-            return unauthorized();
+        Resource resource = Resource.findById(id);
+        if (resource != null && 
+                (resource.isUserAuthorized(localUser) || localUser.isSuperAdmin())) {
+            return ok(resource.getMiniFile());
         }
-    	return ok(new File(Resource.findById(resId).getMini()));
+        
+        logger.underlyingLogger().error(String.format("[u=%d][res=%d] getMiniMessageImageById() User not authorized", localUser.id, id));
+        return unauthorized();
     }
 	
     @Transactional
