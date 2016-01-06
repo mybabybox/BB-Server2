@@ -286,7 +286,7 @@ public class CalcServer {
 			Integer length =  (int) ((postsSize * percentage) / 100);
 			postIds.subList(0, length);
 			for(Long postId : postIds){
-				jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE, userId), formula.randomizeScore(Post.findById(postId)), postId.toString());
+				jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE, userId), formula.randomizeScore(Post.findById(postId)) * FEED_SCORE_HIGH_BASE , postId.toString());
 			}
 			
 			logger.underlyingLogger().debug(
