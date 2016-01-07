@@ -16,6 +16,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Inject;
 
+import models.Category;
 import models.Country;
 import models.GameBadge.BadgeType;
 import models.GameBadgeAwarded;
@@ -46,6 +47,7 @@ import providers.MyLoginUsernamePasswordAuthUser;
 import providers.MyUsernamePasswordAuthProvider;
 import providers.MyUsernamePasswordAuthProvider.MyLogin;
 import providers.MyUsernamePasswordAuthProvider.MySignup;
+import viewmodel.BanerVM;
 import viewmodel.CountryVM;
 import viewmodel.FeaturedItemVM;
 import viewmodel.LocationVM;
@@ -156,11 +158,23 @@ public class Application extends Controller {
 	// Entry points
 	//
     
+	public List<BanerVM> getBanerData(){
+		List<BanerVM> vms = new ArrayList<>();
+		for(Category category : Category.getAllCategories()){
+			BanerVM vm = new BanerVM();
+			vm.setImageUrl("background-image:url('"+Application.APPLICATION_BASE_URL+category.icon+"')");
+			vm.setLink(APPLICATION_BASE_URL+"/category/"+category.id+"/popular");
+			vms.add(vm);
+		}
+		return vms;
+		
+	}
+	
     @Transactional
     public Result home() {
         final User user = getLocalUser(session());
         if (user.id == -1) {
-        	return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user)))));
+        	return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user))), getBanerData()));
         }
         
         if (!User.isLoggedIn(user)){
@@ -180,7 +194,7 @@ public class Application extends Controller {
     }
 
     public Result home(User user) {
-        return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user)))));
+        return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user))), getBanerData()));
     }
     
     @Transactional

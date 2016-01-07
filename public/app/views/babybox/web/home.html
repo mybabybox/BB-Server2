@@ -1,31 +1,4 @@
-<div class="header">
- <div class='inner middle-centered-div'>
-  <a href="/"><div class='ic_logo clickable_area'></div></a>
-  <div class="no-search-bar-holder flex1"></div>
-  <div class='page_name L16'></div>
 
-  <span ng-if="!userInfo.isLoggedIn" style="padding-right: 15px;">
-   <a href="/login">
-    <div class='hold user_avatar ic_web_profile clickable_area'></div>
-  </a>
-  </span> <span ng-if="userInfo.isLoggedIn"
-   style="padding-right: 15px; padding-top: 0px;"> <a
-   href="/profile/{{userInfo.id}}">
-    <div class="hold user_avatar clickable_area"
-     style="background-image: url(/image/get-mini-profile-image-by-id/{{userInfo.id}});"></div>
-  </a>
-  </span>
- </div>
- <div class='second-panel'>
-  <div class='signup-btn' data-i18n='label_signup'></div>
-  <div class='login-btn' data-i18n='label_login'></div>
- </div>
- <div class="clearfix"></div>
-</div>
-
-<div class='header-holder'></div>
-
-<div class="center-container">
  <div class="category-grids subcat-container row categories-wrapper center-container">
   <div data-ng-repeat="cat in categories"
    class="col-xs-4 category-grid clickable_area ">
@@ -65,7 +38,7 @@
  <div class="location-bar_fixed "></div>
  <div class="popular_products_wrapper center-container">
    <div class="swiper-wrapper">
-    <div infinite-scroll='loadMore()' infinite-scroll-distance='2'>
+    <div infinite-scroll='loadMore()' infinite-scroll-distance='2' style="width: 100%">
      <ul class="item-list-pop swiper-slide swiper-slide-active"
       data-cate="pop"
       style="min-height: 629px; text-align: left; width: 102%;">
@@ -79,4 +52,21 @@
   <div id="back-to-top" data-ng-click="gotoTop()" class="gtop ic_maketop None" 
    style="z-index: 10; display: none;"></div>
  </div>
-</div>
+
+<!-- Initialize Swiper -->
+<script>
+var swiper = new Swiper('.swiper-container', {
+    pagination: '.swiper-pagination',
+    paginationClickable: true,
+    nextButton: '.swiper-button-next',
+    prevButton: '.swiper-button-prev',
+    spaceBetween: 30
+});
+</script>
+<style>
+.swiper-slide img{
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
