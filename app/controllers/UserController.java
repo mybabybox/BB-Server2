@@ -796,8 +796,13 @@ public class UserController extends Controller {
 	public static Result getMessageImageById(Long id) {
 	    response().setHeader("Cache-Control", "max-age=604800");
 	    final User localUser = Application.getLocalUser(session());
+	    if (localUser == null) {
+            String userKey = UserController.getMobileUserKey(request(), Application.APP_USER_KEY);
+            logger.underlyingLogger().error(String.format("[key=%s] getOriginalMessageImageById() User is null", userKey));
+            return notFound();
+        }
         if (!localUser.isLoggedIn()) {
-            logger.underlyingLogger().error(String.format("[u=%d] getMessageImageById() User not logged in", localUser.id));
+            logger.underlyingLogger().error(String.format("[u=%d] getOriginalMessageImageById() User not logged in", localUser.id));
             return notFound();
         }
         
@@ -815,6 +820,11 @@ public class UserController extends Controller {
     public static Result getOriginalMessageImageById(Long id) {
         response().setHeader("Cache-Control", "max-age=604800");
         final User localUser = Application.getLocalUser(session());
+        if (localUser == null) {
+            String userKey = UserController.getMobileUserKey(request(), Application.APP_USER_KEY);
+            logger.underlyingLogger().error(String.format("[key=%s] getOriginalMessageImageById() User is null", userKey));
+            return notFound();
+        }
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] getOriginalMessageImageById() User not logged in", localUser.id));
             return notFound();
@@ -833,8 +843,13 @@ public class UserController extends Controller {
     @Transactional
     public static Result getMiniMessageImageById(Long id) {
     	final User localUser = Application.getLocalUser(session());
+    	if (localUser == null) {
+            String userKey = UserController.getMobileUserKey(request(), Application.APP_USER_KEY);
+            logger.underlyingLogger().error(String.format("[key=%s] getOriginalMessageImageById() User is null", userKey));
+            return notFound();
+        }
         if (!localUser.isLoggedIn()) {
-            logger.underlyingLogger().error(String.format("[u=%d] getMiniMessageImageById() User not logged in", localUser.id));
+            logger.underlyingLogger().error(String.format("[u=%d] getOriginalMessageImageById() User not logged in", localUser.id));
             return notFound();
         }
         

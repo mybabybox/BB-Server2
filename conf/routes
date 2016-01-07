@@ -96,6 +96,7 @@ POST    /image/upload-cover-photo                   controllers.UserController.u
 POST    /image/upload-message-photo                 controllers.UserController.uploadMessagePhoto
 
 # image get
+GET     /image/static/*path                         controllers.Application.getStaticImage(path:String)
 GET     /image/get-profile-image                    controllers.UserController.getProfileImage
 GET     /image/get-profile-image-by-id/:id          controllers.UserController.getProfileImageById(id:Long)
 GET     /image/get-thumbnail-profile-image-by-id/:id    controllers.UserController.getThumbnailProfileImageById(id :Long)

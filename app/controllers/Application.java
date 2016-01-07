@@ -2,6 +2,7 @@ package controllers;
 
 import handler.FeedHandler;
 
+import java.io.File;
 import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import models.GameBadge.BadgeType;
 import models.GameBadgeAwarded;
 import models.Location;
 import models.FeaturedItem;
+import models.Resource;
 import models.SecurityRole;
 import models.TermsAndConditions;
 import models.User;
@@ -135,6 +137,15 @@ public class Application extends Controller {
 	            "<meta property='og:site_name' content='"+APPLICATION_BASE_URL+"' />"+
 	            "<meta property='fb:app_id' content='"+FACEBOOK_APP_ID+"' />";
 		return metaTags;
+	}
+	
+	public static Result getStaticImage(String path) {
+	    path = Resource.STORAGE_PATH + path;
+	    File file = new File(path);
+        if (file.exists()) {
+            return ok(file);
+        }
+        return notFound();
 	}
 	
 	@Transactional
