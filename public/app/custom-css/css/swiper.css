@@ -228,7 +228,7 @@ button.swiper-pagination-bullet {
   display: block;
 }
 .swiper-container-horizontal > .swiper-pagination {
-  bottom: 10px;
+  bottom: 2px;
   left: 0;
   width: 100%;
 }
