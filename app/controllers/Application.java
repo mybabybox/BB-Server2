@@ -140,11 +140,10 @@ public class Application extends Controller {
 	}
 	
 	public static Result getStaticImage(String path) {
-	    path = Resource.STORAGE_PATH + path;
-	    File file = new File(path);
-        if (file.exists()) {
-            return ok(file);
-        }
+	    File file = Resource.getStorageStaticImage(path);
+	    if (file != null) {
+	        return ok(file);
+	    }
         return notFound();
 	}
 	

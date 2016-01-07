@@ -1,5 +1,6 @@
 package models;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -81,15 +82,15 @@ public class Resource extends SocialObject {
         return getStoragePath("mini.");
 	}
 	
-	public java.io.File getRealFile() {
+	public File getRealFile() {
         return getFileObject(getPath());
 	}
 
-    public java.io.File getThumbnailFile() {
+    public File getThumbnailFile() {
         return getFileObject(getThumbnail());
 	}
     
-    public java.io.File getMiniFile() {
+    public File getMiniFile() {
         return getFileObject(getMini());
     }
 
@@ -117,13 +118,22 @@ public class Resource extends SocialObject {
         return "part"+(owner.id / STORAGE_PARTITION_DIR_MAX);
     }
 
-    public static java.io.File getFileObject(String path) {
-		java.io.File f = new java.io.File(path);
+    public static File getFileObject(String path) {
+		File f = new File(path);
 		if (f.exists()) {
 			return f;
 		}
 		return null;
 	}
+    
+    public static File getStorageStaticImage(String path) {
+        path = STORAGE_PATH + path;
+        File file = new File(path);
+        if (file.exists()) {
+            return file;
+        }
+        return null;
+    }
     
     public void setAuthorizedUsers(List<User> users) {
         if (users == null || users.size() == 0) {
