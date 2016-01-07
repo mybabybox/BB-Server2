@@ -1,4 +1,4 @@
-@(userInfo:String, banerData: String)
+@(userInfo:String, featuredItems: String)
 
 <!doctype html>
 <html lang="zh-hk">
@@ -63,20 +63,18 @@
    <div class="center-container">
     <div class="swiper-container gallery-top">
      <div class="swiper-wrapper" style="height: 200px;">
-      <div style="cursor: pointer;" class="swiper-slide"
-       data-ng-repeat="data in banerData" data-ng-click="forwardLink(data)">
-       <img data-ng-src="{{data.image}}" />
+      <div style="cursor: pointer;" class="swiper-slide" data-ng-repeat="featuredItem in featuredItems" data-ng-click="forwardLink(featuredItem)">
+       <img data-ng-src="{{featuredItem.image}}" />
       </div>
      </div>
      <div class="swiper-pagination"></div>
     </div>
 
-
-    <div data-ng-include
-     data-src="'/assets/app/views/babybox/web/home.html'"></div>
+    <div data-ng-include data-src="'/assets/app/views/babybox/web/home.html'"></div>
    </div>
   </div>
  </div>
+ 
  <script src="@routes.Assets.versioned("app/scripts/pre-angular.js")"></script>
  <script src="@routes.Assets.versioned("components/library/jquery/jquery.min.js")"></script>
  <script src="@routes.Assets.versioned("components/library/jquery/jquery.validate.min.js")"></script>
@@ -173,7 +171,7 @@ var swiper = new Swiper('.swiper-container', {
 		angular.module('babybox').factory('userInfo', function(){
 			return @Html(userInfo);
 		});
-		angular.module('babybox').factory('banerData', function(){
-			return @Html(banerData);
+		angular.module('babybox').factory('featuredItems', function(){
+			return @Html(featuredItems);
 		});
 </script>

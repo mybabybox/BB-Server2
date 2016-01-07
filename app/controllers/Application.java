@@ -158,7 +158,7 @@ public class Application extends Controller {
     public Result home() {
         final User user = getLocalUser(session());
         if (user.id == -1) {
-        	return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user))), Json.stringify(Json.toJson(getFeaturedItemsVM("HOME_SLIDER")))));
+        	return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user))), Json.stringify(Json.toJson(getFeaturedItemVMs("HOME_SLIDER")))));
         }
         
         if (!User.isLoggedIn(user)){
@@ -178,7 +178,7 @@ public class Application extends Controller {
     }
 
     public Result home(User user) {
-        return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user))), Json.stringify(Json.toJson(getFeaturedItemsVM("HOME_SLIDER")))));
+        return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user))), Json.stringify(Json.toJson(getFeaturedItemVMs("HOME_SLIDER")))));
     }
     
     @Transactional
@@ -773,28 +773,27 @@ public class Application extends Controller {
         return ok(Json.toJson(vms));
     }
 
-	@Transactional
+    @Transactional
     public static Result getFeaturedItems(String itemType) {
-	    List<FeaturedItemVM> vms = getFeaturedItemsVM(itemType);
+        List<FeaturedItemVM> vms = getFeaturedItemVMs(itemType);
         return ok(Json.toJson(vms));
     }
 
-	public static List<FeaturedItemVM> getFeaturedItemsVM(String itemType) {
-		List<FeaturedItemVM> vms = new ArrayList<>();
-	    try {
-	        List<FeaturedItem> featuredItems = FeaturedItemCache.getFeaturedItems(ItemType.valueOf(itemType));
-	        for (FeaturedItem featuredItem : featuredItems) {
-	            vms.add(new FeaturedItemVM(featuredItem));
-	        }
-	    } catch (Exception e) {
-	    }
-		return vms;
-	}
+    public static List<FeaturedItemVM> getFeaturedItemVMs(String itemType) {
+        List<FeaturedItemVM> vms = new ArrayList<>();
+        try {
+            List<FeaturedItem> featuredItems = FeaturedItemCache.getFeaturedItems(ItemType.valueOf(itemType));
+            for (FeaturedItem featuredItem : featuredItems) {
+                vms.add(new FeaturedItemVM(featuredItem));
+            }
+        } catch (Exception e) {
+        }
+        return vms;
+    }
 
 	//
 	// Webmaster
 	//
-	
 	
 	@Transactional
 	public static Result googleWebmaster() {

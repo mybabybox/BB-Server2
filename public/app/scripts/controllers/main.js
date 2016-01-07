@@ -3,14 +3,18 @@
 var babybox = angular.module('babybox');
 
 babybox.controller('HomeController', 
-		function($scope, $translate, $location, $route, categoryService, productService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService, banerData) {
+		function($scope, $translate, $location, $route, categoryService, productService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService, featuredItems) {
 	
 	writeMetaCanonical($location.absUrl());
 	
 	usSpinnerService.spin('loading...');
 
+	$scope.featuredItems = featuredItems;
+	$scope.userInfo = userInfo;
+	$scope.homeFeed=true;
+	
 	$scope.forwardLink = function(featuredItem){
-		console.log(featuredItem);
+		//console.log(featuredItem);
 		var url;
 		if(angular.equals(featuredItem.destinationType,"CATEGORY")){
 			url = "category/"+featuredItem.destinationObjId+"/popular";
@@ -23,9 +27,6 @@ babybox.controller('HomeController',
 		}
 		window.location.href=url;
 	}
-	$scope.banerData = banerData;
-	$scope.userInfo = userInfo;
-	$scope.homeFeed=true;
 	
 	$scope.products = productService.getHomeExploreFeed.get({offset:0});
 	$scope. getHomeExploreProducts= function () {
