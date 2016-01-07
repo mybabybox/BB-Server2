@@ -62,7 +62,7 @@
    <div class='header-holder'></div>
    <div class="center-container">
     <div class="swiper-container gallery-top">
-     <div class="swiper-wrapper">
+     <div class="swiper-wrapper" data-ng-if="featuredItems.length > 0">
       <div style="cursor: pointer;" class="swiper-slide" data-ng-repeat="featuredItem in featuredItems" data-ng-click="forwardLink(featuredItem)">
        <img data-ng-src="{{featuredItem.image}}" />
       </div>
