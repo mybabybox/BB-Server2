@@ -7,27 +7,24 @@ import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.inject.Inject;
 
-import models.Category;
 import models.Country;
+import models.FeaturedItem;
+import models.FeaturedItem.ItemType;
 import models.GameBadge.BadgeType;
 import models.GameBadgeAwarded;
 import models.Location;
-import models.FeaturedItem;
 import models.Resource;
 import models.SecurityRole;
 import models.TermsAndConditions;
 import models.User;
 import models.UserInfo;
-import models.FeaturedItem.ItemType;
 import models.UserInfo.ParentType;
 
 import org.apache.commons.lang.StringUtils;
@@ -47,13 +44,12 @@ import providers.MyLoginUsernamePasswordAuthUser;
 import providers.MyUsernamePasswordAuthProvider;
 import providers.MyUsernamePasswordAuthProvider.MyLogin;
 import providers.MyUsernamePasswordAuthProvider.MySignup;
-import viewmodel.BanerVM;
 import viewmodel.CountryVM;
 import viewmodel.FeaturedItemVM;
 import viewmodel.LocationVM;
 import viewmodel.UserVM;
-import Decoder.BASE64Encoder;
 import Decoder.BASE64Decoder;
+import Decoder.BASE64Encoder;
 import be.objectify.deadbolt.java.actions.Group;
 import be.objectify.deadbolt.java.actions.Restrict;
 
@@ -62,15 +58,15 @@ import com.feth.play.module.pa.exceptions.AuthException;
 import com.feth.play.module.pa.providers.password.UsernamePasswordAuthProvider;
 import com.feth.play.module.pa.providers.password.UsernamePasswordAuthUser;
 import com.feth.play.module.pa.user.AuthUser;
-
 import common.cache.CalcServer;
 import common.cache.CountryCache;
-import common.cache.LocationCache;
 import common.cache.FeaturedItemCache;
+import common.cache.LocationCache;
 import common.model.TargetGender;
 import common.utils.HtmlUtil;
 import common.utils.UserAgentUtil;
 import common.utils.ValidationUtil;
+
 import domain.DefaultValues;
 
 public class Application extends Controller {
@@ -158,23 +154,11 @@ public class Application extends Controller {
 	// Entry points
 	//
     
-	public List<BanerVM> getBanerData(){
-		List<BanerVM> vms = new ArrayList<>();
-		for(Category category : Category.getAllCategories()){
-			BanerVM vm = new BanerVM();
-			vm.setImageUrl("background-image:url('"+Application.APPLICATION_BASE_URL+category.icon+"')");
-			vm.setLink(APPLICATION_BASE_URL+"/category/"+category.id+"/popular");
-			vms.add(vm);
-		}
-		return vms;
-		
-	}
-	
     @Transactional
     public Result home() {
         final User user = getLocalUser(session());
         if (user.id == -1) {
-        	return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user))), getBanerData()));
+        	return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user))), Json.stringify(Json.toJson(getFeaturedItemsVM("HOME_SLIDER")))));
         }
         
         if (!User.isLoggedIn(user)){
@@ -194,7 +178,7 @@ public class Application extends Controller {
     }
 
     public Result home(User user) {
-        return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user))), getBanerData()));
+        return ok(views.html.babybox.web.home.render(Json.stringify(Json.toJson(new UserVM(user))), Json.stringify(Json.toJson(getFeaturedItemsVM("HOME_SLIDER")))));
     }
     
     @Transactional
@@ -791,7 +775,12 @@ public class Application extends Controller {
 
 	@Transactional
     public static Result getFeaturedItems(String itemType) {
-	    List<FeaturedItemVM> vms = new ArrayList<>();
+	    List<FeaturedItemVM> vms = getFeaturedItemsVM(itemType);
+        return ok(Json.toJson(vms));
+    }
+
+	public static List<FeaturedItemVM> getFeaturedItemsVM(String itemType) {
+		List<FeaturedItemVM> vms = new ArrayList<>();
 	    try {
 	        List<FeaturedItem> featuredItems = FeaturedItemCache.getFeaturedItems(ItemType.valueOf(itemType));
 	        for (FeaturedItem featuredItem : featuredItems) {
@@ -799,8 +788,8 @@ public class Application extends Controller {
 	        }
 	    } catch (Exception e) {
 	    }
-        return ok(Json.toJson(vms));
-    }
+		return vms;
+	}
 
 	//
 	// Webmaster

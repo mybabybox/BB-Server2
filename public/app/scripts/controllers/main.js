@@ -3,12 +3,27 @@
 var babybox = angular.module('babybox');
 
 babybox.controller('HomeController', 
-		function($scope, $translate, $location, $route, categoryService, productService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService) {
+		function($scope, $translate, $location, $route, categoryService, productService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService, banerData) {
 	
 	writeMetaCanonical($location.absUrl());
 	
 	usSpinnerService.spin('loading...');
-	
+
+	$scope.forwardLink = function(featuredItem){
+		console.log(featuredItem);
+		var url;
+		if(angular.equals(featuredItem.destinationType,"CATEGORY")){
+			url = "category/"+featuredItem.destinationObjId+"/popular";
+		}
+		if(angular.equals(featuredItem.destinationType,"POST")){
+			url = "product/"+featuredItem.destinationObjId;
+		}
+		if(angular.equals(featuredItem.destinationType,"USER")){
+			url = "profile/"+featuredItem.destinationObjId;
+		}
+		window.location.href=url;
+	}
+	$scope.banerData = banerData;
 	$scope.userInfo = userInfo;
 	$scope.homeFeed=true;
 	
