@@ -878,14 +878,18 @@ public class UserController extends Controller {
   
     @Transactional
     public static Result viewProfile(Long id) {
-        User user = User.findById(id);
+        NanoSecondStopWatch sw = new NanoSecondStopWatch();
+        
         final User localUser = Application.getLocalUser(session());
-    	
-    	NanoSecondStopWatch sw = new NanoSecondStopWatch();
+        User user = User.findById(id);
+        if (user == null) {
+            logger.underlyingLogger().warn(String.format("[user=%d][u=%d] User not found", id, localUser.id));
+            return notFound();
+        }
 	    
 		sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {
-            logger.underlyingLogger().debug("[u="+user.getId()+"] getProfile(). Took "+sw.getElapsedMS()+"ms");
+            logger.underlyingLogger().debug("[u="+id+"] viewProfile(). Took "+sw.getElapsedMS()+"ms");
         }
         
 		String metaTags = Application.generateHeaderMeta(user.displayName, "", "/image/get-profile-image-by-id/"+user.getId());

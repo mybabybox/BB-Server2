@@ -183,3 +183,8 @@ var swiper = new Swiper('.swiper-container', {
 		return @Html(suggestedPost);
 	});
 </script>
+
+<script type="text/javascript" src="@routes.Assets.versioned("app/scripts/tracking.js")"></script>
+<script>
+    ga_send_pv();
+</script>

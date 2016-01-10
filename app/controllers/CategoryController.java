@@ -94,6 +94,11 @@ public class CategoryController extends Controller{
     @Transactional
     public static Result getCategory(Long id){
         Category category = Category.findById(id);
+        if (category == null) {
+            logger.underlyingLogger().warn(String.format("[cat=%d] Category not found", id));
+            return notFound();
+        }
+        
         CategoryVM categoryVM = new CategoryVM(category);
         return ok(Json.toJson(categoryVM));
     }

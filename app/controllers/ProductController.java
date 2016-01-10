@@ -341,10 +341,12 @@ public class ProductController extends Controller{
 
 	@Transactional
 	public Result viewProduct(Long id) {
+	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
+	    
 		final User localUser = Application.getLocalUser(session());
 		PostVM product = getProductInfoVM(id);
 		if (product == null) {
-		    logger.underlyingLogger().warn(String.format("[p=%d][u=%d] Product not found", id, localUser.id));
+		    logger.underlyingLogger().warn(String.format("[post=%d][u=%d] Product not found", id, localUser.id));
 		    return notFound();
 		}
 		
@@ -357,6 +359,11 @@ public class ProductController extends Controller{
 		images.put("original", originalImages);
 		List<PostVMLite> suggestedPosts = feedHandler.getPostVM(id, 0l, localUser, FeedType.PRODUCT_SUGGEST);
 		
+		sw.stop();
+        if (logger.underlyingLogger().isDebugEnabled()) {
+            logger.underlyingLogger().debug("[p="+id+"] viewProduct(). Took "+sw.getElapsedMS()+"ms");
+        }
+        
 		String metaTags = Application.generateHeaderMeta(product.title, product.body, "/image/get-post-image-by-id/"+product.images[0]);
 		return ok(views.html.babybox.web.product.render(
 		        Json.stringify(Json.toJson(product)), 
