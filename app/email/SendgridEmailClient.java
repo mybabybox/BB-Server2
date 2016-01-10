@@ -147,7 +147,7 @@ public class SendgridEmailClient implements TransactionalEmailClient {
         String htmlBody = 
                 HtmlUtil.appendImage(POST_IMAGE_BY_ID_URL+post.getImage(), 150, 150)+HtmlUtil.appendBr()+ 
                 post.title+HtmlUtil.appendBr()+HtmlUtil.appendBr()+ 
-                "價格: $" + post.price.intValue();
+                "價格: $" + post.price.longValue();
         
         String template = getEmailTemplate(
                 "views.html.account.email.sendgrid.post_mail",

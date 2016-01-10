@@ -364,7 +364,10 @@ public class ProductController extends Controller{
             logger.underlyingLogger().debug("[p="+id+"] viewProduct(). Took "+sw.getElapsedMS()+"ms");
         }
         
-		String metaTags = Application.generateHeaderMeta(product.title, product.body, "/image/get-post-image-by-id/"+product.images[0]);
+		String metaTags = Application.generateHeaderMeta(
+		        product.title, 
+		        "$" + ((Double)product.price).longValue() + " " + product.body, 
+		        "/image/get-post-image-by-id/"+product.images[0]);
 		return ok(views.html.babybox.web.product.render(
 		        Json.stringify(Json.toJson(product)), 
 		        Json.stringify(Json.toJson(new UserVM(localUser))), 
