@@ -126,7 +126,6 @@ public class Application extends Controller {
 	}
 	
 	public static String generateHeaderMeta(String title, String description, String image) {
-	    title = title + " | BabyBox 媽媽即拍即賣";
 	    if (StringUtils.isEmpty(description)) {
 	        description = "Everymom is a Seller!";
 	    }

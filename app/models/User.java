@@ -653,8 +653,10 @@ public class User extends SocialObject implements Subject, Followable {
 
 	public static void setLastLoginDate(final AuthUser knownUser) {
 		final User u = User.findByAuthUserIdentity(knownUser);
-		u.lastLogin = new Date();
-		u.save();
+		if (u != null && u.isLoggedIn()) {
+    		u.lastLogin = new Date();
+    		u.save();
+		}
 	}
 
 	public static User findByEmail(final String email) {
@@ -916,10 +918,6 @@ public class User extends SocialObject implements Subject, Followable {
 
 	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
-		if (this.totalLogin == null) {
-			this.totalLogin = 1L;   // prev user, at least 1 login
-		}
-		this.totalLogin++;
 	}
 
 	public List<UserChild> getChildren() {
