@@ -62,9 +62,8 @@ public class CalcServer {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
 		logger.underlyingLogger().debug("warmUpActivity starts");
 		
-		buildCategoryQueues();
-		buildUserQueues();
-		buildPostQueues();
+		buildQueuesFromUsers();
+		buildQueuesFromPosts();
 		
 		JobScheduler.getInstance().schedule(
 		        "buildCategoryPopularQueue", 
@@ -118,25 +117,12 @@ public class CalcServer {
 		return formula.computeBaseScore(post);
 	}
 	
-	private void buildUserQueues() {
+	private void buildQueuesFromUsers() {
 		for(User user : User.getEligibleUsersForFeed()){
 			clearUserQueues(user);
-			buildUserPostedQueue(user);
 			buildUserLikedPostQueue(user);
 			buildUserFollowingUserQueue(user);
 		}
-	}
-
-	private void buildUserPostedQueue(User user) {
-		NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildUserPostedQueue starts");
-		
-		for(Post post : user.getUserPosts()){
-			jedisCache.putToSortedSet(getKey(FeedType.USER_POSTED,user.id), post.getCreatedDate().getTime() , post.id.toString());
-		}
-		
-		sw.stop();
-		logger.underlyingLogger().debug("buildUserPostedQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
 	private void buildUserLikedPostQueue(User user) {
@@ -163,22 +149,26 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildUserLikedPostQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
-	private void buildCategoryQueues() {
+	private void buildQueuesFromPosts() {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
-        logger.underlyingLogger().debug("buildCategoryQueues starts");
+        logger.underlyingLogger().debug("buildQueuesFromPosts starts");
         
 		clearCategoryQueues();
+
 		for (Post post : Post.getEligiblePostsForFeeds()) {
+			clearPostQueues(post);
 		    if (post.soldMarked) {
                 continue;
             }
 		    addToCategoryPriceLowHighQueue(post);
 		    addToCategoryNewestQueue(post);
 		    addToCategoryPopularQueue(post);
+		    buildUserPostedQueue(post);
+		    buildProductLikedUserQueue(post);
 		}
 		
 		sw.stop();
-        logger.underlyingLogger().debug("buildCategoryQueues completed. Took "+sw.getElapsedSecs()+"s");
+        logger.underlyingLogger().debug("buildQueuesFromPosts completed. Took "+sw.getElapsedSecs()+"s");
 	}
 	
 	private void buildCategoryPopularQueues() {
@@ -194,16 +184,6 @@ public class CalcServer {
 		
 		sw.stop();
         logger.underlyingLogger().debug("buildCategoryPopularQueue completed. Took "+sw.getElapsedSecs()+"s");
-	}
-	
-	private void buildPostQueues() {
-		for (Post post : Post.getEligiblePostsForFeeds()) {
-			clearPostQueues(post);
-			if (post.sold) {
-                continue;
-            }
-		    buildProductLikedUserQueue(post);
-		}
 	}
 	
 	private void buildProductLikedUserQueue(Post post) {
@@ -253,6 +233,13 @@ public class CalcServer {
             return;
         }
 		jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_PRICE_LOW_HIGH,post.category.id), post.price * FEED_SCORE_HIGH_BASE + post.id , post.id.toString());
+	}
+
+	private void buildUserPostedQueue(Post post) {
+		if (post.soldMarked) {
+			return;
+		}
+		jedisCache.putToSortedSet(getKey(FeedType.USER_POSTED,post.owner.id), post.getCreatedDate().getTime() , post.id.toString());
 	}
 	
 	private void buildUserExploreFeedQueue(Long userId) {
