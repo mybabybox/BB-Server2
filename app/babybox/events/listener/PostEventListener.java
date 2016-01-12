@@ -29,7 +29,7 @@ public class PostEventListener extends EventListener {
     		final User user = (User) map.get("user");
 
     		CalcServer.instance().addToCategoryQueues(post);
-            CalcServer.instance().addToUserPostedQueue(post, user);
+            CalcServer.instance().addToUserPostedQueue(post);
             
             final Long postImageId = post.getImage();
     		executeAsync(

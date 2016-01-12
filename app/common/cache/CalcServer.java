@@ -163,7 +163,7 @@ public class CalcServer {
 		    addToCategoryPriceLowHighQueue(post);
 		    addToCategoryNewestQueue(post);
 		    addToCategoryPopularQueue(post);
-		    buildUserPostedQueue(post);
+		    addToUserPostedQueue(post);
 		    buildProductLikedUserQueue(post);
 		}
 		
@@ -235,11 +235,11 @@ public class CalcServer {
 		jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_PRICE_LOW_HIGH,post.category.id), post.price * FEED_SCORE_HIGH_BASE + post.id , post.id.toString());
 	}
 
-	private void buildUserPostedQueue(Post post) {
+	public void addToUserPostedQueue(Post post) {
 		if (post.soldMarked) {
 			return;
 		}
-		jedisCache.putToSortedSet(getKey(FeedType.USER_POSTED,post.owner.id), post.getCreatedDate().getTime() , post.id.toString());
+		jedisCache.putToSortedSet(getKey(FeedType.USER_POSTED,post.owner.id), post.getCreatedDate().getTime(), post.id.toString());
 	}
 	
 	private void buildUserExploreFeedQueue(Long userId) {
@@ -546,10 +546,6 @@ public class CalcServer {
 		jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_FOLLOWING,userId), followingUserId.toString());
 	}
 
-	public void addToUserPostedQueue(Post post, User user){
-		jedisCache.putToSortedSet(getKey(FeedType.USER_POSTED,user.id), post.getCreatedDate().getTime(), post.id.toString());
-	}
-	
 	public void removeFromUserPostedQueue(Post post, User user){
 		jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_POSTED,user.id), post.id.toString());
 	}
