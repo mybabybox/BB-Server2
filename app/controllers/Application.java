@@ -806,4 +806,10 @@ public class Application extends Controller {
 	public static Result googleWebmaster() {
 	    return ok(views.html.google_webmaster.render());
 	}
+	
+	@Transactional
+	public static Result pathNotFound(String path) {
+	    return redirect("/home");
+	}
+	
 }

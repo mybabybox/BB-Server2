@@ -308,3 +308,6 @@ GET     /api/get-users-by-signup/:offset            controllers.UserController.g
 GET     /api/get-users-by-login/:offset             controllers.UserController.getUsersByLogin(offset:Long)
 GET     /api/get-latest-conversations/:offset       controllers.UserController.getLatestConversations(offset:Long)
 GET     /api/get-messages-for-admin/:conversationId/:offset   controllers.UserController.getMessagesForAdmin(conversationId: Long, offset: Long)
+
+# Dead Links
+GET		/:path										controllers.Application.pathNotFound(path: String)

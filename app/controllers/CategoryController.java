@@ -107,6 +107,10 @@ public class CategoryController extends Controller{
     public Result viewCategory(Long id, String catagoryFilter){
         User localUser = Application.getLocalUser(session());
         Category category = Category.findById(id);
+        if (category == null) {
+		    logger.underlyingLogger().warn(String.format("[category=%d][u=%d] Category not found", id, localUser.id));
+		    return redirect("/home");
+		}
         CategoryVM categoryVM = new CategoryVM(category);
         List<PostVMLite> postVMs = new ArrayList<>();
         

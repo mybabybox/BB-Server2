@@ -347,7 +347,7 @@ public class ProductController extends Controller{
 		PostVM product = getProductInfoVM(id);
 		if (product == null) {
 		    logger.underlyingLogger().warn(String.format("[post=%d][u=%d] Product not found", id, localUser.id));
-		    return notFound();
+		    return redirect("/home");
 		}
 		
 		Map<String, List<String>> images = new HashMap<>();
