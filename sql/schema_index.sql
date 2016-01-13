@@ -1,62 +1,30 @@
 -- User
-CREATE INDEX user_idx_created_system ON user (created_date, system);
+CREATE INDEX user_idx_created ON user (deleted);
 
 
--- Notification
-CREATE INDEX notification_idx_recipient_created ON Notification (recipient, CREATED_DATE);
+-- LikeSocialRelation
+CREATE INDEX likesocialrel_idx_actor_target ON likesocialrelation (actor, actorType, target, targetType);
 
 
--- SocialRelation (Friends, Community Members)
-CREATE INDEX socialrel_idx_actor_action ON socialrelation (actor, action);
-CREATE INDEX socialrel_idx_target_action ON socialrelation (target, action);
-CREATE INDEX socialrel_idx_actor_target_action ON socialrelation (actor, target, action);
-CREATE INDEX socialrel_idx_action_actType ON socialrelation (action(32), actionType(32));
+-- FollowSocialRelation
+CREATE INDEX followsocialrel_idx_actor_target ON followsocialrelation (actor, actorType, target, targetType);
 
 
--- SecondarySocialRelation (Bookmarks)
-CREATE INDEX secsocialrel_idx_actor_action ON secondarysocialrelation (actor, action);
-CREATE INDEX secsocialrel_idx_target_action ON secondarysocialrelation (target, action);
-CREATE INDEX secsocialrel_idx_actor_target_action ON secondarysocialrelation (actor, target, action);
+-- PostSocialRelation
+CREATE INDEX postsocialrel_idx_actor_target ON postsocialrelation (actor, actorType, target, targetType);
 
 
--- PrimarySocialRelation (Likes, Posts)
-CREATE INDEX primsocialrel_idx_actor_action ON primarysocialrelation (actor, action);
-CREATE INDEX primsocialrel_idx_target_action ON primarysocialrelation (target, action);
-CREATE INDEX primsocialrel_idx_actor_target_action ON primarysocialrelation (actor, target, action);
-
-
--- Community
-CREATE INDEX community_idx_tgtType_system ON community (targetingType, system);
-
-
--- CommunityStatistics
-CREATE INDEX communitystats_idx_actdate ON communitystatistics (activityDate);
+-- ViewSocialRelation
+CREATE INDEX viewsocialrel_idx_actor_target ON viewsocialrelation (actor, actorType, target, targetType);
 
 
 -- Post
-CREATE INDEX post_idx_comm_ptyp_upddate ON post (community_id, postType, UPDATED_DATE);
+CREATE INDEX post_idx_cat_sold ON post (category_id, soldMarked);
 
 
--- Comment
-CREATE INDEX comment_idx_sobj_date ON comment (socialObject, date);
+-- Activity
+CREATE INDEX activity_idx_actor_target_user ON activity (actor, actorType, target, targetType, userId);
 
 
--- User Community Affinity
-CREATE INDEX usercommunityaffinity_idx_usr_comm ON usercommunityaffinity (userId, communityId);
-
-
--- GameAccount
-CREATE INDEX gameaccount_idx_userid ON GameAccount (User_id);
-
-
--- GameAccountTransaction
-CREATE INDEX gameaccounttransaction_idx_userid ON GameAccountTransaction (userId);
-
-
--- GameAccountStatistics
-CREATE INDEX gameaccountstatistics_idx_userid ON GameAccountStatistics (User_id);
-
-
--- Conversation
-CREATE INDEX conversation_idx_user1_updateddate ON Conversation (user1_id, updated_date);
-CREATE INDEX conversation_idx_user2_updateddate ON Conversation (user2_id, updated_date);
+-- GCMToken
+CREATE INDEX gcm_idx_user ON gcmtoken (userId);
