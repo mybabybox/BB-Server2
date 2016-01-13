@@ -469,7 +469,6 @@ public class UserController extends Controller {
 		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("messages", vms);
-		map.put("counter", Conversation.getUnreadConversationCount(localUser));
 
         sw.stop();
         logger.underlyingLogger().info("[u="+localUser.id+"][c="+conversationId+"] getMessages(offset="+offset+") size="+vms.size()+". Took "+sw.getElapsedMS()+"ms");

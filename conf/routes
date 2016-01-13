@@ -250,9 +250,6 @@ GET     /get-messages/:conversationId/:offset       controllers.UserController.g
 POST    /api/message/new                            controllers.UserController.newMessage()
 POST    /message/new                                controllers.UserController.newMessage()
 
-GET     /api/get-unread-message-count               controllers.UserController.getUnreadMessageCount()
-GET     /get-unread-message-count                   controllers.UserController.getUnreadMessageCount()
-
 POST    /api/update-conversation-note               controllers.UserController.updateConversationNote()
 POST    /update-conversation-note                   controllers.UserController.updateConversationNote()
 
