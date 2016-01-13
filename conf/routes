@@ -310,4 +310,4 @@ GET     /api/get-latest-conversations/:offset       controllers.UserController.g
 GET     /api/get-messages-for-admin/:conversationId/:offset   controllers.UserController.getMessagesForAdmin(conversationId: Long, offset: Long)
 
 # Dead Links
-GET		/:path										controllers.Application.pathNotFound(path: String)
+GET		/*path                                      controllers.Application.pathNotFound(path: String)

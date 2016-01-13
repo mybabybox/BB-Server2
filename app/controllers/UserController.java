@@ -883,7 +883,7 @@ public class UserController extends Controller {
         User user = User.findById(id);
         if (user == null) {
             logger.underlyingLogger().warn(String.format("[user=%d][u=%d] User not found", id, localUser.id));
-            return redirect("/home");
+            return Application.pathNotFound();
         }
 	    
 		sw.stop();

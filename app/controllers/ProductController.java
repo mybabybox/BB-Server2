@@ -345,10 +345,10 @@ public class ProductController extends Controller{
 	    
 		final User localUser = Application.getLocalUser(session());
 		PostVM product = getProductInfoVM(id);
-		if (product == null) {
-		    logger.underlyingLogger().warn(String.format("[post=%d][u=%d] Product not found", id, localUser.id));
-		    return redirect("/home");
-		}
+        if (product == null) {
+            logger.underlyingLogger().warn(String.format("[post=%d][u=%d] Product not found", id, localUser.id));
+            return Application.pathNotFound();
+        }
 		
 		Map<String, List<String>> images = new HashMap<>();
 		List<String> originalImages = new ArrayList<>();

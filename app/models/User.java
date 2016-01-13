@@ -80,8 +80,6 @@ public class User extends SocialObject implements Subject, Followable {
     
 	public static final Long NO_LOGIN_ID = -1L;
 	
-	private static User BB_ADMIN;
-
 	public static final String BB_ADMIN_NAME = "BabyBox 管理員";
 
 	public String firstName;
@@ -857,6 +855,16 @@ public class User extends SocialObject implements Subject, Followable {
 		this.changePassword(authUser, create);
 		TokenAction.deleteByUser(this, Type.PASSWORD_RESET);
 	}
+
+    public static User findByDisplayName(String displayName) {
+        try { 
+            Query q = JPA.em().createQuery("SELECT u FROM User u where displayName = ?1 and deleted = false");
+            q.setParameter(1, displayName);
+            return (User) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 
 	public static User findById(Long id) {
 		try { 

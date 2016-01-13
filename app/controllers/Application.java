@@ -476,11 +476,6 @@ public class Application extends Controller {
     
 	@Transactional
 	public static Result login() {
-	    /*
-		final User localUser = getLocalUser(session());
-		if (User.isLoggedIn(localUser)) {
-			return redirect("/home");
-		}*/
 		return ok(views.html.login.render(MyUsernamePasswordAuthProvider.LOGIN_FORM, isOverDailySignupThreshold()));
 	}
 	
@@ -808,8 +803,22 @@ public class Application extends Controller {
 	}
 	
 	@Transactional
-	public static Result pathNotFound(String path) {
-	    return redirect("/home");
-	}
+    public static Result pathNotFound() {
+        return redirect("/home");
+    }
 	
+	@Transactional
+	public static Result pathNotFound(String path) {
+	    if (path.contains("/")) {
+	        return pathNotFound();
+	    }
+	    
+	    logger.underlyingLogger().warn("Path not found - "+path);
+	    User user = User.findByDisplayName(path);
+	    if (user != null) {
+	        logger.underlyingLogger().info(String.format("[u=%d][displayName=%s] Found user to redirect to profile ", user.id, user.displayName));
+	        return redirect("/seller/"+user.id);
+	    }
+	    return pathNotFound();
+	}
 }
