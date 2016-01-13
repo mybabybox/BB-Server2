@@ -117,6 +117,9 @@ public class CalcServer {
 		return formula.computeBaseScore(post);
 	}
 	
+	/**
+	 * Main entry for building queues from users.
+	 */
 	private void buildQueuesFromUsers() {
 		for(User user : User.getEligibleUsersForFeed()){
 			clearUserQueues(user);
@@ -149,6 +152,9 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildUserLikedPostQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
+	/**
+     * Main entry for building queues from posts.
+     */
 	private void buildQueuesFromPosts() {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
         logger.underlyingLogger().debug("buildQueuesFromPosts starts");
@@ -157,14 +163,16 @@ public class CalcServer {
 
 		for (Post post : Post.getEligiblePostsForFeeds()) {
 			clearPostQueues(post);
+			addToUserPostedQueue(post);
+			
+			// below queues skip sold products
 		    if (post.soldMarked) {
                 continue;
             }
 		    addToCategoryPriceLowHighQueue(post);
 		    addToCategoryNewestQueue(post);
 		    addToCategoryPopularQueue(post);
-		    addToUserPostedQueue(post);
-		    buildProductLikedUserQueue(post);
+		    buildProductLikesQueue(post);
 		}
 		
 		sw.stop();
@@ -186,16 +194,16 @@ public class CalcServer {
         logger.underlyingLogger().debug("buildCategoryPopularQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 	
-	private void buildProductLikedUserQueue(Post post) {
+	private void buildProductLikesQueue(Post post) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildProductLikedUserQueue starts");
+		logger.underlyingLogger().debug("buildProductLikesQueue starts");
 		
 		for (SocialRelation socialRelation : LikeSocialRelation.getPostLikedUsers(post.id)) {
 			jedisCache.putToSortedSet(getKey(FeedType.PRODUCT_LIKES,post.id), socialRelation.getCreatedDate().getTime(), socialRelation.actor.toString());
 		}
 		
 		sw.stop();
-		logger.underlyingLogger().debug("buildProductLikedUserQueue completed. Took "+sw.getElapsedSecs()+"s");
+		logger.underlyingLogger().debug("buildProductLikesQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
 	public Double calculateTimeScore(Post post) {
@@ -236,9 +244,6 @@ public class CalcServer {
 	}
 
 	public void addToUserPostedQueue(Post post) {
-		if (post.soldMarked) {
-			return;
-		}
 		jedisCache.putToSortedSet(getKey(FeedType.USER_POSTED,post.owner.id), post.getCreatedDate().getTime(), post.id.toString());
 	}
 	
@@ -306,31 +311,30 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildUserFollowingQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 	
-	private void buildSuggestedProductQueue(Long productId) {
+	private void buildSuggestedProductQueue(Long postId) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
 		logger.underlyingLogger().debug("buildSuggestedProductQueue starts");
 		
-		List<Long> users = getProductLikeUserQueue(productId);
-		List<Long> postIds = new ArrayList<>();
+		List<Long> users = getProductLikesQueue(postId);
+		List<Long> suggestedPostIds = new ArrayList<>();
 		for (Long userId : users){
 			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_LIKED, userId), 0L);
 			for (String value : values) {
 				try {
-					Long postId = Long.parseLong(value);
-					postIds.add(postId);
+					Long suggestedPostId = Long.parseLong(value);
+					suggestedPostIds.add(suggestedPostId);
 				} catch (Exception e) {
 				}
 			}
 		}
-		Collections.shuffle(postIds);
-		postIds = postIds.subList(0, postIds.size() <= 20 ? postIds.size() : 20 );
+		Collections.shuffle(suggestedPostIds);
+		suggestedPostIds = suggestedPostIds.subList(0, suggestedPostIds.size() <= 20 ? suggestedPostIds.size() : 20 );
 		
-		
-		for(Long postId : postIds){
-			jedisCache.putToSortedSet(getKey(FeedType.PRODUCT_SUGGEST, productId), Math.random() * FEED_SCORE_HIGH_BASE, postId.toString());
+		for(Long suggestedPostId : suggestedPostIds){
+			jedisCache.putToSortedSet(getKey(FeedType.PRODUCT_SUGGEST, postId), Math.random() * FEED_SCORE_HIGH_BASE, suggestedPostId.toString());
 		}
 		
-		jedisCache.expire(getKey(FeedType.PRODUCT_SUGGEST, productId), FEED_SNAPSHOT_EXPIRY);
+		jedisCache.expire(getKey(FeedType.PRODUCT_SUGGEST, postId), FEED_SNAPSHOT_EXPIRY);
 		
 		sw.stop();
 		logger.underlyingLogger().debug("buildSuggestedProductQueue completed. Took "+sw.getElapsedSecs()+"s");
@@ -368,7 +372,6 @@ public class CalcServer {
             }
         }
         return postIds;
-
 	}
     
 	public List<Long> getCategoryPriceLowHighFeed(Long id, Double offset) {
@@ -410,7 +413,6 @@ public class CalcServer {
         }
         jedisCache.expire(getKey(FeedType.HOME_EXPLORE,id), FEED_SNAPSHOT_EXPIRY);
         return postIds;
-
 	}
 	
 	public List<Long> getHomeFollowingFeed(Long id, Double offset) {
@@ -427,7 +429,6 @@ public class CalcServer {
         }
         jedisCache.expire(getKey(FeedType.HOME_FOLLOWING,id), FEED_SNAPSHOT_EXPIRY);
         return postIds;
-
 	}
 	
 	public List<Long> getUserPostedFeeds(Long id, Double offset) {
@@ -440,7 +441,6 @@ public class CalcServer {
             }
         }
         return postIds;
-
 	}
 	
 	public List<Long> getUserLikedFeeds(Long id, Double offset) {
@@ -453,7 +453,6 @@ public class CalcServer {
             }
         }
         return postIds;
-
 	}
 	
 	public List<Long> getUserFollowingFeeds(Long id) {
@@ -466,7 +465,6 @@ public class CalcServer {
             }
         }
         return userIds;
-
 	}
 	
 	public List<Long> getSuggestedProducts(Long id) {
@@ -484,11 +482,10 @@ public class CalcServer {
         }
         jedisCache.expire(getKey(FeedType.PRODUCT_SUGGEST, id), FEED_SNAPSHOT_EXPIRY);
         return postIds;
-
 	}
 	
-	public List<Long> getProductLikeUserQueue(Long productId) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.PRODUCT_LIKES,productId), 0L);
+	public List<Long> getProductLikesQueue(Long postId) {
+		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.PRODUCT_LIKES,postId), 0L);
         final List<Long> userIds = new ArrayList<>();
         for (String value : values) {
             try {
@@ -497,7 +494,6 @@ public class CalcServer {
             }
         }
         return userIds;
-
 	}
 	
 	public void addToCategoryQueues(Post post) {
