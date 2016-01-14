@@ -430,7 +430,7 @@ body {
     color: white
 }
 
-@media (max-device-width: 320px) {
+@media (max-device-width: 414) {
     .item-card.owner_banned .mask-for-owner .message,
     .item-card.owner_deleted .mask-for-owner .message,
     .item-card.owner_reviewing .mask-for-owner .message,

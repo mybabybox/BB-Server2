@@ -43,7 +43,7 @@
 	       <div class="swiper-wrapper">
 	        @for(image <- images.get("original")) {
 	         <div class="swiper-slide" style="@image">
-                <div data-ng-if="product.sold" class="image sold1"></div>
+                <div data-ng-if="product.sold" class="image product-sold"></div>
              </div>
 	        }
 	       </div>
@@ -172,13 +172,11 @@ var swiper = new Swiper('.swiper-container', {
 .product-container {
 	width: 100%;
 }
-div.image:before {
-   content: url("../../../assets/app/images/general/icons/sold.png");
-}
-.sold1 {
-    width: 0px !important;
-    left: 57.9%;
-    top: 64%;
+.product-sold {
+    width: 85px !important;
+    height: 85px !important;
+    background-size: 85px auto;
+    background-image: url("../../../assets/app/images/general/icons/sold.png");
 }
 </style>
 

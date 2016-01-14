@@ -1,3 +1,28 @@
+.product-sold {
+    right: 0;
+    bottom: 0;
+    position: absolute
+}
+@media (min-width: 380px) {
+    .product-sold {
+        right: 5%;
+    }
+}
+@media (min-width: 420px) {
+    .product-sold {
+        right: 10%;
+    }
+}
+@media (min-width: 500px) {
+    .product-sold {
+        right: 15%;
+    }
+}
+@media (min-width: 600px) {
+    .product-sold {
+        right: 20%;
+    }
+}
 .carousel {
     position: relative
 }
