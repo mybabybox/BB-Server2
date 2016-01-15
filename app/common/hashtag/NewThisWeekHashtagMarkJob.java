@@ -10,7 +10,10 @@ public class NewThisWeekHashtagMarkJob implements HashtagMarkJob {
 	
     public void execute(Post post, Hashtag hashtag) {
         if (DateTimeUtil.withinAWeek(post.getCreatedDate().getTime(), new Date().getTime())) {
-            post.addHashtag(hashtag);    
+            post.addHashtag(hashtag);
+            
+            // add to redis
+            // insert code here
         }
     }
     
