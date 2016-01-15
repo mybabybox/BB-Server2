@@ -163,3 +163,16 @@ babybox.service('likeService',function($resource){
             }
     );
 });
+
+babybox.service('profilePhotoModal',function( $modal){
+    
+    this.OpenModal = function(arg, successCallback) {
+        this.instance = $modal.open(arg);
+        this.onSuccess = successCallback;
+    }
+    
+    this.CloseModal = function() {
+        this.instance.dismiss('close');
+        this.onSuccess();
+    }
+});

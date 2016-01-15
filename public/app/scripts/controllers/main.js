@@ -293,7 +293,7 @@ babybox.controller('CommentOnProductController',
 
 
 babybox.controller('ProfileController', 
-		function($scope, $location, $translate, $route, $rootScope, $window, $anchorScroll, profileUser, userService, userInfo, followService, ngDialog) {
+		function($scope, $location, $translate, $route, $rootScope, $window, $anchorScroll, profileUser, userService, userInfo, followService, ngDialog, profilePhotoModal) {
 
 	writeMetaCanonical($location.absUrl());
 	//writeMetaTitleDescription(profileUser.displayName, "看看 BabyBox 商店");
@@ -377,6 +377,27 @@ babybox.controller('ProfileController',
 		}		
 	}
 	
+	$scope.openUploadPhotoModal = function(flag) {
+		if(flag == 'profile')
+			PhotoModalController.url = '../image/upload-profile-photo';
+		if(flag == 'cover')
+			PhotoModalController.url = '../image/upload-cover-photo';
+
+		profilePhotoModal.OpenModal({
+				 templateUrl: 'upload-photo-modal',
+				 controller: PhotoModalController
+			},function() {
+			
+			
+			});
+		
+			
+			PhotoModalController.isProfileOn = true;
+			
+	}
+
+
+	
 	// UI helper
 	$(window).scroll(function(e){
 		$scope.position = window.pageYOffset;
@@ -392,6 +413,83 @@ babybox.controller('ProfileController',
 		$anchorScroll();
 	};
 });
+
+//TODO: I dont like way i am defining PhotoModalController
+var PhotoModalController = function( $scope, $http, $timeout, $upload, profilePhotoModal, usSpinnerService) {
+	$scope.fileReaderSupported = window.FileReader != null;
+	$scope.uploadRightAway = true;
+
+	$scope.hasUploader = function(index) {
+		return $scope.upload[index] != null;
+	};
+	
+	$scope.abort = function(index) {
+		$scope.upload[index].abort(); 
+		$scope.upload[index] = null;
+	};
+	
+	$scope.close = function() {
+		profilePhotoModal.CloseModal();
+	}
+	
+	$scope.onFileSelect = function($files) {
+		$scope.selectedFiles = [];
+		$scope.progress = [];
+		if ($scope.upload && $scope.upload.length > 0) {
+			for (var i = 0; i < $scope.upload.length; i++) {
+				if ($scope.upload[i] != null) {
+					$scope.upload[i].abort();
+				}
+			}
+		}
+		$scope.upload = [];
+		$scope.uploadResult = [];
+		$scope.selectedFiles = $files;
+		$scope.dataUrls = [];
+		for ( var i = 0; i < $files.length; i++) {
+			var $file = $files[i];
+			
+			if (window.FileReader && $file.type.indexOf('image') > -1) {
+			  	var fileReader = new FileReader();
+		        fileReader.readAsDataURL($files[i]);
+		        $scope.setPreview(fileReader, i);
+			}
+			
+			$scope.progress[i] = -1;
+			if ($scope.uploadRightAway) {
+				$scope.start(i);
+			}
+		}
+	} // End of onSelect
+	
+	$scope.setPreview = function(fileReader, index) {
+	    fileReader.onload = function(e) {
+	        $timeout(function() {
+	        	$scope.dataUrls[index] = e.target.result;
+	        });
+	    }
+	}
+
+	$scope.start = function(index) {
+		$scope.progress[index] = 0;
+		usSpinnerService.spin('loading..');
+		console.log("PhotoModalController.url==>", PhotoModalController.url, index);
+		 $upload.upload({
+             url : PhotoModalController.url,
+             method: $scope.httpMethod,
+             file: $scope.selectedFiles[index],
+             fileFormDataName: 'profile-photo'
+         }).success(function(data, status, headers, config) {
+			usSpinnerService.stop('loading..');
+			profilePhotoModal.CloseModal();
+		}).error(function(data, status, headers, config) {
+			console.log("Error ", config);
+            prompt("Error");
+        });
+	} // End of start
+}
+
+
 
 babybox.controller('CommentController', 
 		function($scope, $location, $route, $translate, $http, $anchorScroll, comments, userInfo, productService) {

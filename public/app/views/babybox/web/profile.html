@@ -60,12 +60,21 @@
 <div id="shop-page" class="has-toolbar page-holder center-container">
  <header style="background-image:url(/image/get-cover-image-by-id/{{user.id}});">
   <div class="mask"></div>
-  <div class="flex-it header-container">
-   <div class='avatar-container'>
-    <div class="avatar" style="background-image: url(/image/get-thumbnail-profile-image-by-id/{{user.id}});"></div>
+  <div class="flex-it header-container" id="profile-header">
+   <div class='avatar-container' href="#" id="profile-header-menu">
+    <a ng-click="openUploadPhotoModal('profile')" uib-tooltip="Change Image">
+     <span data-tooltip-html-unsafe="Change Image" data-tooltip-placement="bottom" >
+    <div id="profile" href="#"  class="avatar" style="cursor:pointer; background-image: url(/image/get-thumbnail-profile-image-by-id/{{user.id}});"> 
+   <!--  <img  id="profile" src="/image/get-thumbnail-profile-image-by-id/{{user.id}}"  href="#" class="avatar"> -->
+    </span>
+    </div></a>
    </div>
    <div class="flex1 middle-centered-div shopname-wrapper">
     <div class="shopname truncate m16 flex1">{{user.displayName}}</div>
+      <div ng-click="openUploadPhotoModal('cover')" style="margin-right:6%">
+     <span data-tooltip-html-unsafe="Upload Cover Image" data-tooltip-placement="bottom" >
+     <div class="shopname truncate m16 cover_photo_change" style="cursor:pointer"></div>
+     </span></div>
     <div ng-if="!user.isFollowing" ng-click="onFollowUser()">
      <div ng-class="user.id==userInfo.id ? 'hide' : '' "   class='btn-follow follow r10 clickable_area'>{{'FOLLOW'|translate}}</div>
     </div>
@@ -140,3 +149,34 @@
  </div>
 </div>
 <div id="back-to-top" data-ng-click="gotoTop()" class="gtop ic_maketop None" style="z-index: 10; display: none;"></div>
+<style>
+.cover_photo_change {
+    /* background-image: url(../../images/ic_cover_upload@2x.png); */
+    background-image: url(/assets/app/custom-css/images/ic_cover_upload@2x.png);
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-size: 24px 24px;
+}
+.prof{
+ cursor:pointer;
+ background-image: url(/image/get-thumbnail-profile-image-by-id/{{user.id}});
+ }
+</style>
+
+<script type="text/ng-template" id="upload-photo-modal">
+    <div class="modal-header">
+        <button type="button" ng-click="close()" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Upload Image</h4>
+    </div>
+    <div class="modal-body">
+        <input type="file" ng-file-select="onFileSelect($files)" >
+        <div ng-file-drop="onFileSelect($files)" class="drop-box" ng-show="dropSupported">Drop Here</div>
+        <div ng-file-drop-available="dropSupported=true" ng-show="!dropSupported">HTML5 </div>
+        <br/><br/>
+    </div>
+    <div class="modal-footer">
+  <span us-spinner spinner-key="loading.." ></span>
+ </div>
+</script>
+
