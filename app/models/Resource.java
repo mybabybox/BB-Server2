@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import play.Play;
 import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
+import domain.DefaultValues;
 import domain.SocialObjectType;
 
 /**
@@ -27,8 +28,6 @@ import domain.SocialObjectType;
 @Entity
 public class Resource extends SocialObject {
 
-    public static final String DELIMITER = ",";
-    
     public static final String STORAGE_PATH = 
             Play.application().configuration().getString("storage.path");
     public static final int STORAGE_PARTITION_DIR_MAX = 
@@ -142,9 +141,9 @@ public class Resource extends SocialObject {
         
         String authorizedUserIds = "";
         for (User user : users) {
-            authorizedUserIds += user.id + DELIMITER;
+            authorizedUserIds += user.id + DefaultValues.DELIMITER_COMMA;
         }
-        if (authorizedUserIds.endsWith(DELIMITER)) {
+        if (authorizedUserIds.endsWith(DefaultValues.DELIMITER_COMMA)) {
             authorizedUserIds = authorizedUserIds.substring(0, authorizedUserIds.length() - 1);
         }
         
@@ -161,7 +160,7 @@ public class Resource extends SocialObject {
             return false;
         }
         
-        List<String> ids = Arrays.asList(authorizedUserIds.split(DELIMITER));
+        List<String> ids = Arrays.asList(authorizedUserIds.split(DefaultValues.DELIMITER_COMMA));
         if (ids.contains(String.valueOf(user.id))) {
             return true;
         }

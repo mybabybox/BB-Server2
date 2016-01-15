@@ -21,6 +21,14 @@ public class DateTimeUtil {
     
     private static SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm");
     
+    public static boolean withinADay(long start, long end) {
+        return Math.abs(end - start) < DAY_MILLIS;
+    }
+
+    public static boolean withinAWeek(long start, long end) {
+        return Math.abs(end - start) < WEEK_MILLIS;
+    }
+    
     public static DateTime getToday() {
         DateTime now = DateTime.now();
         if (TODAY != null && 

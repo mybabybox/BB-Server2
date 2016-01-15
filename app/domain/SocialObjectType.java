@@ -3,6 +3,7 @@ package domain;
 public enum SocialObjectType {
      USER,
      CATEGORY,
+     HASHTAG,
      COLLECTION,
      POST,
      COMMENT,

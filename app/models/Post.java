@@ -3,6 +3,7 @@ package models;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.apache.commons.lang3.StringUtils;
 
 import models.Country.CountryCode;
 import play.db.jpa.JPA;
@@ -89,6 +92,8 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	@Enumerated(EnumType.ORDINAL)
 	public Country.CountryCode countryCode = Country.CountryCode.NA;
 	
+	public String hashtagIds = "";    // comma delimited
+	
 	public int numViews = 0;
 	public int numComments = 0;
 	public int numLikes = 0;
@@ -142,6 +147,64 @@ public class Post extends SocialObject implements Likeable, Commentable {
 		this.countryCode = countryCode;
 		this.objectType = SocialObjectType.POST;
 		this.deviceType = deviceType;
+	}
+	
+	public void removeHashtag(Hashtag hashtag) {
+	    if (hasHashtag(hashtag)) {
+	        List<Long> ids = getHashtagIds();
+	        hashtagIds = "";   // reset
+	        for (Long id : ids) {
+	            if (id.equals(hashtag.id)) {
+	                continue;
+	            }
+	            addHashtag(hashtag);
+	        }
+	    }
+	}
+	
+	public boolean hasHashtag(Hashtag hashtag) {
+	    return getHashtagIds().contains(hashtag.id);
+	}
+	
+	public List<Long> getHashtagIds() {
+        List<Long> list = new ArrayList<>();
+        List<String> values = Arrays.asList(hashtagIds.split(DefaultValues.DELIMITER_COMMA));
+        for (String value : values) {
+            try {
+                long id = Long.parseLong(value);
+                list.add(id);
+            } catch (NumberFormatException e) {
+            }
+        }
+        return list;
+    }
+    
+	public List<Hashtag> getHashtags() {
+	    List<Hashtag> list = new ArrayList<>();
+	    List<String> values = Arrays.asList(hashtagIds.split(DefaultValues.DELIMITER_COMMA));
+	    for (String value : values) {
+	        try {
+	            long id = Long.parseLong(value);
+	            Hashtag hashtag = Hashtag.findById(id);
+	            if (hashtag != null) {
+	                list.add(hashtag);
+	            }
+	        } catch (NumberFormatException e) {
+	        }
+	    }
+	    return list;
+	}
+	
+	public void addHashtag(Hashtag hashtag) {
+	    if (hasHashtag(hashtag)) {
+	        return;
+	    }
+	    
+	    if (StringUtils.isEmpty(hashtagIds)) {
+	        hashtagIds = hashtag.id + "";
+	    } else {
+	        hashtagIds += DefaultValues.DELIMITER_COMMA + hashtag.id;
+	    }
 	}
 	
 	public static ConditionType parseConditionType(String conditionType) {
