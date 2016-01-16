@@ -61,19 +61,16 @@
  <header style="background-image:url(/image/get-cover-image-by-id/{{user.id}});">
   <div class="mask"></div>
   <div class="flex-it header-container" id="profile-header">
-   <div class='avatar-container' href="#" id="profile-header-menu">
-    <a ng-click="openUploadPhotoModal('profile')" uib-tooltip="Change Image">
-     <span data-tooltip-html-unsafe="Change Image" data-tooltip-placement="bottom" >
-    <div id="profile" href="#"  class="avatar" style="cursor:pointer; background-image: url(/image/get-thumbnail-profile-image-by-id/{{user.id}});"> 
-   <!--  <img  id="profile" src="/image/get-thumbnail-profile-image-by-id/{{user.id}}"  href="#" class="avatar"> -->
-    </span>
-    </div></a>
+   <div class='avatar-container' id="profile-header-menu">
+    <span  ng-class="user.id==userInfo.id ? 'edit_icon' : '' " ng-click="openUploadPhotoModal('profile')">
+    <div id="profile" class="avatar" style="background-image: url(/image/get-thumbnail-profile-image-by-id/{{user.id}});"> 
+    </div></span> 
    </div>
    <div class="flex1 middle-centered-div shopname-wrapper">
     <div class="shopname truncate m16 flex1">{{user.displayName}}</div>
       <div ng-click="openUploadPhotoModal('cover')" style="margin-right:6%">
      <span data-tooltip-html-unsafe="Upload Cover Image" data-tooltip-placement="bottom" >
-     <div class="shopname truncate m16 cover_photo_change" style="cursor:pointer"></div>
+     <div  ng-class="user.id==userInfo.id ? 'cover_photo_change' : '' " class="shopname truncate m16 " style="cursor:pointer"></div>
      </span></div>
     <div ng-if="!user.isFollowing" ng-click="onFollowUser()">
      <div ng-class="user.id==userInfo.id ? 'hide' : '' "   class='btn-follow follow r10 clickable_area'>{{'FOLLOW'|translate}}</div>
