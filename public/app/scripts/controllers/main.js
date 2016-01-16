@@ -388,15 +388,10 @@ babybox.controller('ProfileController',
 				 controller: PhotoModalController
 			},function() {
 			
-			
 			});
 		
-			
-			PhotoModalController.isProfileOn = true;
-			
+		PhotoModalController.isProfileOn = true;
 	}
-
-
 	
 	// UI helper
 	$(window).scroll(function(e){
