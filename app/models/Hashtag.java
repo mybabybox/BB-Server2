@@ -24,8 +24,6 @@ public class Hashtag extends SocialObject implements Likeable, Postable {
 	@Column(length=2000)
 	public String description;
     
-	public boolean scheduled = false;
-	
 	public String jobClass;
 	
 	public int seq;

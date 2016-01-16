@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -92,7 +93,8 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	@Enumerated(EnumType.ORDINAL)
 	public Country.CountryCode countryCode = Country.CountryCode.NA;
 	
-	public String hashtagIds = "";    // comma delimited
+	public String systemHashtagIds = "";    // comma delimited
+	public String sellerHashtagIds = "";
 	
 	public int numViews = 0;
 	public int numComments = 0;
@@ -149,24 +151,22 @@ public class Post extends SocialObject implements Likeable, Commentable {
 		this.deviceType = deviceType;
 	}
 	
-	public void removeHashtag(Hashtag hashtag) {
-	    if (hasHashtag(hashtag)) {
-	        List<Long> ids = getHashtagIds();
-	        hashtagIds = "";   // reset
-	        for (Long id : ids) {
-	            if (id.equals(hashtag.id)) {
-	                continue;
-	            }
-	            addHashtag(hashtag);
-	        }
-	    }
-	}
-	
 	public boolean hasHashtag(Hashtag hashtag) {
-	    return getHashtagIds().contains(hashtag.id);
+	    if (hashtag.system) {
+	        return getSystemHashtagIds().contains(hashtag.id);
+	    }
+	    return getSellerHashtagIds().contains(hashtag.id);
 	}
 	
-	public List<Long> getHashtagIds() {
+	public List<Long> getSystemHashtagIds() {
+        return parseHashtagIds(systemHashtagIds);
+    }
+	
+	public List<Long> getSellerHashtagIds() {
+        return parseHashtagIds(sellerHashtagIds);
+    }
+	
+	private List<Long> parseHashtagIds(String hashtagIds) {
         List<Long> list = new ArrayList<>();
         List<String> values = Arrays.asList(hashtagIds.split(DefaultValues.DELIMITER_COMMA));
         for (String value : values) {
@@ -178,35 +178,69 @@ public class Post extends SocialObject implements Likeable, Commentable {
         }
         return list;
     }
-    
-	public List<Hashtag> getHashtags() {
-	    List<Hashtag> list = new ArrayList<>();
-	    List<String> values = Arrays.asList(hashtagIds.split(DefaultValues.DELIMITER_COMMA));
-	    for (String value : values) {
-	        try {
-	            long id = Long.parseLong(value);
-	            Hashtag hashtag = Hashtag.findById(id);
-	            if (hashtag != null) {
-	                list.add(hashtag);
-	            }
-	        } catch (NumberFormatException e) {
-	        }
-	    }
-	    return list;
+	
+	public List<Hashtag> getSystemHashtags() {
+	    return getHashtags(getSystemHashtagIds());
 	}
+	
+	public List<Hashtag> getSellerHashtags() {
+        return getHashtags(getSellerHashtagIds());
+    }
+	
+	private List<Hashtag> getHashtags(List<Long> hashtagIds) {
+	    List<Hashtag> list = new ArrayList<>();
+	    for (Long hashtagId : hashtagIds) {
+            try {
+                Hashtag hashtag = Hashtag.findById(hashtagId);
+                if (hashtag != null) {
+                    list.add(hashtag);
+                }
+            } catch (NumberFormatException e) {
+            }
+        }
+        return list;
+    }
 	
 	public void addHashtag(Hashtag hashtag) {
 	    if (hasHashtag(hashtag)) {
 	        return;
 	    }
 	    
-	    if (StringUtils.isEmpty(hashtagIds)) {
-	        hashtagIds = hashtag.id + "";
+	    if (hashtag.system) {
+	        List<Long> hashtagIds = parseHashtagIds(systemHashtagIds);
+	        hashtagIds.add(hashtag.id);
+	        Collections.sort(hashtagIds);
+	        systemHashtagIds = toHashtagIds(hashtagIds);
 	    } else {
-	        hashtagIds += DefaultValues.DELIMITER_COMMA + hashtag.id;
+	        List<Long> hashtagIds = parseHashtagIds(sellerHashtagIds);
+            hashtagIds.add(hashtag.id);
+            Collections.sort(hashtagIds);
+            sellerHashtagIds = toHashtagIds(hashtagIds);
 	    }
 	}
 	
+    public boolean removeHashtag(Hashtag hashtag) {
+        if (!hasHashtag(hashtag)) {
+            return false;
+        }
+        
+        boolean removed = false;
+        if (hashtag.system) {
+            List<Long> hashtagIds = parseHashtagIds(systemHashtagIds);
+            removed = hashtagIds.remove(hashtag.id);
+            systemHashtagIds = toHashtagIds(hashtagIds);
+        } else {
+            List<Long> hashtagIds = parseHashtagIds(sellerHashtagIds);
+            removed = hashtagIds.remove(hashtag.id);
+            sellerHashtagIds = toHashtagIds(hashtagIds);
+        }
+        return removed;
+    }
+    
+    private String toHashtagIds(List<Long> list) {
+        return StringUtils.join(list, DefaultValues.DELIMITER_COMMA);
+    }
+    
 	public static ConditionType parseConditionType(String conditionType) {
         try {
             return Enum.valueOf(ConditionType.class, conditionType);
