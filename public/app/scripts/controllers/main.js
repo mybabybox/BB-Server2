@@ -293,7 +293,7 @@ babybox.controller('CommentOnProductController',
 
 
 babybox.controller('ProfileController', 
-		function($scope, $location, $translate, $route, $rootScope, $window, $anchorScroll, profileUser, userService, userInfo, followService, ngDialog, profilePhotoModal) {
+		function($scope, $location, $translate, $route, $rootScope, $filter, $window, $anchorScroll, profileUser, userService, userInfo, followService, ngDialog, profilePhotoModal) {
 
 	writeMetaCanonical($location.absUrl());
 	//writeMetaTitleDescription(profileUser.displayName, "看看 BabyBox 商店");
@@ -378,21 +378,24 @@ babybox.controller('ProfileController',
 	}
 	
 	$scope.openUploadPhotoModal = function(flag) {
+		if($scope.user.id == $scope.userInfo.id){
 		if(flag == 'profile')
 			PhotoModalController.url = '../image/upload-profile-photo';
 		if(flag == 'cover')
 			PhotoModalController.url = '../image/upload-cover-photo';
-
+		
 		profilePhotoModal.OpenModal({
 				 templateUrl: 'upload-photo-modal',
 				 controller: PhotoModalController
 			},function() {
-			
+				 $scope.date = new Date();
+				 var date1= $filter('date')($scope.date, 'HH:mm:ss')
+				 $(".avatar").append($('.avatar').css({'background-image': "url(/image/get-thumbnail-profile-image-by-id/"+$scope.user.id+"?q="+date1+")"}));
 			});
 		
-		PhotoModalController.isProfileOn = true;
+			PhotoModalController.isProfileOn = true;
+		}
 	}
-	
 	// UI helper
 	$(window).scroll(function(e){
 		$scope.position = window.pageYOffset;
@@ -408,6 +411,7 @@ babybox.controller('ProfileController',
 		$anchorScroll();
 	};
 });
+
 
 //TODO: I dont like way i am defining PhotoModalController
 var PhotoModalController = function( $scope, $http, $timeout, $upload, profilePhotoModal, usSpinnerService) {
@@ -482,6 +486,7 @@ var PhotoModalController = function( $scope, $http, $timeout, $upload, profilePh
             prompt("Error");
         });
 	} // End of start
+	
 }
 
 
@@ -548,6 +553,7 @@ babybox.controller('CommentController',
 		$location.hash('');
 		$anchorScroll();
 	};
+	
 });
 
 babybox.controller('UserFollowController', 
