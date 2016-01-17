@@ -378,24 +378,30 @@ babybox.controller('ProfileController',
 	}
 	
 	$scope.openUploadPhotoModal = function(flag) {
-		if($scope.user.id == $scope.userInfo.id){
-		if(flag == 'profile')
-			PhotoModalController.url = '../image/upload-profile-photo';
-		if(flag == 'cover')
-			PhotoModalController.url = '../image/upload-cover-photo';
-		
-		profilePhotoModal.OpenModal({
-				 templateUrl: 'upload-photo-modal',
-				 controller: PhotoModalController
+		if($scope.user.id == $scope.userInfo.id) {
+			if (flag == 'profile') {
+				PhotoModalController.url = '../image/upload-profile-photo';
+			} else if (flag == 'cover') {
+				PhotoModalController.url = '../image/upload-cover-photo';
+			}
+			
+			profilePhotoModal.OpenModal({
+				templateUrl: 'upload-photo-modal',
+				controller: PhotoModalController
 			},function() {
 				 $scope.date = new Date();
 				 var date1= $filter('date')($scope.date, 'HH:mm:ss')
-				 $(".avatar").append($('.avatar').css({'background-image': "url(/image/get-thumbnail-profile-image-by-id/"+$scope.user.id+"?q="+date1+")"}));
+				 if (flag == 'profile') {
+					 $(".avatar").append($('.avatar').css({'background-image': "url(/image/get-thumbnail-profile-image-by-id/"+$scope.user.id+"?q="+date1+")"}));
+				 } else if (flag == 'cover') {
+					 // refresh cover image
+				 }
 			});
-		
+			
 			PhotoModalController.isProfileOn = true;
 		}
 	}
+	
 	// UI helper
 	$(window).scroll(function(e){
 		$scope.position = window.pageYOffset;

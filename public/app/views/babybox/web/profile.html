@@ -62,16 +62,20 @@
   <div class="mask"></div>
   <div class="flex-it header-container" id="profile-header">
    <div class='avatar-container' id="profile-header-menu">
-    <span  ng-class="user.id==userInfo.id ? 'edit_icon' : '' " ng-click="openUploadPhotoModal('profile')">
-    <div id="profile" class="avatar" style="background-image: url(/image/get-thumbnail-profile-image-by-id/{{user.id}});"> 
-    </div></span> 
+    <span ng-click="openUploadPhotoModal('profile')">
+     <div id="profile" class="avatar" style="background-image: url(/image/get-thumbnail-profile-image-by-id/{{user.id}});"> </div>
+    </span> 
    </div>
    <div class="flex1 middle-centered-div shopname-wrapper">
-    <div class="shopname truncate m16 flex1">{{user.displayName}}</div>
-      <div ng-click="openUploadPhotoModal('cover')" style="margin-right:6%">
-     <span data-tooltip-html-unsafe="Upload Cover Image" data-tooltip-placement="bottom" >
-     <div  ng-class="user.id==userInfo.id ? 'cover_photo_change' : '' " class="shopname truncate m16 " style="cursor:pointer"></div>
-     </span></div>
+    <div class="shopname truncate m16 flex1">
+     {{user.displayName}}
+     <div ng-click="openUploadPhotoModal('profile')" style="display:inline-block">
+      <div ng-class="user.id==userInfo.id ? 'upload-profile-image' : 'hide' " class="shopname truncate m16 " style="cursor:pointer"></div>
+     </div>
+    </div>
+    <!--div ng-click="openUploadPhotoModal('cover')" style="margin-right:6%">
+     <div ng-class="user.id==userInfo.id ? 'upload-cover-image' : 'hide' " class="shopname truncate m16 " style="cursor:pointer"></div>
+    </div-->
     <div ng-if="!user.isFollowing" ng-click="onFollowUser()">
      <div ng-class="user.id==userInfo.id ? 'hide' : '' "   class='btn-follow follow r10 clickable_area'>{{'FOLLOW'|translate}}</div>
     </div>
@@ -148,13 +152,22 @@
 <div id="back-to-top" data-ng-click="gotoTop()" class="gtop ic_maketop None" style="z-index: 10; display: none;"></div>
 
 <style>
-.cover_photo_change {
-    /* background-image: url(../../images/ic_cover_upload@2x.png); */
+.upload-profile-image {
     background-image: url(/assets/app/custom-css/images/ic_cover_upload@2x.png);
     display: inline-block;
-    width: 24px;
-    height: 24px;
-    background-size: 24px 24px;
+    width: 28px;
+    height: 28px;
+    background-size: 28px 28px;
+    vertical-align: middle;
+    margin-bottom: 5px;
+}
+.upload-cover-image {
+    background-image: url(/assets/app/custom-css/images/ic_cover_upload@2x.png);
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-size: 32px 32px;
+    vertical-align: bottom;
 }
 .prof {
     cursor:pointer;
@@ -165,13 +178,13 @@
 <script type="text/ng-template" id="upload-photo-modal">
     <div class="modal-header">
         <button type="button" ng-click="close()" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Upload Image</h4>
+        <h4 class="modal-title">Upload Photo</h4>
     </div>
     <div class="modal-body">
         <input type="file" ng-file-select="onFileSelect($files)" >
-        <div ng-file-drop="onFileSelect($files)" class="drop-box" ng-show="dropSupported">Drop Here</div>
-        <div ng-file-drop-available="dropSupported=true" ng-show="!dropSupported">HTML5 </div>
-        <br/><br/>
+        <div ng-file-drop="onFileSelect($files)" class="drop-box" ng-show="dropSupported"></div>
+        <div ng-file-drop-available="dropSupported=true" ng-show="!dropSupported">HTML5</div>
+        <br/>
     </div>
     <div class="modal-footer">
   <span us-spinner spinner-key="loading.." ></span>
