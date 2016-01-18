@@ -25,6 +25,8 @@ public class Hashtag extends SocialObject implements Likeable, Postable {
 	public String description;
     
 	public String jobClass;
+
+	public boolean rerun = false;
 	
 	public int seq;
 
