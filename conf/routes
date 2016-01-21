@@ -149,6 +149,19 @@ GET     /get-user-liked-feed/:id/:offset                                @control
 GET     /api/get-user-recommended-sellers/:id/:offset                   @controllers.UserController.getUserRecommendedSellers(id :Long, offset: Long)
 
 GET     /api/get-suggested-products/:id                                 @controllers.ProductController.getSuggestedProducts(id :Long)                       
+GET     /get-suggested-products/:id                                     @controllers.ProductController.getSuggestedProducts(id :Long)                       
+
+GET     /api/get-hashtag-price-high-low-feed/:id/:postType/:offset     @controllers.HashtagController.getHashtagPriceHighLowFeed(id :Long, postType: String, offset: Long)
+GET     /get-hashtag-price-high-low-feed/:id/:postType/:offset         @controllers.HashtagController.getHashtagPriceHighLowFeed(id :Long, postType: String, offset: Long)
+
+GET     /api/get-hashtag-price-low-high-feed/:id/:postType/:offset     @controllers.HashtagController.getHashtagPriceLowHighFeed(id :Long, postType: String, offset: Long)
+GET     /get-hashtag-price-low-high-feed/:id/:postType/:offset         @controllers.HashtagController.getHashtagPriceLowHighFeed(id :Long, postType: String, offset: Long)
+
+GET     /api/get-hashtag-popular-feed/:id/:postType/:offset            @controllers.HashtagController.getHashtagPopularFeed(id :Long, postType: String, offset: Long)
+GET     /get-hashtag-popular-feed/:id/:postType/:offset                @controllers.HashtagController.getHashtagPopularFeed(id :Long, postType: String, offset: Long)
+
+GET     /api/get-hashtag-newest-feed/:id/:postType/:offset             @controllers.HashtagController.getHashtagNewestFeed(id :Long, postType: String, offset: Long)
+GET     /get-hashtag-newest-feed/:id/:postType/:offset                 @controllers.HashtagController.getHashtagNewestFeed(id :Long, postType: String, offset: Long)
 
 # User
 GET     /api/get-user-info                          @controllers.UserController.getUserInfo
@@ -197,6 +210,9 @@ GET     /categories                                 controllers.CategoryControll
 GET     /api/get-category/:id                       controllers.CategoryController.getCategory(id:Long)
 GET     /get-category/:id                           controllers.CategoryController.getCategory(id:Long)
 GET     /category/:id                               controllers.CategoryController.getCategory(id:Long)
+
+#Hashtag
+PUT     /put-hashtag/:id                            controllers.HashtagController.putHashtag(id:Long)
 
 # Post
 GET     /api/get-post/:id                           @controllers.ProductController.getProductInfo(id:Long)

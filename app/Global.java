@@ -1,6 +1,10 @@
 import java.util.Arrays;
+import java.util.List;
 
 import models.Activity;
+import models.Hashtag;
+import models.Post;
+import models.PostToMark;
 import models.SecurityRole;
 import models.SecurityRole.RoleType;
 import play.Application;
@@ -16,6 +20,9 @@ import com.feth.play.module.pa.exceptions.AccessDeniedException;
 import com.feth.play.module.pa.exceptions.AuthException;
 
 import common.cache.CalcServer;
+import common.hashtag.HashtagMarkingJob;
+import common.hashtag.NewThisWeekHashtagMarkingJob;
+import common.hashtag.PostMarker;
 import common.schedule.CommandChecker;
 import common.schedule.JobScheduler;
 import common.thread.ThreadLocalOverride;
@@ -169,8 +176,66 @@ public class Global extends GlobalSettings {
                 }
             }
         );
-    }
+        // schedule for Post Marking every 5 min
+        JobScheduler.getInstance().schedule("postMasrk", 300000,
+                new Runnable() {
+                    public void run() {
+                        try {
+                           JPA.withTransaction(new play.libs.F.Callback0() {
+                                public void invoke() {
+                                    logger.underlyingLogger().info("[JobScheduler] postMasrk starts...");
+                                	PostMarker.PostMarkerSchedule();
+                                	logger.underlyingLogger().info("[JobScheduler] postMasrk completed !");
+                                }
+                            });
+                        } catch (Exception e) {
+                            logger.underlyingLogger().error("[JobScheduler] postMasrk failed...");
+                        }
+                    }
+                }
+            );
+        
+        
+        // schedule for Hash Marking daily at 12 PM
+        JobScheduler.getInstance().schedule("hashtagMarking", "0 0 12 ? * *",
+            new Runnable() {
+                public void run() {
+                    try {
+                       JPA.withTransaction(new play.libs.F.Callback0() {
+                            public void invoke() {
+                                logger.underlyingLogger().info("[JobScheduler] hashtagMarking starts...");
 
+                                try {
+                                	for (Hashtag hashtag: Hashtag.getAllNewHashtags()){
+	                                	for (Post post : Post.getEligiblePostsForFeeds()) {
+	                        				if (post.soldMarked) {
+	                        					continue;
+	                        				}
+	                        				post.addHashtag(hashtag);
+	                        			 }
+                                	}	
+								} catch (Exception e2) {
+									// TODO: handle exception
+								}
+                            	logger.underlyingLogger().info("[JobScheduler] hashtagMarking completed !");
+                            }
+                        });
+                    } catch (Exception e) {
+                        logger.underlyingLogger().error("[JobScheduler] hashtagMarking failed...");
+                    }
+                }
+            }
+        );
+
+        
+        
+    }
+    
+    
+    
+    
+    
+    
 	private void init() {
         if (SecurityRole.findRowCount() == 0L) {
             for (final RoleType roleType : Arrays.asList(SecurityRole.RoleType.values())) {

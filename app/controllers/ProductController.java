@@ -6,6 +6,7 @@ import handler.FeedHandler;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,9 @@ import models.Category;
 import models.Collection;
 import models.Comment;
 import models.Conversation;
+import models.PostToMark;
 import models.Country.CountryCode;
+import models.Hashtag;
 import models.Post;
 import models.ReportedPost;
 import models.Post.ConditionType;
@@ -69,10 +72,11 @@ public class ProductController extends Controller{
 	    Boolean freeDelivery = Boolean.valueOf(dynamicForm.get("freeDelivery"));
 	    String countryCode = dynamicForm.get("countryCode");
 	    String deviceType = dynamicForm.get("deviceType");
+	    String sellerHashtags = "tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9, tag10";
 	    List<FilePart> images = request().body().asMultipartFormData().getFiles();
 		return createProduct(
 		        title, body, Long.parseLong(catId), Double.parseDouble(price), Post.parseConditionType(conditionType), images, 
-		        Double.parseDouble(originalPrice), freeDelivery, Post.parseCountryCode(countryCode), Application.parseDeviceType(deviceType));
+		        Double.parseDouble(originalPrice), freeDelivery, Post.parseCountryCode(countryCode), Application.parseDeviceType(deviceType),sellerHashtags);
 	}
 	
 	@Transactional
@@ -87,8 +91,8 @@ public class ProductController extends Controller{
 	    Boolean freeDelivery = HttpUtil.getMultipartFormDataBoolean(multipartFormData, "freeDelivery");
 	    String countryCode = HttpUtil.getMultipartFormDataString(multipartFormData, "countryCode");
 	    String deviceType = HttpUtil.getMultipartFormDataString(multipartFormData, "deviceType");
+	    String sellerHashtags = "tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9, tag10";
 	    List<FilePart> images = HttpUtil.getMultipartFormDataFiles(multipartFormData, "image", DefaultValues.MAX_POST_IMAGES);
-	    
 	    if (catId == null) {
 	        catId = -1L;
 	    }
@@ -108,15 +112,15 @@ public class ProductController extends Controller{
 	    if (StringUtils.isEmpty(countryCode)) {
 	        countryCode = CountryCode.NA.name();
 	    }
-	    
+	   
 		return createProduct(
 		        title, body, catId, price, Post.parseConditionType(conditionType), images, 
-		        originalPrice, freeDelivery, Post.parseCountryCode(countryCode), Application.parseDeviceType(deviceType));
+		        originalPrice, freeDelivery, Post.parseCountryCode(countryCode), Application.parseDeviceType(deviceType),sellerHashtags);
 	}
 
 	private static Result createProduct(
 	        String title, String body, Long catId, Double price, ConditionType conditionType, List<FilePart> images, 
-	        Double originalPrice, Boolean freeDelivery, CountryCode countryCode, DeviceType deviceType) {
+	        Double originalPrice, Boolean freeDelivery, CountryCode countryCode, DeviceType deviceType,String sellerHashtags) {
 	    
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    
@@ -145,8 +149,12 @@ public class ProductController extends Controller{
 				newPost.addPostPhoto(fileTo);
 			}
 			
+			addHashtagsToPost(sellerHashtags, newPost);
 			SocialRelationHandler.recordNewPost(newPost, localUser);
 			ResponseStatusVM response = new ResponseStatusVM(SocialObjectType.POST, newPost.id, localUser.id, true);
+			
+			PostToMark mark =new PostToMark(newPost.id);
+			mark.save();
 			
 			sw.stop();
 	        if (logger.underlyingLogger().isDebugEnabled()) {
@@ -266,6 +274,24 @@ public class ProductController extends Controller{
         return ok(Json.toJson(response));
     }
 
+    public static void addHashtagsToPost(String sellerHashtags, Post post){
+    	final User localUser = Application.getLocalUser(session());
+    	//String sellerHashtags = dynamicForm.get("sellerHashtags");
+    	List<String> hashtagList = Arrays.asList(sellerHashtags.split(","));
+    	StringBuilder hashtagIds = new StringBuilder();
+    	for (String s : hashtagList){
+    		Hashtag hashtag = Hashtag.findByName(s);
+    		if(hashtag == null){
+    			hashtag = new Hashtag();
+    			hashtag.setName(s);
+    			hashtag.setOwner(localUser);
+    			hashtag.system=false;
+    			hashtag.save();
+    		}
+    		post.addHashtag(hashtag);
+    	}
+    }
+    
 	@Transactional
 	public static Result createCollection() {
 		final User localUser = Application.getLocalUser(session());

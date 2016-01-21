@@ -83,6 +83,26 @@ public class Hashtag extends SocialObject implements Likeable, Postable {
         }
     }
 
+	public static List<Hashtag> getAllNewHashtags() {
+		try {
+            Query q = JPA.em().createQuery("SELECT c FROM Hashtag c where rerun = true");
+            List<Hashtag> list = (List<Hashtag>)q.getResultList();
+            return list;
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+	
+	public static List<Hashtag> getAllEligibleSystemHashtags() {
+		try {
+            Query q = JPA.em().createQuery("SELECT c FROM Hashtag c where system = true and jobClass != null");
+            List<Hashtag> list = (List<Hashtag>)q.getResultList();
+            return list;
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+	
 	public static List<Hashtag> getAllHashtags() {
 		return HashtagCache.getAllHashtags();
 	}

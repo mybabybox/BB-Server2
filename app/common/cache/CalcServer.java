@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import models.Category;
 import models.FollowSocialRelation;
+import models.Hashtag;
 import models.LikeSocialRelation;
 import models.Post;
 import models.SocialRelation;
@@ -24,11 +25,11 @@ import play.Play;
 import play.db.jpa.JPA;
 
 import com.google.inject.Singleton;
-
 import common.model.FeedFilter.FeedType;
 import common.schedule.JobScheduler;
 import common.thread.ThreadLocalOverride;
 import common.utils.NanoSecondStopWatch;
+
 import domain.DefaultValues;
 
 @Singleton
@@ -64,7 +65,7 @@ public class CalcServer {
 		
 		buildQueuesFromUsers();
 		buildQueuesFromPosts();
-		
+		buildQueuesFromHashtags();
 		JobScheduler.getInstance().schedule(
 		        "buildCategoryPopularQueue", 
 		        FEED_SCORE_COMPUTE_SCHEDULE,  // initial delay 
@@ -89,6 +90,16 @@ public class CalcServer {
 		logger.underlyingLogger().debug("warmUpActivity completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
+	
+	public void clearHashtagsQueues() {
+		for(Hashtag hashtag : Hashtag.getAllHashtags()){
+			jedisCache.remove(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH,hashtag.id));
+			jedisCache.remove(getKey(FeedType.HASHTAG_PRICE_HIGH_LOW,hashtag.id));
+			jedisCache.remove(getKey(FeedType.HASHTAG_POPULAR,hashtag.id));
+			jedisCache.remove(getKey(FeedType.HASHTAG_NEWEST,hashtag.id));
+		}
+	}
+	
 	public void clearCategoryQueues() {
 		for(Category category : Category.getAllCategories()){
 			jedisCache.remove(getKey(FeedType.CATEGORY_PRICE_HIGH_LOW,category.id));
@@ -156,13 +167,71 @@ public class CalcServer {
 		sw.stop();
 		logger.underlyingLogger().debug("buildUserFollowingsQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
+
+
+	/**
+     * Main entry for building queues from Hashtags.
+     */
+	private void buildQueuesFromHashtags() {
+		NanoSecondStopWatch sw = new NanoSecondStopWatch();
+		logger.underlyingLogger().debug("buildQueuesFromHashtags starts");
+
+		clearHashtagsQueues();
+		for (Hashtag hashtag: Hashtag.getAllHashtags()){
+			addToHashTagQueues(hashtag);
+		}
+		sw.stop();
+		logger.underlyingLogger().debug("buildQueuesFromHashtags completed. Took "+sw.getElapsedSecs()+"s");
+	}
+
+	public void addToHashTagQueues(Hashtag hashtag){
+		for (Post post : Post.getEligiblePostsForFeeds()) {
+			if (post.soldMarked) {
+				continue;
+			}
+			addToHashtagPriceLowHighQueue(hashtag.id, post);
+			addToHashtagNewestQueue(hashtag.id, post);
+			addToHashtagPopularQueue(hashtag.id, post);
+		}
+	}
+	private void addToHashtagPriceLowHighQueue(Long hashtag, Post post) {
+	    if (post.soldMarked) {
+            return;
+	    }
+	    List<Long> hashtagids = post.getSellerHashtagIds();
+	    List<Long> systemTagid = post.getSystemHashtagIds();
+	    hashtagids.addAll(systemTagid);
+	    if(hashtagids.contains(hashtag))
+		jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH, hashtag), post.price * FEED_SCORE_HIGH_BASE + post.id , post.id.toString());
+	}
 	
-	private void addToRecommendedSellersQueue(User user) {
+	private void addToHashtagNewestQueue(Long hashtag, Post post) {
+	    if (post.soldMarked) {
+            return;
+        }
+	    List hashtagids = post.getSellerHashtagIds();
+	    List systemTagid = post.getSystemHashtagIds();
+	    hashtagids.addAll(systemTagid);
+	    if(hashtagids.contains(hashtag))
+	    	jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_NEWEST,hashtag), post.getCreatedDate().getTime() , post.id.toString());
+	}
+	private void addToHashtagPopularQueue(Long hashtag, Post post) {
+	    if (post.soldMarked) {
+            return;
+        }
+	    List<Long> hashtagids = post.getSellerHashtagIds();
+	    List<Long> systemTagid = post.getSystemHashtagIds();
+	    hashtagids.addAll(systemTagid);
+	    if(hashtagids.contains(hashtag)){
+	    	Double timeScore = calculateTimeScore(post, true);
+	    	jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_POPULAR,hashtag),  timeScore.doubleValue() * FEED_SCORE_HIGH_BASE, post.id.toString());
+	    }
+	}
+		private void addToRecommendedSellersQueue(User user) {
         if (user.isRecommendedSeller()) {
             jedisCache.putToSortedSet(getKey(FeedType.RECOMMENDED_SELLERS), user.getLastLogin().getTime(), user.id.toString());
         }
     }
-
 	/**
      * Main entry for building queues from posts.
      */
@@ -380,6 +449,56 @@ public class CalcServer {
 	     return jedisCache.isMemberOfSortedSet(key, followingUserId.toString());
 	}
 
+	public List<Long> getHashtagPriceLowHighFeed(Long id, Double offset) {
+		Set<String> values = jedisCache.getSortedSetAsc(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+	}
+	
+	public List<Long> getHashtagPriceHighLowFeed(Long id, Double offset) {
+		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HASHTAG_PRICE_HIGH_LOW,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+	}
+	public List<Long> getHashtagPopularFeed(Long id, Double offset) {
+		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HASHTAG_POPULAR,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+	}
+	public List<Long> getHashtagNewestFeed(Long id, Double offset) {
+		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HASHTAG_NEWEST,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+	}
+	
 	public List<Long> getCategoryPopularFeed(Long id, Double offset) {
 		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_POPULAR,id), offset);
         final List<Long> postIds = new ArrayList<>();
@@ -659,9 +778,14 @@ public class CalcServer {
 		if (FeedType.CATEGORY_PRICE_HIGH_LOW.equals(feedType)) {
 			feedType = FeedType.CATEGORY_PRICE_LOW_HIGH;
 		}
-		if (FeedType.RECOMMENDED_SELLERS.equals(feedType) || keyId == null) {
+		// Only 1 queue HASHTAG_PRICE_LOW_HIGH
+		if (FeedType.HASHTAG_PRICE_HIGH_LOW.equals(feedType)) {
+			feedType = FeedType.HASHTAG_PRICE_LOW_HIGH;
+		}
+			if (FeedType.RECOMMENDED_SELLERS.equals(feedType) || keyId == null) {
 		    return feedType.toString();
 		}
+		
 		return feedType+":"+keyId;
 	}
 	
