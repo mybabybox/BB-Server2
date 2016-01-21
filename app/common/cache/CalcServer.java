@@ -221,12 +221,14 @@ public class CalcServer {
 	    if (post.soldMarked) {
             return;
         }
-	    List hashtagids = post.getSellerHashtagIds();
-	    List systemTagid = post.getSystemHashtagIds();
+	    List<Long> hashtagids = post.getSellerHashtagIds();
+	    List<Long> systemTagid = post.getSystemHashtagIds();
 	    hashtagids.addAll(systemTagid);
-	    if(hashtagids.contains(hashtag))
-	    	jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_NEWEST,hashtag), post.getCreatedDate().getTime() , post.id.toString());
+	    if(hashtagids.contains(hashtag)) {
+	    	jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_NEWEST,hashtag), post.getCreatedDate().getTime(), post.id.toString());
+	    }
 	}
+	
 	private void addToHashtagPopularQueue(Long hashtag, Post post) {
 	    if (post.soldMarked) {
             return;
