@@ -28,7 +28,7 @@ public class FollowEventListener extends EventListener {
     		if (localUser.onFollow(user)) {
     		    // ideally use FollowSocialRelation.CREATED_DATE
                 Long score = new Date().getTime();
-                CalcServer.instance().addToFollowQueue(localUser.id, user.id, score.doubleValue());
+                CalcServer.instance().addToUserFollowingsFollowersQueue(localUser.id, user.id, score.doubleValue());
                 
                 executeAsync(
                         new TransactionalRunnableTask() {
@@ -68,7 +68,7 @@ public class FollowEventListener extends EventListener {
     		final User user = (User) map.get("user");
     		
     		if (localUser.onUnFollow(user)) {
-    		    CalcServer.instance().removeFromFollowQueue(localUser.id, user.id);                          
+    		    CalcServer.instance().removeFromUserFollowingsFollowersQueue(localUser.id, user.id);                          
     		}
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);

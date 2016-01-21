@@ -357,7 +357,7 @@ public class ProductController extends Controller{
 			originalImages.add("background-image:url('"+Application.APPLICATION_BASE_URL+"/image/get-original-post-image-by-id/"+imageId+"')");
 		}
 		images.put("original", originalImages);
-		List<PostVMLite> suggestedPosts = feedHandler.getPostVM(id, 0l, localUser, FeedType.PRODUCT_SUGGEST);
+		List<PostVMLite> suggestedPosts = feedHandler.getFeedPosts(id, 0L, localUser, FeedType.PRODUCT_SUGGEST);
 		
 		sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {
@@ -528,7 +528,7 @@ public class ProductController extends Controller{
 			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
 			return notFound();
 		}
-		List<PostVMLite> vms = feedHandler.getPostVM(id, 0l, localUser, FeedType.PRODUCT_SUGGEST);
+		List<PostVMLite> vms = feedHandler.getFeedPosts(id, 0L, localUser, FeedType.PRODUCT_SUGGEST);
 		return ok(Json.toJson(vms));
 	}
 

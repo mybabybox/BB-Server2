@@ -202,11 +202,15 @@ public class JedisCache {
         }
     }
     
-    public Set<String> getSortedSetDsc(String key, long offset) {
+    public Set<String> getSortedSetDsc(String key) {
+        return getSortedSetDsc(key, 0L, -1L);
+    }
+    
+    public Set<String> getSortedSetDsc(String key, long start, long end) {
         Jedis j = null;
         try {
             j = getResource();
-            return j.zrevrange(key, (int)offset, -1); 
+            return j.zrevrange(key, start, end-1);     // end is inclusive
         } finally {
             returnResource(j);
         }

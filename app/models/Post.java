@@ -483,24 +483,24 @@ public class Post extends SocialObject implements Likeable, Commentable {
 		}
 	}
 
-	public static List<Post> getPosts(List<Long> postIds) {
+	public static List<Post> getPosts(List<Long> ids) {
 		try {
 			 Query query = JPA.em().createQuery(
 			            "select p from Post p where "+
-			            "p.id in ("+StringUtil.collectionToString(postIds, ",")+") and "+
-			            "p.deleted = false ORDER BY FIELD(p.id,"+StringUtil.collectionToString(postIds, ",")+")");
+			            "p.id in ("+StringUtil.collectionToString(ids, ",")+") and "+
+			            "p.deleted = false ORDER BY FIELD(p.id,"+StringUtil.collectionToString(ids, ",")+")");
 			 return (List<Post>) query.getResultList();
 		} catch (NoResultException nre) {
 			return null;
 		}
 	}
 	
-	public static List<Post> getPosts(List<Long> postIds, int offset) {
+	public static List<Post> getPosts(List<Long> ids, int offset) {
 		try {
 			 Query query = JPA.em().createQuery(
 					 "select p from Post p where "+
-							 "p.id in ("+StringUtil.collectionToString(postIds, ",")+") and "+
-							 "p.deleted = false ORDER BY FIELD(p.id,"+StringUtil.collectionToString(postIds, ",")+")");
+							 "p.id in ("+StringUtil.collectionToString(ids, ",")+") and "+
+							 "p.deleted = false ORDER BY FIELD(p.id,"+StringUtil.collectionToString(ids, ",")+")");
 			 query.setFirstResult(offset * CalcServer.FEED_RETRIEVAL_COUNT);
 			 query.setMaxResults(CalcServer.FEED_RETRIEVAL_COUNT);
 			 return (List<Post>) query.getResultList();

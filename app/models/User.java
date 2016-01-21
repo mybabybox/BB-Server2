@@ -60,6 +60,7 @@ import common.image.FaceFinder;
 import common.utils.DateTimeUtil;
 import common.utils.ImageFileUtil;
 import common.utils.NanoSecondStopWatch;
+import common.utils.StringUtil;
 import controllers.Application.DeviceType;
 import domain.DefaultValues;
 import domain.Followable;
@@ -752,6 +753,23 @@ public class User extends SocialObject implements Subject, Followable {
     }
 	
 	@Transactional
+	public boolean isRecommendedSeller() {
+	    if (isSystemUser() || newUser || system || !active || deleted) {
+	        return false;
+	    }
+	    
+	    // must have profile photo
+	    if (this.getPhotoProfile() == null) {
+	        return false;
+	    }
+	    // temp condition
+	    if (this.numProducts > 1) {
+	        return true;
+	    }
+	    return isPromotedSeller() || isVerifiedSeller();
+	}
+	
+	@Transactional
 	public static boolean isDisplayNameExists(String displayName) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
 
@@ -1193,6 +1211,32 @@ public class User extends SocialObject implements Subject, Followable {
             return (List<User>) q.getResultList();
         } catch (NoResultException e) {
             return new ArrayList<>();
+        }
+    }
+	
+	public static List<User> getUsers(List<Long> ids) {
+        try {
+             Query query = JPA.em().createQuery(
+                        "select u from User u where "+
+                        "u.id in ("+StringUtil.collectionToString(ids, ",")+") and "+
+                        "u.deleted = false ORDER BY FIELD(u.id,"+StringUtil.collectionToString(ids, ",")+")");
+             return (List<User>) query.getResultList();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+    
+    public static List<User> getUsers(List<Long> ids, int offset) {
+        try {
+             Query query = JPA.em().createQuery(
+                     "select u from User u where "+
+                             "u.id in ("+StringUtil.collectionToString(ids, ",")+") and "+
+                             "u.deleted = false ORDER BY FIELD(u.id,"+StringUtil.collectionToString(ids, ",")+")");
+             query.setFirstResult(offset * CalcServer.FEED_RETRIEVAL_COUNT);
+             query.setMaxResults(CalcServer.FEED_RETRIEVAL_COUNT);
+             return (List<User>) query.getResultList();
+        } catch (NoResultException nre) {
+            return null;
         }
     }
 }

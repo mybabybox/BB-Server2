@@ -61,6 +61,7 @@ import viewmodel.PostVMLite;
 import viewmodel.ResponseStatusVM;
 import viewmodel.UserVM;
 import viewmodel.UserVMLite;
+import common.cache.CalcServer;
 import common.model.FeedFilter.FeedType;
 import common.utils.HtmlUtil;
 import common.utils.HttpUtil;
@@ -142,11 +143,15 @@ public class UserController extends Controller {
 		FilePart image = HttpUtil.getMultipartFormDataFile(request().body().asMultipartFormData(), "profile-photo");
 		String fileName = image.getFilename();
 	    try {
+	        boolean firstTimeUploadProfilePhoto = (localUser.getPhotoProfile() == null);
+	        
             File fileTo = ImageFileUtil.copyImageFileToTemp(image.getFile(), fileName);
 			localUser.setPhotoProfile(fileTo);
 			
-			// game badge
-	        GameBadgeAwarded.recordGameBadge(localUser, BadgeType.PROFILE_PHOTO);
+			if (firstTimeUploadProfilePhoto) {
+    			// game badge
+    	        GameBadgeAwarded.recordGameBadge(localUser, BadgeType.PROFILE_PHOTO);
+			}
 		} catch (IOException e) {
 		    logger.underlyingLogger().error("Error in uploadProfilePhoto", e);
 			return badRequest();
@@ -895,13 +900,19 @@ public class UserController extends Controller {
     	        Json.stringify(Json.toJson(new UserVM(user,localUser))), 
     	        Json.stringify(Json.toJson(new UserVM(localUser))),
     	        metaTags));
-		
+    }
+    
+    @Transactional 
+    public Result getUserRecommendedSellers(Long id, Long offset) {
+        final User localUser = Application.getLocalUser(session());
+        List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.USER_RECOMMENDED_SELLERS);
+        return ok(Json.toJson(vms));
     }
     
 	@Transactional 
 	public Result getHomeExploreFeed(Long offset) {
 		final User localUser = Application.getLocalUser(session());
-		List<PostVMLite> vms = feedHandler.getPostVM(localUser.id, offset, localUser, FeedType.HOME_EXPLORE);
+		List<PostVMLite> vms = feedHandler.getFeedPosts(localUser.id, offset, localUser, FeedType.HOME_EXPLORE);
 		return ok(Json.toJson(vms));
 	}
 	
@@ -912,21 +923,21 @@ public class UserController extends Controller {
 			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
 			return notFound();
 		}
-		List<PostVMLite> vms = feedHandler.getPostVM(localUser.id, offset, localUser, FeedType.HOME_FOLLOWING);
+		List<PostVMLite> vms = feedHandler.getFeedPosts(localUser.id, offset, localUser, FeedType.HOME_FOLLOWING);
 		return ok(Json.toJson(vms));
 	}
 	
     @Transactional
     public Result getUserPostedFeed(Long id, Long offset) {
     	final User localUser = Application.getLocalUser(session());
-        List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.USER_POSTED);
+        List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.USER_POSTED);
 		return ok(Json.toJson(vms));
     }
     
     @Transactional
     public Result getUserLikedFeed(Long id, Long offset){
         final User localUser = Application.getLocalUser(session());
-        List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.USER_LIKED);
+        List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.USER_LIKED);
         return ok(Json.toJson(vms));
     }
     
@@ -983,34 +994,36 @@ public class UserController extends Controller {
     }
     
     @Transactional
-    public static Result viewFollowings(Long id) {
+    public Result viewFollowings(Long id) {
     	final User localUser = Application.getLocalUser(session());
     	List<UserVMLite> userFollowings = getFollowings(id, 0L, localUser);
     	return ok(views.html.babybox.web.followers.render(Json.stringify(Json.toJson(userFollowings)), Json.stringify(Json.toJson(new UserVM(localUser)))));
     }
     
     @Transactional
-    public static Result viewFollowers(Long id) {
+    public Result viewFollowers(Long id) {
     	final User localUser = Application.getLocalUser(session());    
     	List<UserVMLite> userFollowers = getFollowers(id, 0L, localUser);
     	return ok(views.html.babybox.web.followers.render(Json.stringify(Json.toJson(userFollowers)), Json.stringify(Json.toJson(new UserVM(localUser)))));
     }
     
     @Transactional
-    public static Result getFollowings(Long id, Long offset) {
+    public Result getFollowings(Long id, Long offset) {
     	final User localUser = Application.getLocalUser(session());
     	List<UserVMLite> userFollowings = getFollowings(id, offset, localUser);
     	return ok(Json.toJson(userFollowings));
     }
     
     @Transactional
-    public static Result getFollowers(Long id,Long offset) {
+    public Result getFollowers(Long id,Long offset) {
     	final User localUser = Application.getLocalUser(session());   
     	List<UserVMLite> userFollowers = getFollowers(id, offset, localUser);
     	return ok(Json.toJson(userFollowers));
     }
     
-    private static List<UserVMLite> getFollowings(Long id, Long offset, User localUser) {
+    public List<UserVMLite> getFollowings(Long id, Long offset, User localUser) {
+        return feedHandler.getFeedUsers(id, offset, localUser, FeedType.USER_FOLLOWINGS);
+        /*
         List<FollowSocialRelation> followings = FollowSocialRelation.getUserFollowings(id, offset);
         List<UserVMLite> userFollowings = new ArrayList<UserVMLite>();
         for (SocialRelation socialRelation : followings) {
@@ -1021,9 +1034,12 @@ public class UserController extends Controller {
             }
         }
         return userFollowings;
+        */
     }
     
-    private static List<UserVMLite> getFollowers(Long id, Long offset, User localUser) {
+    public List<UserVMLite> getFollowers(Long id, Long offset, User localUser) {
+        return feedHandler.getFeedUsers(id, offset, localUser, FeedType.USER_FOLLOWERS);
+        /*
         List<FollowSocialRelation> followers = FollowSocialRelation.getUserFollowers(id, offset);
         List<UserVMLite> userFollowers = new ArrayList<UserVMLite>();
         for(SocialRelation socialRelation : followers){
@@ -1034,6 +1050,7 @@ public class UserController extends Controller {
             }
         }
         return userFollowers;
+        */
     }
     
     @Transactional

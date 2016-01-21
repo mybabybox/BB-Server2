@@ -55,7 +55,7 @@ public class CategoryController extends Controller{
 	@Transactional 
 	public Result getCategoryPopularFeed(Long id, String postType, Long offset){
 		final User localUser = Application.getLocalUser(session());
-		List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_POPULAR);
+		List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_POPULAR);
 		return ok(Json.toJson(vms));
 
 	}
@@ -63,21 +63,21 @@ public class CategoryController extends Controller{
 	@Transactional 
 	public Result getCategoryNewestFeed(Long id, String postType, Long offset){
 		final User localUser = Application.getLocalUser(session());
-		List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_NEWEST);
+		List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_NEWEST);
 		return ok(Json.toJson(vms));
 	}
 	
 	@Transactional 
 	public Result getCategoryPriceLowHighFeed(Long id, String postType, Long offset){
 		final User localUser = Application.getLocalUser(session());
-		List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_PRICE_LOW_HIGH);
+		List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_PRICE_LOW_HIGH);
 		return ok(Json.toJson(vms));
 	}
 	
 	@Transactional 
 	public Result getCategoryPriceHighLowFeed(Long id, String postType, Long offset) {
 		final User localUser = Application.getLocalUser(session());
-		List<PostVMLite> vms = feedHandler.getPostVM(id, offset, localUser, FeedType.CATEGORY_PRICE_HIGH_LOW);
+		List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_PRICE_HIGH_LOW);
 		return ok(Json.toJson(vms));
 	}
 	
@@ -117,16 +117,16 @@ public class CategoryController extends Controller{
         
         switch(catagoryFilter){
         case "popular":
-            postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_POPULAR);
+            postVMs = feedHandler.getFeedPosts(id, 0L, localUser, FeedType.CATEGORY_POPULAR);
             break;
         case "newest":
-            postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_NEWEST);
+            postVMs = feedHandler.getFeedPosts(id, 0L, localUser, FeedType.CATEGORY_NEWEST);
             break;
         case "high2low":
-            postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_PRICE_HIGH_LOW);
+            postVMs = feedHandler.getFeedPosts(id, 0L, localUser, FeedType.CATEGORY_PRICE_HIGH_LOW);
             break;
         case "low2high":
-            postVMs = feedHandler.getPostVM(id, 0L, localUser, FeedType.CATEGORY_PRICE_LOW_HIGH);
+            postVMs = feedHandler.getFeedPosts(id, 0L, localUser, FeedType.CATEGORY_PRICE_LOW_HIGH);
             break;
         }
         

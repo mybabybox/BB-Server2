@@ -64,7 +64,7 @@ public class FollowSocialRelation extends SocialRelation {
 	
 	public static List<FollowSocialRelation> getUserFollowings(Long id, Long offset) {
 		Query q = JPA.em().createQuery(
-				"Select sr from FollowSocialRelation sr where actor = ?1 and actorType = ?2 and targetType = ?3");
+				"Select sr from FollowSocialRelation sr where actor = ?1 and actorType = ?2 and targetType = ?3 order by CREATED_DATE desc");
 		q.setParameter(1, id);
 		q.setParameter(2, SocialObjectType.USER);
 		q.setParameter(3, SocialObjectType.USER);
@@ -79,7 +79,7 @@ public class FollowSocialRelation extends SocialRelation {
 	
 	public static List<FollowSocialRelation> getUserFollowers(Long id) {
 		Query q = JPA.em().createQuery(
-				"Select sr from FollowSocialRelation sr where target = ?1 and actorType = ?2 and targetType = ?3");
+				"Select sr from FollowSocialRelation sr where target = ?1 and actorType = ?2 and targetType = ?3 order by CREATED_DATE desc");
 		q.setParameter(1, id);
 		q.setParameter(2, SocialObjectType.USER);
 		q.setParameter(3, SocialObjectType.USER);

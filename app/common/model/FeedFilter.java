@@ -15,9 +15,12 @@ public class FeedFilter {
         HASHTAG_PRICE_HIGH_LOW,
         USER_POSTED,
         USER_LIKED,
-        USER_FOLLOWING,
+        USER_FOLLOWINGS,
+        USER_FOLLOWERS,
         PRODUCT_LIKES,
-        PRODUCT_SUGGEST
+        PRODUCT_SUGGEST,
+        RECOMMENDED_SELLERS,
+        USER_RECOMMENDED_SELLERS
     }
 
     public enum FeedProductType {

@@ -33,7 +33,8 @@ public class UserVMLite {
     @JsonProperty("isAdmin") public boolean isAdmin = false;
     @JsonProperty("isPromotedSeller") public boolean isPromotedSeller = false;
     @JsonProperty("isVerifiedSeller") public boolean isVerifiedSeller = false;
-
+    @JsonProperty("isRecommendedSeller") public boolean isRecommendedSeller = false;
+    
     public UserVMLite(User user, User localUser) {
         this.id = user.id;
         this.displayName = user.displayName;
@@ -70,6 +71,7 @@ public class UserVMLite {
         this.isAdmin = user.isSuperAdmin();
         this.isPromotedSeller = user.isPromotedSeller();
         this.isVerifiedSeller = user.isVerifiedSeller();
+        this.isRecommendedSeller = user.isRecommendedSeller();
     }
     
     public Long getId() {
@@ -266,5 +268,13 @@ public class UserVMLite {
 
     public void setIsVerifiedSeller(boolean isVerifiedSeller) {
         this.isVerifiedSeller = isVerifiedSeller;
+    }
+    
+    public boolean isRecommendedSeller() {
+        return isRecommendedSeller;
+    }
+    
+    public void setIsRecommendedSeller(boolean isRecommendedSeller) {
+        this.isRecommendedSeller = isRecommendedSeller;
     }
 }

@@ -87,8 +87,8 @@ GET     /comments/:postId                           @controllers.ProductControll
 # User
 GET     /seller/:id                                 controllers.UserController.viewProfile(id:Long)
 GET     /profile/:id                                controllers.UserController.viewProfile(id:Long)
-GET     /followings/:id                             controllers.UserController.viewFollowings(id:Long)
-GET     /followers/:id                              controllers.UserController.viewFollowers(id:Long)
+GET     /followings/:id                             @controllers.UserController.viewFollowings(id:Long)
+GET     /followers/:id                              @controllers.UserController.viewFollowers(id:Long)
 
 # image upload
 POST    /image/upload-profile-photo                 controllers.UserController.uploadProfilePhoto
@@ -146,8 +146,9 @@ GET     /get-user-posted-feed/:id/:offset                               @control
 GET     /api/get-user-liked-feed/:id/:offset                            @controllers.UserController.getUserLikedFeed(id: Long,offset:Long)
 GET     /get-user-liked-feed/:id/:offset                                @controllers.UserController.getUserLikedFeed(id: Long,offset:Long)
 
+GET     /api/get-user-recommended-sellers/:id/:offset                   @controllers.UserController.getUserRecommendedSellers(id :Long, offset: Long)
+
 GET     /api/get-suggested-products/:id                                 @controllers.ProductController.getSuggestedProducts(id :Long)                       
-GET     /get-suggested-products/:id                                     @controllers.ProductController.getSuggestedProducts(id :Long)                       
 
 # User
 GET     /api/get-user-info                          @controllers.UserController.getUserInfo
@@ -165,11 +166,11 @@ GET     /unfollow-user/:id                          controllers.UserController.u
 GET     /api/get-user/:id                           controllers.UserController.getUserInfoById(id:Long)
 GET     /get-user/:id                               controllers.UserController.getUserInfoById(id:Long)
 
-GET     /api/get-followings/:id/:offset             controllers.UserController.getFollowings(id:Long,offset:Long)
-GET     /get-followings/:id/:offset                 controllers.UserController.getFollowings(id:Long,offset:Long)
+GET     /api/get-followings/:id/:offset             @controllers.UserController.getFollowings(id:Long,offset:Long)
+GET     /get-followings/:id/:offset                 @controllers.UserController.getFollowings(id:Long,offset:Long)
 
-GET     /api/get-followers/:id/:offset              controllers.UserController.getFollowers(id:Long,offset:Long)
-GET     /get-followers/:id/:offset                  controllers.UserController.getFollowers(id:Long,offset:Long)
+GET     /api/get-followers/:id/:offset              @controllers.UserController.getFollowers(id:Long,offset:Long)
+GET     /get-followers/:id/:offset                  @controllers.UserController.getFollowers(id:Long,offset:Long)
 
 GET     /api/notification-counter                   controllers.UserController.getNotificationCounter
 GET     /notification-counter                       controllers.UserController.getNotificationCounter

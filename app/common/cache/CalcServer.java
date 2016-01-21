@@ -24,11 +24,11 @@ import play.Play;
 import play.db.jpa.JPA;
 
 import com.google.inject.Singleton;
+
 import common.model.FeedFilter.FeedType;
 import common.schedule.JobScheduler;
 import common.thread.ThreadLocalOverride;
 import common.utils.NanoSecondStopWatch;
-
 import domain.DefaultValues;
 
 @Singleton
@@ -43,7 +43,7 @@ public class CalcServer {
 	public static final Long FEED_HOME_COUNT_MAX = Play.application().configuration().getLong("feed.home.count.max");
 	public static final Long FEED_CATEGORY_EXPOSURE_MIN = Play.application().configuration().getLong("feed.category.exposure.min");
 	public static final int FEED_SNAPSHOT_EXPIRY = Play.application().configuration().getInt("feed.snapshot.expiry");
-	public static final int FEED_SNAPSHOT_NOT_LOGIN_EXPIRY = Play.application().configuration().getInt("feed.snapshot.not.login.expiry");
+	public static final int FEED_SNAPSHOT_LONG_EXPIRY = Play.application().configuration().getInt("feed.snapshot.long.expiry");
 	public static final int FEED_SOLD_CLEANUP_DAYS = Play.application().configuration().getInt("feed.sold.cleanup.days");
 	public static final int FEED_RETRIEVAL_COUNT = DefaultValues.FEED_INFINITE_SCROLL_COUNT;
 	
@@ -101,7 +101,8 @@ public class CalcServer {
 	public void clearUserQueues(User user) {
 		jedisCache.remove(getKey(FeedType.USER_POSTED,user.id));
 		jedisCache.remove(getKey(FeedType.USER_LIKED,user.id));
-		jedisCache.remove(getKey(FeedType.USER_FOLLOWING,user.id));
+		jedisCache.remove(getKey(FeedType.USER_FOLLOWINGS,user.id));
+		jedisCache.remove(getKey(FeedType.USER_FOLLOWERS,user.id));
 	}
 	
 	public void clearPostQueues(Post post) {
@@ -124,13 +125,14 @@ public class CalcServer {
 		for(User user : User.getEligibleUsersForFeed()){
 			clearUserQueues(user);
 			buildUserLikedPostQueue(user);
-			buildUserFollowingUserQueue(user);
+			buildUserFollowingsFollowersQueue(user);
+			addToRecommendedSellersQueue(user);
 		}
 	}
 
 	private void buildUserLikedPostQueue(User user) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildUserLikedPostQueue starts");
+		logger.underlyingLogger().debug("buildUserLikedPostQueue starts - u="+user.id);
 		
 		for (SocialRelation socialRelation : LikeSocialRelation.getUserLikedPosts(user.id)) {
 			jedisCache.putToSortedSet(getKey(FeedType.USER_LIKED,user.id), socialRelation.getCreatedDate().getTime(), socialRelation.target.toString());
@@ -140,17 +142,26 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildUserLikedPostQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
-	private void buildUserFollowingUserQueue(User user) {
+	private void buildUserFollowingsFollowersQueue(User user) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildUserLikedPostQueue starts");
+		logger.underlyingLogger().debug("buildUserFollowingsQueue starts - u="+user.id);
 		
 		for (SocialRelation socialRelation : FollowSocialRelation.getUserFollowings(user.id)) {
-			jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWING,user.id), socialRelation.getCreatedDate().getTime() , socialRelation.target.toString());
+		    // USER_FOLLOWINGS:actor adds target
+			jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWINGS,socialRelation.actor), socialRelation.getCreatedDate().getTime(), socialRelation.target.toString());
+			// USER_FOLLOWERS:target adds actor  
+			jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWERS,socialRelation.target), socialRelation.getCreatedDate().getTime(), socialRelation.actor.toString());
 		}
 		
 		sw.stop();
-		logger.underlyingLogger().debug("buildUserLikedPostQueue completed. Took "+sw.getElapsedSecs()+"s");
+		logger.underlyingLogger().debug("buildUserFollowingsQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
+	
+	private void addToRecommendedSellersQueue(User user) {
+        if (user.isRecommendedSeller()) {
+            jedisCache.putToSortedSet(getKey(FeedType.RECOMMENDED_SELLERS), user.getLastLogin().getTime(), user.id.toString());
+        }
+    }
 
 	/**
      * Main entry for building queues from posts.
@@ -196,7 +207,7 @@ public class CalcServer {
 	
 	private void buildProductLikesQueue(Post post) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildProductLikesQueue starts");
+		logger.underlyingLogger().debug("buildProductLikesQueue starts - p="+post.id);
 		
 		for (SocialRelation socialRelation : LikeSocialRelation.getPostLikedUsers(post.id)) {
 			jedisCache.putToSortedSet(getKey(FeedType.PRODUCT_LIKES,post.id), socialRelation.getCreatedDate().getTime(), socialRelation.actor.toString());
@@ -233,7 +244,7 @@ public class CalcServer {
 	    if (post.soldMarked) {
             return;
         }
-		jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_NEWEST,post.category.id), post.getCreatedDate().getTime() , post.id.toString());
+		jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_NEWEST,post.category.id), post.getCreatedDate().getTime(), post.id.toString());
 	}
 
 	private void addToCategoryPriceLowHighQueue(Post post) {
@@ -249,7 +260,7 @@ public class CalcServer {
 	
 	private void buildUserExploreFeedQueue(Long userId) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildUserExploreFeedQueue starts");
+		logger.underlyingLogger().debug("buildUserExploreFeedQueue starts - u="+userId);
 		
 		User user = User.findById(userId);
 		Map<Long, Long> map = new HashMap<Long, Long>();
@@ -258,7 +269,7 @@ public class CalcServer {
 		}
 		
 		for (Category category : Category.getAllCategories()){
-			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_POPULAR,category.id), 0L);
+			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_POPULAR,category.id));
 			final List<Long> postIds = new ArrayList<>();
 			for (String value : values) {
 				try {
@@ -278,25 +289,25 @@ public class CalcServer {
 			Integer length =  (int) ((postsSize * percentage) / 100);
 			postIds.subList(0, length);
 			for(Long postId : postIds){
-				jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE, userId), formula.randomizeScore(Post.findById(postId)) * FEED_SCORE_HIGH_BASE , postId.toString());
+				jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE, userId), formula.randomizeScore(Post.findById(postId)) * FEED_SCORE_HIGH_BASE, postId.toString());
 			}
 			
 			logger.underlyingLogger().debug(
                     "     cat="+category.getId()+" name="+category.getName()+" catFeedSize="+postsSize+" %="+percentage+" %catFeedSize="+postIds.size());
 		}
-		jedisCache.expire(getKey(FeedType.HOME_EXPLORE, userId), (user == null) ? FEED_SNAPSHOT_NOT_LOGIN_EXPIRY : FEED_SNAPSHOT_EXPIRY);
+		jedisCache.expire(getKey(FeedType.HOME_EXPLORE, userId), (user == null) ? FEED_SNAPSHOT_LONG_EXPIRY : FEED_SNAPSHOT_EXPIRY);
 		
 		sw.stop();
 		logger.underlyingLogger().debug("buildUserExploreFeedQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 	
-	private void buildUserFollowingFeedQueue(Long userId) {
+	private void buildHomeFollowingFeedQueue(Long userId) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildUserFollowingQueue starts");
+		logger.underlyingLogger().debug("buildHomeFollowingQueue starts - u="+userId);
 		
-		List<Long> followings = getUserFollowingFeeds(userId);
+		List<Long> followings = getUserFollowingsFeed(userId);
 		for (Long followingUser : followings){
-			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_POSTED,followingUser), 0L);
+			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_POSTED,followingUser));
 			for (String value : values) {
 				try {
 					Long postId = Long.parseLong(value);
@@ -308,17 +319,36 @@ public class CalcServer {
 		jedisCache.expire(getKey(FeedType.HOME_FOLLOWING,userId), FEED_SNAPSHOT_EXPIRY);
 		
 		sw.stop();
-		logger.underlyingLogger().debug("buildUserFollowingQueue completed. Took "+sw.getElapsedSecs()+"s");
+		logger.underlyingLogger().debug("buildHomeFollowingQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
+	
+	private void buildUserRecommendedSellersFeedQueue(Long userId) {
+        NanoSecondStopWatch sw = new NanoSecondStopWatch();
+        logger.underlyingLogger().debug("buildUserRecommendedSellersFeedQueue starts - u="+userId);
+        
+        // randomize RECOMMENDED_SELLERS queue
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.RECOMMENDED_SELLERS));
+        for (String value : values) {
+            try {
+                Long sellerId = Long.parseLong(value);
+                jedisCache.putToSortedSet(getKey(FeedType.USER_RECOMMENDED_SELLERS, userId), Math.random() * FEED_SCORE_HIGH_BASE, sellerId.toString());
+            } catch (Exception e) {
+            }
+        }
+        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS, userId), FEED_SNAPSHOT_LONG_EXPIRY);
+        
+        sw.stop();
+        logger.underlyingLogger().debug("buildUserRecommendedSellersFeedQueue completed. Took "+sw.getElapsedSecs()+"s");
+    }
 	
 	private void buildSuggestedProductQueue(Long postId) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildSuggestedProductQueue starts");
+		logger.underlyingLogger().debug("buildSuggestedProductQueue starts - p="+postId);
 		
 		List<Long> users = getProductLikesQueue(postId);
 		List<Long> suggestedPostIds = new ArrayList<>();
 		for (Long userId : users){
-			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_LIKED, userId), 0L);
+			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_LIKED, userId));
 			for (String value : values) {
 				try {
 					Long suggestedPostId = Long.parseLong(value);
@@ -346,7 +376,7 @@ public class CalcServer {
 	}
 	
 	public boolean isFollowed(Long userId, Long followingUserId) {
-		 String key = getKey(FeedType.USER_FOLLOWING,userId);
+		 String key = getKey(FeedType.USER_FOLLOWINGS,userId);
 	     return jedisCache.isMemberOfSortedSet(key, followingUserId.toString());
 	}
 
@@ -417,7 +447,7 @@ public class CalcServer {
 	
 	public List<Long> getHomeFollowingFeed(Long id, Double offset) {
 		if(!jedisCache.exists(getKey(FeedType.HOME_FOLLOWING,id))){
-			buildUserFollowingFeedQueue(id);
+			buildHomeFollowingFeedQueue(id);
 		}
 		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HOME_FOLLOWING,id), offset);
         final List<Long> postIds = new ArrayList<>();
@@ -431,7 +461,23 @@ public class CalcServer {
         return postIds;
 	}
 	
-	public List<Long> getUserPostedFeeds(Long id, Double offset) {
+	public List<Long> getUserRecommendedSellersFeed(Long id, Double offset) {
+        if(!jedisCache.exists(getKey(FeedType.USER_RECOMMENDED_SELLERS,id))){
+            buildUserRecommendedSellersFeedQueue(id);
+        }
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_RECOMMENDED_SELLERS,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS,id), FEED_SNAPSHOT_LONG_EXPIRY);
+        return postIds;
+    }
+	
+	public List<Long> getUserPostedFeed(Long id, Double offset) {
 		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_POSTED,id), offset);
         final List<Long> postIds = new ArrayList<>();
         for (String value : values) {
@@ -443,7 +489,7 @@ public class CalcServer {
         return postIds;
 	}
 	
-	public List<Long> getUserLikedFeeds(Long id, Double offset) {
+	public List<Long> getUserLikedFeed(Long id, Double offset) {
 		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_LIKED,id), offset);
         final List<Long> postIds = new ArrayList<>();
         for (String value : values) {
@@ -455,8 +501,8 @@ public class CalcServer {
         return postIds;
 	}
 	
-	public List<Long> getUserFollowingFeeds(Long id) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWING,id), 0L);
+	public List<Long> getUserFollowingsFeed(Long id) {
+		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWINGS,id));
         final List<Long> userIds = new ArrayList<>();
         for (String value : values) {
             try {
@@ -467,12 +513,52 @@ public class CalcServer {
         return userIds;
 	}
 	
+	public List<Long> getUserFollowingsFeed(Long id, Double offset) {
+	    long start = offset.longValue() * CalcServer.FEED_RETRIEVAL_COUNT;
+	    long end = start + CalcServer.FEED_RETRIEVAL_COUNT;
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWINGS,id),start,end);
+        final List<Long> userIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                userIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return userIds;
+    }
+	
+	public List<Long> getUserFollowersFeed(Long id) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWERS,id));
+        final List<Long> userIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                userIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return userIds;
+    }
+	
+	public List<Long> getUserFollowersFeed(Long id, Double offset) {
+        long start = offset.longValue() * CalcServer.FEED_RETRIEVAL_COUNT;
+        long end = start + CalcServer.FEED_RETRIEVAL_COUNT;
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWERS,id),start,end);
+        final List<Long> userIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                userIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return userIds;
+    }
+	
 	public List<Long> getSuggestedProducts(Long id) {
 		if(!jedisCache.exists(getKey(FeedType.PRODUCT_SUGGEST, id))){
 			buildSuggestedProductQueue(id);
 		}
 		
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.PRODUCT_SUGGEST, id) , 0L);
+		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.PRODUCT_SUGGEST, id));
         final List<Long> postIds = new ArrayList<>();
         for (String value : values) {
             try {
@@ -485,7 +571,7 @@ public class CalcServer {
 	}
 	
 	public List<Long> getProductLikesQueue(Long postId) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.PRODUCT_LIKES,postId), 0L);
+		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.PRODUCT_LIKES,postId));
         final List<Long> userIds = new ArrayList<>();
         for (String value : values) {
             try {
@@ -532,14 +618,16 @@ public class CalcServer {
 		jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_LIKED,user.id), post.id.toString());
 	}
 
-	public void addToFollowQueue(Long userId, Long followingUserId, Double score){
+	public void addToUserFollowingsFollowersQueue(Long userId, Long followingUserId, Double score){
 		jedisCache.remove(getKey(FeedType.HOME_FOLLOWING,userId));
-		jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWING,userId), score, followingUserId.toString());
+		jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWINGS,userId), score, followingUserId.toString());
+		jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWERS,followingUserId), score, userId.toString());
 	}
 	
-	public void removeFromFollowQueue(Long userId, Long followingUserId){
+	public void removeFromUserFollowingsFollowersQueue(Long userId, Long followingUserId){
 		jedisCache.remove(getKey(FeedType.HOME_FOLLOWING,userId));
-		jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_FOLLOWING,userId), followingUserId.toString());
+		jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_FOLLOWINGS,userId), followingUserId.toString());
+		jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_FOLLOWERS,followingUserId), userId.toString());
 	}
 
 	public void removeFromUserPostedQueue(Post post, User user){
@@ -548,7 +636,7 @@ public class CalcServer {
 
 	public void removeFromAllUsersLikedQueues(Post post) {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
-        logger.underlyingLogger().debug("removeFromAllUsersLikedQueues starts");
+        logger.underlyingLogger().debug("removeFromAllUsersLikedQueues starts - p="+post.id);
         
         for (SocialRelation socialRelation : LikeSocialRelation.getPostLikedUsers(post.id)) {
             jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_LIKED,socialRelation.actor), post.id.toString());
@@ -562,10 +650,17 @@ public class CalcServer {
 		return jedisCache.getScore(key, postId.toString());
 	}
 	
+	public String getKey(FeedType feedType) {
+	    return getKey(feedType, null);
+	}
+	
 	public String getKey(FeedType feedType, Long keyId) {
 		// Only 1 queue CATEGORY_PRICE_LOW_HIGH
 		if (FeedType.CATEGORY_PRICE_HIGH_LOW.equals(feedType)) {
 			feedType = FeedType.CATEGORY_PRICE_LOW_HIGH;
+		}
+		if (FeedType.RECOMMENDED_SELLERS.equals(feedType) || keyId == null) {
+		    return feedType.toString();
 		}
 		return feedType+":"+keyId;
 	}
