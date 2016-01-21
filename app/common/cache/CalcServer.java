@@ -39,6 +39,7 @@ public class CalcServer {
 	@Inject
     JedisCache jedisCache;
     
+	public static final Boolean FEED_INIT_FLUSH_ALL = Play.application().configuration().getBoolean("feed.init.flush.all", true);
 	public static final Long FEED_SCORE_COMPUTE_SCHEDULE = Play.application().configuration().getLong("feed.score.compute.schedule");
 	public static final Long FEED_SCORE_HIGH_BASE = Play.application().configuration().getLong("feed.score.high.base");
 	public static final Long FEED_HOME_COUNT_MAX = Play.application().configuration().getLong("feed.home.count.max");
@@ -63,9 +64,14 @@ public class CalcServer {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
 		logger.underlyingLogger().debug("warmUpActivity starts");
 		
+		if (FEED_INIT_FLUSH_ALL) {
+		    jedisCache.flushAll();
+		}
+		
 		buildQueuesFromUsers();
 		buildQueuesFromPosts();
 		buildQueuesFromHashtags();
+		
 		JobScheduler.getInstance().schedule(
 		        "buildCategoryPopularQueue", 
 		        FEED_SCORE_COMPUTE_SCHEDULE,  // initial delay 
@@ -89,16 +95,6 @@ public class CalcServer {
 		sw.stop();
 		logger.underlyingLogger().debug("warmUpActivity completed. Took "+sw.getElapsedSecs()+"s");
 	}
-
-	
-	public void clearHashtagsQueues() {
-		for(Hashtag hashtag : Hashtag.getAllHashtags()){
-			jedisCache.remove(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH,hashtag.id));
-			jedisCache.remove(getKey(FeedType.HASHTAG_PRICE_HIGH_LOW,hashtag.id));
-			jedisCache.remove(getKey(FeedType.HASHTAG_POPULAR,hashtag.id));
-			jedisCache.remove(getKey(FeedType.HASHTAG_NEWEST,hashtag.id));
-		}
-	}
 	
 	public void clearCategoryQueues() {
 		for(Category category : Category.getAllCategories()){
@@ -109,11 +105,21 @@ public class CalcServer {
 		}
 	}
 	
+	public void clearHashtagsQueues() {
+        for(Hashtag hashtag : Hashtag.getAllHashtags()){
+            jedisCache.remove(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH,hashtag.id));
+            jedisCache.remove(getKey(FeedType.HASHTAG_PRICE_HIGH_LOW,hashtag.id));
+            jedisCache.remove(getKey(FeedType.HASHTAG_POPULAR,hashtag.id));
+            jedisCache.remove(getKey(FeedType.HASHTAG_NEWEST,hashtag.id));
+        }
+	}
+	
 	public void clearUserQueues(User user) {
 		jedisCache.remove(getKey(FeedType.USER_POSTED,user.id));
 		jedisCache.remove(getKey(FeedType.USER_LIKED,user.id));
 		jedisCache.remove(getKey(FeedType.USER_FOLLOWINGS,user.id));
-		jedisCache.remove(getKey(FeedType.USER_FOLLOWERS,user.id));
+		// dont clear USER_FOLLOWERS queue, it is created by USER_FOLLOWINGS indirectly 
+        //jedisCache.remove(getKey(FeedType.USER_FOLLOWERS,user.id));
 	}
 	
 	public void clearPostQueues(Post post) {
@@ -134,7 +140,10 @@ public class CalcServer {
 	 */
 	private void buildQueuesFromUsers() {
 		for(User user : User.getEligibleUsersForFeed()){
-			clearUserQueues(user);
+		    if (!FEED_INIT_FLUSH_ALL) {
+		        clearUserQueues(user);
+		    }
+		    
 			buildUserLikedPostQueue(user);
 			buildUserFollowingsFollowersQueue(user);
 			addToRecommendedSellersQueue(user);
@@ -168,7 +177,6 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildUserFollowingsQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
-
 	/**
      * Main entry for building queues from Hashtags.
      */
@@ -176,15 +184,18 @@ public class CalcServer {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
 		logger.underlyingLogger().debug("buildQueuesFromHashtags starts");
 
-		clearHashtagsQueues();
+		if (!FEED_INIT_FLUSH_ALL) {
+		    clearHashtagsQueues();
+		}
+		
 		for (Hashtag hashtag: Hashtag.getAllHashtags()){
-			addToHashTagQueues(hashtag);
+			addToHashtagQueues(hashtag);
 		}
 		sw.stop();
 		logger.underlyingLogger().debug("buildQueuesFromHashtags completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
-	public void addToHashTagQueues(Hashtag hashtag){
+	public void addToHashtagQueues(Hashtag hashtag){
 		for (Post post : Post.getEligiblePostsForFeeds()) {
 			if (post.soldMarked) {
 				continue;
@@ -194,6 +205,7 @@ public class CalcServer {
 			addToHashtagPopularQueue(hashtag.id, post);
 		}
 	}
+	
 	private void addToHashtagPriceLowHighQueue(Long hashtag, Post post) {
 	    if (post.soldMarked) {
             return;
@@ -239,10 +251,15 @@ public class CalcServer {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
         logger.underlyingLogger().debug("buildQueuesFromPosts starts");
         
-		clearCategoryQueues();
+        if (!FEED_INIT_FLUSH_ALL) {
+            clearCategoryQueues();
+        }
 
 		for (Post post : Post.getEligiblePostsForFeeds()) {
-			clearPostQueues(post);
+		    if (!FEED_INIT_FLUSH_ALL) {
+		        clearPostQueues(post);
+		    }
+		    
 			addToUserPostedQueue(post);
 			
 			// below queues skip sold products
