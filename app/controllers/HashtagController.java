@@ -53,7 +53,7 @@ public class HashtagController extends Controller {
 			logger.underlyingLogger().warn(String.format("[hash=%d] Hashtag not found", id));
 			return notFound();
 		}
-		CalcServer.instance().addToHashtagQueues(hashtag);
+		CalcServer.instance().addPostToHashtagQueues(hashtag);
 		return ok();
 	}
 }

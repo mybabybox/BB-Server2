@@ -70,8 +70,6 @@ public class CalcServer {
 		
 		buildQueuesFromUsers();
 		buildQueuesFromPosts();
-		buildQueuesFromHashtags();
-		
 		JobScheduler.getInstance().schedule(
 		        "buildCategoryPopularQueue", 
 		        FEED_SCORE_COMPUTE_SCHEDULE,  // initial delay 
@@ -177,25 +175,7 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildUserFollowingsQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
-	/**
-     * Main entry for building queues from Hashtags.
-     */
-	private void buildQueuesFromHashtags() {
-		NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildQueuesFromHashtags starts");
-
-		if (!FEED_INIT_FLUSH_ALL) {
-		    clearHashtagsQueues();
-		}
-		
-		for (Hashtag hashtag: Hashtag.getAllHashtags()){
-			addToHashtagQueues(hashtag);
-		}
-		sw.stop();
-		logger.underlyingLogger().debug("buildQueuesFromHashtags completed. Took "+sw.getElapsedSecs()+"s");
-	}
-
-	public void addToHashtagQueues(Hashtag hashtag){
+	public void addPostToHashtagQueues(Hashtag hashtag){
 		for (Post post : Post.getEligiblePostsForFeeds()) {
 			if (post.soldMarked) {
 				continue;
@@ -272,12 +252,13 @@ public class CalcServer {
 		    addToCategoryNewestQueue(post);
 		    addToCategoryPopularQueue(post);
 		    buildProductLikesQueue(post);
+		    buildHashtagQueues(post);
 		}
 		
 		sw.stop();
         logger.underlyingLogger().debug("buildQueuesFromPosts completed. Took "+sw.getElapsedSecs()+"s");
 	}
-	
+
 	private void buildCategoryPopularQueues() {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
         logger.underlyingLogger().debug("buildCategoryPopularQueue starts");
@@ -299,6 +280,20 @@ public class CalcServer {
 		
 		for (SocialRelation socialRelation : LikeSocialRelation.getPostLikedUsers(post.id)) {
 			jedisCache.putToSortedSet(getKey(FeedType.PRODUCT_LIKES,post.id), socialRelation.getCreatedDate().getTime(), socialRelation.actor.toString());
+		}
+		
+		sw.stop();
+		logger.underlyingLogger().debug("buildProductLikesQueue completed. Took "+sw.getElapsedSecs()+"s");
+	}
+	
+	private void buildHashtagQueues(Post post){
+		NanoSecondStopWatch sw = new NanoSecondStopWatch();
+		logger.underlyingLogger().debug("buildHashtagQueue starts - p="+post.id);
+		
+		for (Hashtag hashtag: Hashtag.getAllHashtags()){
+			addToHashtagPriceLowHighQueue(hashtag.id, post);
+			addToHashtagNewestQueue(hashtag.id, post);
+			addToHashtagPopularQueue(hashtag.id, post);
 		}
 		
 		sw.stop();
