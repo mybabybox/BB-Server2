@@ -221,11 +221,17 @@ public class CalcServer {
 	    	jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_POPULAR,hashtag),  timeScore.doubleValue() * FEED_SCORE_HIGH_BASE, post.id.toString());
 	    }
 	}
-		private void addToRecommendedSellersQueue(User user) {
+	
+	public void addToRecommendedSellersQueue(User user) {
         if (user.isRecommendedSeller()) {
             jedisCache.putToSortedSet(getKey(FeedType.RECOMMENDED_SELLERS), user.getLastLogin().getTime(), user.id.toString());
         }
     }
+	
+	public void removeFromRecommendedSellersQueue(User user) {
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.RECOMMENDED_SELLERS), user.id.toString());
+    }
+	
 	/**
      * Main entry for building queues from posts.
      */
@@ -726,20 +732,20 @@ public class CalcServer {
 	}
 	
 	public void removeFromCategoryQueues(Post post, Category category){
-	    removeMemberFromPriceLowHighPostQueue(post.id, category.id);
-        removeMemberFromNewestPostQueue(post.id, category.id);
-        removeMemberFromPopularPostQueue(post.id, category.id);
+	    removeFromPriceLowHighPostQueue(post.id, category.id);
+	    removeFromNewestPostQueue(post.id, category.id);
+	    removeFromPopularPostQueue(post.id, category.id);
 	}
 	
-	public void removeMemberFromPriceLowHighPostQueue(Long postId, Long categoryId){
+	public void removeFromPriceLowHighPostQueue(Long postId, Long categoryId){
 		jedisCache.removeMemberFromSortedSet(getKey(FeedType.CATEGORY_PRICE_LOW_HIGH,categoryId), postId.toString());
 	}
 	
-	public void removeMemberFromNewestPostQueue(Long postId, Long categoryId){
+	public void removeFromNewestPostQueue(Long postId, Long categoryId){
 		jedisCache.removeMemberFromSortedSet(getKey(FeedType.CATEGORY_NEWEST,categoryId), postId.toString());
 	}
 
-	public void removeMemberFromPopularPostQueue(Long postId, Long categoryId){
+	public void removeFromPopularPostQueue(Long postId, Long categoryId){
 		jedisCache.removeMemberFromSortedSet(getKey(FeedType.CATEGORY_POPULAR,categoryId), postId.toString());
 	}
 	
@@ -796,10 +802,10 @@ public class CalcServer {
 		if (FeedType.HASHTAG_PRICE_HIGH_LOW.equals(feedType)) {
 			feedType = FeedType.HASHTAG_PRICE_LOW_HIGH;
 		}
-			if (FeedType.RECOMMENDED_SELLERS.equals(feedType) || keyId == null) {
+		
+		if (FeedType.RECOMMENDED_SELLERS.equals(feedType) || keyId == null) {
 		    return feedType.toString();
 		}
-		
 		return feedType+":"+keyId;
 	}
 	

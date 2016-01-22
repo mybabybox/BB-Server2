@@ -71,12 +71,12 @@ public class ProductController extends Controller{
 	    String originalPrice = dynamicForm.get("originalPrice");
 	    Boolean freeDelivery = Boolean.valueOf(dynamicForm.get("freeDelivery"));
 	    String countryCode = dynamicForm.get("countryCode");
+	    String hashtags = dynamicForm.get("hashtags");;
 	    String deviceType = dynamicForm.get("deviceType");
-	    String sellerHashtags = "tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9, tag10";
 	    List<FilePart> images = request().body().asMultipartFormData().getFiles();
 		return createProduct(
 		        title, body, Long.parseLong(catId), Double.parseDouble(price), Post.parseConditionType(conditionType), images, 
-		        Double.parseDouble(originalPrice), freeDelivery, Post.parseCountryCode(countryCode), Application.parseDeviceType(deviceType),sellerHashtags);
+		        Double.parseDouble(originalPrice), freeDelivery, Post.parseCountryCode(countryCode), hashtags, Application.parseDeviceType(deviceType));
 	}
 	
 	@Transactional
@@ -90,8 +90,8 @@ public class ProductController extends Controller{
 	    Double originalPrice = HttpUtil.getMultipartFormDataDouble(multipartFormData, "originalPrice");
 	    Boolean freeDelivery = HttpUtil.getMultipartFormDataBoolean(multipartFormData, "freeDelivery");
 	    String countryCode = HttpUtil.getMultipartFormDataString(multipartFormData, "countryCode");
+	    String hashtags = HttpUtil.getMultipartFormDataString(multipartFormData, "hashtags");
 	    String deviceType = HttpUtil.getMultipartFormDataString(multipartFormData, "deviceType");
-	    String sellerHashtags = "tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9, tag10";
 	    List<FilePart> images = HttpUtil.getMultipartFormDataFiles(multipartFormData, "image", DefaultValues.MAX_POST_IMAGES);
 	    if (catId == null) {
 	        catId = -1L;
@@ -115,12 +115,12 @@ public class ProductController extends Controller{
 	   
 		return createProduct(
 		        title, body, catId, price, Post.parseConditionType(conditionType), images, 
-		        originalPrice, freeDelivery, Post.parseCountryCode(countryCode), Application.parseDeviceType(deviceType),sellerHashtags);
+		        originalPrice, freeDelivery, Post.parseCountryCode(countryCode), hashtags, Application.parseDeviceType(deviceType));
 	}
 
 	private static Result createProduct(
 	        String title, String body, Long catId, Double price, ConditionType conditionType, List<FilePart> images, 
-	        Double originalPrice, Boolean freeDelivery, CountryCode countryCode, DeviceType deviceType,String sellerHashtags) {
+	        Double originalPrice, Boolean freeDelivery, CountryCode countryCode, String hashtags, DeviceType deviceType) {
 	    
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    
@@ -149,11 +149,12 @@ public class ProductController extends Controller{
 				newPost.addPostPhoto(fileTo);
 			}
 			
-			addHashtagsToPost(sellerHashtags, newPost);
+			addHashtagsToPost(hashtags, newPost);
 			SocialRelationHandler.recordNewPost(newPost, localUser);
 			ResponseStatusVM response = new ResponseStatusVM(SocialObjectType.POST, newPost.id, localUser.id, true);
 			
-			PostToMark mark =new PostToMark(newPost.id);
+			// To be marked by PostMarker 
+			PostToMark mark = new PostToMark(newPost.id);
 			mark.save();
 			
 			sw.stop();
@@ -181,9 +182,10 @@ public class ProductController extends Controller{
         String originalPrice = dynamicForm.get("originalPrice");
         Boolean freeDelivery = Boolean.valueOf(dynamicForm.get("freeDelivery"));
         String countryCode = dynamicForm.get("countryCode");
+        String hashtags = dynamicForm.get("hashtags");
         return editProduct(Long.parseLong(id), title, body, Long.parseLong(catId), 
                 Double.parseDouble(price), Post.parseConditionType(conditionType), 
-                Double.parseDouble(originalPrice), freeDelivery, Post.parseCountryCode(countryCode));
+                Double.parseDouble(originalPrice), freeDelivery, Post.parseCountryCode(countryCode), hashtags);
     }
     
     @Transactional
@@ -198,6 +200,7 @@ public class ProductController extends Controller{
         Double originalPrice = HttpUtil.getMultipartFormDataDouble(multipartFormData, "originalPrice");
         Boolean freeDelivery = HttpUtil.getMultipartFormDataBoolean(multipartFormData, "freeDelivery");
         String countryCode = HttpUtil.getMultipartFormDataString(multipartFormData, "countryCode");
+        String hashtags = HttpUtil.getMultipartFormDataString(multipartFormData, "hashtags");
         
         if (id == null) {
             id = -1L;
@@ -224,12 +227,12 @@ public class ProductController extends Controller{
         }
         
         return editProduct(id, title, body, catId, price, Post.parseConditionType(conditionType), 
-                originalPrice, freeDelivery, Post.parseCountryCode(countryCode));
+                originalPrice, freeDelivery, Post.parseCountryCode(countryCode), hashtags);
     }
 
     private static Result editProduct(
             Long id, String title, String body, Long catId, Double price, Post.ConditionType conditionType, 
-            Double originalPrice, Boolean freeDelivery, CountryCode countryCode) {
+            Double originalPrice, Boolean freeDelivery, CountryCode countryCode, String sellerHashtags) {
         
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
         
@@ -260,11 +263,13 @@ public class ProductController extends Controller{
             return badRequest();
         }
         
-        // category changed, handle event
-        if (catId != oldCategory.id) {
-            SocialRelationHandler.recordEditPost(post, oldCategory);
-        }
+        addHashtagsToPost(sellerHashtags, post);
+        SocialRelationHandler.recordEditPost(post, oldCategory);
         ResponseStatusVM response = new ResponseStatusVM(SocialObjectType.POST, post.id, localUser.id, true);
+        
+        // To be marked by PostMarker 
+        PostToMark mark = new PostToMark(post.id);
+        mark.save();
         
         sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {
@@ -274,21 +279,29 @@ public class ProductController extends Controller{
         return ok(Json.toJson(response));
     }
 
-    public static void addHashtagsToPost(String sellerHashtags, Post post){
-    	final User localUser = Application.getLocalUser(session());
-    	//String sellerHashtags = dynamicForm.get("sellerHashtags");
-    	List<String> hashtagList = Arrays.asList(sellerHashtags.split(","));
-    	StringBuilder hashtagIds = new StringBuilder();
-    	for (String s : hashtagList){
-    		Hashtag hashtag = Hashtag.findByName(s);
+    public static void addHashtagsToPost(String hashtags, Post post){
+        if (StringUtils.isEmpty(hashtags)) {
+            return;
+        }
+        
+    	List<String> list = Arrays.asList(hashtags.split(","));
+    	for (String name : list){
+    		Hashtag hashtag = Hashtag.findByName(name);
+    		/*
     		if(hashtag == null){
     			hashtag = new Hashtag();
-    			hashtag.setName(s);
-    			hashtag.setOwner(localUser);
-    			hashtag.system=false;
+    			hashtag.setName(name);
+    			hashtag.setOwner(post.owner);
+    			hashtag.system = false;
     			hashtag.save();
     		}
-    		post.addHashtag(hashtag);
+    		*/
+    		
+    		if (hashtag != null) {
+    		    post.addHashtag(hashtag);
+    		} else {
+    		    logger.underlyingLogger().warn("[h="+name+"] Hashtag not exist");
+    		}
     	}
     }
     

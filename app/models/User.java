@@ -643,18 +643,16 @@ public class User extends SocialObject implements Subject, Followable {
 		return providerKeys;
 	}
 
-	public static void addLinkedAccount(final AuthUser oldUser,
-			final AuthUser newUser) {
+	public static void addLinkedAccount(final AuthUser oldUser, final AuthUser newUser) {
 		final User u = User.findByAuthUserIdentity(oldUser);
 		u.linkedAccounts.add(LinkedAccount.create(newUser));
 		u.save();
 	}
 
-	public static void setLastLoginDate(final AuthUser knownUser) {
-		final User u = User.findByAuthUserIdentity(knownUser);
-		if (u != null && u.isLoggedIn()) {
-    		u.lastLogin = new Date();
-    		u.save();
+	public static void updateLastLoginDate(final User user) {
+		if (user != null && user.isLoggedIn()) {
+		    user.lastLogin = new Date();
+		    user.save();
 		}
 	}
 

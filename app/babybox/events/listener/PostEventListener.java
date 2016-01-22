@@ -31,6 +31,10 @@ public class PostEventListener extends EventListener {
     		CalcServer.instance().addToCategoryQueues(post);
             CalcServer.instance().addToUserPostedQueue(post);
             
+            if (user.isRecommendedSeller()) {
+                CalcServer.instance().addToRecommendedSellersQueue(user);
+            }
+            
             final Long postImageId = post.getImage();
     		executeAsync(
                     new TransactionalRunnableTask() {
@@ -74,6 +78,11 @@ public class PostEventListener extends EventListener {
             Post post = (Post) map.get("post");
             Category category = (Category) map.get("category");
             
+            // same category, no change
+            if (post.category.id == category.id) {
+                return;
+            }
+            
             CalcServer.instance().removeFromCategoryQueues(post, category);
             CalcServer.instance().addToCategoryQueues(post);
     	} catch(Exception e) {
@@ -90,6 +99,10 @@ public class PostEventListener extends EventListener {
     		CalcServer.instance().removeFromCategoryQueues(post);
     		CalcServer.instance().removeFromUserPostedQueue(post, post.owner);
     		CalcServer.instance().removeFromAllUsersLikedQueues(post);
+    		
+    		if (!user.isRecommendedSeller()) {
+                CalcServer.instance().removeFromRecommendedSellersQueue(user);
+            }
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
         }
