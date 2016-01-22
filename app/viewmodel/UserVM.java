@@ -10,7 +10,6 @@ public class UserVM extends UserVMLite {
     @JsonProperty("aboutMe") public String aboutMe;
     @JsonProperty("location") public LocationVM location;
     @JsonProperty("setting") public SettingVM setting;
-    @JsonProperty("isMobile") public boolean isMobile = false;
 
     public UserVM(User user) {
     	this(user, user);
@@ -31,7 +30,6 @@ public class UserVM extends UserVMLite {
                 this.setting = new SettingVM(Setting.findByUserId(user.id));
             }
         }
-        this.isMobile = Application.isMobileUser();
     }
 
     public String getAboutMe() {

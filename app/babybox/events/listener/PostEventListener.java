@@ -74,6 +74,11 @@ public class PostEventListener extends EventListener {
             Post post = (Post) map.get("post");
             Category category = (Category) map.get("category");
             
+            // same category, no change
+            if (post.category.id == category.id) {
+                return;
+            }
+            
             CalcServer.instance().removeFromCategoryQueues(post, category);
             CalcServer.instance().addToCategoryQueues(post);
     	} catch(Exception e) {

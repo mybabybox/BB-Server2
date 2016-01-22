@@ -687,27 +687,11 @@ public class Application extends Controller {
 	// Mobile
 	//
 
-	public static boolean isMobileUser() {
-	    try {
-	        return "true".equalsIgnoreCase(session().get("mobile"));
-	    } catch (Exception e) {
-	        return false;
-	    }
-	}
-	
-	public static void setMobileUser() {
-		UserAgentUtil userAgentUtil = new UserAgentUtil(request());
-		if (userAgentUtil != null) {
-			boolean isMobile = userAgentUtil.isMobileUserAgent();
-			session().put("mobile",  isMobile? "true" : "false");
-		}
-	}
-	
 	public static void setMobileUserAgent(User user) {
 		if (user.isLoggedIn()) {
 			UserAgentUtil userAgentUtil = new UserAgentUtil(request());
             String agentStr = userAgentUtil.getUserAgent();
-			if (agentStr != null) {
+			if (!StringUtils.isEmpty(agentStr)) {
 				user.lastLoginUserAgent = userAgentUtil.getUserAgent().substring(0, Math.min(100, agentStr.length()));
 			}
 		}
