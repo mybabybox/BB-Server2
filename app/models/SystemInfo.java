@@ -1,7 +1,6 @@
 package models;
 
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,8 +11,6 @@ import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import common.schedule.JobScheduler;
-import common.utils.DateTimeUtil;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 
@@ -48,38 +45,6 @@ public class SystemInfo {
 	
 	private static SystemInfo systemInfo;
 	
-	static {
-        JobScheduler.getInstance().schedule(
-                "refreshVersion", 
-                DateTimeUtil.HOUR_MILLIS,   // initial delay 
-                DateTimeUtil.HOUR_MILLIS,   // interval
-                TimeUnit.MILLISECONDS,
-                new Runnable() {
-                    public void run() {
-                        try {
-                            JPA.withTransaction(new play.libs.F.Callback0() {
-                                @Override
-                                public void invoke() throws Throwable {
-                                    // nullify systemInfo and refresh in next call
-                                    if (systemInfo != null) {
-                                        synchronized(systemInfo) {
-                                            if (isVersionUpdated()) {
-                                                systemInfo.versionUpdated = false;
-                                                systemInfo.save();
-                                                systemInfo = null;
-                                                logger.underlyingLogger().debug("refreshVersion versionUpdate");
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-                        } catch (Exception e) {
-                            logger.underlyingLogger().error("[JobScheduler] refreshSystemInfo failed...", e);
-                        }
-                    }
-                });
-    }
-	
 	private static User BB_ADMIN;
 	private static User BB_SELLER;
 	private static User BB_CUSTOMER_CARE;
@@ -108,6 +73,20 @@ public class SystemInfo {
 	public SystemInfo() {
 	}
 
+	public static void checkVersionUpdated() {
+	    // nullify systemInfo and refresh in next call
+        if (systemInfo != null) {
+            synchronized(systemInfo) {
+                if (isVersionUpdated()) {
+                    systemInfo.versionUpdated = false;
+                    systemInfo.save();
+                    systemInfo = null;
+                    logger.underlyingLogger().debug("refreshVersion versionUpdate");
+                }
+            }
+        }    
+	}
+	
 	public static SystemInfo getInfo() {
 	    if (systemInfo != null) {
 	        return systemInfo;
@@ -122,7 +101,7 @@ public class SystemInfo {
             }
             
             systemInfo = (SystemInfo) q.getSingleResult();
-            logger.underlyingLogger().debug("getInfo()\n"+systemInfo.toString());
+            logger.underlyingLogger().debug("getInfo() \n"+systemInfo.toString());
             return systemInfo;
         } catch (NoResultException e) {
             return null;

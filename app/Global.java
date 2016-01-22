@@ -1,12 +1,12 @@
 import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import models.Activity;
 import models.Hashtag;
 import models.Post;
-import models.PostToMark;
 import models.SecurityRole;
 import models.SecurityRole.RoleType;
+import models.SystemInfo;
 import play.Application;
 import play.GlobalSettings;
 import play.Play;
@@ -20,12 +20,12 @@ import com.feth.play.module.pa.exceptions.AccessDeniedException;
 import com.feth.play.module.pa.exceptions.AuthException;
 
 import common.cache.CalcServer;
-import common.hashtag.HashtagMarkingJob;
-import common.hashtag.NewThisWeekHashtagMarkingJob;
+import common.cache.FeaturedItemCache;
 import common.hashtag.PostMarker;
 import common.schedule.CommandChecker;
 import common.schedule.JobScheduler;
 import common.thread.ThreadLocalOverride;
+import common.utils.DateTimeUtil;
 import controllers.routes;
 
 /**
@@ -122,119 +122,161 @@ public class Global extends GlobalSettings {
      * scheduleJobs
      */
     private void scheduleJobs() {
-        // schedule to purge sold posts daily at 5:00am HKT
-        JobScheduler.getInstance().schedule("cleanupSoldPosts", "0 00 5 ? * *",
-            new Runnable() {
-                public void run() {
-                    try {
-                       JPA.withTransaction(new play.libs.F.Callback0() {
-                            public void invoke() {
-                                logger.underlyingLogger().info("[JobScheduler] cleanupSoldPosts starts...");
-                                CalcServer.instance().cleanupSoldPosts();
-                                logger.underlyingLogger().info("[JobScheduler] cleanupSoldPosts completed !");
-                            }
-                        });
-                    } catch (Exception e) {
-                        logger.underlyingLogger().error("[JobScheduler] cleanupSoldPosts failed...", e);
-                    }
-                }
-            }
-        );
+        
+        //
+        // Daily scheduled jobs
+        //
         
         // schedule to purge Activity daily at 4:00am HKT
         JobScheduler.getInstance().schedule("purgeActivity", "0 00 4 ? * *",
-            new Runnable() {
-                public void run() {
-                    try {
-                       JPA.withTransaction(new play.libs.F.Callback0() {
-                            public void invoke() {
-                                logger.underlyingLogger().info("[JobScheduler] purgeActivity starts...");
-                            	Activity.purgeActivity();
-                            	logger.underlyingLogger().info("[JobScheduler] purgeActivity completed !");
-                            }
-                        });
-                    } catch (Exception e) {
-                        logger.underlyingLogger().error("[JobScheduler] purgeActivity failed...");
-                    }
-                }
-            }
-        );
-
-        // schedule to check command every 2 min.
-        JobScheduler.getInstance().schedule("commandCheck", 120000,
-            new Runnable() {
-                public void run() {
-                    try {
-                       JPA.withTransaction(new play.libs.F.Callback0() {
-                            public void invoke() {
-                                CommandChecker.checkCommandFiles();
-                            }
-                        });
-                    } catch (Exception e) {
-                        logger.underlyingLogger().error("[JobScheduler] commandCheck failed...", e);
-                    }
-                }
-            }
-        );
-        // schedule for Post Marking every 5 min
-        JobScheduler.getInstance().schedule("postMasrk", 300000,
                 new Runnable() {
                     public void run() {
                         try {
                            JPA.withTransaction(new play.libs.F.Callback0() {
                                 public void invoke() {
-                                    logger.underlyingLogger().info("[JobScheduler] postMasrk starts...");
-                                	PostMarker.PostMarkerSchedule();
-                                	logger.underlyingLogger().info("[JobScheduler] postMasrk completed !");
+                                    logger.underlyingLogger().info("[JobScheduler] purgeActivity starts...");
+                                    Activity.purgeActivity();
+                                    logger.underlyingLogger().info("[JobScheduler] purgeActivity completed !");
                                 }
                             });
                         } catch (Exception e) {
-                            logger.underlyingLogger().error("[JobScheduler] postMasrk failed...");
+                            logger.underlyingLogger().error("[JobScheduler] purgeActivity failed...");
                         }
                     }
-                }
-            );
+                });
         
-        
-        // schedule for Hash Marking daily at 12 PM
-        JobScheduler.getInstance().schedule("hashtagMarking", "0 0 12 ? * *",
-            new Runnable() {
-                public void run() {
-                    try {
-                       JPA.withTransaction(new play.libs.F.Callback0() {
-                            public void invoke() {
-                                logger.underlyingLogger().info("[JobScheduler] hashtagMarking starts...");
-
-                                try {
-                                	for (Hashtag hashtag: Hashtag.getAllNewHashtags()){
-	                                	for (Post post : Post.getEligiblePostsForFeeds()) {
-	                        				if (post.soldMarked) {
-	                        					continue;
-	                        				}
-	                        				post.addHashtag(hashtag);
-	                        			 }
-                                	}	
-								} catch (Exception e2) {
-									// TODO: handle exception
-								}
-                            	logger.underlyingLogger().info("[JobScheduler] hashtagMarking completed !");
-                            }
-                        });
-                    } catch (Exception e) {
-                        logger.underlyingLogger().error("[JobScheduler] hashtagMarking failed...");
+        // schedule to purge sold posts daily at 4:30am HKT
+        JobScheduler.getInstance().schedule("cleanupSoldPosts", "0 30 4 ? * *",
+                new Runnable() {
+                    public void run() {
+                        try {
+                           JPA.withTransaction(new play.libs.F.Callback0() {
+                                public void invoke() {
+                                    logger.underlyingLogger().info("[JobScheduler] cleanupSoldPosts starts...");
+                                    CalcServer.instance().cleanupSoldPosts();
+                                    logger.underlyingLogger().info("[JobScheduler] cleanupSoldPosts completed !");
+                                }
+                            });
+                        } catch (Exception e) {
+                            logger.underlyingLogger().error("[JobScheduler] cleanupSoldPosts failed...", e);
+                        }
                     }
-                }
-            }
-        );
+                });
 
+        // schedule for Hash Marking daily at 5am HKT
+        JobScheduler.getInstance().schedule("hashtagMarking", "0 0 5 ? * *",
+                new Runnable() {
+                    public void run() {
+                        try {
+                           JPA.withTransaction(new play.libs.F.Callback0() {
+                                public void invoke() {
+                                    logger.underlyingLogger().info("[JobScheduler] hashtagMarking starts...");
+    
+                                    try {
+                                    	for (Hashtag hashtag: Hashtag.getRerunHashtags()){
+    	                                	for (Post post : Post.getEligiblePostsForFeeds()) {
+    	                        				if (post.soldMarked) {
+    	                        					continue;
+    	                        				}
+    	                        				post.addHashtag(hashtag);
+    	                        			 }
+                                    	}	
+    								} catch (Exception e2) {
+    									// TODO: handle exception
+    								}
+                                	logger.underlyingLogger().info("[JobScheduler] hashtagMarking completed !");
+                                }
+                            });
+                        } catch (Exception e) {
+                            logger.underlyingLogger().error("[JobScheduler] hashtagMarking failed...");
+                        }
+                    }
+                });
         
+        //
+        // Interval scheduled jobs
+        //
         
+        JobScheduler.getInstance().schedule(
+                "commandCheck", 
+                DateTimeUtil.MINUTE_MILLIS,         // initial delay
+                5 * DateTimeUtil.MINUTE_MILLIS,     // interval
+                TimeUnit.MILLISECONDS,
+                new Runnable() {
+                    public void run() {
+                        try {
+                           JPA.withTransaction(new play.libs.F.Callback0() {
+                                public void invoke() {
+                                    CommandChecker.checkCommandFiles();
+                                }
+                            });
+                        } catch (Exception e) {
+                            logger.underlyingLogger().error("[JobScheduler] commandCheck failed...", e);
+                        }
+                    }
+                });
+        
+        JobScheduler.getInstance().schedule(
+                "systemInfoVersionCheck",
+                1 * DateTimeUtil.MINUTE_MILLIS,     // initial delay
+                DateTimeUtil.HOUR_MILLIS,           // interval
+                TimeUnit.MILLISECONDS,
+                new Runnable() {
+                    public void run() {
+                        try {
+                            JPA.withTransaction(new play.libs.F.Callback0() {
+                                @Override
+                                public void invoke() throws Throwable {
+                                    SystemInfo.checkVersionUpdated();
+                                }
+                            });
+                        } catch (Exception e) {
+                            logger.underlyingLogger().error("[JobScheduler] refreshSystemInfo failed...", e);
+                        }
+                    }
+                });
+        
+        JobScheduler.getInstance().schedule(
+                "refreshFeaturedItemCache", 
+                2 * DateTimeUtil.MINUTE_MILLIS,     // initial delay
+                DateTimeUtil.HOUR_MILLIS,           // interval
+                TimeUnit.MILLISECONDS,
+                new Runnable() {
+                    public void run() {
+                        try {
+                            JPA.withTransaction(new play.libs.F.Callback0() {
+                                @Override
+                                public void invoke() throws Throwable {
+                                    FeaturedItemCache.refresh();
+                                }
+                            });
+                        } catch (Exception e) {
+                            logger.underlyingLogger().error("[JobScheduler] refreshFeaturedItemCache failed...", e);
+                        }
+                    }
+                });
+        
+        JobScheduler.getInstance().schedule(
+                "postMarker", 
+                3 * DateTimeUtil.MINUTE_MILLIS,     // initial delay
+                5 * DateTimeUtil.MINUTE_MILLIS,     // interval
+                TimeUnit.MILLISECONDS,
+                new Runnable() {
+                    public void run() {
+                        try {
+                            JPA.withTransaction(new play.libs.F.Callback0() {
+                                public void invoke() {
+                                    logger.underlyingLogger().info("[JobScheduler] postMark starts...");
+                                    PostMarker.markPosts();
+                                    logger.underlyingLogger().info("[JobScheduler] postMark completed !");
+                                }
+                            });
+                        } catch (Exception e) {
+                            logger.underlyingLogger().error("[JobScheduler] postMark failed...", e);
+                        }
+                    }
+                });
     }
-    
-    
-    
-    
-    
     
 	private void init() {
         if (SecurityRole.findRowCount() == 0L) {

@@ -75,7 +75,7 @@ public class Hashtag extends SocialObject implements Likeable, Postable {
         }
 
         try {
-            Query q = JPA.em().createQuery("SELECT c FROM Hashtag c where name = ?1 and deleted = 0");
+            Query q = JPA.em().createQuery("SELECT t FROM Hashtag t where name = ?1 and deleted = 0");
             q.setParameter(1, name);
             return (Hashtag) q.getSingleResult();
         } catch (NoResultException nre) {
@@ -83,9 +83,9 @@ public class Hashtag extends SocialObject implements Likeable, Postable {
         }
     }
 
-	public static List<Hashtag> getAllNewHashtags() {
+	public static List<Hashtag> getRerunHashtags() {
 		try {
-            Query q = JPA.em().createQuery("SELECT c FROM Hashtag c where rerun = true");
+            Query q = JPA.em().createQuery("SELECT t FROM Hashtag t where rerun = true and deleted = 0");
             List<Hashtag> list = (List<Hashtag>)q.getResultList();
             return list;
         } catch (NoResultException nre) {
@@ -93,9 +93,9 @@ public class Hashtag extends SocialObject implements Likeable, Postable {
         }
     }
 	
-	public static List<Hashtag> getAllEligibleSystemHashtags() {
+	public static List<Hashtag> getAllSystemHashtags() {
 		try {
-            Query q = JPA.em().createQuery("SELECT c FROM Hashtag c where system = true and jobClass != null");
+            Query q = JPA.em().createQuery("SELECT t FROM Hashtag t where system = true and jobClass is not null and deleted = 0");
             List<Hashtag> list = (List<Hashtag>)q.getResultList();
             return list;
         } catch (NoResultException nre) {

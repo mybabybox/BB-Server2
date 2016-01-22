@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import play.db.jpa.JPA;
-import common.schedule.JobScheduler;
-import common.utils.DateTimeUtil;
 import models.FeaturedItem;
 import models.FeaturedItem.ItemType;
 
@@ -21,30 +17,6 @@ public class FeaturedItemCache {
     private static List<FeaturedItem> featuredItems;
     private static Map<Long, FeaturedItem> idsMap;
     private static Map<ItemType, List<FeaturedItem>> itemTypesMap;
-
-    static {
-        refresh();
-        
-        JobScheduler.getInstance().schedule(
-                "refreshFeaturedItemCache", 
-                DateTimeUtil.HOUR_MILLIS,   // initial delay 
-                DateTimeUtil.HOUR_MILLIS,   // interval
-                TimeUnit.MILLISECONDS,
-                new Runnable() {
-                    public void run() {
-                        try {
-                            JPA.withTransaction(new play.libs.F.Callback0() {
-                                @Override
-                                public void invoke() throws Throwable {
-                                    refresh();
-                                }
-                            });
-                        } catch (Exception e) {
-                            logger.underlyingLogger().error("[JobScheduler] refreshFeaturedItemCache failed...", e);
-                        }
-                    }
-                });
-    }
 
     synchronized public static void refresh() {
         featuredItems = FeaturedItem.loadFeaturedItems();
