@@ -996,29 +996,33 @@ public class UserController extends Controller {
     @Transactional
     public Result viewFollowings(Long id) {
     	final User localUser = Application.getLocalUser(session());
-    	 User user = User.findById(id);
-         if (user == null) {
-             logger.underlyingLogger().warn(String.format("[user=%d][u=%d] User not found", id, localUser.id));
-             return Application.pathNotFound();
-         }
-         List<UserVMLite> userFollowings = getFollowings(id, 0L, localUser);
-    	return ok(views.html.babybox.web.followers.render(Json.stringify(Json.toJson(userFollowings)), 
-    										Json.stringify(Json.toJson(new UserVM(user,localUser))),
-    										Json.stringify(Json.toJson(new UserVM(localUser)))));
+        User user = User.findById(id);
+        if (user == null) {
+            logger.underlyingLogger().warn(String.format("[user=%d][u=%d] User not found", id, localUser.id));
+            return Application.pathNotFound();
+        }
+        
+        List<UserVMLite> userFollowings = getFollowings(id, 0L, localUser);
+    	return ok(views.html.babybox.web.followers.render(
+    	        Json.stringify(Json.toJson(userFollowings)), 
+    	        Json.stringify(Json.toJson(new UserVM(user,localUser))),
+    	        Json.stringify(Json.toJson(new UserVM(localUser)))));
     }
     
     @Transactional
     public Result viewFollowers(Long id) {
     	final User localUser = Application.getLocalUser(session());    
-    	 User user = User.findById(id);
-         if (user == null) {
-             logger.underlyingLogger().warn(String.format("[user=%d][u=%d] User not found", id, localUser.id));
-             return Application.pathNotFound();
-         }
-         List<UserVMLite> userFollowers = getFollowers(id, 0L, localUser);
-    	return ok(views.html.babybox.web.followers.render(Json.stringify(Json.toJson(userFollowers)),
-    										Json.stringify(Json.toJson(new UserVM(user,localUser))),
-    										Json.stringify(Json.toJson(new UserVM(localUser)))));
+    	User user = User.findById(id);
+        if (user == null) {
+            logger.underlyingLogger().warn(String.format("[user=%d][u=%d] User not found", id, localUser.id));
+            return Application.pathNotFound();
+        }
+        
+        List<UserVMLite> userFollowers = getFollowers(id, 0L, localUser);
+    	return ok(views.html.babybox.web.followers.render(
+    	        Json.stringify(Json.toJson(userFollowers)),
+    	        Json.stringify(Json.toJson(new UserVM(user,localUser))),
+    	        Json.stringify(Json.toJson(new UserVM(localUser)))));
     }
     
     @Transactional

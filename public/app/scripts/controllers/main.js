@@ -581,11 +581,10 @@ babybox.controller('UserFollowController',
 	
 	//var values = url.split("/");
 	//$scope.follow = values[values.length-2];
-	if($scope.follow == 'followers')
+	if($scope.follow == 'followers' || 
+			$scope.follow == 'followings') {
 		$scope.noMore = true;
-	if($scope.follow == 'followings')
-		$scope.noMore = true;
-	
+	}
 	
 	$scope.onFollowUser = function(formFollower) {
 		if(formFollower.id != $scope.userInfo.id){
@@ -594,6 +593,7 @@ babybox.controller('UserFollowController',
 			formFollower.numFollowings++;
 		}
 	}
+	
 	$scope.onUnFollowUser = function(formFollower) {
 		followService.unFollowUser.get({id:formFollower.id});
 		formFollower.isFollowing = !formFollower.isFollowing;
