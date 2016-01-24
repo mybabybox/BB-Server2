@@ -57,7 +57,7 @@ public class MyUserServicePlugin extends UserServicePlugin {
 	    final User user = User.findByAuthUserIdentity(knownUser);
 	    if (user != null) {
     		// User logged in again, bump last login date
-    		User.updateLastLoginDate(user);
+    		user.updateLastLoginDate();
     		controllers.Application.setMobileUserAgent(user);
 	    }
 		return knownUser;

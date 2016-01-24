@@ -101,9 +101,11 @@ public class UserController extends Controller {
 			return notFound();
 		}
 		
-		UserVM userInfo = new UserVM(localUser);
+		// update last login and user agent
+		localUser.updateLastLoginDate();
+		Application.setMobileUserAgent(localUser);
 		
-		localUser.lastLogin = new Date();
+		UserVM userInfo = new UserVM(localUser);
 		
 		sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {

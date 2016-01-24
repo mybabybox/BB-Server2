@@ -633,6 +633,13 @@ public class User extends SocialObject implements Subject, Followable {
 				User.findByAuthUserIdentity(newUser));
 	}
 
+	public void updateLastLoginDate() {
+        if (isLoggedIn()) {
+            this.lastLogin = new Date();
+            this.save();
+        }
+	}
+	
 	@JsonIgnore
 	public Set<String> getProviders() {
 		final Set<String> providerKeys = new HashSet<String>(
@@ -647,13 +654,6 @@ public class User extends SocialObject implements Subject, Followable {
 		final User u = User.findByAuthUserIdentity(oldUser);
 		u.linkedAccounts.add(LinkedAccount.create(newUser));
 		u.save();
-	}
-
-	public static void updateLastLoginDate(final User user) {
-		if (user != null && user.isLoggedIn()) {
-		    user.lastLogin = new Date();
-		    user.save();
-		}
 	}
 
 	public static User findByEmail(final String email) {
