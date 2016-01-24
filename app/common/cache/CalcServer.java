@@ -174,17 +174,6 @@ public class CalcServer {
 		sw.stop();
 		logger.underlyingLogger().debug("buildUserFollowingsQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
-
-	public void addPostToHashtagQueues(Hashtag hashtag){
-		for (Post post : Post.getEligiblePostsForFeeds()) {
-			if (post.soldMarked) {
-				continue;
-			}
-			addToHashtagPriceLowHighQueue(hashtag.id, post);
-			addToHashtagNewestQueue(hashtag.id, post);
-			addToHashtagPopularQueue(hashtag.id, post);
-		}
-	}
 	
 	private void addToHashtagPriceLowHighQueue(Long hashtag, Post post) {
 	    if (post.soldMarked) {
@@ -257,8 +246,8 @@ public class CalcServer {
 		    addToCategoryPriceLowHighQueue(post);
 		    addToCategoryNewestQueue(post);
 		    addToCategoryPopularQueue(post);
+		    addToHashtagQueues(post);
 		    buildProductLikesQueue(post);
-		    buildHashtagQueues(post);
 		}
 		
 		sw.stop();
@@ -292,9 +281,9 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildProductLikesQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 	
-	private void buildHashtagQueues(Post post){
+	private void addToHashtagQueues(Post post){
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildHashtagQueue starts - p="+post.id);
+		logger.underlyingLogger().debug("addToHashtagQueues starts - p="+post.id);
 		
 		for (Hashtag hashtag: Hashtag.getAllHashtags()){
 			addToHashtagPriceLowHighQueue(hashtag.id, post);
@@ -303,7 +292,7 @@ public class CalcServer {
 		}
 		
 		sw.stop();
-		logger.underlyingLogger().debug("buildProductLikesQueue completed. Took "+sw.getElapsedSecs()+"s");
+		logger.underlyingLogger().debug("addToHashtagQueues completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
 	public Double calculateTimeScore(Post post) {

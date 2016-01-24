@@ -211,9 +211,6 @@ GET     /api/get-category/:id                       controllers.CategoryControll
 GET     /get-category/:id                           controllers.CategoryController.getCategory(id:Long)
 GET     /category/:id                               controllers.CategoryController.getCategory(id:Long)
 
-#Hashtag
-PUT     /put-hashtag/:id                            controllers.HashtagController.putHashtag(id:Long)
-
 # Post
 GET     /api/get-post/:id                           @controllers.ProductController.getProductInfo(id:Long)
 GET     /post/:id                                   @controllers.ProductController.getProductInfo(id:Long)
