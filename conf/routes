@@ -151,17 +151,10 @@ GET     /api/get-user-recommended-sellers/:id/:offset                   @control
 GET     /api/get-suggested-products/:id                                 @controllers.ProductController.getSuggestedProducts(id :Long)                       
 GET     /get-suggested-products/:id                                     @controllers.ProductController.getSuggestedProducts(id :Long)                       
 
-GET     /api/get-hashtag-price-high-low-feed/:id/:postType/:offset     @controllers.HashtagController.getHashtagPriceHighLowFeed(id :Long, postType: String, offset: Long)
-GET     /get-hashtag-price-high-low-feed/:id/:postType/:offset         @controllers.HashtagController.getHashtagPriceHighLowFeed(id :Long, postType: String, offset: Long)
-
-GET     /api/get-hashtag-price-low-high-feed/:id/:postType/:offset     @controllers.HashtagController.getHashtagPriceLowHighFeed(id :Long, postType: String, offset: Long)
-GET     /get-hashtag-price-low-high-feed/:id/:postType/:offset         @controllers.HashtagController.getHashtagPriceLowHighFeed(id :Long, postType: String, offset: Long)
-
-GET     /api/get-hashtag-popular-feed/:id/:postType/:offset            @controllers.HashtagController.getHashtagPopularFeed(id :Long, postType: String, offset: Long)
-GET     /get-hashtag-popular-feed/:id/:postType/:offset                @controllers.HashtagController.getHashtagPopularFeed(id :Long, postType: String, offset: Long)
-
-GET     /api/get-hashtag-newest-feed/:id/:postType/:offset             @controllers.HashtagController.getHashtagNewestFeed(id :Long, postType: String, offset: Long)
-GET     /get-hashtag-newest-feed/:id/:postType/:offset                 @controllers.HashtagController.getHashtagNewestFeed(id :Long, postType: String, offset: Long)
+GET     /api/get-hashtag-popular-feed/:id/:postType/:offset             @controllers.HashtagController.getHashtagPopularFeed(id :Long, postType: String, offset: Long)
+GET     /api/get-hashtag-newest-feed/:id/:postType/:offset              @controllers.HashtagController.getHashtagNewestFeed(id :Long, postType: String, offset: Long)
+GET     /api/get-hashtag-price-low-high-feed/:id/:postType/:offset      @controllers.HashtagController.getHashtagPriceLowHighFeed(id :Long, postType: String, offset: Long)
+GET     /api/get-hashtag-price-high-low-feed/:id/:postType/:offset      @controllers.HashtagController.getHashtagPriceHighLowFeed(id :Long, postType: String, offset: Long)
 
 # User
 GET     /api/get-user-info                          @controllers.UserController.getUserInfo

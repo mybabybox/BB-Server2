@@ -57,7 +57,6 @@ public class CategoryController extends Controller{
 		final User localUser = Application.getLocalUser(session());
 		List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_POPULAR);
 		return ok(Json.toJson(vms));
-
 	}
 
 	@Transactional 
