@@ -210,7 +210,7 @@ public class JedisCache {
         Jedis j = null;
         try {
             j = getResource();
-            return j.zrevrange(key, start, end-1);     // end is inclusive
+            return j.zrevrange(key, start, end);     // end is inclusive
         } finally {
             returnResource(j);
         }

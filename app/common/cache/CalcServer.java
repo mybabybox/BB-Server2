@@ -364,7 +364,7 @@ public class CalcServer {
 			
 			// if post.size() is less than FEED_HOME_COUNT_MAX (limit of post)
 			Long postsSize = postIds.size() > FEED_HOME_COUNT_MAX ? FEED_HOME_COUNT_MAX : postIds.size(); 
-			Integer length =  (int) ((postsSize * percentage) / 100);
+			Integer length = (int) ((postsSize * percentage) / 100);
 			postIds.subList(0, length);
 			for(Long postId : postIds){
 				jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE, userId), formula.randomizeScore(Post.findById(postId)) * FEED_SCORE_HIGH_BASE, postId.toString());
@@ -643,7 +643,7 @@ public class CalcServer {
 	
 	public List<Long> getUserFollowingsFeed(Long id, Double offset) {
 	    long start = offset.longValue() * CalcServer.FEED_RETRIEVAL_COUNT;
-	    long end = start + CalcServer.FEED_RETRIEVAL_COUNT;
+	    long end = start + CalcServer.FEED_RETRIEVAL_COUNT - 1;
         Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWINGS,id),start,end);
         final List<Long> userIds = new ArrayList<>();
         for (String value : values) {
@@ -669,7 +669,7 @@ public class CalcServer {
 	
 	public List<Long> getUserFollowersFeed(Long id, Double offset) {
         long start = offset.longValue() * CalcServer.FEED_RETRIEVAL_COUNT;
-        long end = start + CalcServer.FEED_RETRIEVAL_COUNT;
+        long end = start + CalcServer.FEED_RETRIEVAL_COUNT - 1;
         Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWERS,id),start,end);
         final List<Long> userIds = new ArrayList<>();
         for (String value : values) {

@@ -197,11 +197,10 @@ public class Global extends GlobalSettings {
         // Interval scheduled jobs
         //
         
+        /*
         JobScheduler.getInstance().schedule(
                 "commandCheck", 
-                DateTimeUtil.MINUTE_MILLIS,         // initial delay
-                5 * DateTimeUtil.MINUTE_MILLIS,     // interval
-                TimeUnit.MILLISECONDS,
+                2 * DateTimeUtil.MINUTE_MILLIS,     // interval
                 new Runnable() {
                     public void run() {
                         try {
@@ -215,12 +214,11 @@ public class Global extends GlobalSettings {
                         }
                     }
                 });
+        */
         
         JobScheduler.getInstance().schedule(
                 "systemInfoVersionCheck",
-                1 * DateTimeUtil.MINUTE_MILLIS,     // initial delay
                 DateTimeUtil.HOUR_MILLIS,           // interval
-                TimeUnit.MILLISECONDS,
                 new Runnable() {
                     public void run() {
                         try {
@@ -238,9 +236,7 @@ public class Global extends GlobalSettings {
         
         JobScheduler.getInstance().schedule(
                 "refreshFeaturedItemCache", 
-                2 * DateTimeUtil.MINUTE_MILLIS,     // initial delay
                 DateTimeUtil.HOUR_MILLIS,           // interval
-                TimeUnit.MILLISECONDS,
                 new Runnable() {
                     public void run() {
                         try {
@@ -259,9 +255,7 @@ public class Global extends GlobalSettings {
         /*
         JobScheduler.getInstance().schedule(
                 "postMarker", 
-                3 * DateTimeUtil.MINUTE_MILLIS,     // initial delay
                 5 * DateTimeUtil.MINUTE_MILLIS,     // interval
-                TimeUnit.MILLISECONDS,
                 new Runnable() {
                     public void run() {
                         try {

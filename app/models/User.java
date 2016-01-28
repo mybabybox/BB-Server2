@@ -1126,6 +1126,12 @@ public class User extends SocialObject implements Subject, Followable {
 		}
 	}
 
+	/**
+	 * Select c.id, (count(p.id)/(Select count(*) from ViewSocialRelation vr where vr.actor = ?1))*100 
+	 * from ViewSocialRelation vsr, post p, category c 
+	 * where vsr.actor = ?1 and vsr.target = p.id and p.category_id = c.id group by c.id
+	 * @return
+	 */
 	public Map<Long, Long> getUserCategoriesRatioForFeed() {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    logger.underlyingLogger().debug(String.format("[u=%d] getUserCategoriesForFeed()", this.id));
