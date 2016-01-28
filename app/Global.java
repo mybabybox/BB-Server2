@@ -162,6 +162,7 @@ public class Global extends GlobalSettings {
                 });
 
         // schedule for Hash Marking daily at 5am HKT
+        /*
         JobScheduler.getInstance().schedule("hashtagMarking", "0 0 5 ? * *",
                 new Runnable() {
                     public void run() {
@@ -190,6 +191,7 @@ public class Global extends GlobalSettings {
                         }
                     }
                 });
+        */
         
         //
         // Interval scheduled jobs
@@ -254,6 +256,7 @@ public class Global extends GlobalSettings {
                     }
                 });
         
+        /*
         JobScheduler.getInstance().schedule(
                 "postMarker", 
                 3 * DateTimeUtil.MINUTE_MILLIS,     // initial delay
@@ -274,6 +277,7 @@ public class Global extends GlobalSettings {
                         }
                     }
                 });
+         */
     }
     
 	private void init() {

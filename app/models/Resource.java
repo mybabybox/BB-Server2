@@ -30,10 +30,12 @@ public class Resource extends SocialObject {
 
     public static final String STORAGE_PATH = 
             Play.application().configuration().getString("storage.path");
+    public static final String STORAGE_STATIC_PATH = 
+            Play.application().configuration().getString("storage.static.path");
     public static final int STORAGE_PARTITION_DIR_MAX = 
             Play.application().configuration().getInt("storage.partition.dir.max", 20000);
-    
-	public Resource() {
+
+    public Resource() {
 	}
 	
 	@JsonIgnore
@@ -126,7 +128,7 @@ public class Resource extends SocialObject {
 	}
     
     public static File getStorageStaticImage(String path) {
-        path = STORAGE_PATH + path;
+        path = STORAGE_STATIC_PATH + path;
         File file = new File(path);
         if (file.exists()) {
             return file;

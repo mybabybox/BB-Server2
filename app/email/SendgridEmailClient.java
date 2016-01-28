@@ -66,11 +66,11 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 	    email.setHtml(body);
 	    try {
 	        SendGrid.Response response = sendgrid.send(email);
-	        logger.underlyingLogger().info("[email="+mailId+"] sendMail response="+response.getMessage()+" body="+body);
+	        logger.underlyingLogger().info("[email="+mailId+"] sendMail response="+response+" body="+body);
 	        return response.getMessage();
 	    } catch (SendGridException e) {
-	        logger.underlyingLogger().error("[email="+mailId+"] sendMail body="+body+" error="+e.getMessage(), e);
-	        return(e.getMessage());
+	        logger.underlyingLogger().error("[email="+mailId+"] Failed to sendMail body="+body+" error="+e.getMessage(), e);
+	        return e.getMessage();
 	    }
 	}
 	

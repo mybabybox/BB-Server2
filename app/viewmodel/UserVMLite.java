@@ -23,6 +23,7 @@ public class UserVMLite {
     // admin readyonly fields
     @JsonProperty("createdDate") public Long createdDate;
     @JsonProperty("lastLogin") public Long lastLogin;
+    @JsonProperty("lastLoginUserAgent") public String lastLoginUserAgent;
     @JsonProperty("totalLogin") public Long totalLogin;
     @JsonProperty("isLoggedIn") public boolean isLoggedIn = false;
     @JsonProperty("isFbLogin") public boolean isFbLogin = false;
@@ -62,6 +63,7 @@ public class UserVMLite {
         
         this.createdDate = user.getCreatedDate().getTime();
         this.lastLogin = user.lastLogin.getTime();
+        this.lastLoginUserAgent = user.lastLoginUserAgent;
         this.totalLogin = user.totalLogin;
         this.isFbLogin = user.fbLogin;
         this.emailProvidedOnSignup = user.emailProvidedOnSignup;

@@ -23,7 +23,7 @@ FTP_HOME=/home/ftp
 INSTALL_PATH=$APP_HOME/current
 APP_LOG_PATH=$APP_HOME/current/logs
 PRERELEASE_PATH=$FTP_HOME
-LOG_BACKUP_PATH=$FTP_HOME/backup_logs
+LOG_BACKUP_PATH=/root/backup_logs
 
 echo "Backing up application logs"
 nowdate=`date +%Y%m%d_%H%M`
