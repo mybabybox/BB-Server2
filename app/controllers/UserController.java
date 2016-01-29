@@ -1175,7 +1175,7 @@ public class UserController extends Controller {
         }
         
         // default price 
-        if (offeredPrice == -1D) {
+        if (offeredPrice < 0) {
             offeredPrice = conversation.post.price;
         }
         

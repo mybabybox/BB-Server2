@@ -34,12 +34,12 @@ public class CalcFormula {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
         logger.underlyingLogger().debug("computeBaseScore for p="+post.id);
         if (!ThreadLocalOverride.isServerStartingUp()) {
-            logger.underlyingLogger().debug("     numComments="+post.numComments);
-            logger.underlyingLogger().debug("     numViews="+post.numViews);
-            logger.underlyingLogger().debug("     numLikes="+post.numLikes);
-            logger.underlyingLogger().debug("     numConversations="+post.numConversations);
-            logger.underlyingLogger().debug("     numBuys="+post.numBuys);
-            logger.underlyingLogger().debug("     baseScoreAdjust="+post.baseScoreAdjust);
+            logger.underlyingLogger().debug("   numComments="+post.numComments);
+            logger.underlyingLogger().debug("   numViews="+post.numViews);
+            logger.underlyingLogger().debug("   numLikes="+post.numLikes);
+            logger.underlyingLogger().debug("   numConversations="+post.numConversations);
+            logger.underlyingLogger().debug("   numBuys="+post.numBuys);
+            logger.underlyingLogger().debug("   baseScoreAdjust="+post.baseScoreAdjust);
         }
         
         post.baseScore = (long) (

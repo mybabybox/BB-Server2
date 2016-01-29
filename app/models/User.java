@@ -1132,11 +1132,11 @@ public class User extends SocialObject implements Subject, Followable {
 	 * where vsr.actor = ?1 and vsr.target = p.id and p.category_id = c.id group by c.id
 	 * @return
 	 */
-	public Map<Long, Long> getUserCategoriesRatioForFeed() {
+	public Map<Long, Integer> getUserCategoriesRatioForFeed() {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    logger.underlyingLogger().debug(String.format("[u=%d] getUserCategoriesForFeed()", this.id));
 	    
-	    Map<Long, Long> result = new HashMap<>();
+	    Map<Long, Integer> result = new HashMap<>();
 	    try {
     		Query q = JPA.em().createNativeQuery("Select c.id, (count(p.id)/(Select count(*) from ViewSocialRelation vr where vr.actor = ?1))*100 "
     				+ "from ViewSocialRelation vsr, post p, category c "
@@ -1147,8 +1147,8 @@ public class User extends SocialObject implements Subject, Followable {
     		for (Object[] feed : feeds) {
     		    BigInteger catId = (BigInteger)feed[0];
     		    BigDecimal percent = (BigDecimal)feed[1];
-    			result.put(catId.longValue(), percent.longValue());
-    			logger.underlyingLogger().debug("     catId="+catId+" %="+percent);
+    			result.put(catId.longValue(), percent.intValue());
+    			logger.underlyingLogger().debug("   catId="+catId+" %="+percent);
     		}
 	    } catch (NoResultException nre) {
         }

@@ -17,7 +17,7 @@ public class ConversationVM {
 	@JsonProperty("postId") public Long postId;
 	@JsonProperty("postImage") public Long postImage;
 	@JsonProperty("postTitle") public String postTitle;
-	@JsonProperty("postPrice") public Long postPrice;
+	@JsonProperty("postPrice") public double postPrice;
 	@JsonProperty("postOwner") public Boolean postOwner;
 	@JsonProperty("postSold") public Boolean postSold;
 	@JsonProperty("userId") public Long userId;
@@ -39,7 +39,7 @@ public class ConversationVM {
 		this.id = conversation.id;
 		this.postId = post.id;
 		this.postTitle = post.title;
-		this.postPrice = post.price.longValue();
+		this.postPrice = post.price;
 		this.postOwner = post.owner.id == localUser.id;
 		this.postSold = post.sold;
 		this.userId = otherUser.id;

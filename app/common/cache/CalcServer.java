@@ -43,7 +43,6 @@ public class CalcServer {
 	public static final Long FEED_SCORE_COMPUTE_SCHEDULE = Play.application().configuration().getLong("feed.score.compute.schedule");
 	public static final Long FEED_SCORE_HIGH_BASE = Play.application().configuration().getLong("feed.score.high.base");
 	public static final Long FEED_HOME_COUNT_MAX = Play.application().configuration().getLong("feed.home.count.max");
-	public static final Long FEED_CATEGORY_EXPOSURE_MIN = Play.application().configuration().getLong("feed.category.exposure.min");
 	public static final int FEED_SNAPSHOT_EXPIRY = Play.application().configuration().getInt("feed.snapshot.expiry");
 	public static final int FEED_SNAPSHOT_LONG_EXPIRY = Play.application().configuration().getInt("feed.snapshot.long.expiry");
 	public static final int FEED_SOLD_CLEANUP_DAYS = Play.application().configuration().getInt("feed.sold.cleanup.days");
@@ -335,43 +334,46 @@ public class CalcServer {
 	public void addToUserPostedQueue(Post post) {
 		jedisCache.putToSortedSet(getKey(FeedType.USER_POSTED,post.owner.id), post.getCreatedDate().getTime(), post.id.toString());
 	}
-	
+
 	private void buildUserExploreFeedQueue(Long userId) {
-		NanoSecondStopWatch sw = new NanoSecondStopWatch();
+	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 		logger.underlyingLogger().debug("buildUserExploreFeedQueue starts - u="+userId);
 		
 		User user = User.findById(userId);
-		Map<Long, Long> map = new HashMap<Long, Long>();
+		Map<Long, Integer> map = new HashMap<>();
 		if (user != null) {
 			map = user.getUserCategoriesRatioForFeed();
 		}
 		
-		for (Category category : Category.getAllCategories()){
-			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_POPULAR,category.id));
-			final List<Long> postIds = new ArrayList<>();
+		for (Category category : Category.getAllCategories()) {
+		    int percentage = category.minPercentFeedExposure;
+            Integer catViewPercentage = map.get(category.getId());
+            if (catViewPercentage != null && catViewPercentage > percentage) {
+                percentage = catViewPercentage;
+            }
+            if (percentage > category.maxPercentFeedExposure) {
+                percentage = category.maxPercentFeedExposure;
+            }
+
+		    Long catPostSize = FEED_HOME_COUNT_MAX * percentage / 100;
+			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_POPULAR,category.id), 0L, catPostSize - 1);
+			
+			List<Long> catPostIds = new ArrayList<>();
 			for (String value : values) {
 				try {
-					postIds.add(Long.parseLong(value));
+				    catPostIds.add(Long.parseLong(value));
 				} catch (Exception e) {
 				}
 			}
 			
-			Long percentage = FEED_CATEGORY_EXPOSURE_MIN;
-			Long catViewPercentage = map.get(category.getId());
-			if (catViewPercentage != null && catViewPercentage > percentage) {
-				percentage = catViewPercentage;
-			}
+			logger.underlyingLogger().debug(
+                    String.format("[cat=%d name=%s minPercent=%d maxPercent=%d percent=%d catPostSize=%d catPostIds.size=%d]", 
+                            category.id, category.name, category.minPercentFeedExposure, category.maxPercentFeedExposure, 
+                            percentage, catPostSize, catPostIds.size()));
 			
-			// if post.size() is less than FEED_HOME_COUNT_MAX (limit of post)
-			Long postsSize = postIds.size() > FEED_HOME_COUNT_MAX ? FEED_HOME_COUNT_MAX : postIds.size(); 
-			Integer length = (int) ((postsSize * percentage) / 100);
-			postIds.subList(0, length);
-			for(Long postId : postIds){
+			for (Long postId : catPostIds) {
 				jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE, userId), formula.randomizeScore(Post.findById(postId)) * FEED_SCORE_HIGH_BASE, postId.toString());
 			}
-			
-			logger.underlyingLogger().debug(
-                    "     cat="+category.getId()+" name="+category.getName()+" catFeedSize="+postsSize+" %="+percentage+" %catFeedSize="+postIds.size());
 		}
 		jedisCache.expire(getKey(FeedType.HOME_EXPLORE, userId), (user == null) ? FEED_SNAPSHOT_LONG_EXPIRY : FEED_SNAPSHOT_EXPIRY);
 		

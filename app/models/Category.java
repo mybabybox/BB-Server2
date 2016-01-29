@@ -41,6 +41,10 @@ public class Category extends SocialObject implements Likeable, Postable, Compar
     
 	public int seq;
 
+	public int minPercentFeedExposure = 0;
+	
+	public int maxPercentFeedExposure = 100;
+	
 	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	public Folder albumPhotoProfile;
