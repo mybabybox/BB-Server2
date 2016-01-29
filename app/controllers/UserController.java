@@ -1141,7 +1141,25 @@ public class UserController extends Controller {
 	}
     
     @Transactional
-    public static Result newConversationOrder(Long conversationId) {
+    public static Result newConversationOrder() {
+        try {
+            DynamicForm form = form().bindFromRequest();
+            Long conversationId = Long.parseLong(form.get("conversationId"));
+            Double offeredPrice = Double.parseDouble(form.get("offeredPrice"));
+            return newConversationOrder(conversationId, offeredPrice);
+        } catch (Exception e) {
+            return badRequest();
+        }
+    }
+    
+    // obsolete
+    @Transactional
+    public static Result newConversationOrder2(Long conversationId) {
+        return newConversationOrder(conversationId, -1D);
+    }
+    
+    @Transactional
+    private static Result newConversationOrder(Long conversationId, Double offeredPrice) {
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
         
         User localUser = Application.getLocalUser(session());
@@ -1156,18 +1174,25 @@ public class UserController extends Controller {
             return notFound();
         }
         
+        // default price 
+        if (offeredPrice == -1D) {
+            offeredPrice = conversation.post.price;
+        }
+        
         ConversationOrder order = ConversationOrder.getActiveOrder(conversation);
         if (order == null || order.isOrderClosed()) {
+            // close out old order
             if (order != null) {
                 order.active = false;
                 order.save();
             }
-            ConversationOrder newOrder = new ConversationOrder(conversation);
+            
+            ConversationOrder newOrder = new ConversationOrder(conversation, offeredPrice);
             newOrder.save();
             
             sw.stop();
             if (logger.underlyingLogger().isDebugEnabled()) {
-                logger.underlyingLogger().debug("[u="+localUser.getId()+"][conv="+conversation.id+"][order="+newOrder.id+"] newConversationOrder(). Took "+sw.getElapsedMS()+"ms");
+                logger.underlyingLogger().debug("[u="+localUser.getId()+"][conv="+conversation.id+"][price="+newOrder.offeredPrice+"][order="+newOrder.id+"] newConversationOrder(). Took "+sw.getElapsedMS()+"ms");
             }
             return ok(Json.toJson(new ConversationOrderVM(newOrder, localUser)));
         }

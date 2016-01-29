@@ -267,8 +267,9 @@ GET     /api/highlight-conversation/:id/:color      controllers.UserController.h
 GET     /highlight-conversation/:id/:color          controllers.UserController.highlightConversation(id:Long,color:String)
 
 # ConversationOrder
-GET     /api/conversation-order/new/:conversationId controllers.UserController.newConversationOrder(conversationId:Long)
-GET     /conversation-order/new/:conversationId     controllers.UserController.newConversationOrder(conversationId:Long)
+POST    /api/conversation-order/new                 controllers.UserController.newConversationOrder()
+GET     /api/conversation-order/new/:conversationId controllers.UserController.newConversationOrder2(conversationId:Long)
+GET     /conversation-order/new/:conversationId     controllers.UserController.newConversationOrder2(conversationId:Long)
 
 GET     /api/conversation-order/cancel/:id          controllers.UserController.cancelConversationOrder(id:Long)
 GET     /conversation-order/cancel/:id              controllers.UserController.cancelConversationOrder(id:Long)

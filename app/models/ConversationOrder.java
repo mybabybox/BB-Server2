@@ -68,6 +68,8 @@ public class ConversationOrder extends domain.Entity implements Serializable, Cr
 	@ManyToOne
     public User user2;                 // seller
 
+	public Double offeredPrice = 0.0;
+	
 	public Boolean cancelled = false;  // by buyer
     
     @Temporal(TemporalType.TIMESTAMP)
@@ -89,10 +91,11 @@ public class ConversationOrder extends domain.Entity implements Serializable, Cr
 	
 	public ConversationOrder() {}
 	
-	public ConversationOrder(Conversation conversation) {
+	public ConversationOrder(Conversation conversation, Double offeredPrice) {
 		this.conversation = conversation;
 		this.user1 = conversation.user1;
 		this.user2 = conversation.user2;
+		this.offeredPrice = offeredPrice;
 		this.active = true;
 	}
 	

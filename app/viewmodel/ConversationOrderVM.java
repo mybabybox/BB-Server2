@@ -9,11 +9,12 @@ public class ConversationOrderVM {
 	private static final play.api.Logger logger = play.api.Logger.apply(ConversationVM.class);
 	
 	@JsonProperty("id") public Long id;
+	@JsonProperty("createdDate") public Long createdDate;
+    @JsonProperty("updatedDate") public Long updatedDate;
 	@JsonProperty("conversationId") public Long conversationId;
 	@JsonProperty("userId") public Long userId;
 	@JsonProperty("userName") public String userName;
-	@JsonProperty("createdDate") public Long createdDate;
-	@JsonProperty("updatedDate") public Long updatedDate;
+	@JsonProperty("offeredPrice") public Double offeredPrice;
 	@JsonProperty("cancelled") public boolean cancelled;
     @JsonProperty("cancelDate") public Long cancelDate;
     @JsonProperty("accepted") public boolean accepted;
@@ -29,6 +30,7 @@ public class ConversationOrderVM {
 		this.conversationId = order.conversation.id;
 		this.userId = otherUser.id;
 		this.userName = otherUser.displayName;
+		this.offeredPrice = order.offeredPrice;
 		if (order.getCreatedDate() != null) {
 		    this.createdDate = order.getCreatedDate().getTime();
 		}
