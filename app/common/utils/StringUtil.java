@@ -3,11 +3,16 @@ package common.utils;
 import domain.DefaultValues;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class StringUtil {
 
@@ -138,5 +143,22 @@ public class StringUtil {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    public static List<Long> parseIds(String ids) {
+        List<Long> list = new ArrayList<>();
+        List<String> values = Arrays.asList(ids.split(DefaultValues.DELIMITER_COMMA));
+        for (String value : values) {
+            try {
+                long id = Long.parseLong(value);
+                list.add(id);
+            } catch (NumberFormatException e) {
+            }
+        }
+        return list;
+    }
+    
+    public static String idsToString(List<Long> ids) {
+        return StringUtils.join(ids, DefaultValues.DELIMITER_COMMA);
     }
 }

@@ -174,39 +174,31 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildUserFollowingsQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 	
-	private void addToHashtagPriceLowHighQueue(Long hashtag, Post post) {
+	private void addToHashtagPriceLowHighQueue(Hashtag hashtag, Post post) {
 	    if (post.soldMarked) {
             return;
 	    }
-	    List<Long> hashtagids = post.getSellerHashtagIds();
-	    List<Long> systemTagid = post.getSystemHashtagIds();
-	    hashtagids.addAll(systemTagid);
-	    if(hashtagids.contains(hashtag))
-		jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH, hashtag), post.price * FEED_SCORE_HIGH_BASE + post.id , post.id.toString());
-	}
-	
-	private void addToHashtagNewestQueue(Long hashtag, Post post) {
-	    if (post.soldMarked) {
-            return;
-        }
-	    List<Long> hashtagids = post.getSellerHashtagIds();
-	    List<Long> systemTagid = post.getSystemHashtagIds();
-	    hashtagids.addAll(systemTagid);
-	    if(hashtagids.contains(hashtag)) {
-	    	jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_NEWEST,hashtag), post.getCreatedDate().getTime(), post.id.toString());
+	    if(post.hasHashtag(hashtag)) {
+	        jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH, hashtag.id), post.price * FEED_SCORE_HIGH_BASE + post.id , post.id.toString());
 	    }
 	}
 	
-	private void addToHashtagPopularQueue(Long hashtag, Post post) {
+	private void addToHashtagNewestQueue(Hashtag hashtag, Post post) {
 	    if (post.soldMarked) {
             return;
         }
-	    List<Long> hashtagids = post.getSellerHashtagIds();
-	    List<Long> systemTagid = post.getSystemHashtagIds();
-	    hashtagids.addAll(systemTagid);
-	    if(hashtagids.contains(hashtag)){
+	    if(post.hasHashtag(hashtag)) {
+	    	jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_NEWEST,hashtag.id), post.getCreatedDate().getTime(), post.id.toString());
+	    }
+	}
+	
+	private void addToHashtagPopularQueue(Hashtag hashtag, Post post) {
+	    if (post.soldMarked) {
+            return;
+        }
+	    if(post.hasHashtag(hashtag)) {
 	    	Double timeScore = calculateTimeScore(post, true);
-	    	jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_POPULAR,hashtag),  timeScore.doubleValue() * FEED_SCORE_HIGH_BASE, post.id.toString());
+	    	jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_POPULAR,hashtag.id),  timeScore.doubleValue() * FEED_SCORE_HIGH_BASE, post.id.toString());
 	    }
 	}
 	
@@ -285,9 +277,9 @@ public class CalcServer {
 		logger.underlyingLogger().debug("addToHashtagQueues starts - p="+post.id);
 		
 		for (Hashtag hashtag: Hashtag.getAllHashtags()){
-			addToHashtagPriceLowHighQueue(hashtag.id, post);
-			addToHashtagNewestQueue(hashtag.id, post);
-			addToHashtagPopularQueue(hashtag.id, post);
+			addToHashtagPriceLowHighQueue(hashtag, post);
+			addToHashtagNewestQueue(hashtag, post);
+			addToHashtagPopularQueue(hashtag, post);
 		}
 		
 		sw.stop();
@@ -372,7 +364,14 @@ public class CalcServer {
                             percentage, catPostSize, catPostIds.size()));
 			
 			for (Long postId : catPostIds) {
-				jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE, userId), formula.randomizeScore(Post.findById(postId)) * FEED_SCORE_HIGH_BASE, postId.toString());
+			    Post post = Post.findById(postId);
+			    if (post.deleted) {
+			        continue;
+			    }
+			    Double randomizedScore = formula.randomizeScore(post);
+			    if (randomizedScore > 0) {
+			        jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE, userId), randomizedScore * FEED_SCORE_HIGH_BASE, postId.toString());
+			    }
 			}
 		}
 		jedisCache.expire(getKey(FeedType.HOME_EXPLORE, userId), (user == null) ? FEED_SNAPSHOT_LONG_EXPIRY : FEED_SNAPSHOT_EXPIRY);

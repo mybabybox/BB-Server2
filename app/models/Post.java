@@ -3,8 +3,6 @@ package models;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -21,8 +19,6 @@ import javax.persistence.OrderBy;
 import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.apache.commons.lang3.StringUtils;
 
 import models.Country.CountryCode;
 import play.db.jpa.JPA;
@@ -93,9 +89,6 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	@Enumerated(EnumType.ORDINAL)
 	public Country.CountryCode countryCode = Country.CountryCode.NA;
 	
-	public String systemHashtagIds = "";    // comma delimited
-	public String sellerHashtagIds = "";
-	
 	public int numViews = 0;
 	public int numComments = 0;
 	public int numLikes = 0;
@@ -105,6 +98,15 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	public Long baseScoreAdjust = 0L;
 	public Long baseScore = 0L;
 	public Double timeScore = 0D;
+
+	@OneToMany
+    public List<Hashtag> systemHashtags = new ArrayList<>();
+	
+	@OneToMany
+    public List<Hashtag> sellerHashtags = new ArrayList<>();
+	
+	@OneToMany
+    public List<Post> relatedPosts = new ArrayList<>();
 
 	public DeviceType deviceType;
 	
@@ -124,13 +126,14 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	 */
 	public Post() {}
 
-	public Post(User owner, String title, String body, Category category, DeviceType deviceType) {
+	public Post(User owner, String title, String body, Category category, List<Post> relatedPosts, DeviceType deviceType) {
 		this.owner = owner;
 		this.title = title;
 		this.body = body;
 		this.category = category;
 		this.price = 0.0;
 		this.postType = PostType.STORY;
+		this.relatedPosts = relatedPosts;
 		this.objectType = SocialObjectType.POST;
 		this.deviceType = deviceType;
 	}
@@ -150,46 +153,70 @@ public class Post extends SocialObject implements Likeable, Commentable {
 		this.objectType = SocialObjectType.POST;
 		this.deviceType = deviceType;
 	}
-	
-	public boolean hasHashtag(Hashtag hashtag) {
-	    if (hashtag.system) {
-	        return getSystemHashtagIds().contains(hashtag.id);
-	    }
-	    return getSellerHashtagIds().contains(hashtag.id);
-	}
-	
-	public List<Long> getSystemHashtagIds() {
-        return parseHashtagIds(systemHashtagIds);
+
+    public boolean hasHashtag(Hashtag hashtag) {
+        return systemHashtags.contains(hashtag) || sellerHashtags.contains(hashtag);
     }
-	
-	public List<Long> getSellerHashtagIds() {
-        return parseHashtagIds(sellerHashtagIds);
+    
+    public List<Hashtag> getSystemHashtags() {
+        return systemHashtags;
     }
-	
-	private List<Long> parseHashtagIds(String hashtagIds) {
-        List<Long> list = new ArrayList<>();
-        List<String> values = Arrays.asList(hashtagIds.split(DefaultValues.DELIMITER_COMMA));
-        for (String value : values) {
-            try {
-                long id = Long.parseLong(value);
-                list.add(id);
-            } catch (NumberFormatException e) {
-            }
+    
+    public List<Hashtag> getSellerHashtags() {
+        return sellerHashtags;
+    }
+    
+    public void addHashtag(Hashtag hashtag) {
+        if (hasHashtag(hashtag)) {
+            return;
         }
-        return list;
+        
+        if (hashtag.system) {
+            systemHashtags.add(hashtag);
+        } else {
+            sellerHashtags.add(hashtag);
+        }
     }
-	
-	public List<Hashtag> getSystemHashtags() {
-	    return getHashtags(getSystemHashtagIds());
-	}
-	
-	public List<Hashtag> getSellerHashtags() {
+    
+    public boolean removeHashtag(Hashtag hashtag) {
+        if (!hasHashtag(hashtag)) {
+            return false;
+        }
+        
+        if (hashtag.system) {
+            return systemHashtags.remove(hashtag);
+        } else {
+            return sellerHashtags.remove(hashtag);
+        }
+    }
+	    
+    /*
+    public boolean hasHashtag(Hashtag hashtag) {
+        if (hashtag.system) {
+            return getSystemHashtagIds().contains(hashtag.id);
+        }
+        return getSellerHashtagIds().contains(hashtag.id);
+    }
+    
+    public List<Long> getSystemHashtagIds() {
+        return StringUtil.parseIds(systemHashtagIds);
+    }
+    
+    public List<Long> getSellerHashtagIds() {
+        return StringUtil.parseIds(sellerHashtagIds);
+    }
+    
+    public List<Hashtag> getSystemHashtags() {
+        return getHashtags(getSystemHashtagIds());
+    }
+    
+    public List<Hashtag> getSellerHashtags() {
         return getHashtags(getSellerHashtagIds());
     }
-	
-	private List<Hashtag> getHashtags(List<Long> hashtagIds) {
-	    List<Hashtag> list = new ArrayList<>();
-	    for (Long hashtagId : hashtagIds) {
+    
+    private List<Hashtag> getHashtags(List<Long> hashtagIds) {
+        List<Hashtag> list = new ArrayList<>();
+        for (Long hashtagId : hashtagIds) {
             try {
                 Hashtag hashtag = Hashtag.findById(hashtagId);
                 if (hashtag != null) {
@@ -200,25 +227,25 @@ public class Post extends SocialObject implements Likeable, Commentable {
         }
         return list;
     }
-	
-	public void addHashtag(Hashtag hashtag) {
-	    if (hasHashtag(hashtag)) {
-	        return;
-	    }
-	    
-	    if (hashtag.system) {
-	        List<Long> hashtagIds = parseHashtagIds(systemHashtagIds);
-	        hashtagIds.add(hashtag.id);
-	        Collections.sort(hashtagIds);
-	        systemHashtagIds = toHashtagIds(hashtagIds);
-	    } else {
-	        List<Long> hashtagIds = parseHashtagIds(sellerHashtagIds);
+    
+    public void addHashtag(Hashtag hashtag) {
+        if (hasHashtag(hashtag)) {
+            return;
+        }
+        
+        if (hashtag.system) {
+            List<Long> hashtagIds = StringUtil.parseIds(systemHashtagIds);
             hashtagIds.add(hashtag.id);
             Collections.sort(hashtagIds);
-            sellerHashtagIds = toHashtagIds(hashtagIds);
-	    }
-	}
-	
+            systemHashtagIds = StringUtil.idsToString(hashtagIds);
+        } else {
+            List<Long> hashtagIds = StringUtil.parseIds(sellerHashtagIds);
+            hashtagIds.add(hashtag.id);
+            Collections.sort(hashtagIds);
+            sellerHashtagIds = StringUtil.idsToString(hashtagIds);
+        }
+    }
+    
     public boolean removeHashtag(Hashtag hashtag) {
         if (!hasHashtag(hashtag)) {
             return false;
@@ -226,21 +253,18 @@ public class Post extends SocialObject implements Likeable, Commentable {
         
         boolean removed = false;
         if (hashtag.system) {
-            List<Long> hashtagIds = parseHashtagIds(systemHashtagIds);
+            List<Long> hashtagIds = StringUtil.parseIds(systemHashtagIds);
             removed = hashtagIds.remove(hashtag.id);
-            systemHashtagIds = toHashtagIds(hashtagIds);
+            systemHashtagIds = StringUtil.idsToString(hashtagIds);
         } else {
-            List<Long> hashtagIds = parseHashtagIds(sellerHashtagIds);
+            List<Long> hashtagIds = StringUtil.parseIds(sellerHashtagIds);
             removed = hashtagIds.remove(hashtag.id);
-            sellerHashtagIds = toHashtagIds(hashtagIds);
+            sellerHashtagIds = StringUtil.idsToString(hashtagIds);
         }
         return removed;
     }
-    
-    private String toHashtagIds(List<Long> list) {
-        return StringUtils.join(list, DefaultValues.DELIMITER_COMMA);
-    }
-    
+    */
+	
 	public static ConditionType parseConditionType(String conditionType) {
         try {
             return Enum.valueOf(ConditionType.class, conditionType);
@@ -257,6 +281,10 @@ public class Post extends SocialObject implements Likeable, Commentable {
         }
     }
 	
+	public List<Post> getRelatedPosts() {
+        return relatedPosts;
+    }
+    
 	@Override
 	public boolean onLikedBy(User user) {
 	    if (logger.underlyingLogger().isDebugEnabled()) {

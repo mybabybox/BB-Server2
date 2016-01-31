@@ -94,7 +94,7 @@ public class User extends SocialObject implements Subject, Followable {
 	public UserInfo userInfo;
 
 	@OneToMany
-	public List<UserChild> children = new ArrayList<UserChild>();
+	public List<UserChild> children = new ArrayList<>();
 
 	// fb info
 
