@@ -102,6 +102,9 @@ babybox.config(['$translateProvider', function ($translateProvider) {
 	    "YOU_MAY_ALSO_LIKE":"你可能喜歡",
 	    "CHAT_NOW":"聯絡賣家",
 	    "BUY_NOW":"購買",
+	    // Story page
+	    "STORY_DETAILS":"分享詳情",
+	    "STORY_CATEGORY":"分享類別",
 	    // Profile page
 	    "FOLLOW":"+ 關注",
 	    "FOLLOWING":"關注中",

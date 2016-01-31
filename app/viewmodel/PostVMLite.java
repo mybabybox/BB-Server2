@@ -19,6 +19,7 @@ public class PostVMLite {
 	@JsonProperty("conditionType") public String conditionType;
 	@JsonProperty("images") public Long[] images;
 	@JsonProperty("hasImage") public Boolean hasImage = false;
+	@JsonProperty("numRelatedPosts") public int numRelatedPosts;
 	
 	@JsonProperty("numLikes") public int numLikes;
 	@JsonProperty("numConversations") public int numConversations;
@@ -39,6 +40,10 @@ public class PostVMLite {
 	@JsonProperty("baseScore") public Long baseScore = 0L;
 	@JsonProperty("timeScore") public Double timeScore = 0D;
 
+	public PostVMLite(Post post) {
+	    this(post, null);
+	}
+	
     public PostVMLite(Post post, User user) {
         this.id = post.id;
         this.ownerId = post.owner.id;
@@ -51,23 +56,26 @@ public class PostVMLite {
             this.conditionType = post.conditionType.toString();
         }
         
+        Long[] images = post.getImages();
+        if (images != null && images.length > 0) {
+            this.hasImage = true;
+            this.images = images;
+        }
+        this.numRelatedPosts = post.getRelatedPosts().size();
+        
         this.numLikes = post.numLikes;
         this.numConversations = post.numConversations;
         this.numBuys = post.numBuys;
         this.numComments = post.numComments;
         this.numViews = post.numViews;
         
-        this.isLiked = post.isLikedBy(user);
-        
-        Long[] images = post.getImages();
-        if (images != null && images.length > 0) {
-        	this.hasImage = true;
-        	this.images = images;
-        }
-        
-        if (user.isSuperAdmin()) {
-	        this.baseScore = post.baseScore;
-	        this.timeScore = post.timeScore;
+        if (user != null) {
+            this.isLiked = post.isLikedBy(user);
+            
+            if (user.isSuperAdmin()) {
+                this.baseScore = post.baseScore;
+                this.timeScore = post.timeScore;
+            }
         }
         
         this.originalPrice = post.originalPrice;

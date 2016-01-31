@@ -80,8 +80,13 @@ GET     /category/:id/:catagoryFilter               @controllers.CategoryControl
 
 # Product
 GET     /product/:id                                @controllers.ProductController.viewProduct(id:Long)
-POST    /product/new                                controllers.ProductController.createProductWithForm()
+POST    /product/new                                controllers.ProductController.newProductWithForm()
 POST    /product/edit                               controllers.ProductController.editProductWithForm()
+
+GET     /story/:id                                  @controllers.ProductController.viewStory(id:Long)
+POST    /story/new                                  controllers.ProductController.newStoryWithForm()
+POST    /story/edit                                 controllers.ProductController.editStoryWithForm()
+
 GET     /comments/:postId                           @controllers.ProductController.viewComments(postId:Long)
 
 # User
@@ -208,11 +213,14 @@ GET     /category/:id                               controllers.CategoryControll
 GET     /api/get-post/:id                           @controllers.ProductController.getProductInfo(id:Long)
 GET     /post/:id                                   @controllers.ProductController.getProductInfo(id:Long)
 
-POST    /api/post/new                               controllers.ProductController.createProduct()
-POST    /post/new                                   controllers.ProductController.createProduct()
+POST    /api/post/new                               controllers.ProductController.newProduct()
+POST    /post/new                                   controllers.ProductController.newProduct()
 
 POST    /api/post/edit                              controllers.ProductController.editProduct()
 POST    /post/edit                                  controllers.ProductController.editProduct()
+
+POST    /api/story/new                              controllers.ProductController.newStory()
+POST    /api/story/edit                             controllers.ProductController.editStory()
 
 GET     /api/post/delete/:id                        controllers.ProductController.deletePost(id:Long)
 GET     /post/delete/:id                            controllers.ProductController.deletePost(id:Long)

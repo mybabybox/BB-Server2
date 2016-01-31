@@ -49,6 +49,7 @@ import common.utils.HtmlUtil;
 import common.utils.HttpUtil;
 import common.utils.ImageFileUtil;
 import common.utils.NanoSecondStopWatch;
+import common.utils.StringUtil;
 import controllers.Application.DeviceType;
 import domain.DefaultValues;
 import domain.ReportedType;
@@ -61,7 +62,7 @@ public class ProductController extends Controller{
     FeedHandler feedHandler;
     
 	@Transactional
-	public static Result createProductWithForm() {
+	public static Result newProductWithForm() {
 		DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
 		String catId = dynamicForm.get("catId");
 	    String title = dynamicForm.get("title");
@@ -71,16 +72,16 @@ public class ProductController extends Controller{
 	    String originalPrice = dynamicForm.get("originalPrice");
 	    Boolean freeDelivery = Boolean.valueOf(dynamicForm.get("freeDelivery"));
 	    String countryCode = dynamicForm.get("countryCode");
-	    String hashtags = dynamicForm.get("hashtags");;
+	    String hashtags = dynamicForm.get("hashtags");
 	    String deviceType = dynamicForm.get("deviceType");
 	    List<FilePart> images = request().body().asMultipartFormData().getFiles();
-		return createProduct(
+		return newProduct(
 		        title, body, Long.parseLong(catId), Double.parseDouble(price), Post.parseConditionType(conditionType), images, 
 		        Double.parseDouble(originalPrice), freeDelivery, Post.parseCountryCode(countryCode), hashtags, Application.parseDeviceType(deviceType));
 	}
 	
 	@Transactional
-	public static Result createProduct() {
+	public static Result newProduct() {
 	    Http.MultipartFormData multipartFormData = request().body().asMultipartFormData();
         Long catId = HttpUtil.getMultipartFormDataLong(multipartFormData, "catId");
         String title = HttpUtil.getMultipartFormDataString(multipartFormData, "title");
@@ -93,6 +94,7 @@ public class ProductController extends Controller{
 	    String hashtags = HttpUtil.getMultipartFormDataString(multipartFormData, "hashtags");
 	    String deviceType = HttpUtil.getMultipartFormDataString(multipartFormData, "deviceType");
 	    List<FilePart> images = HttpUtil.getMultipartFormDataFiles(multipartFormData, "image", DefaultValues.MAX_POST_IMAGES);
+	    
 	    if (catId == null) {
 	        catId = -1L;
 	    }
@@ -113,12 +115,12 @@ public class ProductController extends Controller{
 	        countryCode = CountryCode.NA.name();
 	    }
 	   
-		return createProduct(
+		return newProduct(
 		        title, body, catId, price, Post.parseConditionType(conditionType), images, 
 		        originalPrice, freeDelivery, Post.parseCountryCode(countryCode), hashtags, Application.parseDeviceType(deviceType));
 	}
 
-	private static Result createProduct(
+	private static Result newProduct(
 	        String title, String body, Long catId, Double price, ConditionType conditionType, List<FilePart> images, 
 	        Double originalPrice, Boolean freeDelivery, CountryCode countryCode, String hashtags, DeviceType deviceType) {
 	    
@@ -169,6 +171,82 @@ public class ProductController extends Controller{
 		
 		return badRequest();
 	}
+	
+	@Transactional
+    public static Result newStoryWithForm() {
+        DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
+        String catId = dynamicForm.get("catId");
+        String body = dynamicForm.get("body");
+        String hashtags = dynamicForm.get("hashtags");
+        String deviceType = dynamicForm.get("deviceType");
+        List<FilePart> images = request().body().asMultipartFormData().getFiles();
+        return newStory(body, Long.parseLong(catId), images, hashtags, Application.parseDeviceType(deviceType));
+    }
+    
+    @Transactional
+    public static Result newStory() {
+        Http.MultipartFormData multipartFormData = request().body().asMultipartFormData();
+        Long catId = HttpUtil.getMultipartFormDataLong(multipartFormData, "catId");
+        String body = HttpUtil.getMultipartFormDataString(multipartFormData, "body");
+        String hashtags = HttpUtil.getMultipartFormDataString(multipartFormData, "hashtags");
+        String deviceType = HttpUtil.getMultipartFormDataString(multipartFormData, "deviceType");
+        List<FilePart> images = HttpUtil.getMultipartFormDataFiles(multipartFormData, "image", DefaultValues.MAX_POST_IMAGES);
+        
+        if (catId == null) {
+            catId = -1L;
+        }
+        
+        return newStory(body, catId, images, hashtags, Application.parseDeviceType(deviceType));
+    }
+
+    private static Result newStory(String body, Long catId, List<FilePart> images, String hashtags, DeviceType deviceType) {
+        
+        NanoSecondStopWatch sw = new NanoSecondStopWatch();
+        
+        final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        Category category = Category.findById(catId);
+        if (category == null) {
+            return notFound();
+        }
+        
+        try {
+            Post newPost = localUser.createStory(body, category, deviceType);
+            if (newPost == null) {
+                return badRequest("Failed to create story. Invalid parameters.");
+            }
+            
+            for (FilePart image : images) {
+                String fileName = image.getFilename();
+                File fileTo = ImageFileUtil.copyImageFileToTemp(image.getFile(), fileName);
+                newPost.addPostPhoto(fileTo);
+            }
+            
+            //addRelatedPostsToPost(relatedPosts, newPost);
+            addHashtagsToPost(hashtags, newPost);
+            SocialRelationHandler.recordNewPost(newPost, localUser);
+            ResponseStatusVM response = new ResponseStatusVM(SocialObjectType.POST, newPost.id, localUser.id, true);
+            
+            // To be marked by PostMarker 
+            PostToMark mark = new PostToMark(newPost.id);
+            mark.save();
+            
+            sw.stop();
+            if (logger.underlyingLogger().isDebugEnabled()) {
+                logger.underlyingLogger().debug("[u="+localUser.getId()+"][p="+newPost.id+"] createStory(). Took "+sw.getElapsedMS()+"ms");
+            }
+            
+            return ok(Json.toJson(response));
+        } catch (IOException e) {
+            logger.underlyingLogger().error("Error in createStory", e);
+        }
+        
+        return badRequest();
+    }
 	
 	@Transactional
     public static Result editProductWithForm() {
@@ -232,7 +310,7 @@ public class ProductController extends Controller{
 
     private static Result editProduct(
             Long id, String title, String body, Long catId, Double price, Post.ConditionType conditionType, 
-            Double originalPrice, Boolean freeDelivery, CountryCode countryCode, String sellerHashtags) {
+            Double originalPrice, Boolean freeDelivery, CountryCode countryCode, String hashtags) {
         
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
         
@@ -263,7 +341,7 @@ public class ProductController extends Controller{
             return badRequest();
         }
         
-        addHashtagsToPost(sellerHashtags, post);
+        addHashtagsToPost(hashtags, post);
         SocialRelationHandler.recordEditPost(post, oldCategory);
         ResponseStatusVM response = new ResponseStatusVM(SocialObjectType.POST, post.id, localUser.id, true);
         
@@ -278,14 +356,89 @@ public class ProductController extends Controller{
         
         return ok(Json.toJson(response));
     }
+    
+    @Transactional
+    public static Result editStoryWithForm() {
+        DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
+        String id = dynamicForm.get("id");
+        String catId = dynamicForm.get("catId");
+        String body = dynamicForm.get("body");
+        String hashtags = dynamicForm.get("hashtags");
+        return editStory(Long.parseLong(id), body, Long.parseLong(catId), hashtags);
+    }
+    
+    @Transactional
+    public static Result editStory() {
+        Http.MultipartFormData multipartFormData = request().body().asMultipartFormData();
+        Long id = HttpUtil.getMultipartFormDataLong(multipartFormData, "id");
+        Long catId = HttpUtil.getMultipartFormDataLong(multipartFormData, "catId");
+        String body = HttpUtil.getMultipartFormDataString(multipartFormData, "body");
+        String hashtags = HttpUtil.getMultipartFormDataString(multipartFormData, "hashtags");
+        
+        if (id == null) {
+            id = -1L;
+        }
+
+        if (catId == null) {
+            catId = -1L;
+        }
+        
+        return editStory(id, body, catId, hashtags);
+    }
+
+    private static Result editStory(Long id, String body, Long catId, String hashtags) {
+        
+        NanoSecondStopWatch sw = new NanoSecondStopWatch();
+        
+        final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        Post post = Post.findById(id);
+        if (post == null) {
+            logger.underlyingLogger().error(String.format("[u=%d][p=%d] editStory() Post not found", localUser.id, id));
+            return notFound();
+        }
+        
+        Category oldCategory = post.category;
+        Category category = Category.findById(catId);
+        if (category == null) {
+            logger.underlyingLogger().error(String.format("[u=%d][p=%d][cat=%d] editStory() Category not found", localUser.id, id, catId));
+            return notFound();
+        }
+        
+        post = localUser.editStory(post, body, category);
+        if (post == null) {
+            logger.underlyingLogger().error(String.format("[u=%d][p=%d] editStory() Failed to edit post", localUser.id, id));
+            return badRequest();
+        }
+        
+        addHashtagsToPost(hashtags, post);
+        SocialRelationHandler.recordEditPost(post, oldCategory);
+        ResponseStatusVM response = new ResponseStatusVM(SocialObjectType.POST, post.id, localUser.id, true);
+        
+        // To be marked by PostMarker 
+        PostToMark mark = new PostToMark(post.id);
+        mark.save();
+        
+        sw.stop();
+        if (logger.underlyingLogger().isDebugEnabled()) {
+            logger.underlyingLogger().debug("[u="+localUser.getId()+"][p="+id+"] editStory(). Took "+sw.getElapsedMS()+"ms");
+        }
+        
+        return ok(Json.toJson(response));
+    }
 
     public static void addHashtagsToPost(String hashtags, Post post){
         if (StringUtils.isEmpty(hashtags)) {
             return;
         }
         
-    	List<String> list = Arrays.asList(hashtags.split(","));
-    	for (String name : list){
+    	List<String> names = StringUtil.parseValues(hashtags);
+    	post.sellerHashtags = new ArrayList<>();
+    	for (String name : names){
     		Hashtag hashtag = Hashtag.findByName(name);
     		/*
     		if(hashtag == null){
@@ -303,6 +456,23 @@ public class ProductController extends Controller{
     		    logger.underlyingLogger().warn("[h="+name+"] Hashtag not exist");
     		}
     	}
+    }
+    
+    public static void addRelatedPostsToPost(String relatedPosts, Post post){
+        if (StringUtils.isEmpty(relatedPosts)) {
+            return;
+        }
+        
+        List<Long> ids = StringUtil.parseIds(relatedPosts);
+        post.relatedPosts = new ArrayList<>();
+        for (Long id : ids){
+            Post relatedPost = Post.findById(id);
+            if (relatedPost != null) {
+                post.relatedPosts.add(relatedPost);
+            } else {
+                logger.underlyingLogger().warn("[p="+id+"] Related post not exist");
+            }
+        }
     }
     
 	@Transactional
@@ -383,7 +553,7 @@ public class ProductController extends Controller{
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 	    
 		final User localUser = Application.getLocalUser(session());
-		PostVM product = getProductInfoVM(id);
+		PostVM product = getPostInfoVM(id);
         if (product == null) {
             logger.underlyingLogger().warn(String.format("[post=%d][u=%d] Product not found", id, localUser.id));
             return Application.pathNotFound();
@@ -416,15 +586,50 @@ public class ProductController extends Controller{
 	}
 	
 	@Transactional
+    public Result viewStory(Long id) {
+        NanoSecondStopWatch sw = new NanoSecondStopWatch();
+        
+        final User localUser = Application.getLocalUser(session());
+        PostVM story = getPostInfoVM(id);
+        if (story == null) {
+            logger.underlyingLogger().warn(String.format("[post=%d][u=%d] Story not found", id, localUser.id));
+            return Application.pathNotFound();
+        }
+        
+        Map<String, List<String>> images = new HashMap<>();
+        List<String> originalImages = new ArrayList<>();
+        List<String> miniImages = new ArrayList<>();
+        for(Long imageId : story.images){
+            originalImages.add("background-image:url('"+Application.APPLICATION_BASE_URL+"/image/get-original-post-image-by-id/"+imageId+"')");
+        }
+        images.put("original", originalImages);
+        
+        sw.stop();
+        if (logger.underlyingLogger().isDebugEnabled()) {
+            logger.underlyingLogger().debug("[p="+id+"] viewStory(). Took "+sw.getElapsedMS()+"ms");
+        }
+        
+        String metaTags = Application.generateHeaderMeta(
+                StringUtil.shortMessage(story.body), 
+                story.body, 
+                "/image/get-post-image-by-id/"+story.images[0]);
+        return ok(views.html.babybox.web.story.render(
+                Json.stringify(Json.toJson(story)), 
+                Json.stringify(Json.toJson(new UserVM(localUser))), 
+                images,
+                metaTags));
+    }
+	
+	@Transactional
 	public Result getProductInfo(Long id) {
-		PostVM post = getProductInfoVM(id);
+		PostVM post = getPostInfoVM(id);
 		if (post == null) {
 			return notFound();
 		}
 		return ok(Json.toJson(post));
 	}
 	
-	public static PostVM getProductInfoVM(Long id) {
+	public static PostVM getPostInfoVM(Long id) {
 		User localUser = Application.getLocalUser(session());
 		Post post = Post.findById(id);
 		if (post == null) {
@@ -523,7 +728,7 @@ public class ProductController extends Controller{
         }
 
         if (localUser.equals(post.owner) || localUser.isSuperAdmin()) {
-        	localUser.deleteProduct(post);
+        	localUser.deletePost(post);
         	SocialRelationHandler.recordDeletePost(post, localUser);
             return ok();
         }

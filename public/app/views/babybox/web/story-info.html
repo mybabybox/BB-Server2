@@ -1,0 +1,215 @@
+<div class="header">
+ <div class='inner middle-centered-div'>
+  <div ng-click="doBack()"
+   class="icon_left ic_icon  ic_arrow_back clickable_area"></div>
+  <div class="no-search-bar-holder flex1"></div>
+  <div class='page_name L16'><a href="/"><div class='ic_logo_shortcut clickable_area'></div></a></div>
+  <span ng-if="!userInfo.isLoggedIn" style="padding-right: 15px;">
+   <a href="/login">
+    <div class='hold user_avatar ic_web_profile clickable_area'></div>
+  </a>
+  </span>
+  <span ng-if="userInfo.isLoggedIn" style="padding-right: 15px; padding-top: 0px;">
+   <a href="/profile/{{userInfo.id}}">
+    <div class="hold user_avatar clickable_area"
+     style="background-image: url(/image/get-mini-profile-image-by-id/{{userInfo.id}});"></div>
+  </a>
+  </span>
+  <div class='second-panel'>
+   <div class='signup-btn' data-i18n='label_signup'></div>
+   <div class='login-btn' data-i18n='label_login'></div>
+  </div>
+  <div class="clearfix"></div>
+ </div>
+</div>
+
+<div class="page-holder center-container" id="item-page">
+ <div class="top-part">
+
+  <div class="actions flex-it middle-centered-div">
+   <div id="likes" ng-click="like_Unlike(story.id)"
+    class="web flex1 middle-centered-div like clickable_area">
+    <div ng-if="story.isLiked" id="like-icon"
+     class="ic_icon ic_heart_filled"></div>
+    <div ng-if="!story.isLiked" id="like-icon"
+     class="ic_icon ic_heart"></div>
+    <div class="text r14 flex1" data-i18n="label_like">{{'LIKE'|translate}}</div>
+    <div class="r14 number-container">
+     <span class="number">{{story.numLikes}}</span>
+    </div>
+   </div>
+
+   <a href="/comments/{{story.id}}"
+    class="clickable_area flex1 middle-centered-div">
+    <div id="comment-button" class="comment clickable_area flex1 middle-centered-div">
+     <div class="ic_icon ic_comment"></div>
+     <div class="text r14 flex1" data-i18n="label_comment">{{'COMMENTS'|translate}}</div>
+     <div class="r14 number-container">
+      <span class="number">{{story.numComments}}</span>
+     </div>
+    </div>
+   </a>
+   <div id="share-button" class="share hide">
+    <div class="ic_icon ic_share"></div>
+   </div>
+  </div>
+
+  <div id="detail-part" class="info-part">
+   <div class="detail">
+    <div class="middle-centered-div detail-heading">
+     <div class="heading r14 flex1" data-i18n="label_product_info">{{'STORY_DETAILS'|translate}}</div>
+     <div class="time middle-centered-div" id="list-time">
+      <span class="ic_icon ic_clock"></span> 
+      <span class="gray-line r12" am-time-ago="story.createdDate">
+      </span>
+     </div>
+    </div>
+    <div class="description text L14">{{story.body}}</div>
+   </div>
+   <div class="table">
+    <div class="tr category-row middle-centered-div">
+     <div class="r14 th" data-i18n="label_category">{{'STORY_CATEGORY'|translate}}</div>
+     <div class="heavy L14 td flex1">
+      <a class="middle-centered-div tr-padding" href="/category/{{story.categoryId}}/popular">
+       <div class="text-link flex1" id="item-category">{{story.categoryName}}</div>
+      </a>      
+     </div>
+    </div>
+   </div>
+  </div>
+  
+  <div id="shop-part" class="shop-part-container">
+   <div class="shop-part  isSeller ">
+
+    <a href="/profile/{{story.ownerId}}">
+
+     <div class="top-holder">
+      <div class="avatar-box">
+       <img
+        ng-src="/image/get-mini-profile-image-by-id/{{story.ownerId}}">
+      </div>
+      <div class="center-box">
+       <div class="head-line m15 truncate">{{story.ownerName}}</div>
+       <div class="gray-line r12" am-time-ago="story.ownerLastLogin">Active :
+       </div>
+      </div>
+      <div class="view-box isPC r12">
+       <span data-i18n="label_view_shop">{{'VIEW_SELLER'|translate}}</span>
+      </div>
+     </div>
+
+     <ul class="bottom-holder isPC">
+      <li class="products-box">
+       <div class="space"></div>
+       <div class="box-left">
+        <span class="icon ic_detail_product_web"> </span>
+       </div>
+       <div class="box-right">
+        <div class="number m18">{{story.ownerNumProducts}}</div>
+        <div class="text" data-i18n="label_products">{{'PRODUCTS'|translate}}</div>
+       </div>
+       <div class="space"></div>
+      </li>
+      <li class="border">&nbsp;</li>
+      <li class="reviews-box" data-shopid="10022">
+       <div class="space"></div>
+       <div class="box-left">
+        <span class="icon ic_detail_positive_web"> </span>
+       </div>
+       <div class="box-right r12">
+        <div class="number m18">{{story.ownerNumFollowers}}</div>
+        <div class="text" data-i18n="label_positive_reviews">{{'SELLER_FOLLOWERS'|translate}}</div>
+       </div>
+       <div class="space"></div>
+      </li>
+     </ul>
+    </a>
+   </div>
+  </div>
+  
+  <div id="review-part" class="review-part">
+   <div id="review-container">
+    <div id="review-template" class="review" style="display: block;"
+     data-ng-repeat="comment in story.latestComments">
+     <div class="flex-it">
+      <div class="left">
+       <a href="/profile/{{comment.ownerId}}">
+        <div class="image-container">
+         <div class="image" style="background-image: url(/image/get-mini-profile-image-by-id/{{comment.ownerId}});"></div>
+        </div>
+       </a>
+      </div>
+      <div class="right flex1 flex-it">
+       <div class="flex1">
+        <a href="/profile/{{comment.ownerId}}"><div class="name m14">{{comment.ownerName}}</div></a>
+        <div class="comment text r13">{{comment.body}}</div>
+        <div class="param">
+			<!--div class="buyer-review m12" data-i18n="label_bueyer_review">buyer review</div-->
+			<div class="time">
+				<span class="ic_icon ic_clock"></span>
+				<span class="text r12" am-time-ago="comment.createdDate"></span>
+			</div>
+		</div>
+       </div>
+
+      </div>
+      <!--div class="face ic_icon ic_rate_average"></div-->
+     </div>
+
+
+    </div>
+   </div>
+   <div class="view-all-comments" ng-if="story.numComments > 3">
+    <div class="no-comment r14" data-i18n="label_no_comments"
+     style="display: none;">Be the first to leave a comment</div>
+    <div class="leave-a-comment r14" data-i18n="label_leave_a_comment"
+     style="display: none;">Leave a comment</div>
+    <div class="ic_icon ic_comment_red"></div>
+    <div class="text m14">
+        <a href="/comments/{{story.id}}">
+            <span data-i18n="label_view_all">{{'VIEW_ALL'|translate}}</span>
+            <span class="number">{{story.numComments}}</span>
+            <span class="comment_text" data-i18n="label_comments">{{'COMMENTS'|translate}}</span>
+        </a>
+    </div>
+   </div>
+  </div>
+
+ </div>
+</div>
+
+  <button id="popupBtn" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" style="display: none;">
+</button>
+<div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="lure-hold" style="display: block;">
+  <div>
+  <button type="button" class="close close_btn but_no_close" id="Close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> 
+  </div>
+    <div class="dogi-logo">
+        <div class="ic_logo_get"></div>
+    </div>
+ <div class="show-text L13">{{'APP_DOWNLOAD_MESSAGE'|translate}}</div>
+ <div class="show-text L13" style="margin-top:10px;font-weight:bold;display:none;" id="iphone_coming_soon_text">
+    {{'APP_IOS_COMING_SOON'|translate}}
+ </div>
+ <div class="bottom">
+        <div class="get_app_btns_wrapper">
+            <div class="full" style="display: none;">
+                <a id="get_app_link" target="_blank" href="" data-i18n="label_get" class="btn">{{'DOWNLOAD_NOW'|translate}}</a>
+            </div>
+            <div class="half">
+                <a id="get_ios_app_link" target="_blank" href="" onclick="document.getElementById('iphone_coming_soon_text').style.display=''" class="btn">
+                    <div class="ic_IPhone icon"></div>
+                    <div data-i18n="label_iphone">iPhone</div>
+                </a>
+            </div>
+            <div class="half">
+                <a id="get_android_app_link" target="_blank" href="https://play.google.com/store/apps/details?id=com.babybox.app" class="btn">
+                    <div class="ic_Android icon"></div>
+                    <div data-i18n="label_android">Android</div>
+                </a>
+            </div>
+        </div>
+ </div>
+</div>
+</div>

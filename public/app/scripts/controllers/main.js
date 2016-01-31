@@ -3,7 +3,7 @@
 var babybox = angular.module('babybox');
 
 babybox.controller('HomeController', 
-		function($scope, $translate, $location, $route, categoryService, productService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService, featuredItems) {
+		function($scope, $translate, $location, $route, categoryService, postService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService, featuredItems) {
 	
 	writeMetaCanonical($location.absUrl());
 	
@@ -28,15 +28,15 @@ babybox.controller('HomeController',
 		window.location.href=url;
 	}
 	
-	$scope.products = productService.getHomeExploreFeed.get({offset:0});
+	$scope.products = postService.getHomeExploreFeed.get({offset:0});
 	$scope. getHomeExploreProducts= function () {
-		$scope.products = productService.getHomeExploreFeed.get({offset:0});
+		$scope.products = postService.getHomeExploreFeed.get({offset:0});
 		$scope.homeFeed=true;
 		$scope.noMore = true;
 	};
 	
 	$scope.getHomeFollowingProducts = function () {
-		$scope.products = productService.getHomeFollowingFeed.get({offset:0});
+		$scope.products = postService.getHomeFollowingFeed.get({offset:0});
 		$scope.homeFeed=false;
 		$scope.noMore = true;
 	};
@@ -52,7 +52,7 @@ babybox.controller('HomeController',
 			var off = $scope.products[len-1].offset;
 			if($scope.homeFeed){
 				flag = false;
-				productService.getHomeExploreFeed.get({offset:off}, function(data){
+				postService.getHomeExploreFeed.get({offset:off}, function(data){
 					if(data.length == 0) {
 						$scope.noMore = false;
 					}
@@ -66,7 +66,7 @@ babybox.controller('HomeController',
 			}
 			if(!$scope.homeFeed){
 				flag = false;
-				productService.getHomeFollowingFeed.get({offset:off}, function(data){
+				postService.getHomeFollowingFeed.get({offset:off}, function(data){
 					if(data.length == 0) {
 						$scope.noMore = false;
 					}
@@ -222,7 +222,7 @@ babybox.controller('CategoryPageController',
 });
 
 babybox.controller('ProductPageController', 
-		function($scope, $location, $translate, $route, $rootScope, $http, $window, likeService, userService, productService, product, userInfo, suggestedPost) {
+		function($scope, $location, $translate, $route, $rootScope, $http, $window, likeService, userService, product, userInfo, suggestedPost) {
 
 	writeMetaCanonical($location.absUrl());
 	/*
@@ -242,11 +242,11 @@ babybox.controller('ProductPageController',
 				$window.location.href ='/home';
 			} else {
 				if($scope.product.isLiked){
-					likeService.unLikeProduct.get({id:id});
+					likeService.unLikePost.get({id:id});
 					$scope.product.isLiked = !$scope.product.isLiked;
 					$scope.product.numLikes--;
 				}else{
-					likeService.likeProduct.get({id:id});
+					likeService.likePost.get({id:id});
 					$scope.product.isLiked = !$scope.product.isLiked;
 					$scope.product.numLikes++;
 				}
@@ -262,8 +262,48 @@ babybox.controller('ProductPageController',
 	
 });
 
+babybox.controller('StoryPageController', 
+		function($scope, $location, $translate, $route, $rootScope, $http, $window, likeService, userService, story, userInfo) {
+
+	writeMetaCanonical($location.absUrl());
+	/*
+	writeMetaTitleDescription(
+			story.title, 
+			story.body, 
+			formatToExternalUrl("/image/get-post-image-by-id/"+story.images[0]));
+	*/
+	
+	$scope.story = story;
+	$scope.userInfo = userInfo;
+
+	$scope.like_Unlike = function(id) {
+		if ($scope.userInfo.isLoggedIn) {
+			if ($scope.userInfo.newUser) {
+				$window.location.href ='/home';
+			} else {
+				if($scope.story.isLiked){
+					likeService.unLikePost.get({id:id});
+					$scope.story.isLiked = !$scope.story.isLiked;
+					$scope.story.numLikes--;
+				}else{
+					likeService.likePost.get({id:id});
+					$scope.story.isLiked = !$scope.story.isLiked;
+					$scope.story.numLikes++;
+				}
+			}
+		} else {
+			$window.location.href ='/login';
+		}
+	}
+
+	$scope.openPopup = function(){
+		$('#popupBtn').click();
+	}
+	
+});
+
 babybox.controller('CommentOnProductController', 
-		function($scope, $location, $translate, $route, $http, likeService) {
+		function($scope, $location, $translate, $route, $http) {
 
 	writeMetaCanonical($location.absUrl());
 	
@@ -498,7 +538,7 @@ var PhotoModalController = function( $scope, $http, $timeout, $upload, profilePh
 
 
 babybox.controller('CommentController', 
-		function($scope, $location, $route, $translate, $http, $anchorScroll, comments, userInfo, productService) {
+		function($scope, $location, $route, $translate, $http, $anchorScroll, comments, userInfo, postService) {
 	
 	writeMetaCanonical($location.absUrl());
 	
@@ -529,7 +569,7 @@ babybox.controller('CommentController',
 	$scope.loadMore = function () {	
 		if(($scope.comments.length!=0) && ($scope.noMore == true) && flag == true){
 			flag = false;
-			productService.allComments.get({id:$scope.pid, offset:off}, function(data){
+			postService.allComments.get({id:$scope.pid, offset:off}, function(data){
 				off++;
 				if (data.length == 0) {
 					$scope.noMore = false;

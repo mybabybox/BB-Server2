@@ -126,14 +126,12 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	 */
 	public Post() {}
 
-	public Post(User owner, String title, String body, Category category, List<Post> relatedPosts, DeviceType deviceType) {
+	public Post(User owner, String body, Category category, DeviceType deviceType) {
 		this.owner = owner;
-		this.title = title;
 		this.body = body;
 		this.category = category;
 		this.price = 0.0;
 		this.postType = PostType.STORY;
-		this.relatedPosts = relatedPosts;
 		this.objectType = SocialObjectType.POST;
 		this.deviceType = deviceType;
 	}
@@ -178,18 +176,18 @@ public class Post extends SocialObject implements Likeable, Commentable {
         }
     }
     
-    public boolean removeHashtag(Hashtag hashtag) {
-        if (!hasHashtag(hashtag)) {
-            return false;
+    public void addRelatedPost(Hashtag hashtag) {
+        if (hasHashtag(hashtag)) {
+            return;
         }
         
         if (hashtag.system) {
-            return systemHashtags.remove(hashtag);
+            systemHashtags.add(hashtag);
         } else {
-            return sellerHashtags.remove(hashtag);
+            sellerHashtags.add(hashtag);
         }
     }
-	    
+    
     /*
     public boolean hasHashtag(Hashtag hashtag) {
         if (hashtag.system) {

@@ -375,12 +375,31 @@ public class User extends SocialObject implements Subject, Followable {
 	}
 	
 	@Transactional
+    public Post createStory(String body, Category category, DeviceType deviceType) {
+        
+        if (Strings.isNullOrEmpty(body) || category == null) {
+            logger.underlyingLogger().warn("Missing parameters to createStory");
+            return null;
+        }
+        
+        Post post = new Post(this, body, category, deviceType);
+        post.save();
+        
+        recordPostProduct(this, post);
+        
+        this.numProducts++;
+        
+        return post;
+    }
+	
+	@Transactional
     public Post editProduct(
             Post post, String title, String body, Category category, Double price, Post.ConditionType conditionType, 
             Double originalPrice, Boolean freeDelivery, CountryCode countryCode) {
 	    
-	    if (Strings.isNullOrEmpty(title) ||
-	            post == null || Strings.isNullOrEmpty(body) || category == null || price == -1D) {
+	    if (post == null || 
+	            Strings.isNullOrEmpty(title) || Strings.isNullOrEmpty(body) || 
+	            category == null || price == -1D) {
             logger.underlyingLogger().warn("Missing parameters to editProduct");
             return null;
         }
@@ -399,7 +418,23 @@ public class User extends SocialObject implements Subject, Followable {
     }
 	
 	@Transactional
-	public void deleteProduct(Post post) {
+    public Post editStory(
+            Post post, String body, Category category) {
+        
+        if (post == null || Strings.isNullOrEmpty(body) || category == null) {
+            logger.underlyingLogger().warn("Missing parameters to editStory");
+            return null;
+        }
+        
+        post.body = body;
+        post.category = category;
+        post.merge();
+        
+        return post;
+    }
+    
+	@Transactional
+	public void deletePost(Post post) {
         post.deleted = true;
         post.deletedBy = this;
         if (this.numProducts > 0) {

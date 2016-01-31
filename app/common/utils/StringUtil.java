@@ -145,12 +145,16 @@ public class StringUtil {
         }
     }
     
+    public static List<String> parseValues(String values) {
+        return Arrays.asList(values.split(DefaultValues.DELIMITER_COMMA));
+    }
+    
     public static List<Long> parseIds(String ids) {
         List<Long> list = new ArrayList<>();
-        List<String> values = Arrays.asList(ids.split(DefaultValues.DELIMITER_COMMA));
-        for (String value : values) {
+        List<String> tokens = Arrays.asList(ids.split(DefaultValues.DELIMITER_COMMA));
+        for (String token : tokens) {
             try {
-                long id = Long.parseLong(value);
+                long id = Long.parseLong(token);
                 list.add(id);
             } catch (NumberFormatException e) {
             }

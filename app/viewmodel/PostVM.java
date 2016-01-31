@@ -22,6 +22,7 @@ public class PostVM extends PostVMLite {
 	@JsonProperty("categoryIcon") public String categoryIcon;
 	@JsonProperty("categoryType") public String categoryType;	
     @JsonProperty("latestComments") public List<CommentVM> latestComments;
+    @JsonProperty("relatedPosts") public List<PostVMLite> relatedPosts;
     
 	@JsonProperty("isOwner") public boolean isOwner = false;
 	@JsonProperty("isFollowingOwner") public boolean isFollowingOwner = false;
@@ -33,7 +34,9 @@ public class PostVM extends PostVMLite {
     	
         this.ownerNumProducts = post.owner.numProducts;
         this.ownerNumFollowers = post.owner.numFollowers;
-        this.ownerLastLogin = post.owner.lastLogin == null? post.getUpdatedDate().getTime() : post.owner.lastLogin.getTime();
+        this.ownerLastLogin = 
+                post.owner.lastLogin == null? 
+                        post.getUpdatedDate().getTime() : post.owner.lastLogin.getTime();
         this.createdDate = post.getCreatedDate().getTime();
         this.updatedDate = post.getUpdatedDate().getTime();
         this.body = post.body;
@@ -42,9 +45,14 @@ public class PostVM extends PostVMLite {
         this.categoryIcon = post.category.icon;
         this.categoryId = post.category.id;
         
-        latestComments = new ArrayList<>();
+        this.latestComments = new ArrayList<>();
         for (Comment comment : post.getLatestComments(DefaultValues.LATEST_COMMENTS_COUNT)) {
         	this.latestComments.add(new CommentVM(comment, user));
+        }
+        
+        this.relatedPosts = new ArrayList<>();
+        for (Post relatedPost : post.getRelatedPosts()) {
+            this.relatedPosts.add(new PostVMLite(relatedPost));
         }
         
         this.isOwner = (post.owner.id == user.id);

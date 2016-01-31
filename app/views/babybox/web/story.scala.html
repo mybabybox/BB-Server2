@@ -1,4 +1,4 @@
-@(product: String, userInfo: String, images: Map[String, List[String]], suggestedPost: String, metaTags: String)
+@(story: String, userInfo: String, images: Map[String, List[String]], metaTags: String)
 
 <!doctype html>
 <html lang="zh-hk">
@@ -30,7 +30,7 @@
 	    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("app/images/favicon-1.ico")">
 	</head>
 	
-	<body id="main-app" class="menu-right-hidden" ng-app="babybox" ng-controller="ProductPageController">
+	<body id="main-app" class="menu-right-hidden" ng-app="babybox" ng-controller="StoryPageController">
 	 <span us-spinner spinner-key="loading..."></span>
 	 <div class="container-fluid menu-hidden">
 	  <div id="main-view">
@@ -42,9 +42,7 @@
 	      <div class="swiper-container gallery-top">
 	       <div class="swiper-wrapper">
 	        @for(image <- images.get("original")) {
-	         <div class="swiper-slide" style="@image">
-                <div data-ng-if="product.sold" class="image product-sold"></div>
-             </div>
+	         <div class="swiper-slide" style="@image"></div>
 	        }
 	       </div>
 	       <!-- Add Arrows -->
@@ -55,7 +53,7 @@
 	     </div>
 	    </div>
 	    <div data-ng-include
-	     data-src="'/assets/app/views/babybox/web/product-info.html'"></div>
+	     data-src="'/assets/app/views/babybox/web/story-info.html'"></div>
 	   </div>
 	  </div>
 	 </div>
@@ -168,23 +166,17 @@ var swiper = new Swiper('.swiper-container', {
 </script>
 
 <style>
-.product-sold {
-    width: 85px !important;
-    height: 85px !important;
-    background-size: 85px auto;
-    background-image: url("../../../assets/app/images/general/icons/sold.png");
+#item-page {
+    margin-bottom: 0px;
 }
 </style>
 
 <script>
-	angular.module('babybox').factory('product', function(){
-		return @Html(product);
+	angular.module('babybox').factory('story', function(){
+		return @Html(story);
 	});
 	angular.module('babybox').factory('userInfo', function(){
 		return @Html(userInfo);
-	});
-	angular.module('babybox').factory('suggestedPost', function(){
-		return @Html(suggestedPost);
 	});
 </script>
 

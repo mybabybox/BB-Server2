@@ -52,8 +52,8 @@ babybox.service('categoryService',function($resource){
 });
 
 
-babybox.service('productService',function($resource){
-    this.getProductInfo = $resource(
+babybox.service('postService',function($resource){
+    this.getPostInfo = $resource(
             '/api/get-post/:id',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
@@ -147,7 +147,7 @@ babybox.service('followService',function($resource){
 });
 
 babybox.service('likeService',function($resource){
-    this.likeProduct = $resource(
+    this.likePost = $resource(
             '/api/like-post/:id',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
@@ -155,7 +155,7 @@ babybox.service('likeService',function($resource){
             }
     );
     
-    this.unLikeProduct = $resource(
+    this.unLikePost = $resource(
             '/api/unlike-post/:id',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
