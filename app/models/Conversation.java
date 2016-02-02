@@ -151,7 +151,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 	
 	public Message addMessage(User sender, String body, boolean system) {
 		Date now = new Date();
-		Date lastMessageDate = this.lastMessageDate;
+		Date lastMessageDate = this.lastMessageDate == null? now : this.lastMessageDate;
 		
 		Message message = new Message();
 		message.body = body;

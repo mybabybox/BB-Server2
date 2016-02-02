@@ -101,12 +101,12 @@ public class SocialRelationHandler {
         EventHandler.getInstance().getEventBus().post(conversationEvent);
 	}
 	
-	public static void recordNewMessage(Message message, User sender, User recipient, Boolean firstMessage) {
+	public static void recordNewMessage(Message message, User sender, User recipient, Boolean notify) {
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.put("message", message);
         messageEvent.put("sender", sender);
         messageEvent.put("recipient", recipient);
-        messageEvent.put("firstMessage", firstMessage);
+        messageEvent.put("notify", notify);
         EventHandler.getInstance().getEventBus().post(messageEvent);
     }
 	
