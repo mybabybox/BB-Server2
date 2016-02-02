@@ -32,7 +32,7 @@ public class NotificationCounter extends domain.Entity implements Serializable, 
 	public Long activitiesCount = 0L;
 	
 	public Long conversationsCount = 0L;
-		
+	
 	public Boolean deleted = false;
 	
 	public NotificationCounter() {

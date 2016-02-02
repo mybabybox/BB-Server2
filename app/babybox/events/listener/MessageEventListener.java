@@ -2,7 +2,6 @@ package babybox.events.listener;
 
 import mobile.GcmSender;
 import models.Message;
-import models.NotificationCounter;
 import models.User;
 import babybox.events.map.MessageEvent;
 
@@ -20,15 +19,13 @@ public class MessageEventListener extends EventListener {
     	    final Message message = (Message) map.get("message");
     	    final User sender = (User) map.get("sender");
     	    final User recipient = (User) map.get("recipient");
-    	    final Boolean firstMessage = (Boolean) map.get("firstMessage");
+    	    final Boolean notify = (Boolean) map.get("notify");
     	    
     	    executeAsync(
                     new TransactionalRunnableTask() {
                         @Override
                         public void execute() {
-                            if (firstMessage) {
-                                NotificationCounter.incrementConversationsCount(recipient.id);
-                                
+                            if (notify) {
                                 // Sendgrid
                                 SendgridEmailClient.getInstatnce().sendMailOnConversation(
                                         sender, recipient, message.conversation.post.title, message.body);

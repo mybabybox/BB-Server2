@@ -24,7 +24,9 @@ import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import common.utils.DateTimeUtil;
 import common.utils.StringUtil;
+import play.Play;
 import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
 import service.SocialRelationHandler;
@@ -60,6 +62,8 @@ import domain.Updatable;
 @EntityListeners(AuditListener.class)
 public class Conversation extends domain.Entity implements Serializable, Creatable, Updatable {
     private static final play.api.Logger logger = play.api.Logger.apply(Conversation.class);
+    
+    public static final int EVENT_MESSAGE_EMAIL_APART_SECS = Play.application().configuration().getInt("event.message.email.apart.secs");
     
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -147,6 +151,8 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 	
 	public Message addMessage(User sender, String body, boolean system) {
 		Date now = new Date();
+		Date lastMessageDate = this.lastMessageDate;
+		
 		Message message = new Message();
 		message.body = body;
 		message.system = system;
@@ -188,7 +194,14 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		}
 		this.save();
 		
-		SocialRelationHandler.recordNewMessage(message, sender, recipient, firstMessage);
+		if (firstMessage) {
+		    NotificationCounter.incrementConversationsCount(recipient.id);
+		}
+		
+		boolean notify = firstMessage || 
+		        !DateTimeUtil.withinSecs(lastMessageDate.getTime(), now.getTime(), EVENT_MESSAGE_EMAIL_APART_SECS);
+		
+		SocialRelationHandler.recordNewMessage(message, sender, recipient, notify);
 		
 		// first message of new conversation, record stats
 		if (this.numMessages == 1) {

@@ -21,12 +21,32 @@ public class DateTimeUtil {
     
     private static SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy HH:mm");
     
-    public static boolean withinADay(long start, long end) {
-        return Math.abs(end - start) < DAY_MILLIS;
+    public static boolean withinSecs(long start, long end, long secs) {
+        return Math.abs(end - start) < secs * SECOND_MILLIS;
+    }
+    
+    public static boolean withinMins(long start, long end, long mins) {
+        return Math.abs(end - start) < mins * MINUTE_MILLIS;
+    }
+    
+    public static boolean withinHours(long start, long end, long hours) {
+        return Math.abs(end - start) < hours * HOUR_MILLIS;
+    }
+    
+    public static boolean withinDays(long start, long end, long days) {
+        return Math.abs(end - start) < days * DAY_MILLIS;
     }
 
+    public static boolean withinWeeks(long start, long end, long weeks) {
+        return Math.abs(end - start) < weeks * WEEK_MILLIS;
+    }
+    
+    public static boolean withinADay(long start, long end) {
+        return withinDays(start, end, 1);
+    }
+    
     public static boolean withinAWeek(long start, long end) {
-        return Math.abs(end - start) < WEEK_MILLIS;
+        return withinWeeks(start, end, 1);
     }
     
     public static DateTime getToday() {

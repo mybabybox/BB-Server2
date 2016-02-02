@@ -43,8 +43,8 @@ public class CalcServer {
 	public static final Long FEED_SCORE_COMPUTE_SCHEDULE = Play.application().configuration().getLong("feed.score.compute.schedule");
 	public static final Long FEED_SCORE_HIGH_BASE = Play.application().configuration().getLong("feed.score.high.base");
 	public static final Long FEED_HOME_COUNT_MAX = Play.application().configuration().getLong("feed.home.count.max");
-	public static final int FEED_SNAPSHOT_EXPIRY = Play.application().configuration().getInt("feed.snapshot.expiry");
-	public static final int FEED_SNAPSHOT_LONG_EXPIRY = Play.application().configuration().getInt("feed.snapshot.long.expiry");
+	public static final int FEED_SNAPSHOT_EXPIRY_SECS = Play.application().configuration().getInt("feed.snapshot.expiry.secs");
+	public static final int FEED_SNAPSHOT_LONG_EXPIRY_SECS = Play.application().configuration().getInt("feed.snapshot.long.expiry.secs");
 	public static final int FEED_SOLD_CLEANUP_DAYS = Play.application().configuration().getInt("feed.sold.cleanup.days");
 	public static final int FEED_RETRIEVAL_COUNT = DefaultValues.FEED_INFINITE_SCROLL_COUNT;
 	
@@ -374,7 +374,7 @@ public class CalcServer {
 			    }
 			}
 		}
-		jedisCache.expire(getKey(FeedType.HOME_EXPLORE, userId), (user == null) ? FEED_SNAPSHOT_LONG_EXPIRY : FEED_SNAPSHOT_EXPIRY);
+		jedisCache.expire(getKey(FeedType.HOME_EXPLORE, userId), (user == null) ? FEED_SNAPSHOT_LONG_EXPIRY_SECS : FEED_SNAPSHOT_EXPIRY_SECS);
 		
 		sw.stop();
 		logger.underlyingLogger().debug("buildUserExploreFeedQueue completed. Took "+sw.getElapsedSecs()+"s");
@@ -395,7 +395,7 @@ public class CalcServer {
 				}
 			}
 		}
-		jedisCache.expire(getKey(FeedType.HOME_FOLLOWING,userId), FEED_SNAPSHOT_EXPIRY);
+		jedisCache.expire(getKey(FeedType.HOME_FOLLOWING,userId), FEED_SNAPSHOT_EXPIRY_SECS);
 		
 		sw.stop();
 		logger.underlyingLogger().debug("buildHomeFollowingQueue completed. Took "+sw.getElapsedSecs()+"s");
@@ -414,7 +414,7 @@ public class CalcServer {
             } catch (Exception e) {
             }
         }
-        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS, userId), FEED_SNAPSHOT_LONG_EXPIRY);
+        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS, userId), FEED_SNAPSHOT_LONG_EXPIRY_SECS);
         
         sw.stop();
         logger.underlyingLogger().debug("buildUserRecommendedSellersFeedQueue completed. Took "+sw.getElapsedSecs()+"s");
@@ -443,7 +443,7 @@ public class CalcServer {
 			jedisCache.putToSortedSet(getKey(FeedType.PRODUCT_SUGGEST, postId), Math.random() * FEED_SCORE_HIGH_BASE, suggestedPostId.toString());
 		}
 		
-		jedisCache.expire(getKey(FeedType.PRODUCT_SUGGEST, postId), FEED_SNAPSHOT_EXPIRY);
+		jedisCache.expire(getKey(FeedType.PRODUCT_SUGGEST, postId), FEED_SNAPSHOT_EXPIRY_SECS);
 		
 		sw.stop();
 		logger.underlyingLogger().debug("buildSuggestedProductQueue completed. Took "+sw.getElapsedSecs()+"s");
@@ -570,7 +570,7 @@ public class CalcServer {
             } catch (Exception e) {
             }
         }
-        jedisCache.expire(getKey(FeedType.HOME_EXPLORE,id), FEED_SNAPSHOT_EXPIRY);
+        jedisCache.expire(getKey(FeedType.HOME_EXPLORE,id), FEED_SNAPSHOT_EXPIRY_SECS);
         return postIds;
 	}
 	
@@ -586,7 +586,7 @@ public class CalcServer {
             } catch (Exception e) {
             }
         }
-        jedisCache.expire(getKey(FeedType.HOME_FOLLOWING,id), FEED_SNAPSHOT_EXPIRY);
+        jedisCache.expire(getKey(FeedType.HOME_FOLLOWING,id), FEED_SNAPSHOT_EXPIRY_SECS);
         return postIds;
 	}
 	
@@ -602,7 +602,7 @@ public class CalcServer {
             } catch (Exception e) {
             }
         }
-        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS,id), FEED_SNAPSHOT_LONG_EXPIRY);
+        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS,id), FEED_SNAPSHOT_LONG_EXPIRY_SECS);
         return postIds;
     }
 	
@@ -695,7 +695,7 @@ public class CalcServer {
             } catch (Exception e) {
             }
         }
-        jedisCache.expire(getKey(FeedType.PRODUCT_SUGGEST, id), FEED_SNAPSHOT_EXPIRY);
+        jedisCache.expire(getKey(FeedType.PRODUCT_SUGGEST, id), FEED_SNAPSHOT_EXPIRY_SECS);
         return postIds;
 	}
 	
