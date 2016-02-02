@@ -117,6 +117,10 @@ public class Application extends Controller {
 		WAP
 	}
 	
+	public static boolean isDev() {
+	    return "dev".equalsIgnoreCase(APPLICATION_ENV);
+	}
+	
 	public static DeviceType parseDeviceType(String deviceType) {
 		try {
 			return Enum.valueOf(DeviceType.class, deviceType);

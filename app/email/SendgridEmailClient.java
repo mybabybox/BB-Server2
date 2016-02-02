@@ -46,30 +46,35 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 	    sendgrid = new SendGrid(SENDGRID_AUTHEN_USERNAME, SENDGRID_AUTHEN_PASSWORD);
 	}
 	
-	public void sendMailAsync(final String mailId, final String subject, final String body) {
+	public void sendMailAsync(final String to, final String from, final String fromName, final String subject, final String body) {
 	    JobScheduler.getInstance().run(
 	            new Runnable() {
 		            @Override
 		            public void run() {
-		                sendMail(mailId, subject, body);
+		                sendMail(to, from, fromName, subject, body);
 		            }
 		        });
 	}
 	
 	@Override
-	public String sendMail(String mailId, String subject, String body) {
+	public String sendMail(String to, String from, String fromName, String subject, String body) {
+	    if (Application.isDev()) {
+	        return "";
+	    }
+	    
 	    SendGrid.Email email = new SendGrid.Email();
-	    email.addTo(mailId);
-	    email.setFromName(SENDGRID_MAIL_FROM_NAME);
-	    email.setFrom(SENDGRID_MAIL_FROM_ADDRESS);
+	    email.addTo(to);
+	    email.setFrom(from);
+	    email.setFromName(fromName);
 	    email.setSubject(subject);
 	    email.setHtml(body);
+	    
 	    try {
 	        SendGrid.Response response = sendgrid.send(email);
-	        logger.underlyingLogger().info("[email="+mailId+"] sendMail response="+response+" body="+body);
+	        logger.underlyingLogger().info("[email="+to+"] sendMail response="+response+" body="+body);
 	        return response.getMessage();
 	    } catch (SendGridException e) {
-	        logger.underlyingLogger().error("[email="+mailId+"] Failed to sendMail body="+body+" error="+e.getMessage(), e);
+	        logger.underlyingLogger().error("[email="+to+"] Failed to sendMail body="+body+" error="+e.getMessage(), e);
 	        return e.getMessage();
 	    }
 	}
@@ -86,7 +91,9 @@ public class SendgridEmailClient implements TransactionalEmailClient {
 				target.displayName);
 		
 		sendMail(
-		        target.email, 
+		        target.email,
+		        SENDGRID_MAIL_FROM_ADDRESS, 
+		        SENDGRID_MAIL_FROM_NAME,
 		        formatSubject("有人關注了你"), 
 		        template);
 	}
@@ -109,8 +116,10 @@ public class SendgridEmailClient implements TransactionalEmailClient {
                 comment);
         
         sendMail(
-                target.email, 
-                formatSubject("你的商品有新留言 - "+product), 
+                target.email,
+                SENDGRID_MAIL_FROM_ADDRESS, 
+                actor.displayName+" - "+SENDGRID_MAIL_FROM_NAME, 
+                formatSubject("你的商品 "+product+" 有新留言"), 
                 template);
     }
 	
@@ -132,8 +141,10 @@ public class SendgridEmailClient implements TransactionalEmailClient {
                 message);
         
         sendMail(
-                target.email, 
-                formatSubject("你的商品有新訊息 - "+product), 
+                target.email,
+                SENDGRID_MAIL_FROM_ADDRESS, 
+                actor.displayName+" - "+SENDGRID_MAIL_FROM_NAME, 
+                formatSubject("你的商品 "+product+" 有新訊息"), 
                 template);
     }
 	
@@ -157,7 +168,9 @@ public class SendgridEmailClient implements TransactionalEmailClient {
                 htmlBody);
         
         sendMail(
-                target.email, 
+                target.email,
+                SENDGRID_MAIL_FROM_ADDRESS, 
+                SENDGRID_MAIL_FROM_NAME, 
                 formatSubject("成功刊登商品 - "+post.title), 
                 template);
     }

@@ -14,6 +14,7 @@ import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
 
 import common.utils.StringUtil;
+import controllers.Application;
 
 public class GcmSender {
     private static final play.api.Logger logger = play.api.Logger.apply(GcmSender.class);
@@ -56,6 +57,10 @@ public class GcmSender {
     }
     
     private static void sendNotification(Long userId, String message) {
+        if (Application.isDev()) {
+            return;
+        }
+        
         GcmToken gcmToken = GcmToken.findByUserId(userId);
         if (gcmToken != null) {
             sendToGcm(userId, gcmToken.getRegId(), message);

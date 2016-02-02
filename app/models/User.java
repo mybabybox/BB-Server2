@@ -511,7 +511,7 @@ public class User extends SocialObject implements Subject, Followable {
 
 		if (identity instanceof UsernamePasswordAuthUser) {
 			// Bypass login
-			if ("dev".equals(controllers.Application.APPLICATION_ENV) && 
+			if (controllers.Application.isDev() && 
 					controllers.Application.LOGIN_BYPASS_ALL == true) {
 				return User.findByEmail(identity.getId());
 			}

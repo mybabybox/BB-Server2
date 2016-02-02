@@ -365,7 +365,7 @@ public class CalcServer {
 			
 			for (Long postId : catPostIds) {
 			    Post post = Post.findById(postId);
-			    if (post.deleted) {
+			    if (post != null && post.deleted) {
 			        continue;
 			    }
 			    Double randomizedScore = formula.randomizeScore(post);

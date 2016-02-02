@@ -43,13 +43,19 @@ public class GcmToken extends domain.Entity {
         if (gcmToken == null) {
             markDelete(userId);     // mark delete old versions
             gcmToken = new GcmToken();
+            logger.underlyingLogger().debug("createUpdateGcmKey() created new key");
         }
         
-        gcmToken.setUserId(userId);
-        gcmToken.setRegId(key);
-        gcmToken.setVersionCode(versionCode);
-        gcmToken.setCreatedDate(new Date());
-        gcmToken.save();
+        if (!key.equals(gcmToken.regId)) {
+            gcmToken.setUserId(userId);
+            gcmToken.setRegId(key);
+            gcmToken.setVersionCode(versionCode);
+            gcmToken.setCreatedDate(new Date());
+            gcmToken.save();
+            logger.underlyingLogger().debug("createUpdateGcmKey() updated key");
+        } else {
+            logger.underlyingLogger().debug("createUpdateGcmKey() same key. Skipped update");            
+        }
     }
 
     ///////////////////////// Find APIs /////////////////////////

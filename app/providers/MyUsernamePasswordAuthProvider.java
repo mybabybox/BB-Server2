@@ -204,7 +204,7 @@ UsernamePasswordAuthProvider<String, MyLoginUsernamePasswordAuthUser, MyUsername
 			final MyLoginUsernamePasswordAuthUser authUser) {
 
 		// Bypass login
-		if ("dev".equals(controllers.Application.APPLICATION_ENV) && 
+		if (controllers.Application.isDev() && 
 				controllers.Application.LOGIN_BYPASS_ALL == true) {
 			final User user = User.findByEmail(authUser.getEmail());
 			if (user != null) {

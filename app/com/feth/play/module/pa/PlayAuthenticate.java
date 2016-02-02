@@ -564,7 +564,7 @@ public abstract class PlayAuthenticate {
 				}
 
 				// Bypass login
-				if ("dev".equals(controllers.Application.APPLICATION_ENV) && 
+				if (controllers.Application.isDev() && 
 						controllers.Application.LOGIN_BYPASS_ALL == true && 
 						!isLoggedIn) {
 					return loginAndRedirect(context, newUser);
