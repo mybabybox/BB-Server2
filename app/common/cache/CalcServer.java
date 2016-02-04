@@ -414,7 +414,7 @@ public class CalcServer {
             } catch (Exception e) {
             }
         }
-        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS, userId), FEED_SNAPSHOT_LONG_EXPIRY_SECS);
+        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS, userId), FEED_SNAPSHOT_EXPIRY_SECS);
         
         sw.stop();
         logger.underlyingLogger().debug("buildUserRecommendedSellersFeedQueue completed. Took "+sw.getElapsedSecs()+"s");
