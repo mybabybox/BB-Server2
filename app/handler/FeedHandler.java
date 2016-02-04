@@ -26,6 +26,11 @@ public class FeedHandler {
     
     public List<PostVMLite> getFeedPosts(
             Long id, Long offset, User localUser, FeedType feedType) {
+        return getFeedPosts(id, offset, localUser, feedType, -1);
+    }
+    
+    public List<PostVMLite> getFeedPosts(
+            Long id, Long offset, User localUser, FeedType feedType, int limit) {
         
         filterSold = false;
     	List<Long> postIds = new ArrayList<>();
@@ -72,8 +77,12 @@ public class FeedHandler {
     	}
     	
     	List<PostVMLite> vms = new ArrayList<>();
-    	if(postIds.size() == 0){
+    	if (postIds.size() == 0) {
     		return vms;
+    	}
+    	
+    	if (limit > 0 && postIds.size() > limit) {
+    	    postIds = postIds.subList(0, limit);
     	}
     	
     	List<Post> posts = Post.getPosts(postIds);
@@ -125,7 +134,7 @@ public class FeedHandler {
         }
             
         List<UserVMLite> vms = new ArrayList<>();
-        if(userIds.size() == 0){
+        if (userIds.size() == 0) {
             return vms;
         }
         
@@ -168,7 +177,9 @@ public class FeedHandler {
             }
             
             // get first batch of seller products
-            List<PostVMLite> posts = getFeedPosts(user.id, 0L, localUser, FeedType.USER_POSTED);
+            List<PostVMLite> posts = getFeedPosts(
+                    user.id, 0L, localUser, FeedType.USER_POSTED, 
+                    DefaultValues.MAX_SELLER_PRODUCTS_FOR_FEED);
             if (posts.size() > DefaultValues.MAX_SELLER_PRODUCTS_FOR_FEED) {
                 posts = posts.subList(0, DefaultValues.MAX_SELLER_PRODUCTS_FOR_FEED);
             }
