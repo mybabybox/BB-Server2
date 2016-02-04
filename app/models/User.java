@@ -791,15 +791,21 @@ public class User extends SocialObject implements Subject, Followable {
 	        return false;
 	    }
 	    
+	    boolean isRecommended = isPromotedSeller() || isVerifiedSeller() || 
+	            this.numProducts > DefaultValues.MIN_RECOMMENDED_SELLER_PRODUCTS;  // temp conditions
+	    
 	    // must have profile photo
+	    /*
 	    if (this.getPhotoProfile() == null) {
 	        return false;
 	    }
-	    // temp condition
-	    if (this.numProducts > 1) {
-	        return true;
+	    */
+	    
+	    if (this.numProducts < DefaultValues.MIN_RECOMMENDED_SELLER_PRODUCTS) {
+	        return false;
 	    }
-	    return isPromotedSeller() || isVerifiedSeller();
+	    
+	    return isRecommended;
 	}
 	
 	@Transactional

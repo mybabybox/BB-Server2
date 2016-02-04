@@ -59,6 +59,7 @@ import viewmodel.MessageVM;
 import viewmodel.NotificationCounterVM;
 import viewmodel.PostVMLite;
 import viewmodel.ResponseStatusVM;
+import viewmodel.SellerVM;
 import viewmodel.UserVM;
 import viewmodel.UserVMLite;
 import common.cache.CalcServer;
@@ -905,9 +906,16 @@ public class UserController extends Controller {
     }
     
     @Transactional 
-    public Result getUserRecommendedSellers(Long id, Long offset) {
+    public Result getRecommendedSellers() {
         final User localUser = Application.getLocalUser(session());
-        List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.USER_RECOMMENDED_SELLERS);
+        List<UserVMLite> vms = feedHandler.getFeedUsers(localUser.id, 0L, localUser, FeedType.USER_RECOMMENDED_SELLERS);
+        return ok(Json.toJson(vms));
+    }
+    
+    @Transactional 
+    public Result getRecommendedSellersFeed(Long offset) {
+        final User localUser = Application.getLocalUser(session());
+        List<SellerVM> vms = feedHandler.getFeedSellers(localUser.id, offset, localUser, FeedType.USER_RECOMMENDED_SELLERS);
         return ok(Json.toJson(vms));
     }
     

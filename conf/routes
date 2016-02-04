@@ -151,7 +151,8 @@ GET     /get-user-posted-feed/:id/:offset                               @control
 GET     /api/get-user-liked-feed/:id/:offset                            @controllers.UserController.getUserLikedFeed(id: Long,offset:Long)
 GET     /get-user-liked-feed/:id/:offset                                @controllers.UserController.getUserLikedFeed(id: Long,offset:Long)
 
-GET     /api/get-user-recommended-sellers/:id/:offset                   @controllers.UserController.getUserRecommendedSellers(id :Long, offset: Long)
+GET     /api/get-recommended-sellers                                    @controllers.UserController.getRecommendedSellers()
+GET     /api/get-recommended-sellers-feed/:offset                       @controllers.UserController.getRecommendedSellersFeed(offset:Long)
 
 GET     /api/get-suggested-products/:id                                 @controllers.ProductController.getSuggestedProducts(id :Long)                       
 GET     /get-suggested-products/:id                                     @controllers.ProductController.getSuggestedProducts(id :Long)                       

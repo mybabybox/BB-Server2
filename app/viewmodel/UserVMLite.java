@@ -38,6 +38,13 @@ public class UserVMLite {
     
     public UserVMLite(User user, User localUser) {
         this.id = user.id;
+        
+        // Fill up below for logged in users only
+        this.isLoggedIn = user.isLoggedIn();
+        if (!user.isLoggedIn()) {
+            return;
+        }
+        
         this.displayName = user.displayName;
         this.email = user.email;
         this.firstName = user.firstName;
@@ -51,13 +58,7 @@ public class UserVMLite {
         this.numConversationsAsRecipient = user.numConversationsAsRecipient;
         this.numCollections = user.numCollections;
         
-        // Fill up below for logged in users only
-        this.isLoggedIn = user.isLoggedIn();
-        if (!user.isLoggedIn()) {
-            return;
-        }
-        
-        if (!user.equals(localUser)) {
+        if (localUser != null && !user.equals(localUser)) {
         	this.isFollowing = user.isFollowedBy(localUser);
         }
         
@@ -278,5 +279,26 @@ public class UserVMLite {
     
     public void setIsRecommendedSeller(boolean isRecommendedSeller) {
         this.isRecommendedSeller = isRecommendedSeller;
+    }
+    
+    @Override
+    public String toString() {
+        return "id=" + id + "\n" +
+                "name=" + lastName + " " + firstName + "\n" +
+                "email=" + email + "\n" +
+                "emailProvidedOnSignup=" + emailProvidedOnSignup + "\n" +
+                "emailValidated=" + emailValidated + "\n" +
+                "accountVerified=" + accountVerified + "\n" +
+                "fbLogin=" + isFbLogin + "\n" +
+                "signupDate=" + createdDate + "\n" +
+                "lastLogin=" + lastLogin + "\n" +
+                "totalLogin=" + totalLogin + "\n" +
+                "numLikes=" + numLikes + "\n" +
+                "numFollowers=" + numFollowers + "\n" +
+                "numFollowings=" + numFollowings + "\n" +
+                "numProducts=" + numProducts + "\n" +
+                "numComments=" + numComments + "\n" +
+                "numConversationsAsSender=" + numConversationsAsSender + "\n" +
+                "numConversationsAsRecipient=" + numConversationsAsRecipient;
     }
 }

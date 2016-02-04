@@ -10,9 +10,11 @@ import com.google.inject.Singleton;
 import models.Post;
 import models.User;
 import viewmodel.PostVMLite;
+import viewmodel.SellerVM;
 import viewmodel.UserVMLite;
 import common.cache.CalcServer;
 import common.model.FeedFilter.FeedType;
+import domain.DefaultValues;
 
 @Singleton
 public class FeedHandler {
@@ -139,17 +141,42 @@ public class FeedHandler {
             vms.add(vm);
         }
         
-        /*
-        for (Long userId : userIds) {
-            User user = User.findById(userId);
-            if (user == null || user.newUser || !user.active || user.deleted) {
+        return vms;
+    }
+    
+    public List<SellerVM> getFeedSellers(
+            Long id, Long offset, User localUser, FeedType feedType) {
+            
+        List<Long> userIds = new ArrayList<>();
+        switch (feedType) {
+        case USER_RECOMMENDED_SELLERS:
+            userIds = calcServer.getUserRecommendedSellersFeed(id, offset.doubleValue());
+            break;
+            
+        default:
+            break;
+        }
+            
+        List<SellerVM> vms = new ArrayList<>();
+        if(userIds.size() == 0){
+            return vms;
+        }
+        
+        List<User> users = User.getUsers(userIds);
+        for (User user : users) {
+            if (user.newUser || !user.active || user.deleted) {
                 continue;
             }
             
-            UserVMLite vm = new UserVMLite(user, localUser);
+            // get first batch of seller products
+            List<PostVMLite> posts = getFeedPosts(user.id, 0L, localUser, FeedType.USER_POSTED);
+            if (posts.size() > DefaultValues.MAX_SELLER_PRODUCTS_FOR_FEED) {
+                posts = posts.subList(0, DefaultValues.MAX_SELLER_PRODUCTS_FOR_FEED);
+            }
+            
+            SellerVM vm = new SellerVM(user, localUser, posts);
             vms.add(vm);
         }
-        */
         
         return vms;
     }
