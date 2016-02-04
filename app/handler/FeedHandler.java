@@ -83,7 +83,6 @@ public class FeedHandler {
     	    }
     	    
     		PostVMLite vm = new PostVMLite(post, localUser);
-    		//TODO: offset is bad name , need to change it to proper name.
     		vm.offset = calcServer.getScore(calcServer.getKey(feedType, id), post.id).longValue();
     		vms.add(vm);
     	}
@@ -96,7 +95,6 @@ public class FeedHandler {
             }
             
             PostVMLite vm = new PostVMLite(post, localUser);
-            //TODO: offset is bad name , need to change it to proper name.
             vm.offset = calcServer.getScore(calcServer.getKey(feedType, id), post.id).longValue();
             vms.add(vm);
     	}
@@ -138,6 +136,7 @@ public class FeedHandler {
             }
             
             UserVMLite vm = new UserVMLite(user, localUser);
+            vm.offset = calcServer.getScore(calcServer.getKey(feedType, id), user.id).longValue();
             vms.add(vm);
         }
         
@@ -175,6 +174,7 @@ public class FeedHandler {
             }
             
             SellerVM vm = new SellerVM(user, localUser, posts);
+            vm.offset = calcServer.getScore(calcServer.getKey(feedType, id), user.id).longValue();
             vms.add(vm);
         }
         

@@ -20,6 +20,9 @@ public class UserVMLite {
     @JsonProperty("numCollections") public Long numCollections = 0L;
     @JsonProperty("isFollowing") public boolean isFollowing = false;
 
+    // for feed
+    @JsonProperty("offset") public Long offset;
+    
     // admin readyonly fields
     @JsonProperty("createdDate") public Long createdDate;
     @JsonProperty("lastLogin") public Long lastLogin;

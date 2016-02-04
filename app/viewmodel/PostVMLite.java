@@ -28,6 +28,7 @@ public class PostVMLite {
 	@JsonProperty("numViews") public int numViews;
 	@JsonProperty("isLiked") public boolean isLiked = false;
     
+	// for feed
 	@JsonProperty("offset") public Long offset;
 	
 	// seller fields
