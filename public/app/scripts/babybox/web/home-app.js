@@ -83,7 +83,8 @@ babybox.config(['$translateProvider', function ($translateProvider) {
 	$translateProvider.translations('zh', {
 		// Home page
 	    "HOME_EXPLORE":"逛逛",
-	    "HOME_FOLLOWING":"關注",
+	    "HOME_SELLER":"推薦賣家",
+	    "HOME_FOLLOWING":"我的關注",
 	    // Category page
 	    "POPULAR":"熱門商品",
 	    "NEWEST":"最新上架",

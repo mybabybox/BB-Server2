@@ -62,10 +62,18 @@ babybox.service('postService',function($resource){
     );
     
     this.getHomeExploreFeed = $resource(
-            '/api/get-home-explore-feed/:offset	',
+            '/api/get-home-explore-feed/:offset',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
-                get: {method:'get' ,isArray:true, params:{offset: '@offset'}}
+                get: {method:'get',isArray:true, params:{offset: '@offset'}}
+            }
+    );
+    
+    this.getRecommendedSellersFeed = $resource(
+            '/api/get-recommended-sellers-feed/:offset',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get',isArray:true, params:{offset: '@offset'}}
             }
     );
     
@@ -73,7 +81,7 @@ babybox.service('postService',function($resource){
             '/api/get-home-following-feed/:offset',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
-                get: {method:'get' ,isArray:true, params:{offset: '@offset'}}
+                get: {method:'get',isArray:true, params:{offset: '@offset'}}
             }
     );
     

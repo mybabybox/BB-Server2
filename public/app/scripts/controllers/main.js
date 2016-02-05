@@ -11,7 +11,11 @@ babybox.controller('HomeController',
 
 	$scope.featuredItems = featuredItems;
 	$scope.userInfo = userInfo;
-	$scope.homeFeed=true;
+	
+	// home tabs
+	$scope.homeExplore = true;
+	$scope.homeSeller = false;
+	$scope.homeFollowing = false;
 	
 	$scope.forwardLink = function(featuredItem){
 		//console.log(featuredItem);
@@ -29,16 +33,34 @@ babybox.controller('HomeController',
 	}
 	
 	$scope.products = postService.getHomeExploreFeed.get({offset:0});
-	$scope. getHomeExploreProducts= function () {
+	$scope.getHomeExploreProducts = function () {
 		$scope.products = postService.getHomeExploreFeed.get({offset:0});
-		$scope.homeFeed=true;
 		$scope.noMore = true;
+		
+		// tabs
+		$scope.homeExplore = true;
+		$scope.homeSeller = false;
+		$scope.homeFollowing = false;
+	};
+
+	$scope.getRecommendedSellers = function () {
+		$scope.products = postService.getRecommendedSellersFeed.get({offset:0});
+		$scope.noMore = true;
+		
+		// tabs
+		$scope.homeExplore = false;
+		$scope.homeSeller = true;
+		$scope.homeFollowing = false;
 	};
 	
 	$scope.getHomeFollowingProducts = function () {
 		$scope.products = postService.getHomeFollowingFeed.get({offset:0});
-		$scope.homeFeed=false;
 		$scope.noMore = true;
+		
+		// tabs
+		$scope.homeExplore = false;
+		$scope.homeSeller = false;
+		$scope.homeFollowing = true;
 	};
 
 	$scope.categories = categoryService.getAllCategories.get();

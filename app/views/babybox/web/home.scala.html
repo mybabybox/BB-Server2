@@ -40,7 +40,8 @@
 	      <a href="/login">
 	       <div class='hold user_avatar ic_web_profile clickable_area'></div>
 	     </a>
-	     </span> <span ng-if="userInfo.isLoggedIn"
+	     </span> 
+	     <span ng-if="userInfo.isLoggedIn"
 	      style="padding-right: 15px; padding-top: 0px;"> <a
 	      href="/profile/{{userInfo.id}}">
 	       <div class="hold user_avatar clickable_area"
@@ -54,18 +55,9 @@
 	    </div>
 	    <div class="clearfix"></div>
 	   </div>
-	
-	   <div class='header-holder'></div>
-	   <div class="center-container">
-	    <div class="swiper-container gallery-top">
-	     <div class="swiper-wrapper" data-ng-if="featuredItems.length > 0">
-	      <div style="cursor: pointer;" class="swiper-slide" data-ng-repeat="featuredItem in featuredItems" data-ng-click="forwardLink(featuredItem)">
-	       <img data-ng-src="{{featuredItem.image}}" />
-	      </div>
-	     </div>
-	     <div class="swiper-pagination"></div>
-	    </div>
-	
+
+       <div class='header-holder'></div>
+       <div class="center-container">
 	    <div data-ng-include data-src="'/assets/app/views/babybox/web/home.html'"></div>
 	   </div>
 	  </div>

@@ -768,10 +768,10 @@ ul.header_tabs_fixed {
     border-top: 1px solid rgba(0, 0, 0, 0.05);
     border-bottom: 1px solid rgba(0, 0, 0, 0.09);
     background: #fafafa;
-    margin: 4px 0;
-    height: 40px;
-    line-height: 40px;
-    font-size: 15px
+    margin: 0 0 4px 0;
+    height: 35px;
+    line-height: 35px;
+    font-size: 14px
 }
 
 ul.header_tabs.half-pixel,
@@ -790,14 +790,14 @@ ul.header_tabs_fixed li.header_tab_item {
 
 ul.header_tabs li.header_tab_item,
 ul.header_tabs_fixed li.header_tab_item {
-    height: 40px
+    height: 35px
 }
 
 ul.header_tabs li.header_tab_item.active,
 ul.header_tabs_fixed li.header_tab_item.active {
     color: #FF76A4;
     border-bottom: 2px solid #FF76A4;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 ul.header_tabs li.header_tab_item a,
@@ -808,7 +808,7 @@ ul.header_tabs_fixed li.header_tab_item a {
 ul.header_tabs li.header_tab_item.active a,
 ul.header_tabs_fixed li.header_tab_item.active a {
     color: #FF76A4;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 ul.header_tabs_fixed {
