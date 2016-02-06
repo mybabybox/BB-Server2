@@ -10,7 +10,7 @@
   </a>
   </span>
   <span ng-if="userInfo.isLoggedIn" style="padding-right: 15px; padding-top: 0px;">
-   <a href="/profile/{{userInfo.id}}">
+   <a href="/seller/{{userInfo.id}}">
     <div class="hold user_avatar clickable_area"
      style="background-image: url(/image/get-mini-profile-image-by-id/{{userInfo.id}});"></div>
   </a>
@@ -101,7 +101,7 @@
   <div id="shop-part" class="shop-part-container">
    <div class="shop-part  isSeller ">
 
-    <a href="/profile/{{product.ownerId}}">
+    <a href="/seller/{{product.ownerId}}">
 
      <div class="top-holder">
       <div class="avatar-box">
@@ -153,7 +153,7 @@
      data-ng-repeat="comment in product.latestComments">
      <div class="flex-it">
       <div class="left">
-       <a href="/profile/{{comment.ownerId}}">
+       <a href="/seller/{{comment.ownerId}}">
         <div class="image-container">
          <div class="image" style="background-image: url(/image/get-mini-profile-image-by-id/{{comment.ownerId}});"></div>
         </div>
@@ -161,7 +161,7 @@
       </div>
       <div class="right flex1 flex-it">
        <div class="flex1">
-        <a href="/profile/{{comment.ownerId}}"><div class="name m14">{{comment.ownerName}}</div></a>
+        <a href="/seller/{{comment.ownerId}}"><div class="name m14">{{comment.ownerName}}</div></a>
         <div class="comment text r13">{{comment.body}}</div>
         <div class="param">
 			<!--div class="buyer-review m12" data-i18n="label_bueyer_review">buyer review</div-->

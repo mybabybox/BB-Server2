@@ -1,47 +1,37 @@
-<div class="margin-holder">
- <div class="margin-holder-inner">
-  <a class="item-href normal" href="/product/{{product.id}}">
-   <div class="holder normal">
-    <div class="image-wrapper">
-     <img
-      data-ng-src="/image/get-post-image-by-id/{{product.images[0]}}">
-      <img data-ng-if="product.sold" class="sold" src="../../../assets/app/images/general/icons/sold.png"> 
-     <div class="mask"></div>
-
-     <div class="status_band"></div>
+<div class="shop-part-container" style="margin:7px;">
+    <div class="shop-part">
+        <a data-ng-href="/seller/{{seller.id}}">
+            <div class="top-holder">
+                <div class="avatar-box">
+                   <img ng-src="/image/get-mini-profile-image-by-id/{{seller.id}}">
+                </div>
+                <div class="center-box">
+                    <div class="head-line m15">{{seller.displayName}}</div> 
+                    <span ng-if="seller.isPromotedSeller || seller.isVerifiedSeller">
+                        <i class="r-icon r-icon-verified"></i>
+                    </span>
+                    <div class="gray-line r12">{{'SELLER_FOLLOWERS'|translate}}: {{seller.numFollowers}}</div>
+                    <div class="head-line r12" ng-if="seller.aboutMe != ''">{{seller.aboutMe | limitTo: 100}}</div>
+                </div>
+            </div>
+        </a>
+        
+        <ul class="products-holder">
+            <li class="product-box" data-ng-repeat="product in seller.posts | limitTo: productsLength track by $index">
+                <a class="" data-ng-href="/seller/{{seller.id}}">
+                    <div ng-class="((seller.numMoreProducts > 0) && $last)? 'product-gradient':''">
+	                   <img data-ng-src="/image/get-post-image-by-id/{{product.images[0]}}">
+	                </div>
+	                <div class="product-count" data-ng-if="(seller.numMoreProducts > 0) && $last">
+	                    <div class="product-details-c">
+	                        <div class="product-details">
+	                            <div>+ {{seller.numMoreProducts}}</div>
+	                            <div class="txt">{{'PRODUCTS'|translate}}</div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </a>
+            </li>
+	    </ul>
     </div>
-   </div>
-   <div class="bottom normal false">
-    <div class="item-detail">
-     <div class="name L14 truncate">
-        <img class="logo" ng-src="{{product.countryIcon}}" ng-if="product.countryIcon && product.countryIcon != ''">{{product.title}}
-     </div>
-     <div class="price m12 truncate">
-      <span class="dollarfy_ext_int" style="display: inline;">${{product.price}}</span>
-      <span class="dollarfy_ext_int_strike" style="display: inline;" ng-if="product.originalPrice > 0">${{product.originalPrice}}</span>
-      <img class="item-tag" src="/assets/app/images/general/icons/free_delivery.png" ng-if="product.freeDelivery">
-      <span class="item-status right">
-        <div class="likes half">
-         <div class="icon_like ic_offerlist_like"></div>
-         <span class="number r12">{{product.numLikes}}</span>
-         <div class="clickable"></div>
-        </div>
-        <!--div class="comments half">
-         <div class="ic_offerlist_comment"></div>
-         <span class="number r12">{{product.numComments}}</span>
-         <div class="clickable"></div>
-        </div-->
-      </span>
-     </div>
-    </div>
-    <div class="action-text L12" data-i18n="label_this_product_normal"></div>
-    <div class="action-btn unlike" data-shopid="49220"
-     data-itemid="217532">
-     <span class="ic_unlike_icon"></span><span class="text L12"
-      data-i18n="label_unlike">Unlike</span>
-    </div>
-   </div>
-  </a>
-  <div class="data-stock hidden">458</div>
- </div>
 </div>

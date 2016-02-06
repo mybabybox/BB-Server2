@@ -278,12 +278,12 @@ label {
 }
 
 .shop-part-container .shop-part .top-holder .avatar-box {
-    height: 36px
+    height: 40px
 }
 
 .shop-part-container .shop-part .top-holder .avatar-box img {
-    border-radius: 18px;
-    height: 36px
+    border-radius: 20px;
+    height: 40px
 }
 
 .shop-part-container .shop-part .top-holder .center-box {
@@ -463,6 +463,89 @@ label {
     -webkit-flex: 13;
     -ms-flex: 13;
     -webkit-box-flex: 13
+}
+
+.seller-card .shop-part-container .shop-part .top-holder .avatar-box {
+    height: 50px
+}
+
+.seller-card .shop-part-container .shop-part .top-holder .avatar-box img {
+    border-radius: 25px;
+    height: 50px
+}
+
+.seller-card .shop-part-container .shop-part .products-holder {
+    display: inline-block;
+    align-items: center;
+    box-align: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-self: center;
+    -webkit-align-self: center;
+    margin: 10px 10px
+}
+
+.seller-card .shop-part-container .shop-part .products-holder li {
+    text-align: center
+}
+
+.seller-card .shop-part-container .shop-part .products-holder li.product-box {
+    display: inline-block;
+    width: 25%;
+    height: auto;
+    padding: 2px
+}
+
+.seller-card .shop-part-container .shop-part .products-holder li.product-box img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.seller-card .shop-part-container .shop-part .products-holder li.product-box .product-gradient {
+    position:relative;
+}
+
+.seller-card .shop-part-container .shop-part .products-holder li.product-box .product-gradient:after {
+    content:'';
+    position:absolute;
+    left:0; 
+    top:0;
+    width:100%; 
+    height:100%;
+    display:inline-block;
+    background: -moz-linear-gradient(top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.6)), color-stop(100%,rgba(0,0,0,0.6))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.6) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.6) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.6) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.6) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#a6000000',GradientType=0 ); /* IE6-9 */
+}
+
+.seller-card .shop-part-container .shop-part .products-holder li.product-box .product-count {
+    position: absolute;
+    width: 24%;
+    height: 24%;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    font-size: 14px;
+    line-height: 20px;
+    margin-top: -18%;
+    margin-right: 0px
+}
+
+.seller-card .shop-part-container .shop-part .products-holder li.product-box .product-count .product-details-c {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.seller-card .shop-part-container .shop-part .products-holder li.product-box .product-count .product-details-c .product-details {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .shop-part-container.inShop {

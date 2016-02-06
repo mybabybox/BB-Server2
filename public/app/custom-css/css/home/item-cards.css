@@ -152,6 +152,10 @@ label {
     height: 100%
 }
 
+.recommended_sellers_wrapper .item-card {
+    width: 100%	
+}
+
 .badge-fixed-width {
     display: inline-block;
     box-sizing: border-box;
@@ -526,7 +530,7 @@ body {
 }
 
 .item-card.simple .shop-part {
-    display: none
+    /*display: none*/
 }
 
 .item-card.simple .holder {

@@ -16,6 +16,7 @@ babybox.controller('HomeController',
 	$scope.homeExplore = true;
 	$scope.homeSeller = false;
 	$scope.homeFollowing = false;
+	$scope.productsLength = DefaultValues.MAX_SELLER_PRODUCTS_FOR_FEED;
 	
 	$scope.forwardLink = function(featuredItem){
 		//console.log(featuredItem);
@@ -44,7 +45,7 @@ babybox.controller('HomeController',
 	};
 
 	$scope.getRecommendedSellers = function () {
-		$scope.products = postService.getRecommendedSellersFeed.get({offset:0});
+		$scope.sellers = postService.getRecommendedSellersFeed.get({offset:0});
 		$scope.noMore = true;
 		
 		// tabs
