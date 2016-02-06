@@ -110,7 +110,7 @@
   <div class='shop-part-container inShop'>
    <div class='shop-part ' data-shopid=''>
     <ul class="bottom-holder isPC">
-     <li ng-class="activeflag? 'activetab': '' " class="products-box" ng-click="userProducts()">
+     <li ng-class="active? 'activetab': '' " class="products-box" ng-click="userProducts()">
       <div class="space"></div>
       <div class="box-left">
        <span class="icon ic_detail_product_web"> </span>
@@ -120,7 +120,7 @@
       <div class="space"></div>
      </li>
 
-     <li ng-class="activeflag? '': 'activetab' " class="reviews-box"
+     <li ng-class="active? '': 'activetab' " class="reviews-box"
       ng-click="likedProducts()">
       <div class="space"></div>
       <div class="box-left">

@@ -55,7 +55,7 @@ babybox.controller('HomeController',
 	
 	$scope.getRecommendedSellers = function () {
 		$scope.sellers = userService.getRecommendedSellersFeed.get({offset:0});
-		$scope.loadMoreSellers = true;
+		$scope.loadMore = true;
 		
 		// tabs
 		$scope.homeExplore = false;
@@ -66,63 +66,61 @@ babybox.controller('HomeController',
 	$scope.categories = categoryService.getAllCategories.get();
 	$scope.getHomeExploreProducts();
 	
-	var flag = true;
+	var loadingMore = false;
 	$scope.loadMoreProducts = function () {
 		if(!$scope.homeExplore && !$scope.homeFollowing){
 			return;
 		}
-		if($scope.products.length > 0 && $scope.loadMore && flag){
+		if($scope.products.length > 0 && $scope.loadMore && !loadingMore){
 			var len = $scope.products.length;
 			var off = $scope.products[len-1].offset;
+			loadingMore = true;
 			if($scope.homeExplore){
-				flag = false;
 				postService.getHomeExploreFeed.get({offset:off}, function(data){
 					if(data.length == 0) {
 						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
-						if(!flag) {
+						if(loadingMore) {
 							$scope.products.push(value);
 						}
 					});
-					flag=true;
+					loadingMore = false;
 				});
 			}
 			if($scope.homeFollowing){
-				flag = false;
 				postService.getHomeFollowingFeed.get({offset:off}, function(data){
 					if(data.length == 0) {
 						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
-						if(!flag)
+						if(loadingMore)
 							$scope.products.push(value);
 					});
-					flag=true;
+					loadingMore = false;
 				});
 			}
 		}		
 	}
 	
-	var flagSellers = true;
 	$scope.loadMoreSellers = function () {
 		if(!$scope.homeSeller){
 			return;
 		}
-		if($scope.sellers.length > 0 && $scope.loadMoreSellers && flagSellers){
+		if($scope.sellers.length > 0 && $scope.loadMore && !loadingMore){
 			var len = $scope.sellers.length;
 			var off = $scope.sellers[len-1].offset;
-			flagSellers = false;
+			loadingMore = true;
 			userService.getRecommendedSellersFeed.get({offset:off}, function(data){
 				if(data.length == 0) {
-					$scope.loadMoreSellers = false;
+					$scope.loadMore = false;
 				}
 				angular.forEach(data, function(value, key) {
-					if(!flagSellers) {
+					if(loadingMore) {
 						$scope.sellers.push(value);
 					}
 				});
-				flagSellers = true;
+				loadingMore = false;
 			});
 		}		
 	}
@@ -183,68 +181,69 @@ babybox.controller('CategoryPageController',
 	};
 	
 	var catId = $scope.cat.id;
-	var flag = true;
+	var loadingMore = false;
 	$scope.loadMoreProducts = function () {
-		if($scope.products.length > 0 && $scope.loadMore && flag){
+		if($scope.products.length > 0 && $scope.loadMore && !loadingMore){
 			var len = $scope.products.length;
 			var off = $scope.products[len-1].offset;
+
 			if($scope.catType == 'popular'){
-				flag = false;
+				loadingMore = true;
 				categoryService.getCategoryPopularFeed.get({id:catId , postType:"a", offset:off}, function(data){
 					if (data.length == 0) {
 						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
-						if (!flag) {
+						if (loadingMore) {
 							$scope.products.push(value);
 						}
 					});
-					flag = true;
+					loadingMore = false;
 				});
 			}
 
 			if($scope.catType == 'newest'){
-				flag = false;
+				loadingMore = true;
 				categoryService.getCategoryNewestFeed.get({id:catId , postType:"a", offset:off}, function(data){
 					if (data.length == 0) {
 						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
-						if (!flag) {
+						if (loadingMore) {
 							$scope.products.push(value);
 						}
 					});
-					flag=true;
+					loadingMore = false;
 				});
 			}
 			
 			if($scope.catType == 'high2low'){
-				flag = false;
+				loadingMore = true;
 				categoryService.getCategoryPriceHighLowFeed.get({id:catId , postType:"a", offset:off}, function(data){
 					if (data.length == 0) {
 						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
-						if (!flag) {
+						if (loadingMore) {
 							$scope.products.push(value);
 						}
 					});
-					flag=true;
+					loadingMore = false;
 				});
 			}
 			
 			if($scope.catType == 'low2high'){
-				flag = false;
+				loadingMore = true;
 				categoryService.getCategoryPriceLowHighFeed.get({id:catId , postType:"a", offset:off}, function(data){
 					if (data.length == 0) {
 						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
-						if (!flag) {
+						if (loadingMore) {
 							$scope.products.push(value);
 						}
 					});
-					flag=true;
+					loadingMore = false;
 				});
 			}
 		}		
@@ -388,7 +387,7 @@ babybox.controller('ProfileController',
 		location.reload();
 	};
 	 
-	$scope.activeflag = true;
+	$scope.active = true;
 	$scope.userInfo = userInfo;
 	$scope.user = profileUser;
 
@@ -414,48 +413,48 @@ babybox.controller('ProfileController',
 		$scope.user.numFollowings--;
 	}
 	$scope.userProducts = function() {
-		$scope.activeflag = true;
+		$scope.active = true;
 		$scope.loadMore = true;
 		$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
 	}
 	$scope.likedProducts = function() {
-		$scope.activeflag = false;
+		$scope.active = false;
 		$scope.loadMore = true;
 		$scope.products=userService.getUserLikedFeed.get({id:profileUser.id, offset:0});
 	}
 	
-	var flag = true;
+	var loadingMore = false;
 	$scope.loadMore = true;
 	$scope.loadMoreProducts = function () {
-		if($scope.products.length > 0 && $scope.loadMore && flag){
+		if($scope.products.length > 0 && $scope.loadMore && !loadingMore){
 			var len = $scope.products.length;
 			var off = $scope.products[len-1].offset;
-			if($scope.activeflag){
-				flag = false;
+			if($scope.active){
+				loadingMore = true;
 				userService.getUserPostedFeed.get({id:profileUser.id, offset:off}, function(data){
 					if (data.length == 0) {
 						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
-						if (!flag) {
+						if (loadingMore) {
 							$scope.products.push(value);
 						}
 					});
-					flag=true;
+					loadingMore = false;
 				});
 			}
-			if(!$scope.activeflag){
-				flag = false;
+			if(!$scope.active){
+				loadingMore = true;
 				userService.getUserLikedFeed.get({id:profileUser.id, offset:off}, function(data){
 					if (data.length == 0) {
 						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
-						if (!flag) {
+						if (loadingMore) {
 							$scope.products.push(value);
 						}
 					});
-					flag=true;
+					loadingMore = false;
 				});
 			}
 		}		
@@ -609,22 +608,22 @@ babybox.controller('CommentController',
 	}
 	
 	var off = 1;
-	var flag = true;
+	var loadingMore = false;
 	$scope.loadMore = true;
 	$scope.loadMoreComments = function () {
-		if($scope.comments.length > 0 && $scope.loadMore && flag){
-			flag = false;
+		if($scope.comments.length > 0 && $scope.loadMore && !loadingMore){
+			loadingMore = true;
 			postService.allComments.get({id:$scope.pid, offset:off}, function(data){
 				off++;
 				if (data.length == 0) {
 					$scope.loadMore = false;
 				}
 				angular.forEach(data, function(value, key) {	
-					if (!flag) {
+					if (loadingMore) {
 						$scope.comments.push(value);
 					}
 				});
-				flag=true;
+				loadingMore = false;
 
 			});
 		}
@@ -686,12 +685,12 @@ babybox.controller('UserFollowController',
 	}
 
 	var off = 1;
-	var flag = true;
+	var loadingMore = false;
 	$scope.loadMore = true;
 	$scope.loadMoreFollowers = function () {
-		if($scope.followers.length > 0 && $scope.loadMore && flag){
+		if($scope.followers.length > 0 && $scope.loadMore && !loadingMore){
 			if($scope.follow == 'followers'){
-				flag = false;
+				loadingMore = true;
 				followService.userfollowers.get({id:$scope.profileUser.id, offset:off}, function(data){
 					off++;
 					if (data.length == 0) {
@@ -699,15 +698,15 @@ babybox.controller('UserFollowController',
 					}
 					console.log(data);
 					angular.forEach(data, function(value, key) {
-						if (!flag) {
+						if (loadingMore) {
 							$scope.followers.push(value);
 						}
 					});
-					flag=true;
+					loadingMore = false;
 				});
 			}
 			if($scope.follow == 'followings'){
-				flag = false;
+				loadingMore = true;
 				followService.userfollowings.get({id:$scope.profileUser.id, offset:off}, function(data){
 					off++;
 					if (data.length == 0) {
@@ -715,11 +714,11 @@ babybox.controller('UserFollowController',
 					}
 					console.log(data);
 					angular.forEach(data, function(value, key) {
-						if (!flag) {
+						if (loadingMore) {
 							$scope.followers.push(value);
 						}
 					});
-					flag=true;
+					loadingMore = false;
 				});
 			}	
 		}	
