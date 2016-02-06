@@ -3,7 +3,7 @@
 var babybox = angular.module('babybox');
 
 babybox.controller('HomeController', 
-		function($scope, $translate, $location, $route, categoryService, postService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService, featuredItems) {
+		function($scope, $translate, $location, $route, categoryService, postService, userService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService, featuredItems) {
 	
 	writeMetaCanonical($location.absUrl());
 	
@@ -33,10 +33,9 @@ babybox.controller('HomeController',
 		window.location.href=url;
 	}
 	
-	$scope.products = postService.getHomeExploreFeed.get({offset:0});
 	$scope.getHomeExploreProducts = function () {
 		$scope.products = postService.getHomeExploreFeed.get({offset:0});
-		$scope.noMore = true;
+		$scope.loadMore = true;
 		
 		// tabs
 		$scope.homeExplore = true;
@@ -44,40 +43,42 @@ babybox.controller('HomeController',
 		$scope.homeFollowing = false;
 	};
 
-	$scope.getRecommendedSellers = function () {
-		$scope.sellers = postService.getRecommendedSellersFeed.get({offset:0});
-		$scope.noMore = true;
-		
-		// tabs
-		$scope.homeExplore = false;
-		$scope.homeSeller = true;
-		$scope.homeFollowing = false;
-	};
-	
 	$scope.getHomeFollowingProducts = function () {
 		$scope.products = postService.getHomeFollowingFeed.get({offset:0});
-		$scope.noMore = true;
+		$scope.loadMore = true;
 		
 		// tabs
 		$scope.homeExplore = false;
 		$scope.homeSeller = false;
 		$scope.homeFollowing = true;
 	};
+	
+	$scope.getRecommendedSellers = function () {
+		$scope.sellers = userService.getRecommendedSellersFeed.get({offset:0});
+		$scope.loadMoreSellers = true;
+		
+		// tabs
+		$scope.homeExplore = false;
+		$scope.homeSeller = true;
+		$scope.homeFollowing = false;
+	};
 
 	$scope.categories = categoryService.getAllCategories.get();
-
+	$scope.getHomeExploreProducts();
+	
 	var flag = true;
-	$scope.noMore = true;
-	$scope.loadMore = function () {
-		if(($scope.products.length!=0) && ($scope.noMore==true) && flag == true){
-
+	$scope.loadMoreProducts = function () {
+		if(!$scope.homeExplore && !$scope.homeFollowing){
+			return;
+		}
+		if($scope.products.length > 0 && $scope.loadMore && flag){
 			var len = $scope.products.length;
 			var off = $scope.products[len-1].offset;
-			if($scope.homeFeed){
+			if($scope.homeExplore){
 				flag = false;
 				postService.getHomeExploreFeed.get({offset:off}, function(data){
 					if(data.length == 0) {
-						$scope.noMore = false;
+						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
 						if(!flag) {
@@ -87,11 +88,11 @@ babybox.controller('HomeController',
 					flag=true;
 				});
 			}
-			if(!$scope.homeFeed){
+			if($scope.homeFollowing){
 				flag = false;
 				postService.getHomeFollowingFeed.get({offset:off}, function(data){
 					if(data.length == 0) {
-						$scope.noMore = false;
+						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
 						if(!flag)
@@ -100,6 +101,29 @@ babybox.controller('HomeController',
 					flag=true;
 				});
 			}
+		}		
+	}
+	
+	var flagSellers = true;
+	$scope.loadMoreSellers = function () {
+		if(!$scope.homeSeller){
+			return;
+		}
+		if($scope.sellers.length > 0 && $scope.loadMoreSellers && flagSellers){
+			var len = $scope.sellers.length;
+			var off = $scope.sellers[len-1].offset;
+			flagSellers = false;
+			userService.getRecommendedSellersFeed.get({offset:off}, function(data){
+				if(data.length == 0) {
+					$scope.loadMoreSellers = false;
+				}
+				angular.forEach(data, function(value, key) {
+					if(!flagSellers) {
+						$scope.sellers.push(value);
+					}
+				});
+				flagSellers = true;
+			});
 		}		
 	}
 	
@@ -113,7 +137,7 @@ babybox.controller('HomeController',
 		}
 	});
 	
-	$scope.gotoTop=function(){
+	$scope.gotoTop = function(){
 		$location.hash('');
 		$anchorScroll();
 	};
@@ -138,7 +162,6 @@ babybox.controller('CategoryPageController',
 	//console.log($scope.products);
 	
 	$scope.cat = category;
-	var catid = $scope.cat.id;
 	
 	//we are routing this from scala file so we can't able to get $routeParams , so this is just a workaround
 	var url = $location.absUrl();
@@ -146,31 +169,30 @@ babybox.controller('CategoryPageController',
 	$scope.catType = values[values.length-1];
 
 	if($scope.catType == 'popular')
-		$scope.noMore = true;
+		$scope.loadMore = true;
 	if($scope.catType == 'newest')
-		$scope.noMore = true;
+		$scope.loadMore = true;
 	if($scope.catType == 'high2low')
-		$scope.noMore = true;
+		$scope.loadMore = true;
 	if($scope.catType == 'low2high')
-		$scope.noMore = true;
+		$scope.loadMore = true;
 	
 	$scope.gotoTop=function(){
 		$location.hash('');
 		$anchorScroll();
 	};
 	
-	var catid = $scope.cat.id;
+	var catId = $scope.cat.id;
 	var flag = true;
-	
-	$scope.loadMore = function () {
-		if(($scope.products.length!=0) && ($scope.noMore == true) && flag == true){
+	$scope.loadMoreProducts = function () {
+		if($scope.products.length > 0 && $scope.loadMore && flag){
 			var len = $scope.products.length;
 			var off = $scope.products[len-1].offset;
 			if($scope.catType == 'popular'){
 				flag = false;
-				categoryService.getCategoryPopularFeed.get({id:catid , postType:"a", offset:off}, function(data){
+				categoryService.getCategoryPopularFeed.get({id:catId , postType:"a", offset:off}, function(data){
 					if (data.length == 0) {
-						$scope.noMore = false;
+						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
 						if (!flag) {
@@ -183,9 +205,9 @@ babybox.controller('CategoryPageController',
 
 			if($scope.catType == 'newest'){
 				flag = false;
-				categoryService.getCategoryNewestFeed.get({id:catid , postType:"a", offset:off}, function(data){
+				categoryService.getCategoryNewestFeed.get({id:catId , postType:"a", offset:off}, function(data){
 					if (data.length == 0) {
-						$scope.noMore = false;
+						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
 						if (!flag) {
@@ -198,9 +220,9 @@ babybox.controller('CategoryPageController',
 			
 			if($scope.catType == 'high2low'){
 				flag = false;
-				categoryService.getCategoryPriceHighLowFeed.get({id:catid , postType:"a", offset:off}, function(data){
+				categoryService.getCategoryPriceHighLowFeed.get({id:catId , postType:"a", offset:off}, function(data){
 					if (data.length == 0) {
-						$scope.noMore = false;
+						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
 						if (!flag) {
@@ -213,9 +235,9 @@ babybox.controller('CategoryPageController',
 			
 			if($scope.catType == 'low2high'){
 				flag = false;
-				categoryService.getCategoryPriceLowHighFeed.get({id:catid , postType:"a", offset:off}, function(data){
+				categoryService.getCategoryPriceLowHighFeed.get({id:catId , postType:"a", offset:off}, function(data){
 					if (data.length == 0) {
-						$scope.noMore = false;
+						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
 						if (!flag) {
@@ -393,27 +415,26 @@ babybox.controller('ProfileController',
 	}
 	$scope.userProducts = function() {
 		$scope.activeflag = true;
-		$scope.noMore = true;
+		$scope.loadMore = true;
 		$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
 	}
 	$scope.likedProducts = function() {
 		$scope.activeflag = false;
-		$scope.noMore = true;
+		$scope.loadMore = true;
 		$scope.products=userService.getUserLikedFeed.get({id:profileUser.id, offset:0});
 	}
 	
 	var flag = true;
-	$scope.noMore = true;
-	
-	$scope.loadMore = function () {	
-		if(($scope.products.length!=0) && ($scope.noMore == true) && flag == true){
+	$scope.loadMore = true;
+	$scope.loadMoreProducts = function () {
+		if($scope.products.length > 0 && $scope.loadMore && flag){
 			var len = $scope.products.length;
 			var off = $scope.products[len-1].offset;
 			if($scope.activeflag){
 				flag = false;
 				userService.getUserPostedFeed.get({id:profileUser.id, offset:off}, function(data){
 					if (data.length == 0) {
-						$scope.noMore = false;
+						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
 						if (!flag) {
@@ -427,7 +448,7 @@ babybox.controller('ProfileController',
 				flag = false;
 				userService.getUserLikedFeed.get({id:profileUser.id, offset:off}, function(data){
 					if (data.length == 0) {
-						$scope.noMore = false;
+						$scope.loadMore = false;
 					}
 					angular.forEach(data, function(value, key) {
 						if (!flag) {
@@ -586,16 +607,17 @@ babybox.controller('CommentController',
 			commentBody="";
 		});
 	}
+	
 	var off = 1;
 	var flag = true;
-	$scope.noMore = true;
-	$scope.loadMore = function () {	
-		if(($scope.comments.length!=0) && ($scope.noMore == true) && flag == true){
+	$scope.loadMore = true;
+	$scope.loadMoreComments = function () {
+		if($scope.comments.length > 0 && $scope.loadMore && flag){
 			flag = false;
 			postService.allComments.get({id:$scope.pid, offset:off}, function(data){
 				off++;
 				if (data.length == 0) {
-					$scope.noMore = false;
+					$scope.loadMore = false;
 				}
 				angular.forEach(data, function(value, key) {	
 					if (!flag) {
@@ -646,7 +668,7 @@ babybox.controller('UserFollowController',
 	//$scope.follow = values[values.length-2];
 	if($scope.follow == 'followers' || 
 			$scope.follow == 'followings') {
-		$scope.noMore = true;
+		$scope.loadMore = true;
 	}
 	
 	$scope.onFollowUser = function(formFollower) {
@@ -665,15 +687,15 @@ babybox.controller('UserFollowController',
 
 	var off = 1;
 	var flag = true;
-	$scope.noMore = true;
-	$scope.loadMore = function () {	
-		if(($scope.followers.length!=0) && ($scope.noMore == true) && flag == true){
+	$scope.loadMore = true;
+	$scope.loadMoreFollowers = function () {
+		if($scope.followers.length > 0 && $scope.loadMore && flag){
 			if($scope.follow == 'followers'){
 				flag = false;
 				followService.userfollowers.get({id:$scope.profileUser.id, offset:off}, function(data){
 					off++;
 					if (data.length == 0) {
-						$scope.noMore = false;
+						$scope.loadMore = false;
 					}
 					console.log(data);
 					angular.forEach(data, function(value, key) {
@@ -689,7 +711,7 @@ babybox.controller('UserFollowController',
 				followService.userfollowings.get({id:$scope.profileUser.id, offset:off}, function(data){
 					off++;
 					if (data.length == 0) {
-						$scope.noMore = false;
+						$scope.loadMore = false;
 					}
 					console.log(data);
 					angular.forEach(data, function(value, key) {

@@ -51,7 +51,6 @@ babybox.service('categoryService',function($resource){
     
 });
 
-
 babybox.service('postService',function($resource){
     this.getPostInfo = $resource(
             '/api/get-post/:id',
@@ -63,14 +62,6 @@ babybox.service('postService',function($resource){
     
     this.getHomeExploreFeed = $resource(
             '/api/get-home-explore-feed/:offset',
-            {alt:'json',callback:'JSON_CALLBACK'},
-            {
-                get: {method:'get',isArray:true, params:{offset: '@offset'}}
-            }
-    );
-    
-    this.getRecommendedSellersFeed = $resource(
-            '/api/get-recommended-sellers-feed/:offset',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
                 get: {method:'get',isArray:true, params:{offset: '@offset'}}
@@ -95,6 +86,14 @@ babybox.service('postService',function($resource){
 });
 
 babybox.service('userService',function($resource){
+    this.getRecommendedSellersFeed = $resource(
+            '/api/get-recommended-sellers-feed/:offset',
+            {alt:'json',callback:'JSON_CALLBACK'},
+            {
+                get: {method:'get',isArray:true, params:{offset: '@offset'}}
+            }
+    );
+    
 	this.getUserLikedFeed = $resource(
 			'/api/get-user-liked-feed/:id/:offset',
 			{alt:'json',callback:'JSON_CALLBACK'},

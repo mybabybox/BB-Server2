@@ -374,7 +374,6 @@ public class CalcServer {
 			    }
 			}
 		}
-		jedisCache.expire(getKey(FeedType.HOME_EXPLORE, userId), (user == null) ? FEED_SNAPSHOT_LONG_EXPIRY_SECS : FEED_SNAPSHOT_EXPIRY_SECS);
 		
 		sw.stop();
 		logger.underlyingLogger().debug("buildUserExploreFeedQueue completed. Took "+sw.getElapsedSecs()+"s");
@@ -401,20 +400,19 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildHomeFollowingQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 	
-	private void buildUserRecommendedSellersFeedQueue(Long userId) {
+	private void buildUserRecommendedSellersFeedQueue(Long id) {
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
-        logger.underlyingLogger().debug("buildUserRecommendedSellersFeedQueue starts - u="+userId);
+        logger.underlyingLogger().debug("buildUserRecommendedSellersFeedQueue starts - u="+id);
         
         // randomize RECOMMENDED_SELLERS queue
         Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.RECOMMENDED_SELLERS));
         for (String value : values) {
             try {
                 Long sellerId = Long.parseLong(value);
-                jedisCache.putToSortedSet(getKey(FeedType.USER_RECOMMENDED_SELLERS, userId), Math.random() * FEED_SCORE_HIGH_BASE, sellerId.toString());
+                jedisCache.putToSortedSet(getKey(FeedType.USER_RECOMMENDED_SELLERS, id), Math.random() * FEED_SCORE_HIGH_BASE, sellerId.toString());
             } catch (Exception e) {
             }
         }
-        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS, userId), FEED_SNAPSHOT_EXPIRY_SECS);
         
         sw.stop();
         logger.underlyingLogger().debug("buildUserRecommendedSellersFeedQueue completed. Took "+sw.getElapsedSecs()+"s");
@@ -570,7 +568,7 @@ public class CalcServer {
             } catch (Exception e) {
             }
         }
-        jedisCache.expire(getKey(FeedType.HOME_EXPLORE,id), FEED_SNAPSHOT_EXPIRY_SECS);
+        jedisCache.expire(getKey(FeedType.HOME_EXPLORE, id), (id == User.NO_LOGIN_ID) ? FEED_SNAPSHOT_LONG_EXPIRY_SECS : FEED_SNAPSHOT_EXPIRY_SECS);
         return postIds;
 	}
 	
@@ -602,7 +600,7 @@ public class CalcServer {
             } catch (Exception e) {
             }
         }
-        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS,id), FEED_SNAPSHOT_LONG_EXPIRY_SECS);
+        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS, id), (id == User.NO_LOGIN_ID) ? FEED_SNAPSHOT_LONG_EXPIRY_SECS : FEED_SNAPSHOT_EXPIRY_SECS);
         return postIds;
     }
 	
