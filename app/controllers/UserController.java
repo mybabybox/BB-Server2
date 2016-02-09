@@ -1129,7 +1129,7 @@ public class UserController extends Controller {
         }
     	
     	// TODO: make it infinite scroll
-    	List<Activity> activities = Activity.getActivities(localUser.id);
+    	List<Activity> activities = Activity.getActivities(localUser.id, offset);
     	List<ActivityVM> vms = new ArrayList<>();
 		for (Activity activity : activities) {
 			ActivityVM vm = new ActivityVM(activity);
