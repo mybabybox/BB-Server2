@@ -1,28 +1,40 @@
 <div class="shop-part-container" style="margin:7px;">
     <div class="shop-part">
-        <a data-ng-href="/seller/{{seller.id}}">
-            <div class="top-holder">
-                <div class="avatar-box">
-                   <img ng-src="/image/get-mini-profile-image-by-id/{{seller.id}}">
+        <div class="top-holder">
+            <a data-ng-href="/seller/{{seller.id}}">
+				<div class="avatar-box">
+				   <img ng-src="/image/get-mini-profile-image-by-id/{{seller.id}}">
+				</div>
+			</a>
+            <div class="center-box">
+                <a data-ng-href="/seller/{{seller.id}}">
+	                <div class="head-line m15">{{seller.displayName}}</div> 
+	                <span ng-if="seller.isPromotedSeller || seller.isVerifiedSeller">
+	                    <i class="r-icon r-icon-verified"></i>
+	                </span>
+                </a>
+                <div class="gray-line r12">{{'SELLER_FOLLOWERS'|translate}}: {{seller.numFollowers}}</div>
+                <div class="r12" ng-if="seller.aboutMe != ''">{{seller.aboutMe | limitTo: 65}}</div>
+                
+                <div ng-if="!seller.isFollowing" ng-click="onFollowUser(seller)">
+                    <div ng-class="seller.id==userInfo.id ? 'hide' : '' "   class='btn-follow follow r10 clickable_area'>{{'FOLLOW'|translate}}</div>
                 </div>
-                <div class="center-box">
-                    <div class="head-line m15">{{seller.displayName}}</div> 
-                    <span ng-if="seller.isPromotedSeller || seller.isVerifiedSeller">
-                        <i class="r-icon r-icon-verified"></i>
-                    </span>
-                    <div class="gray-line r12">{{'SELLER_FOLLOWERS'|translate}}: {{seller.numFollowers}}</div>
-                    <div class="head-line r12" ng-if="seller.aboutMe != ''">{{seller.aboutMe | limitTo: 100}}</div>
+                <div ng-if="seller.isFollowing" ng-click="onUnFollowUser(seller)">
+                    <div ng-class="seller.id==userInfo.id ? 'hide' : '' " class='btn-follow follow r10 active clickable_area'>{{'FOLLOWING'|translate}}</div>
                 </div>
             </div>
-        </a>
+        </div>
         
         <ul class="products-holder">
             <li class="product-box" data-ng-repeat="product in seller.posts | limitTo: productsLength track by $index">
-                <a class="" data-ng-href="/seller/{{seller.id}}">
-                    <div ng-class="((seller.numMoreProducts > 0) && $last)? 'product-gradient':''">
+                <a class="" data-ng-href="/product/{{product.id}}" ng-if="!((seller.numMoreProducts > 0) && $last)">
+                    <img data-ng-src="/image/get-post-image-by-id/{{product.images[0]}}">
+                </a>
+                <a class="" data-ng-href="/seller/{{seller.id}}" ng-if="((seller.numMoreProducts > 0) && $last)">
+                    <div class="product-gradient">
 	                   <img data-ng-src="/image/get-post-image-by-id/{{product.images[0]}}">
 	                </div>
-	                <div class="product-count" data-ng-if="(seller.numMoreProducts > 0) && $last">
+	                <div class="product-count">
 	                    <div class="product-details-c">
 	                        <div class="product-details">
 	                            <div>+ {{seller.numMoreProducts}}</div>

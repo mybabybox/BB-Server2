@@ -26,28 +26,26 @@
  </div>
 </div>
 
-
 <div id="shop-followers" class="has-toolbar page-holder center-container" style="padding-top: 44px;">
-<div infinite-scroll='loadMoreFollowers()' infinite-scroll-distance='2'>
- <ul class="follower-list" ng-repeat="follower in followers">
-  <li class="clickable_area middle-centered-div">
-  <a href="/seller/{{follower.id}}" class="shop-href">
-    <div class="portrait" style="background-image: url(/image/get-mini-profile-image-by-id/{{follower.id}})"></div>
-  </a>
- <div class="central-part flex1">
-  <div class="up m14">
-    <a href="/seller/{{follower.id}}" class="shop-href">{{follower.displayName}}</a>
-  </div>
+ <div infinite-scroll='loadMoreFollowers()' infinite-scroll-distance='2'>
+  <ul class="follower-list" ng-repeat="follower in followers">
+   <li class="clickable_area middle-centered-div">
+    <a href="/seller/{{follower.id}}" class="shop-href">
+     <div class="portrait" style="background-image: url(/image/get-mini-profile-image-by-id/{{follower.id}})"></div>
+    </a>
+    <div class="central-part flex1">
+     <div class="up m14">
+      <a href="/seller/{{follower.id}}" class="shop-href">{{follower.displayName}}</a>
+     </div>
+    </div>
+    <div ng-if="!follower.isFollowing" ng-click="onFollowUser(follower)">
+     <div ng-if="userInfo.isLoggedIn && follower.id != userInfo.id" class="btn-follow follow L14" ><span class="L14">{{'FOLLOW'|translate}}</span></div>
+    </div>
+    <div ng-if="follower.isFollowing" ng-click="onUnFollowUser(follower)">
+     <div ng-if="userInfo.isLoggedIn && follower.id != userInfo.isLoggedIn" class="btn-follow follow L14 active" ><span class="L14">{{'FOLLOWING'|translate}}</span></div>
+    </div>
+   </li>
+  </ul>
  </div>
- <div ng-if="!follower.isFollowing" ng-click="onFollowUser(follower)">
-   <div ng-if="userInfo.isLoggedIn && follower.id != userInfo.id" class="btn-follow follow L14" ><span class="L14">{{'FOLLOW'|translate}}</span></div>
-  </div>
-  <div ng-if="follower.isFollowing" ng-click="onUnFollowUser(follower)">
-   <div ng-if="userInfo.isLoggedIn && follower.id != userInfo.isLoggedIn" class="btn-follow follow L14 active" ><span class="L14">{{'FOLLOWING'|translate}}</span></div>
-  </div>
- </li>
-</ul>
 </div>
-</div>
-<div id="back-to-top" data-ng-click="gotoTop()" class="gtop ic_maketop None" 
-style="z-index: 10; display: none;"></div>
+<div id="back-to-top" data-ng-click="gotoTop()" class="gtop ic_maketop None" style="z-index: 10; display: none;"></div>

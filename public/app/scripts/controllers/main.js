@@ -3,7 +3,7 @@
 var babybox = angular.module('babybox');
 
 babybox.controller('HomeController', 
-		function($scope, $translate, $location, $route, categoryService, postService, userService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService, featuredItems) {
+		function($scope, $translate, $location, $route, $window, categoryService, postService, userService, followService, $rootScope, ngDialog, userInfo, $anchorScroll, usSpinnerService, featuredItems) {
 	
 	writeMetaCanonical($location.absUrl());
 	
@@ -123,6 +123,26 @@ babybox.controller('HomeController',
 				loadingMore = false;
 			});
 		}		
+	}
+	
+	$scope.onFollowUser = function(user) {
+		if ($scope.userInfo.isLoggedIn) {
+			if ($scope.userInfo.newUser) {
+				$window.location.href ='/home';
+			} else {
+				followService.followUser.get({id:user.id});
+				user.isFollowing = !user.isFollowing;
+				user.numFollowings++;
+			}
+		} else {
+			$window.location.href ='/login';
+		}
+	}
+	
+	$scope.onUnFollowUser = function(user) {
+		followService.unFollowUser.get({id:user.id});
+		user.isFollowing = !user.isFollowing;
+		user.numFollowings--;
 	}
 	
 	// UI helper
@@ -412,11 +432,13 @@ babybox.controller('ProfileController',
 		$scope.user.isFollowing = !$scope.user.isFollowing;
 		$scope.user.numFollowings--;
 	}
+	
 	$scope.userProducts = function() {
 		$scope.active = true;
 		$scope.loadMore = true;
 		$scope.products = userService.getUserPostedFeed.get({id:profileUser.id, offset:0});
 	}
+	
 	$scope.likedProducts = function() {
 		$scope.active = false;
 		$scope.loadMore = true;
@@ -670,18 +692,18 @@ babybox.controller('UserFollowController',
 		$scope.loadMore = true;
 	}
 	
-	$scope.onFollowUser = function(formFollower) {
-		if(formFollower.id != $scope.userInfo.id){
-			followService.followUser.get({id:formFollower.id});
-			formFollower.isFollowing = !formFollower.isFollowing;
-			formFollower.numFollowings++;
+	$scope.onFollowUser = function(user) {
+		if(user.id != $scope.userInfo.id){
+			followService.followUser.get({id:user.id});
+			user.isFollowing = !user.isFollowing;
+			user.numFollowings++;
 		}
 	}
 	
-	$scope.onUnFollowUser = function(formFollower) {
-		followService.unFollowUser.get({id:formFollower.id});
-		formFollower.isFollowing = !formFollower.isFollowing;
-		formFollower.numFollowings--;
+	$scope.onUnFollowUser = function(user) {
+		followService.unFollowUser.get({id:user.id});
+		user.isFollowing = !user.isFollowing;
+		user.numFollowings--;
 	}
 
 	var off = 1;
