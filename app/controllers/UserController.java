@@ -1128,7 +1128,6 @@ public class UserController extends Controller {
             return notFound();
         }
     	
-    	// TODO: make it infinite scroll
     	List<Activity> activities = Activity.getActivities(localUser.id, offset);
     	List<ActivityVM> vms = new ArrayList<>();
 		for (Activity activity : activities) {
@@ -1136,11 +1135,13 @@ public class UserController extends Controller {
 			vms.add(vm);
 			
 			// mark read
-			activity.viewed = true;
-			activity.save();
+			if (!activity.viewed) {
+    			activity.viewed = true;
+    			activity.save();
+			}
 		}
 		
-		// increment notification counter for the recipient
+		// reset notification counter for the recipient
         if (offset == 0) {
             resetActivitiesCount();
         }

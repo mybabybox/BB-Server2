@@ -79,7 +79,8 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
 		NEW_GAME_BADGE
 	}
 
-	public Activity() {}
+	public Activity() {
+	}
 	
 	public Activity(ActivityType activityType, Long userId, Boolean userIsOwner,  
 			Long actor, Long actorImage, String actorName,  
@@ -94,6 +95,9 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
 		this.targetImage = targetImage;
 		this.targetName = targetName;
 		setActorTargetType();
+		
+		// increment notification counter for the recipient
+        NotificationCounter.incrementActivitiesCount(userId);
 	}
 
 	private void setActorTargetType() {
@@ -132,14 +136,6 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
             this.targetType = SocialObjectType.POST;
             break;
 		}
-	}
-
-	@Override
-	public void postSave() {
-		super.postSave();
-
-		// increment notification counter for the recipient
-		NotificationCounter.incrementActivitiesCount(userId);
 	}
 
 	public static void purgeActivity() {
