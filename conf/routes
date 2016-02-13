@@ -121,6 +121,7 @@ GET     /image/get-mini-message-image-by-id/:id     controllers.UserController.g
 
 # Login
 POST    /api/login/mobile                           controllers.Application.doLoginMobile
+POST    /login/mobile                               controllers.Application.doLoginMobile
 POST    /mobile/login                               controllers.Application.doLoginMobile
 
 GET     /api/init-new-user                          @controllers.Application.initNewUser
