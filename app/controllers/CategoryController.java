@@ -64,11 +64,11 @@ public class CategoryController extends Controller{
 		}
 		List<PostVMLite> vms = null;
 		if (FeedFilter.ConditionType.ALL.equals(condition)) {
-		    feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_POPULAR);
+		    vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_POPULAR);
 		} else if (FeedFilter.ConditionType.NEW.equals(condition)) {
-		    feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_POPULAR_NEW);
+		    vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_POPULAR_NEW);
 		} else if (FeedFilter.ConditionType.USED.equals(condition)) {
-		    feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_POPULAR_USED);
+		    vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_POPULAR_USED);
 		}
 		return ok(Json.toJson(vms));
 	}
