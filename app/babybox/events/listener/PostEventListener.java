@@ -76,14 +76,15 @@ public class PostEventListener extends EventListener {
     public void recordEditPostEvent(EditPostEvent map){
 	    try {
             Post post = (Post) map.get("post");
-            Category category = (Category) map.get("category");
+            Category oldCategory = (Category) map.get("category");
             
-            // same category, no change
-            if (post.category.id == category.id) {
-                return;
+            // category change
+            if (post.category.id != oldCategory.id) {
+                CalcServer.instance().removeFromCategoryQueues(post, oldCategory);
+            } else {
+                CalcServer.instance().removeFromCategoryQueues(post, post.category);
             }
             
-            CalcServer.instance().removeFromCategoryQueues(post, category);
             CalcServer.instance().addToCategoryQueues(post);
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);

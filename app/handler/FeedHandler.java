@@ -48,6 +48,14 @@ public class FeedHandler {
         	postIds = calcServer.getCategoryPopularFeed(id, offset.doubleValue());
         	break;
         	
+        case CATEGORY_POPULAR_NEW:
+            postIds = calcServer.getCategoryPopularNewFeed(id, offset.doubleValue());
+            break;
+        
+        case CATEGORY_POPULAR_USED:
+            postIds = calcServer.getCategoryPopularUsedFeed(id, offset.doubleValue());
+            break;
+        
         case CATEGORY_NEWEST:
         	postIds = calcServer.getCategoryNewestFeed(id, offset.doubleValue());
         	break;

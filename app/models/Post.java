@@ -55,7 +55,7 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	@ManyToOne(cascade = CascadeType.REMOVE)
 	public Folder folder;
 
-	@ManyToOne(cascade=CascadeType.REMOVE)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	public Collection collection;
 
 	@ManyToOne
@@ -152,6 +152,13 @@ public class Post extends SocialObject implements Likeable, Commentable {
 		this.deviceType = deviceType;
 	}
 
+	public boolean isNewCondition() {
+        return conditionType == null ||    // should never happens...
+                ConditionType.NEW_WITH_TAG.equals(conditionType) || 
+                ConditionType.NEW_WITHOUT_TAG.equals(conditionType);
+                
+    }
+	
     public boolean hasHashtag(Hashtag hashtag) {
         return systemHashtags.contains(hashtag) || sellerHashtags.contains(hashtag);
     }

@@ -25,11 +25,11 @@ import play.Play;
 import play.db.jpa.JPA;
 
 import com.google.inject.Singleton;
+
 import common.model.FeedFilter.FeedType;
 import common.schedule.JobScheduler;
 import common.thread.ThreadLocalOverride;
 import common.utils.NanoSecondStopWatch;
-
 import domain.DefaultValues;
 
 @Singleton
@@ -95,19 +95,21 @@ public class CalcServer {
 	
 	public void clearCategoryQueues() {
 		for(Category category : Category.getAllCategories()){
-			jedisCache.remove(getKey(FeedType.CATEGORY_PRICE_HIGH_LOW,category.id));
-			jedisCache.remove(getKey(FeedType.CATEGORY_NEWEST,category.id));
-			jedisCache.remove(getKey(FeedType.CATEGORY_POPULAR,category.id));
-			jedisCache.remove(getKey(FeedType.CATEGORY_PRICE_LOW_HIGH,category.id));
+		    jedisCache.remove(getKey(FeedType.CATEGORY_POPULAR,category.id));
+		    jedisCache.remove(getKey(FeedType.CATEGORY_POPULAR_NEW,category.id));
+		    jedisCache.remove(getKey(FeedType.CATEGORY_POPULAR_USED,category.id));
+		    jedisCache.remove(getKey(FeedType.CATEGORY_NEWEST,category.id));
+		    jedisCache.remove(getKey(FeedType.CATEGORY_PRICE_LOW_HIGH,category.id));
 		}
 	}
 	
-	public void clearHashtagsQueues() {
+	public void clearHashtagQueues() {
         for(Hashtag hashtag : Hashtag.getAllHashtags()){
-            jedisCache.remove(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH,hashtag.id));
-            jedisCache.remove(getKey(FeedType.HASHTAG_PRICE_HIGH_LOW,hashtag.id));
             jedisCache.remove(getKey(FeedType.HASHTAG_POPULAR,hashtag.id));
+            jedisCache.remove(getKey(FeedType.HASHTAG_POPULAR_NEW,hashtag.id));
+            jedisCache.remove(getKey(FeedType.HASHTAG_POPULAR_USED,hashtag.id));
             jedisCache.remove(getKey(FeedType.HASHTAG_NEWEST,hashtag.id));
+            jedisCache.remove(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH,hashtag.id));
         }
 	}
 	
@@ -121,15 +123,6 @@ public class CalcServer {
 	
 	public void clearPostQueues(Post post) {
 		jedisCache.remove(getKey(FeedType.PRODUCT_LIKES,post.id));
-	}
-
-
-	public Long calculateBaseScore(Post post) {
-		// skip already calculated posts during server startup
-		if (ThreadLocalOverride.isServerStartingUp() && post.baseScore > 0L) {
-			return post.baseScore;
-		}
-		return formula.computeBaseScore(post);
 	}
 	
 	/**
@@ -174,31 +167,36 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildUserFollowingsQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 	
+    private void addToHashtagPopularQueue(Hashtag hashtag, Post post) {
+        if (post.soldMarked) {
+            return;
+        }
+        if(post.hasHashtag(hashtag)) {
+            Double timeScore = calculateTimeScore(post, true);
+            jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_POPULAR,hashtag.id),  timeScore.doubleValue() * FEED_SCORE_HIGH_BASE, post.id.toString());
+            if (post.isNewCondition()) {
+                jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_POPULAR_NEW,hashtag.id),  timeScore.doubleValue() * FEED_SCORE_HIGH_BASE, post.id.toString());    
+            } else {
+                jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_POPULAR_USED,hashtag.id),  timeScore.doubleValue() * FEED_SCORE_HIGH_BASE, post.id.toString());
+            }
+        }
+    }
+
+    private void addToHashtagNewestQueue(Hashtag hashtag, Post post) {
+        if (post.soldMarked) {
+            return;
+        }
+        if(post.hasHashtag(hashtag)) {
+            jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_NEWEST,hashtag.id), post.getCreatedDate().getTime(), post.id.toString());
+        }
+    }
+    
 	private void addToHashtagPriceLowHighQueue(Hashtag hashtag, Post post) {
 	    if (post.soldMarked) {
             return;
 	    }
 	    if(post.hasHashtag(hashtag)) {
 	        jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH, hashtag.id), post.price * FEED_SCORE_HIGH_BASE + post.id , post.id.toString());
-	    }
-	}
-	
-	private void addToHashtagNewestQueue(Hashtag hashtag, Post post) {
-	    if (post.soldMarked) {
-            return;
-        }
-	    if(post.hasHashtag(hashtag)) {
-	    	jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_NEWEST,hashtag.id), post.getCreatedDate().getTime(), post.id.toString());
-	    }
-	}
-	
-	private void addToHashtagPopularQueue(Hashtag hashtag, Post post) {
-	    if (post.soldMarked) {
-            return;
-        }
-	    if(post.hasHashtag(hashtag)) {
-	    	Double timeScore = calculateTimeScore(post, true);
-	    	jedisCache.putToSortedSet(getKey(FeedType.HASHTAG_POPULAR,hashtag.id),  timeScore.doubleValue() * FEED_SCORE_HIGH_BASE, post.id.toString());
 	    }
 	}
 	
@@ -221,6 +219,7 @@ public class CalcServer {
         
         if (!FEED_INIT_FLUSH_ALL) {
             clearCategoryQueues();
+            clearHashtagQueues();
         }
 
 		for (Post post : Post.getEligiblePostsForFeeds()) {
@@ -234,9 +233,7 @@ public class CalcServer {
 		    if (post.soldMarked) {
                 continue;
             }
-		    addToCategoryPriceLowHighQueue(post);
-		    addToCategoryNewestQueue(post);
-		    addToCategoryPopularQueue(post);
+		    addToCategoryQueues(post);
 		    addToHashtagQueues(post);
 		    buildProductLikesQueue(post);
 		}
@@ -272,7 +269,7 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildProductLikesQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 	
-	private void addToHashtagQueues(Post post){
+	public void addToHashtagQueues(Post post){
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
 		logger.underlyingLogger().debug("addToHashtagQueues starts - p="+post.id);
 		
@@ -286,47 +283,113 @@ public class CalcServer {
 		logger.underlyingLogger().debug("addToHashtagQueues completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
-	public Double calculateTimeScore(Post post) {
-	    return calculateTimeScore(post, false);
-	}
-	
-	private Double calculateTimeScore(Post post, boolean recalcBaseScore) {
-	    if (recalcBaseScore) {
-	        calculateBaseScore(post);
-	    }
-		return formula.computeTimeScore(post);
-	}
-
+    public void removeFromHashtagQueues(Post post){
+        for (Hashtag hashtag: Hashtag.getAllHashtags()){
+            removeFromHashtagQueues(post, hashtag);    
+        }
+    }
+    
+    public void removeFromHashtagQueues(Post post, Hashtag hashtag){
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.HASHTAG_POPULAR,hashtag.id), post.id.toString());
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.HASHTAG_NEWEST,hashtag.id), post.id.toString());
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH,hashtag.id), post.id.toString());
+    
+        // no need to check post condition type, try to clear from both queues
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.HASHTAG_POPULAR_NEW,hashtag.id), post.id.toString());
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.HASHTAG_POPULAR_USED,hashtag.id), post.id.toString());
+    }
+    
 	public void recalcScoreAndAddToCategoryPopularQueue(Post post) {
 	    addToCategoryPopularQueue(post);
 	}
 	
+	public void addToCategoryQueues(Post post) {
+        addToCategoryPopularQueue(post);
+        addToCategoryNewestQueue(post);
+        addToCategoryPriceLowHighQueue(post);
+    }
+	
 	private void addToCategoryPopularQueue(Post post) {
-	    if (post.soldMarked) {
+        if (post.soldMarked) {
             return;
         }
         Double timeScore = calculateTimeScore(post, true);
         jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_POPULAR,post.category.id),  timeScore.doubleValue() * FEED_SCORE_HIGH_BASE, post.id.toString());
+        if (post.isNewCondition()) {
+            jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_POPULAR_NEW,post.category.id),  timeScore.doubleValue() * FEED_SCORE_HIGH_BASE, post.id.toString());    
+        } else {
+            jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_POPULAR_USED,post.category.id),  timeScore.doubleValue() * FEED_SCORE_HIGH_BASE, post.id.toString());
+        }
     }
-	
-	private void addToCategoryNewestQueue(Post post) {
-	    if (post.soldMarked) {
+    
+    private void addToCategoryNewestQueue(Post post) {
+        if (post.soldMarked) {
             return;
         }
-		jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_NEWEST,post.category.id), post.getCreatedDate().getTime(), post.id.toString());
-	}
-
-	private void addToCategoryPriceLowHighQueue(Post post) {
-	    if (post.soldMarked) {
+    	jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_NEWEST,post.category.id), post.getCreatedDate().getTime(), post.id.toString());
+    }
+    
+    private void addToCategoryPriceLowHighQueue(Post post) {
+        if (post.soldMarked) {
             return;
         }
-		jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_PRICE_LOW_HIGH,post.category.id), post.price * FEED_SCORE_HIGH_BASE + post.id , post.id.toString());
-	}
-
-	public void addToUserPostedQueue(Post post) {
-		jedisCache.putToSortedSet(getKey(FeedType.USER_POSTED,post.owner.id), post.getCreatedDate().getTime(), post.id.toString());
-	}
-
+    	jedisCache.putToSortedSet(getKey(FeedType.CATEGORY_PRICE_LOW_HIGH,post.category.id), post.price * FEED_SCORE_HIGH_BASE + post.id , post.id.toString());
+    }
+    
+    public void removeFromCategoryQueues(Post post){
+        removeFromCategoryQueues(post, post.category);
+    }
+        
+    public void removeFromCategoryQueues(Post post, Category category){
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.CATEGORY_POPULAR,category.id), post.id.toString());
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.CATEGORY_NEWEST,category.id), post.id.toString());
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.CATEGORY_PRICE_LOW_HIGH,category.id), post.id.toString());
+    
+        // no need to check post condition type, try to clear from both queues
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.CATEGORY_POPULAR_NEW,category.id), post.id.toString());
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.CATEGORY_POPULAR_USED,category.id), post.id.toString());
+    }
+    
+    public void addToLikeQueue(Post post, User user){
+        jedisCache.putToSortedSet(getKey(FeedType.USER_LIKED,user.id), new Date().getTime(), post.id.toString());
+    }
+    
+    public void removeFromLikeQueue(Post post, User user){
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_LIKED,user.id), post.id.toString());
+    }
+    
+    public void addToUserFollowingsFollowersQueue(Long userId, Long followingUserId, Double score){
+        jedisCache.remove(getKey(FeedType.HOME_FOLLOWING,userId));
+        jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWINGS,userId), score, followingUserId.toString());
+        jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWERS,followingUserId), score, userId.toString());
+    }
+    
+    public void removeFromUserFollowingsFollowersQueue(Long userId, Long followingUserId){
+        jedisCache.remove(getKey(FeedType.HOME_FOLLOWING,userId));
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_FOLLOWINGS,userId), followingUserId.toString());
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_FOLLOWERS,followingUserId), userId.toString());
+    }
+    
+    public void addToUserPostedQueue(Post post) {
+        jedisCache.putToSortedSet(getKey(FeedType.USER_POSTED,post.owner.id), post.getCreatedDate().getTime(), post.id.toString());
+    }
+    
+    public void removeFromUserPostedQueue(Post post, User user){
+        jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_POSTED,user.id), post.id.toString());
+    }
+    
+    public void removeFromAllUsersLikedQueues(Post post) {
+        NanoSecondStopWatch sw = new NanoSecondStopWatch();
+        logger.underlyingLogger().debug("removeFromAllUsersLikedQueues starts - p="+post.id);
+        
+        for (SocialRelation socialRelation : LikeSocialRelation.getPostLikedUsers(post.id)) {
+            jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_LIKED,socialRelation.actor), post.id.toString());
+        }
+        
+        sw.stop();
+        logger.underlyingLogger().debug("removeFromAllUsersLikedQueues completed. Took "+sw.getElapsedSecs()+"s");
+    }
+	    
 	private void buildUserExploreFeedQueue(Long userId) {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
 		logger.underlyingLogger().debug("buildUserExploreFeedQueue starts - u="+userId);
@@ -447,332 +510,27 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildSuggestedProductQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 	
-	public boolean isLiked(Long userId, Long postId) {
-		 String key = getKey(FeedType.USER_LIKED,userId);
-	     return jedisCache.isMemberOfSortedSet(key, postId.toString());
-	}
+	// helpers
 	
-	public boolean isFollowed(Long userId, Long followingUserId) {
-		 String key = getKey(FeedType.USER_FOLLOWINGS,userId);
-	     return jedisCache.isMemberOfSortedSet(key, followingUserId.toString());
-	}
-
-	public List<Long> getHashtagPriceLowHighFeed(Long id, Double offset) {
-		Set<String> values = jedisCache.getSortedSetAsc(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
+	public Long calculateBaseScore(Post post) {
+        // skip already calculated posts during server startup
+        if (ThreadLocalOverride.isServerStartingUp() && post.baseScore > 0L) {
+            return post.baseScore;
         }
-        return postIds;
-	}
+        return formula.computeBaseScore(post);
+    }
 	
-	public List<Long> getHashtagPriceHighLowFeed(Long id, Double offset) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HASHTAG_PRICE_HIGH_LOW,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return postIds;
-	}
-	public List<Long> getHashtagPopularFeed(Long id, Double offset) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HASHTAG_POPULAR,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return postIds;
-	}
-	public List<Long> getHashtagNewestFeed(Long id, Double offset) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HASHTAG_NEWEST,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return postIds;
-	}
-	
-	public List<Long> getCategoryPopularFeed(Long id, Double offset) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_POPULAR,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return postIds;
-	}
-	
-	public List<Long> getCategoryNewestFeed(Long id, Double offset) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_NEWEST,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return postIds;
-	}
+	public Double calculateTimeScore(Post post) {
+        return calculateTimeScore(post, false);
+    }
     
-	public List<Long> getCategoryPriceLowHighFeed(Long id, Double offset) {
-		Set<String> values = jedisCache.getSortedSetAsc(getKey(FeedType.CATEGORY_PRICE_LOW_HIGH,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
+    private Double calculateTimeScore(Post post, boolean recalcBaseScore) {
+        if (recalcBaseScore) {
+            calculateBaseScore(post);
         }
-        return postIds;
-	}
-	
-	public List<Long> getCategoryPriceHighLowFeed(Long id, Double offset) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_PRICE_HIGH_LOW,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return postIds;
-	}
-	
-	public List<Long> getHomeExploreFeed(Long id, Double offset) {
-		if(!jedisCache.exists(getKey(FeedType.HOME_EXPLORE,id))){
-			buildUserExploreFeedQueue(id);
-		}
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HOME_EXPLORE,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        jedisCache.expire(getKey(FeedType.HOME_EXPLORE, id), (id == User.NO_LOGIN_ID) ? FEED_SNAPSHOT_LONG_EXPIRY_SECS : FEED_SNAPSHOT_EXPIRY_SECS);
-        return postIds;
-	}
-	
-	public List<Long> getHomeFollowingFeed(Long id, Double offset) {
-		if(!jedisCache.exists(getKey(FeedType.HOME_FOLLOWING,id))){
-			buildHomeFollowingFeedQueue(id);
-		}
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HOME_FOLLOWING,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        jedisCache.expire(getKey(FeedType.HOME_FOLLOWING,id), FEED_SNAPSHOT_EXPIRY_SECS);
-        return postIds;
-	}
-	
-	public List<Long> getUserRecommendedSellersFeed(Long id, Double offset) {
-        if(!jedisCache.exists(getKey(FeedType.USER_RECOMMENDED_SELLERS,id))){
-            buildUserRecommendedSellersFeedQueue(id);
-        }
-        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_RECOMMENDED_SELLERS,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS, id), (id == User.NO_LOGIN_ID) ? FEED_SNAPSHOT_LONG_EXPIRY_SECS : FEED_SNAPSHOT_EXPIRY_SECS);
-        return postIds;
+        return formula.computeTimeScore(post);
     }
-	
-	public List<Long> getUserPostedFeed(Long id, Double offset) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_POSTED,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return postIds;
-	}
-	
-	public List<Long> getUserLikedFeed(Long id, Double offset) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_LIKED,id), offset);
-        final List<Long> postIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return postIds;
-	}
-	
-	public List<Long> getUserFollowingsFeed(Long id) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWINGS,id));
-        final List<Long> userIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                userIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return userIds;
-	}
-	
-	public List<Long> getUserFollowingsFeed(Long id, Double offset) {
-	    long start = offset.longValue() * CalcServer.FEED_RETRIEVAL_COUNT;
-	    long end = start + CalcServer.FEED_RETRIEVAL_COUNT - 1;
-        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWINGS,id),start,end);
-        final List<Long> userIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                userIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return userIds;
-    }
-	
-	public List<Long> getUserFollowersFeed(Long id) {
-        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWERS,id));
-        final List<Long> userIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                userIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return userIds;
-    }
-	
-	public List<Long> getUserFollowersFeed(Long id, Double offset) {
-        long start = offset.longValue() * CalcServer.FEED_RETRIEVAL_COUNT;
-        long end = start + CalcServer.FEED_RETRIEVAL_COUNT - 1;
-        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWERS,id),start,end);
-        final List<Long> userIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                userIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return userIds;
-    }
-	
-	public List<Long> getSuggestedProducts(Long id) {
-		if(!jedisCache.exists(getKey(FeedType.PRODUCT_SUGGEST, id))){
-			buildSuggestedProductQueue(id);
-		}
-		
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.PRODUCT_SUGGEST, id));
-        final List<Long> postIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                postIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        jedisCache.expire(getKey(FeedType.PRODUCT_SUGGEST, id), FEED_SNAPSHOT_EXPIRY_SECS);
-        return postIds;
-	}
-	
-	public List<Long> getProductLikesQueue(Long postId) {
-		Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.PRODUCT_LIKES,postId));
-        final List<Long> userIds = new ArrayList<>();
-        for (String value : values) {
-            try {
-                userIds.add(Long.parseLong(value));
-            } catch (Exception e) {
-            }
-        }
-        return userIds;
-	}
-	
-	public void addToCategoryQueues(Post post) {
-		addToCategoryPriceLowHighQueue(post);
-		addToCategoryNewestQueue(post);
-		addToCategoryPopularQueue(post);
-	}
-	
-	public void removeFromCategoryQueues(Post post){
-		removeFromCategoryQueues(post, post.category);
-	}
-	
-	public void removeFromCategoryQueues(Post post, Category category){
-	    removeFromPriceLowHighPostQueue(post.id, category.id);
-	    removeFromNewestPostQueue(post.id, category.id);
-	    removeFromPopularPostQueue(post.id, category.id);
-	}
-	
-	public void removeFromPriceLowHighPostQueue(Long postId, Long categoryId){
-		jedisCache.removeMemberFromSortedSet(getKey(FeedType.CATEGORY_PRICE_LOW_HIGH,categoryId), postId.toString());
-	}
-	
-	public void removeFromNewestPostQueue(Long postId, Long categoryId){
-		jedisCache.removeMemberFromSortedSet(getKey(FeedType.CATEGORY_NEWEST,categoryId), postId.toString());
-	}
-
-	public void removeFromPopularPostQueue(Long postId, Long categoryId){
-		jedisCache.removeMemberFromSortedSet(getKey(FeedType.CATEGORY_POPULAR,categoryId), postId.toString());
-	}
-	
-	public void addToLikeQueue(Post post, User user){
-		jedisCache.putToSortedSet(getKey(FeedType.USER_LIKED,user.id), new Date().getTime(), post.id.toString());
-	}
-	
-	public void removeFromLikeQueue(Post post, User user){
-		jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_LIKED,user.id), post.id.toString());
-	}
-
-	public void addToUserFollowingsFollowersQueue(Long userId, Long followingUserId, Double score){
-		jedisCache.remove(getKey(FeedType.HOME_FOLLOWING,userId));
-		jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWINGS,userId), score, followingUserId.toString());
-		jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWERS,followingUserId), score, userId.toString());
-	}
-	
-	public void removeFromUserFollowingsFollowersQueue(Long userId, Long followingUserId){
-		jedisCache.remove(getKey(FeedType.HOME_FOLLOWING,userId));
-		jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_FOLLOWINGS,userId), followingUserId.toString());
-		jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_FOLLOWERS,followingUserId), userId.toString());
-	}
-
-	public void removeFromUserPostedQueue(Post post, User user){
-		jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_POSTED,user.id), post.id.toString());
-	}
-
-	public void removeFromAllUsersLikedQueues(Post post) {
-	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
-        logger.underlyingLogger().debug("removeFromAllUsersLikedQueues starts - p="+post.id);
-        
-        for (SocialRelation socialRelation : LikeSocialRelation.getPostLikedUsers(post.id)) {
-            jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_LIKED,socialRelation.actor), post.id.toString());
-        }
-        
-        sw.stop();
-        logger.underlyingLogger().debug("removeFromAllUsersLikedQueues completed. Took "+sw.getElapsedSecs()+"s");
-	}
-	
+    
 	public Double getScore(String key, Long postId){
 		return jedisCache.getScore(key, postId.toString());
 	}
@@ -804,11 +562,328 @@ public class CalcServer {
             logger.underlyingLogger().info("cleanupSoldPosts - There are "+soldPosts.size()+" sold posts before "+daysBefore.toString());
             for (Post soldPost : soldPosts) {
                 removeFromCategoryQueues(soldPost);
+                removeFromHashtagQueues(soldPost);
                 soldPost.soldMarked = true;
-                logger.underlyingLogger().info("[id="+soldPost.id+"] removeFromCategoryQueues: "+soldPost.title);
+                logger.underlyingLogger().info("[id="+soldPost.id+"] removed from category and hashtag queues: "+soldPost.title);
             }
         } else {
             logger.underlyingLogger().info("cleanupSoldPosts - There is no sold post before "+daysBefore.toString());
         }
+    }
+	
+	// feeds
+	
+	public List<Long> getHomeExploreFeed(Long id, Double offset) {
+        if(!jedisCache.exists(getKey(FeedType.HOME_EXPLORE,id))){
+            buildUserExploreFeedQueue(id);
+        }
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HOME_EXPLORE,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        jedisCache.expire(getKey(FeedType.HOME_EXPLORE, id), (id == User.NO_LOGIN_ID) ? FEED_SNAPSHOT_LONG_EXPIRY_SECS : FEED_SNAPSHOT_EXPIRY_SECS);
+        return postIds;
+    }
+    
+    public List<Long> getHomeFollowingFeed(Long id, Double offset) {
+        if(!jedisCache.exists(getKey(FeedType.HOME_FOLLOWING,id))){
+            buildHomeFollowingFeedQueue(id);
+        }
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HOME_FOLLOWING,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        jedisCache.expire(getKey(FeedType.HOME_FOLLOWING,id), FEED_SNAPSHOT_EXPIRY_SECS);
+        return postIds;
+    }
+    
+    public List<Long> getCategoryPopularFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_POPULAR,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getCategoryPopularNewFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_POPULAR_NEW,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getCategoryPopularUsedFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_POPULAR_USED,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getCategoryNewestFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_NEWEST,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getCategoryPriceLowHighFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetAsc(getKey(FeedType.CATEGORY_PRICE_LOW_HIGH,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+    
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getCategoryPriceHighLowFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.CATEGORY_PRICE_HIGH_LOW,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getHashtagPopularFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HASHTAG_POPULAR,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+    
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getHashtagPopularNewFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HASHTAG_POPULAR_NEW,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+    
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getHashtagPopularUsedFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HASHTAG_POPULAR_USED,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+    
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getHashtagNewestFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HASHTAG_NEWEST,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+    
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getHashtagPriceLowHighFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetAsc(getKey(FeedType.HASHTAG_PRICE_LOW_HIGH,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+    
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getHashtagPriceHighLowFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HASHTAG_PRICE_HIGH_LOW,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+    
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+        
+    public List<Long> getUserPostedFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_POSTED,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getUserLikedFeed(Long id, Double offset) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_LIKED,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return postIds;
+    }
+    
+    public List<Long> getUserRecommendedSellersFeed(Long id, Double offset) {
+        if (!jedisCache.exists(getKey(FeedType.USER_RECOMMENDED_SELLERS,id))) {
+            buildUserRecommendedSellersFeedQueue(id);
+        }
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_RECOMMENDED_SELLERS,id), offset);
+        final List<Long> postIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        jedisCache.expire(getKey(FeedType.USER_RECOMMENDED_SELLERS, id), (id == User.NO_LOGIN_ID) ? FEED_SNAPSHOT_LONG_EXPIRY_SECS : FEED_SNAPSHOT_EXPIRY_SECS);
+        return postIds;
+    }
+       
+    public List<Long> getUserFollowingsFeed(Long id) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWINGS,id));
+        final List<Long> userIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                userIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return userIds;
+    }
+    
+    public List<Long> getUserFollowingsFeed(Long id, Double offset) {
+        long start = offset.longValue() * CalcServer.FEED_RETRIEVAL_COUNT;
+        long end = start + CalcServer.FEED_RETRIEVAL_COUNT - 1;
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWINGS,id),start,end);
+        final List<Long> userIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                userIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return userIds;
+    }
+    
+    public List<Long> getUserFollowersFeed(Long id) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWERS,id));
+        final List<Long> userIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                userIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return userIds;
+    }
+    
+    public List<Long> getUserFollowersFeed(Long id, Double offset) {
+        long start = offset.longValue() * CalcServer.FEED_RETRIEVAL_COUNT;
+        long end = start + CalcServer.FEED_RETRIEVAL_COUNT - 1;
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_FOLLOWERS,id),start,end);
+        final List<Long> userIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                userIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return userIds;
+    }
+    
+    public List<Long> getSuggestedProducts(Long id) {
+        if(!jedisCache.exists(getKey(FeedType.PRODUCT_SUGGEST, id))){
+            buildSuggestedProductQueue(id);
+        }
+        
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.PRODUCT_SUGGEST, id));
+        final List<Long> postIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                postIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        jedisCache.expire(getKey(FeedType.PRODUCT_SUGGEST, id), FEED_SNAPSHOT_EXPIRY_SECS);
+        return postIds;
+    }
+    
+    public List<Long> getProductLikesQueue(Long postId) {
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.PRODUCT_LIKES,postId));
+        final List<Long> userIds = new ArrayList<>();
+        for (String value : values) {
+            try {
+                userIds.add(Long.parseLong(value));
+            } catch (Exception e) {
+            }
+        }
+        return userIds;
+    }
+    
+    public boolean isLiked(Long userId, Long postId) {
+        String key = getKey(FeedType.USER_LIKED,userId);
+        return jedisCache.isMemberOfSortedSet(key, postId.toString());
+    }
+   
+    public boolean isFollowed(Long userId, Long followingUserId) {
+        String key = getKey(FeedType.USER_FOLLOWINGS,userId);
+        return jedisCache.isMemberOfSortedSet(key, followingUserId.toString());
     }
 }
