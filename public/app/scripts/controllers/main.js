@@ -209,7 +209,7 @@ babybox.controller('CategoryPageController',
 
 			if($scope.catType == 'popular'){
 				loadingMore = true;
-				categoryService.getCategoryPopularFeed.get({id:catId , postType:"a", offset:off}, function(data){
+				categoryService.getCategoryPopularFeed.get({id:catId , conditionType:"ALL", offset:off}, function(data){
 					if (data.length == 0) {
 						$scope.loadMore = false;
 					}
@@ -224,7 +224,7 @@ babybox.controller('CategoryPageController',
 
 			if($scope.catType == 'newest'){
 				loadingMore = true;
-				categoryService.getCategoryNewestFeed.get({id:catId , postType:"a", offset:off}, function(data){
+				categoryService.getCategoryNewestFeed.get({id:catId , conditionType:"ALL", offset:off}, function(data){
 					if (data.length == 0) {
 						$scope.loadMore = false;
 					}
@@ -239,7 +239,7 @@ babybox.controller('CategoryPageController',
 			
 			if($scope.catType == 'high2low'){
 				loadingMore = true;
-				categoryService.getCategoryPriceHighLowFeed.get({id:catId , postType:"a", offset:off}, function(data){
+				categoryService.getCategoryPriceHighLowFeed.get({id:catId , conditionType:"ALL", offset:off}, function(data){
 					if (data.length == 0) {
 						$scope.loadMore = false;
 					}
@@ -254,7 +254,7 @@ babybox.controller('CategoryPageController',
 			
 			if($scope.catType == 'low2high'){
 				loadingMore = true;
-				categoryService.getCategoryPriceLowHighFeed.get({id:catId , postType:"a", offset:off}, function(data){
+				categoryService.getCategoryPriceLowHighFeed.get({id:catId , conditionType:"ALL", offset:off}, function(data){
 					if (data.length == 0) {
 						$scope.loadMore = false;
 					}

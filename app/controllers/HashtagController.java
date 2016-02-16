@@ -4,7 +4,9 @@ import java.util.List;
 
 import models.User;
 import handler.FeedHandler;
+import common.model.FeedFilter;
 import common.model.FeedFilter.FeedType;
+
 import com.google.inject.Inject;
 
 import play.db.jpa.Transactional;
@@ -20,28 +22,41 @@ public class HashtagController extends Controller {
     FeedHandler feedHandler;
 
     @Transactional 
-    public Result getHashtagPopularFeed(Long id, String postType, Long offset) {
+    public Result getHashtagPopularFeed(Long id, String conditionType, Long offset) {
         final User localUser = Application.getLocalUser(session());
-        List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.HASHTAG_POPULAR);
+        FeedFilter.ConditionType condition = FeedFilter.ConditionType.ALL;
+        try {
+            condition = FeedFilter.ConditionType.valueOf(conditionType);
+        } catch (Exception e) {
+            ;
+        }
+        List<PostVMLite> vms = null;
+        if (FeedFilter.ConditionType.ALL.equals(condition)) {
+            feedHandler.getFeedPosts(id, offset, localUser, FeedType.HASHTAG_POPULAR);
+        } else if (FeedFilter.ConditionType.NEW.equals(condition)) {
+            feedHandler.getFeedPosts(id, offset, localUser, FeedType.HASHTAG_POPULAR_NEW);
+        } else if (FeedFilter.ConditionType.USED.equals(condition)) {
+            feedHandler.getFeedPosts(id, offset, localUser, FeedType.HASHTAG_POPULAR_USED);
+        }
         return ok(Json.toJson(vms));
     }
 	
     @Transactional 
-    public Result getHashtagNewestFeed(Long id, String postType, Long offset) {
+    public Result getHashtagNewestFeed(Long id, String conditionType, Long offset) {
         final User localUser = Application.getLocalUser(session());
         List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.HASHTAG_NEWEST);
         return ok(Json.toJson(vms));
     }
 	
     @Transactional 
-    public Result getHashtagPriceLowHighFeed(Long id, String postType, Long offset) {
+    public Result getHashtagPriceLowHighFeed(Long id, String conditionType, Long offset) {
         final User localUser = Application.getLocalUser(session());
         List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.HASHTAG_PRICE_LOW_HIGH);
         return ok(Json.toJson(vms));
     }
 	
 	@Transactional 
-	public Result getHashtagPriceHighLowFeed(Long id, String postType, Long offset) {
+	public Result getHashtagPriceHighLowFeed(Long id, String conditionType, Long offset) {
 	    final User localUser = Application.getLocalUser(session());
 	    List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.HASHTAG_PRICE_HIGH_LOW);
 	    return ok(Json.toJson(vms));

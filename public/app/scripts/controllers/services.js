@@ -18,34 +18,34 @@ babybox.service('categoryService',function($resource){
     );
 	
     this.getCategoryPopularFeed = $resource(
-            '/api/get-category-popular-feed/:id/:postType/:offset',
+            '/api/get-category-popular-feed/:id/:conditionType/:offset',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
-                get: {method:'get' ,isArray:true, params:{id:'@id',postType: '@postType',offset: '@offset'}}
+                get: {method:'get' ,isArray:true, params:{id:'@id',conditionType: '@conditionType',offset: '@offset'}}
             }
     );
     
     this.getCategoryNewestFeed = $resource(
-            '/api/get-category-newest-feed/:id/:postType/:offset',
+            '/api/get-category-newest-feed/:id/:conditionType/:offset',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
-                get: {method:'get' ,isArray:true, params:{id:'@id',postType: '@postType',offset: '@offset'}}
+                get: {method:'get' ,isArray:true, params:{id:'@id',conditionType: '@conditionType',offset: '@offset'}}
             }
     );
     
     this.getCategoryPriceLowHighFeed = $resource(
-            '/api/get-category-price-low-high-feed/:id/:postType/:offset',
+            '/api/get-category-price-low-high-feed/:id/:conditionType/:offset',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
-                get: {method:'get' ,isArray:true, params:{id:'@id',postType: '@postType',offset: '@offset'}}
+                get: {method:'get' ,isArray:true, params:{id:'@id',conditionType: '@conditionType',offset: '@offset'}}
             }
     );
     
     this.getCategoryPriceHighLowFeed = $resource(
-            '/api/get-category-price-high-low-feed/:id/:postType/:offset',
+            '/api/get-category-price-high-low-feed/:id/:conditionType/:offset',
             {alt:'json',callback:'JSON_CALLBACK'},
             {
-                get: {method:'get' ,isArray:true, params:{id:'@id',postType: '@postType',offset: '@offset'}}
+                get: {method:'get' ,isArray:true, params:{id:'@id',conditionType: '@conditionType',offset: '@offset'}}
             }
     );
     

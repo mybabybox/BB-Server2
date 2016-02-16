@@ -128,8 +128,8 @@ GET     /api/init-new-user                          @controllers.Application.ini
 GET     /init-new-user                              @controllers.Application.initNewUser
 
 # Feeds
-GET     /api/get-category-popular-feed/:id/:postType/:offset            @controllers.CategoryController.getCategoryPopularFeed(id :Long, postType: String, offset: Long)
-GET     /get-category-popular-feed/:id/:postType/:offset                @controllers.CategoryController.getCategoryPopularFeed(id :Long, postType: String, offset: Long)
+GET     /api/get-category-popular-feed/:id/:conditionType/:offset       @controllers.CategoryController.getCategoryPopularFeed(id :Long, conditionType: String, offset: Long)
+GET     /get-category-popular-feed/:id/:conditionType/:offset           @controllers.CategoryController.getCategoryPopularFeed(id :Long, conditionType: String, offset: Long)
 
 GET     /api/get-category-newest-feed/:id/:postType/:offset             @controllers.CategoryController.getCategoryNewestFeed(id :Long, postType: String, offset: Long)
 GET     /get-category-newest-feed/:id/:postType/:offset                 @controllers.CategoryController.getCategoryNewestFeed(id :Long, postType: String, offset: Long)

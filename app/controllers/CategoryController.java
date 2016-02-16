@@ -37,6 +37,7 @@ import viewmodel.PostVM;
 import viewmodel.PostVMLite;
 import viewmodel.ResponseStatusVM;
 import viewmodel.UserVM;
+import common.model.FeedFilter;
 import common.model.FeedFilter.FeedType;
 import common.utils.HtmlUtil;
 import common.utils.HttpUtil;
@@ -53,28 +54,41 @@ public class CategoryController extends Controller{
     FeedHandler feedHandler;
     
 	@Transactional 
-	public Result getCategoryPopularFeed(Long id, String postType, Long offset){
+	public Result getCategoryPopularFeed(Long id, String conditionType, Long offset){
 		final User localUser = Application.getLocalUser(session());
-		List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_POPULAR);
+		FeedFilter.ConditionType condition = FeedFilter.ConditionType.ALL;
+		try {
+		    condition = FeedFilter.ConditionType.valueOf(conditionType);
+		} catch (Exception e) {
+		    ;
+		}
+		List<PostVMLite> vms = null;
+		if (FeedFilter.ConditionType.ALL.equals(condition)) {
+		    feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_POPULAR);
+		} else if (FeedFilter.ConditionType.NEW.equals(condition)) {
+		    feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_POPULAR_NEW);
+		} else if (FeedFilter.ConditionType.USED.equals(condition)) {
+		    feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_POPULAR_USED);
+		}
 		return ok(Json.toJson(vms));
 	}
 
 	@Transactional 
-	public Result getCategoryNewestFeed(Long id, String postType, Long offset){
+	public Result getCategoryNewestFeed(Long id, String conditionType, Long offset){
 		final User localUser = Application.getLocalUser(session());
 		List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_NEWEST);
 		return ok(Json.toJson(vms));
 	}
 	
 	@Transactional 
-	public Result getCategoryPriceLowHighFeed(Long id, String postType, Long offset){
+	public Result getCategoryPriceLowHighFeed(Long id, String conditionType, Long offset){
 		final User localUser = Application.getLocalUser(session());
 		List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_PRICE_LOW_HIGH);
 		return ok(Json.toJson(vms));
 	}
 	
 	@Transactional 
-	public Result getCategoryPriceHighLowFeed(Long id, String postType, Long offset) {
+	public Result getCategoryPriceHighLowFeed(Long id, String conditionType, Long offset) {
 		final User localUser = Application.getLocalUser(session());
 		List<PostVMLite> vms = feedHandler.getFeedPosts(id, offset, localUser, FeedType.CATEGORY_PRICE_HIGH_LOW);
 		return ok(Json.toJson(vms));

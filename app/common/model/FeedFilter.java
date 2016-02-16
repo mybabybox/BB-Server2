@@ -27,31 +27,31 @@ public class FeedFilter {
         USER_RECOMMENDED_SELLERS
     }
 
-    public enum FeedProductType {
+    public enum ConditionType {
         ALL,
         NEW,
         USED
     }
 
     public FeedType feedType;
-    public FeedProductType productType;
+    public ConditionType conditionType;
     public Long objId;
 
     public FeedFilter(FeedType feedType) {
-        this(feedType, FeedProductType.ALL, -1L);
+        this(feedType, ConditionType.ALL, -1L);
     }
 
-    public FeedFilter(FeedType feedType, FeedProductType productType) {
-        this(feedType, productType, -1L);
+    public FeedFilter(FeedType feedType, ConditionType conditionType) {
+        this(feedType, conditionType, -1L);
     }
 
     public FeedFilter(FeedType feedType, Long objId) {
-        this(feedType, FeedProductType.ALL, objId);
+        this(feedType, ConditionType.ALL, objId);
     }
 
-    public FeedFilter(FeedType feedType, FeedProductType productType, Long objId) {
+    public FeedFilter(FeedType feedType, ConditionType conditionType, Long objId) {
         this.feedType = feedType;
-        this.productType = productType;
+        this.conditionType = conditionType;
         this.objId = objId;
     }
 
@@ -68,14 +68,14 @@ public class FeedFilter {
 
         FeedFilter o = (FeedFilter) other;
         return this.feedType.equals(o.feedType) &&
-                this.productType.equals(o.productType) &&
+                this.conditionType.equals(o.conditionType) &&
                 this.objId.equals(o.objId);
     }
 
     @Override
     public String toString() {
         return "feedType=" + (feedType == null? "" : feedType.name()) +
-                "\nproductType=" + (productType == null? "" : productType.name()) +
+                "\nconditionType=" + (conditionType == null? "" : conditionType.name()) +
                 "\nobjId=" + objId;
     }
 }
