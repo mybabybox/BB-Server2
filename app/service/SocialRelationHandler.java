@@ -5,6 +5,7 @@ import models.Comment;
 import models.Conversation;
 import models.Message;
 import models.Post;
+import models.Story;
 import models.User;
 import babybox.events.handler.EventHandler;
 import babybox.events.map.CommentEvent;
@@ -57,6 +58,33 @@ public class SocialRelationHandler {
         postEvent.put("user", localUser);
         postEvent.put("post", post);
         EventHandler.getInstance().getEventBus().post(postEvent);
+    }
+	
+	public static void recordNewStory(Story story, User localUser) {
+	    /*
+        PostEvent postEvent = new PostEvent();
+        postEvent.put("user", localUser);
+        postEvent.put("post", post);
+        EventHandler.getInstance().getEventBus().post(postEvent);
+        */
+    }
+    
+    public static void recordEditStory(Story story) {
+        /*
+        EditPostEvent postEvent = new EditPostEvent();
+        postEvent.put("post", post);
+        postEvent.put("category", category);
+        EventHandler.getInstance().getEventBus().post(postEvent);
+        */
+    }
+    
+    public static void recordDeleteStory(Story story, User localUser) {
+        /*
+        DeletePostEvent postEvent = new DeletePostEvent();
+        postEvent.put("user", localUser);
+        postEvent.put("post", post);
+        EventHandler.getInstance().getEventBus().post(postEvent);
+        */
     }
 	
 	public static void recordFollowUser(User localUser, User user) {

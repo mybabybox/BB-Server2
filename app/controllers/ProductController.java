@@ -27,6 +27,7 @@ import models.Post;
 import models.ReportedPost;
 import models.Post.ConditionType;
 import models.Resource;
+import models.Story;
 import models.User;
 import play.Play;
 import play.data.DynamicForm;
@@ -175,31 +176,25 @@ public class ProductController extends Controller{
 	@Transactional
     public static Result newStoryWithForm() {
         DynamicForm dynamicForm = DynamicForm.form().bindFromRequest();
-        String catId = dynamicForm.get("catId");
         String body = dynamicForm.get("body");
         String hashtags = dynamicForm.get("hashtags");
         String deviceType = dynamicForm.get("deviceType");
         List<FilePart> images = request().body().asMultipartFormData().getFiles();
-        return newStory(body, Long.parseLong(catId), images, hashtags, Application.parseDeviceType(deviceType));
+        return newStory(body, images, hashtags, Application.parseDeviceType(deviceType));
     }
     
     @Transactional
     public static Result newStory() {
         Http.MultipartFormData multipartFormData = request().body().asMultipartFormData();
-        Long catId = HttpUtil.getMultipartFormDataLong(multipartFormData, "catId");
         String body = HttpUtil.getMultipartFormDataString(multipartFormData, "body");
         String hashtags = HttpUtil.getMultipartFormDataString(multipartFormData, "hashtags");
         String deviceType = HttpUtil.getMultipartFormDataString(multipartFormData, "deviceType");
         List<FilePart> images = HttpUtil.getMultipartFormDataFiles(multipartFormData, "image", DefaultValues.MAX_POST_IMAGES);
         
-        if (catId == null) {
-            catId = -1L;
-        }
-        
-        return newStory(body, catId, images, hashtags, Application.parseDeviceType(deviceType));
+        return newStory(body, images, hashtags, Application.parseDeviceType(deviceType));
     }
 
-    private static Result newStory(String body, Long catId, List<FilePart> images, String hashtags, DeviceType deviceType) {
+    private static Result newStory(String body, List<FilePart> images, String hashtags, DeviceType deviceType) {
         
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
         
@@ -209,35 +204,29 @@ public class ProductController extends Controller{
             return notFound();
         }
         
-        Category category = Category.findById(catId);
-        if (category == null) {
-            return notFound();
-        }
-        
         try {
-            Post newPost = localUser.createStory(body, category, deviceType);
-            if (newPost == null) {
+            Story newStory = localUser.createStory(body, deviceType);
+            if (newStory == null) {
                 return badRequest("Failed to create story. Invalid parameters.");
             }
             
             for (FilePart image : images) {
                 String fileName = image.getFilename();
                 File fileTo = ImageFileUtil.copyImageFileToTemp(image.getFile(), fileName);
-                newPost.addPostPhoto(fileTo);
+                newStory.addStoryPhoto(fileTo);
             }
             
-            //addRelatedPostsToPost(relatedPosts, newPost);
-            addHashtagsToPost(hashtags, newPost);
-            SocialRelationHandler.recordNewPost(newPost, localUser);
-            ResponseStatusVM response = new ResponseStatusVM(SocialObjectType.POST, newPost.id, localUser.id, true);
+            addHashtagsToStory(hashtags, newStory);
+            SocialRelationHandler.recordNewStory(newStory, localUser);
+            ResponseStatusVM response = new ResponseStatusVM(SocialObjectType.STORY, newStory.id, localUser.id, true);
             
             // To be marked by PostMarker 
-            PostToMark mark = new PostToMark(newPost.id);
+            PostToMark mark = new PostToMark(newStory.id);
             mark.save();
             
             sw.stop();
             if (logger.underlyingLogger().isDebugEnabled()) {
-                logger.underlyingLogger().debug("[u="+localUser.getId()+"][p="+newPost.id+"] createStory(). Took "+sw.getElapsedMS()+"ms");
+                logger.underlyingLogger().debug("[u="+localUser.getId()+"][p="+newStory.id+"] createStory(). Took "+sw.getElapsedMS()+"ms");
             }
             
             return ok(Json.toJson(response));
@@ -458,19 +447,46 @@ public class ProductController extends Controller{
     	}
     }
     
-    public static void addRelatedPostsToPost(String relatedPosts, Post post){
+    public static void addHashtagsToStory(String hashtags, Story story){
+        if (StringUtils.isEmpty(hashtags)) {
+            return;
+        }
+        
+        List<String> names = StringUtil.parseValues(hashtags);
+        story.sellerHashtags = new ArrayList<>();
+        for (String name : names){
+            Hashtag hashtag = Hashtag.findByName(name);
+            /*
+            if(hashtag == null){
+                hashtag = new Hashtag();
+                hashtag.setName(name);
+                hashtag.setOwner(story.owner);
+                hashtag.system = false;
+                hashtag.save();
+            }
+            */
+            
+            if (hashtag != null) {
+                story.addHashtag(hashtag);
+            } else {
+                logger.underlyingLogger().warn("[h="+name+"] Hashtag not exist");
+            }
+        }
+    }
+    
+    public static void addRelatedPostsToStory(String relatedPosts, Story story){
         if (StringUtils.isEmpty(relatedPosts)) {
             return;
         }
         
         List<Long> ids = StringUtil.parseIds(relatedPosts);
-        post.relatedPosts = new ArrayList<>();
+        story.relatedPosts = new ArrayList<>();
         for (Long id : ids){
             Post relatedPost = Post.findById(id);
             if (relatedPost != null) {
-                post.relatedPosts.add(relatedPost);
+                story.relatedPosts.add(relatedPost);
             } else {
-                logger.underlyingLogger().warn("[p="+id+"] Related post not exist");
+                logger.underlyingLogger().warn("[p="+id+"] Related story not exist");
             }
         }
     }

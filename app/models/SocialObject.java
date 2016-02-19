@@ -15,7 +15,6 @@ import babybox.shopping.social.exception.SocialObjectNotCommentableException;
 import babybox.shopping.social.exception.SocialObjectNotFollowableException;
 import babybox.shopping.social.exception.SocialObjectNotLikableException;
 import babybox.shopping.social.exception.SocialObjectNotPostableException;
-import models.Post.PostType;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
@@ -156,7 +155,7 @@ public abstract class SocialObject extends domain.Entity implements Serializable
         throw new SocialObjectNotCommentableException("Please make sure Social Object you are deleteing comment is Commentable");
     }
 	
-	public SocialObject onPost(User user, String title, String body, PostType type)
+	public SocialObject onPost(User user, String title, String body)
 			throws SocialObjectNotPostableException {
 		throw new SocialObjectNotPostableException(
 				"Please make sure Social Object you are posting  is Postable");

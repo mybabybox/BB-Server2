@@ -8,12 +8,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import domain.DefaultValues;
 import models.Comment;
 import models.Post;
+import models.Story;
 import models.User;
 
-public class PostVM extends PostVMLite {
+public class StoryVM extends StoryVMLite {
 	@JsonProperty("createdDate") public Long createdDate;
 	@JsonProperty("updatedDate") public Long updatedDate;
-	@JsonProperty("ownerNumProducts") public Long ownerNumProducts;
+	@JsonProperty("ownerNumStories") public Long ownerNumStories;
 	@JsonProperty("ownerNumFollowers") public Long ownerNumFollowers;
 	@JsonProperty("ownerLastLogin") public Long ownerLastLogin;
 	@JsonProperty("body") public String body;
@@ -22,45 +23,47 @@ public class PostVM extends PostVMLite {
 	@JsonProperty("categoryIcon") public String categoryIcon;
 	@JsonProperty("categoryType") public String categoryType;	
     @JsonProperty("latestComments") public List<CommentVM> latestComments;
+    @JsonProperty("relatedPosts") public List<PostVMLite> relatedPosts;
     
 	@JsonProperty("isOwner") public boolean isOwner = false;
 	@JsonProperty("isFollowingOwner") public boolean isFollowingOwner = false;
     
 	@JsonProperty("deviceType") public String deviceType;
 	
-    public PostVM(Post post, User user) {
-    	super(post, user);
+    public StoryVM(Story story, User user) {
+    	super(story, user);
     	
-        this.ownerNumProducts = post.owner.numProducts;
-        this.ownerNumFollowers = post.owner.numFollowers;
+        this.ownerNumStories = story.owner.numStories;
+        this.ownerNumFollowers = story.owner.numFollowers;
         this.ownerLastLogin = 
-                post.owner.lastLogin == null? 
-                        post.getUpdatedDate().getTime() : post.owner.lastLogin.getTime();
-        this.createdDate = post.getCreatedDate().getTime();
-        this.updatedDate = post.getUpdatedDate().getTime();
-        this.body = post.body;
-        this.categoryType = post.category.categoryType.toString();
-        this.categoryName = post.category.name;
-        this.categoryIcon = post.category.icon;
-        this.categoryId = post.category.id;
+                story.owner.lastLogin == null? 
+                        story.getUpdatedDate().getTime() : story.owner.lastLogin.getTime();
+        this.createdDate = story.getCreatedDate().getTime();
+        this.updatedDate = story.getUpdatedDate().getTime();
+        this.body = story.body;
         
         this.latestComments = new ArrayList<>();
-        for (Comment comment : post.getLatestComments(DefaultValues.LATEST_COMMENTS_COUNT)) {
+        for (Comment comment : story.getLatestComments(DefaultValues.LATEST_COMMENTS_COUNT)) {
         	this.latestComments.add(new CommentVM(comment, user));
         }
         
-        this.isOwner = (post.owner.id == user.id);
-        this.isFollowingOwner = user.isFollowing(post.owner);
+        this.relatedPosts = new ArrayList<>();
+        for (Post relatedPost : story.getRelatedPosts()) {
+            this.relatedPosts.add(new PostVMLite(relatedPost));
+        }
         
-        this.deviceType = post.deviceType == null? "" : post.deviceType.name();
+        this.isOwner = (story.owner.id == user.id);
+        this.isFollowingOwner = user.isFollowing(story.owner);
+        
+        this.deviceType = story.deviceType == null? "" : story.deviceType.name();
     }
 
-    public Long getOwnerNumProducts() {
-        return ownerNumProducts;
+    public Long getOwnerNumStories() {
+        return ownerNumStories;
     }
 
-    public void setOwnerNumProducts(Long ownerNumProducts) {
-        this.ownerNumProducts = ownerNumProducts;
+    public void setOwnerNumStories(Long ownerNumStories) {
+        this.ownerNumStories = ownerNumStories;
     }
     
     public Long getOwnerNumFollowers() {
@@ -95,38 +98,6 @@ public class PostVM extends PostVMLite {
         this.body = body;
     }
 
-    public String getCategoryType() {
-        return categoryType;
-    }
-
-    public void setCategoryType(String categoryType) {
-        this.categoryType = categoryType;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public String getCategoryIcon() {
-        return categoryIcon;
-    }
-
-    public void setCategoryIcon(String categoryIcon) {
-        this.categoryIcon = categoryIcon;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
-    
     public List<CommentVM> getLatestComments() {
 		return latestComments;
 	}

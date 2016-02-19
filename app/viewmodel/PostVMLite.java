@@ -15,11 +15,9 @@ public class PostVMLite {
 	@JsonProperty("title") public String title;
 	@JsonProperty("price") public double price;
 	@JsonProperty("sold") public boolean sold;
-	@JsonProperty("postType") public String postType;
 	@JsonProperty("conditionType") public String conditionType;
 	@JsonProperty("images") public Long[] images;
 	@JsonProperty("hasImage") public Boolean hasImage = false;
-	@JsonProperty("numRelatedPosts") public int numRelatedPosts;
 	
 	@JsonProperty("numLikes") public int numLikes;
 	@JsonProperty("numConversations") public int numConversations;
@@ -52,7 +50,6 @@ public class PostVMLite {
         this.title = post.title;
         this.price = post.price;
         this.sold = post.sold;
-        this.postType = post.postType.toString();
         if (post.conditionType != null) {
             this.conditionType = post.conditionType.toString();
         }
@@ -62,7 +59,6 @@ public class PostVMLite {
             this.hasImage = true;
             this.images = images;
         }
-        this.numRelatedPosts = post.getRelatedPosts().size();
         
         this.numLikes = post.numLikes;
         this.numConversations = post.numConversations;
@@ -163,14 +159,6 @@ public class PostVMLite {
         this.numComments = numComments;
     }
 
-    public String getPostType() {
-        return postType;
-    }
-    
-    public void setPostType(String postType) {
-        this.postType = postType;
-    }
-    
     public String getConditionType() {
         return conditionType;
     }

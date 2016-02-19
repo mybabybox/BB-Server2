@@ -118,6 +118,8 @@ public class User extends SocialObject implements Subject, Followable {
 
 	public Long numProducts = 0L;
 	
+	public Long numStories = 0L;
+	
 	public Long numComments = 0L;
 	
 	public Long numConversationsAsSender = 0L;
@@ -375,21 +377,21 @@ public class User extends SocialObject implements Subject, Followable {
 	}
 	
 	@Transactional
-    public Post createStory(String body, Category category, DeviceType deviceType) {
+    public Story createStory(String body, DeviceType deviceType) {
         
-        if (Strings.isNullOrEmpty(body) || category == null) {
+        if (Strings.isNullOrEmpty(body)) {
             logger.underlyingLogger().warn("Missing parameters to createStory");
             return null;
         }
         
-        Post post = new Post(this, body, category, deviceType);
-        post.save();
+        Story story = new Story(this, body, deviceType);
+        story.save();
         
-        recordPostProduct(this, post);
+        recordPostStory(this, story);
         
-        this.numProducts++;
+        this.numStories++;
         
-        return post;
+        return story;
     }
 	
 	@Transactional

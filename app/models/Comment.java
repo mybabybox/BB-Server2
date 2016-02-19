@@ -11,13 +11,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import models.Post.PostType;
 import common.utils.StringUtil;
 import controllers.Application.DeviceType;
 import play.data.validation.Constraints.Required;
 import play.db.jpa.JPA;
 import domain.Creatable;
 import domain.Likeable;
+import domain.SocialObjectType;
 
 /**
  * A Comment by an User on a SocialObject (Post only)
@@ -35,7 +35,7 @@ public class Comment extends SocialObject implements Comparable<Comment>, Likeab
     public String body;
 
     @Enumerated(EnumType.STRING)
-	public PostType commentType;
+	public SocialObjectType socialObjectType;
     
     @ManyToOne(cascade = CascadeType.REMOVE)
   	public Folder folder;
@@ -50,7 +50,9 @@ public class Comment extends SocialObject implements Comparable<Comment>, Likeab
     public Comment(SocialObject socialObject, User user, String body) {
         this.owner = user;
         this.socialObject = socialObject.id;
+        this.socialObjectType = socialObject.objectType;
         this.body = body;
+        this.objectType = SocialObjectType.COMMENT;
     }
 
     public static Comment findById(Long id) {
