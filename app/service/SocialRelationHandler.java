@@ -18,6 +18,7 @@ import babybox.events.map.LikeEvent;
 import babybox.events.map.MessageEvent;
 import babybox.events.map.PostEvent;
 import babybox.events.map.SoldEvent;
+import babybox.events.map.StoryEvent;
 import babybox.events.map.TouchEvent;
 import babybox.events.map.UnFollowEvent;
 import babybox.events.map.UnlikeEvent;
@@ -53,38 +54,29 @@ public class SocialRelationHandler {
 		EventHandler.getInstance().getEventBus().post(postEvent);
 	}
 	
-	public static void recordDeletePost(Post post, User localUser) {
+	public static void recordDeletePost(Post post) {
         DeletePostEvent postEvent = new DeletePostEvent();
-        postEvent.put("user", localUser);
         postEvent.put("post", post);
         EventHandler.getInstance().getEventBus().post(postEvent);
     }
 	
 	public static void recordNewStory(Story story, User localUser) {
-	    /*
-        PostEvent postEvent = new PostEvent();
-        postEvent.put("user", localUser);
-        postEvent.put("post", post);
-        EventHandler.getInstance().getEventBus().post(postEvent);
-        */
+	    StoryEvent storyEvent = new StoryEvent();
+	    storyEvent.put("user", localUser);
+	    storyEvent.put("story", story);
+        EventHandler.getInstance().getEventBus().post(storyEvent);
     }
     
     public static void recordEditStory(Story story) {
-        /*
         EditPostEvent postEvent = new EditPostEvent();
-        postEvent.put("post", post);
-        postEvent.put("category", category);
+        postEvent.put("story", story);
         EventHandler.getInstance().getEventBus().post(postEvent);
-        */
     }
     
-    public static void recordDeleteStory(Story story, User localUser) {
-        /*
+    public static void recordDeleteStory(Story story) {
         DeletePostEvent postEvent = new DeletePostEvent();
-        postEvent.put("user", localUser);
-        postEvent.put("post", post);
+        postEvent.put("story", story);
         EventHandler.getInstance().getEventBus().post(postEvent);
-        */
     }
 	
 	public static void recordFollowUser(User localUser, User user) {

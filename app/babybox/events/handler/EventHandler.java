@@ -7,6 +7,7 @@ import babybox.events.listener.LikeEventListener;
 import babybox.events.listener.MessageEventListener;
 import babybox.events.listener.PostEventListener;
 import babybox.events.listener.SoldEventListener;
+import babybox.events.listener.StoryEventListener;
 import babybox.events.listener.ViewEventListener;
 
 import com.google.common.eventbus.EventBus;
@@ -19,6 +20,7 @@ public class EventHandler {
 			ViewEventListener.class,
 			CommentEventListener.class,
 			PostEventListener.class,
+			StoryEventListener.class,
 			SoldEventListener.class,
 			ConversationEventListener.class,
 			MessageEventListener.class

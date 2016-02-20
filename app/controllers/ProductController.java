@@ -745,7 +745,7 @@ public class ProductController extends Controller{
 
         if (localUser.equals(post.owner) || localUser.isSuperAdmin()) {
         	localUser.deletePost(post);
-        	SocialRelationHandler.recordDeletePost(post, localUser);
+        	SocialRelationHandler.recordDeletePost(post);
             return ok();
         }
         return badRequest("Failed to delete post. [u=" + localUser.id + "] not owner of post [id=" + id + "].");

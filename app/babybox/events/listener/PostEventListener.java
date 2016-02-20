@@ -95,14 +95,13 @@ public class PostEventListener extends EventListener {
     public void recordDeletePostEvent(DeletePostEvent map){
 	    try {
     		Post post = (Post) map.get("post");
-    		User user = (User) map.get("user");
     		
     		CalcServer.instance().removeFromCategoryQueues(post);
     		CalcServer.instance().removeFromUserPostedQueue(post, post.owner);
     		CalcServer.instance().removeFromAllUsersLikedQueues(post);
     		
-    		if (!user.isRecommendedSeller()) {
-                CalcServer.instance().removeFromRecommendedSellersQueue(user);
+    		if (!post.owner.isRecommendedSeller()) {
+                CalcServer.instance().removeFromRecommendedSellersQueue(post.owner);
             }
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
