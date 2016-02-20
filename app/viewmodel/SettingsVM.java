@@ -2,10 +2,10 @@ package viewmodel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import models.Setting;
+import models.Settings;
 import models.SystemInfo;
 
-public class SettingVM {
+public class SettingsVM {
 	@JsonProperty("id") public long id;
 	@JsonProperty("emailNewPost") public Boolean emailNewPost;
 	@JsonProperty("emailNewConversation") public Boolean emailNewConversation;
@@ -20,19 +20,17 @@ public class SettingVM {
 	@JsonProperty("systemAndroidVersion") public String systemAndroidVersion;
     @JsonProperty("systemIosVersion") public String systemIosVersion;
     
-    public SettingVM(Setting setting) {
-        this.id = setting.id;
-        if (setting.notificationSetting != null) {
-            this.emailNewPost = setting.notificationSetting.emailNewPost;
-            this.emailNewConversation = setting.notificationSetting.emailNewConversation;
-            this.emailNewComment = setting.notificationSetting.emailNewComment;
-            this.emailNewPromotions = setting.notificationSetting.emailNewPromotions;
-            this.pushNewConversation = setting.notificationSetting.pushNewConversation;
-            this.pushNewComment = setting.notificationSetting.pushNewComment;
-            this.pushNewFollow = setting.notificationSetting.pushNewFollow;
-            this.pushNewFeedback = setting.notificationSetting.pushNewFeedback;
-            this.pushNewPromotions = setting.notificationSetting.pushNewPromotions;
-        }
+    public SettingsVM(Settings settings) {
+        this.id = settings.id;
+        this.emailNewPost = settings.emailNewPost;
+        this.emailNewConversation = settings.emailNewConversation;
+        this.emailNewComment = settings.emailNewComment;
+        this.emailNewPromotions = settings.emailNewPromotions;
+        this.pushNewConversation = settings.pushNewConversation;
+        this.pushNewComment = settings.pushNewComment;
+        this.pushNewFollow = settings.pushNewFollow;
+        this.pushNewFeedback = settings.pushNewFeedback;
+        this.pushNewPromotions = settings.pushNewPromotions;
         
         this.systemAndroidVersion = SystemInfo.getInfo().androidVersion;
         this.systemIosVersion = SystemInfo.getInfo().iosVersion;

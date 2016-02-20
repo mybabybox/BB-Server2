@@ -2,13 +2,13 @@ package viewmodel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import models.Setting;
+import models.Settings;
 import models.User;
 
 public class UserVM extends UserVMLite {
     @JsonProperty("aboutMe") public String aboutMe;
     @JsonProperty("location") public LocationVM location;
-    @JsonProperty("setting") public SettingVM setting;
+    @JsonProperty("settings") public SettingsVM settings;
 
     public UserVM(User user) {
     	this(user, null);
@@ -25,8 +25,8 @@ public class UserVM extends UserVMLite {
         if (user.userInfo != null) {
             this.aboutMe = user.userInfo.aboutMe;
             this.location = new LocationVM(user.userInfo.location);
-            if (localUser != null && user.id == localUser.id) {
-                this.setting = new SettingVM(Setting.findByUserId(user.id));
+            if (localUser == null || user.id == localUser.id) {
+                this.settings = new SettingsVM(Settings.findByUserId(user.id));
             }
         }
     }
