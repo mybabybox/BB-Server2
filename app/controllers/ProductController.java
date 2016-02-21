@@ -426,7 +426,7 @@ public class ProductController extends Controller{
         }
         
     	List<String> names = StringUtil.parseValues(hashtags);
-    	post.sellerHashtags = new ArrayList<>();
+    	post.hashtags = new ArrayList<>();
     	for (String name : names){
     		Hashtag hashtag = Hashtag.findByName(name);
     		/*
@@ -453,7 +453,7 @@ public class ProductController extends Controller{
         }
         
         List<String> names = StringUtil.parseValues(hashtags);
-        story.sellerHashtags = new ArrayList<>();
+        story.hashtags = new ArrayList<>();
         for (String name : names){
             Hashtag hashtag = Hashtag.findByName(name);
             /*

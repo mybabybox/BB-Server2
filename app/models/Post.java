@@ -97,10 +97,7 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	public Double timeScore = 0D;
 
 	@OneToMany
-    public List<Hashtag> systemHashtags = new ArrayList<>();
-	
-	@OneToMany
-    public List<Hashtag> sellerHashtags = new ArrayList<>();
+    public List<Hashtag> hashtags = new ArrayList<>();
 	
 	public DeviceType deviceType;
 	
@@ -147,103 +144,19 @@ public class Post extends SocialObject implements Likeable, Commentable {
     }
 	
     public boolean hasHashtag(Hashtag hashtag) {
-        return systemHashtags.contains(hashtag) || sellerHashtags.contains(hashtag);
+        return hashtags.contains(hashtag);
     }
     
-    public List<Hashtag> getSystemHashtags() {
-        return systemHashtags;
-    }
-    
-    public List<Hashtag> getSellerHashtags() {
-        return sellerHashtags;
+    public List<Hashtag> getHashtags() {
+        return hashtags;
     }
     
     public void addHashtag(Hashtag hashtag) {
         if (hasHashtag(hashtag)) {
             return;
         }
-        
-        if (hashtag.system) {
-            systemHashtags.add(hashtag);
-        } else {
-            sellerHashtags.add(hashtag);
-        }
+        hashtags.add(hashtag);
     }
-    
-    /*
-    public boolean hasHashtag(Hashtag hashtag) {
-        if (hashtag.system) {
-            return getSystemHashtagIds().contains(hashtag.id);
-        }
-        return getSellerHashtagIds().contains(hashtag.id);
-    }
-    
-    public List<Long> getSystemHashtagIds() {
-        return StringUtil.parseIds(systemHashtagIds);
-    }
-    
-    public List<Long> getSellerHashtagIds() {
-        return StringUtil.parseIds(sellerHashtagIds);
-    }
-    
-    public List<Hashtag> getSystemHashtags() {
-        return getHashtags(getSystemHashtagIds());
-    }
-    
-    public List<Hashtag> getSellerHashtags() {
-        return getHashtags(getSellerHashtagIds());
-    }
-    
-    private List<Hashtag> getHashtags(List<Long> hashtagIds) {
-        List<Hashtag> list = new ArrayList<>();
-        for (Long hashtagId : hashtagIds) {
-            try {
-                Hashtag hashtag = Hashtag.findById(hashtagId);
-                if (hashtag != null) {
-                    list.add(hashtag);
-                }
-            } catch (NumberFormatException e) {
-            }
-        }
-        return list;
-    }
-    
-    public void addHashtag(Hashtag hashtag) {
-        if (hasHashtag(hashtag)) {
-            return;
-        }
-        
-        if (hashtag.system) {
-            List<Long> hashtagIds = StringUtil.parseIds(systemHashtagIds);
-            hashtagIds.add(hashtag.id);
-            Collections.sort(hashtagIds);
-            systemHashtagIds = StringUtil.idsToString(hashtagIds);
-        } else {
-            List<Long> hashtagIds = StringUtil.parseIds(sellerHashtagIds);
-            hashtagIds.add(hashtag.id);
-            Collections.sort(hashtagIds);
-            sellerHashtagIds = StringUtil.idsToString(hashtagIds);
-        }
-    }
-    
-    public boolean removeHashtag(Hashtag hashtag) {
-        if (!hasHashtag(hashtag)) {
-            return false;
-        }
-        
-        boolean removed = false;
-        if (hashtag.system) {
-            List<Long> hashtagIds = StringUtil.parseIds(systemHashtagIds);
-            removed = hashtagIds.remove(hashtag.id);
-            systemHashtagIds = StringUtil.idsToString(hashtagIds);
-        } else {
-            List<Long> hashtagIds = StringUtil.parseIds(sellerHashtagIds);
-            removed = hashtagIds.remove(hashtag.id);
-            sellerHashtagIds = StringUtil.idsToString(hashtagIds);
-        }
-        return removed;
-    }
-    */
 	
 	public static ConditionType parseConditionType(String conditionType) {
         try {
