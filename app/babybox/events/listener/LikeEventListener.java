@@ -26,7 +26,7 @@ public class LikeEventListener extends EventListener {
     		
     		if (post.onLikedBy(user)) {
         		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
-                CalcServer.instance().addToLikeQueue(post, user);
+                CalcServer.instance().addToUserLikedQueue(post, user);
                 
                 final Long postImageId = post.getImage();
                 executeAsync(
@@ -70,7 +70,7 @@ public class LikeEventListener extends EventListener {
     		
     		if (post.onUnlikedBy(user)) {
         		CalcServer.instance().recalcScoreAndAddToCategoryPopularQueue(post);
-                CalcServer.instance().removeFromLikeQueue(post, user);
+                CalcServer.instance().removeFromUserLikedQueue(post, user);
     		}
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);

@@ -27,7 +27,6 @@ import models.SecurityRole;
 import models.TermsAndConditions;
 import models.User;
 import models.UserInfo;
-import models.UserInfo.ParentType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -255,10 +254,6 @@ public class Application extends Controller {
         String parentDisplayName = form.get("parent_displayname").trim();
         Location parentLocation = Location.getLocationById(Integer.valueOf(form.get("parent_location")));
 
-        // Default to dummy values
-        String parentBirthYear = DefaultValues.DUMMY_BIRTH_YEAR + "";
-        ParentType parentType = ParentType.NA;
-
         if (!ValidationUtil.isDisplayNameValid(parentDisplayName)) {
             return handleSaveSignupInfoError("\""+parentDisplayName+"\" 不可有空格", fb);
         }
@@ -274,88 +269,10 @@ public class Application extends Controller {
         
         UserInfo userInfo = new UserInfo();
         userInfo.location = parentLocation;
-        userInfo.birthYear = parentBirthYear;
-        userInfo.parentType = parentType;
-        userInfo.gender = TargetGender.FEMALE;
         localUser.userInfo = userInfo;
         localUser.userInfo.save();
         
         logger.underlyingLogger().info("[u="+localUser.id+"][name="+localUser.displayName+"] doSaveSignupInfo userInfo="+userInfo.toString());
-        
-        /*
-        String parentBirthYear = form.get("parent_birth_year");
-        ParentType parentType = ParentType.valueOf(form.get("parent_type"));
-        int numChildren = Integer.valueOf(form.get("num_children"));
-        if (ParentType.NA.equals(parentType)) {
-            numChildren = 0;
-        }
-
-        if (!ValidationUtil.isDisplayNameValid(parentDisplayName)) {
-            return handleSaveSignupInfoError("\""+parentDisplayName+"\" 不可有空格", fb);
-        }
-        if (User.isDisplayNameExists(parentDisplayName)) {
-            return handleSaveSignupInfoError("\""+parentDisplayName+"\" 已被選用。請選擇另一個顯示名稱重試", fb);
-        }
-        if (StringUtils.isEmpty(parentBirthYear) || parentLocation == null || parentType == null) {
-            return handleSaveSignupInfoError("請填寫您的生日，地區，媽媽身份", fb);
-        }
-        
-        localUser.displayName = parentDisplayName;
-        localUser.name = parentDisplayName;
-        
-        UserInfo userInfo = new UserInfo();
-        userInfo.location = parentLocation;
-        userInfo.birthYear = parentBirthYear;
-        userInfo.parentType = parentType;
-        
-        if (ParentType.MOM.equals(parentType) || ParentType.SOON_MOM.equals(parentType)) {
-            userInfo.gender = TargetGender.FEMALE;
-        } else if (ParentType.DAD.equals(parentType) || ParentType.SOON_DAD.equals(parentType)) {
-            userInfo.gender = TargetGender.MALE;
-        } else {
-            userInfo.gender = TargetGender.NA;
-        }
-        userInfo.numChildren = numChildren;
-        
-        localUser.userInfo = userInfo;
-        localUser.userInfo.save();
-        
-        logger.underlyingLogger().info("[u="+localUser.id+"][name="+localUser.displayName+"] doSaveSignupInfo userInfo="+userInfo.toString());
-        
-        // UseChild
-        int maxChildren = (numChildren > 5)? 5 : numChildren;
-        for (int i = 1; i <= maxChildren; i++) {
-            String genderStr = form.get("bb_gender" + i);
-            if (genderStr == null) {
-                return handleSaveSignupInfoError("請選擇寶寶性別", fb);
-            }
-            
-            TargetGender bbGender = TargetGender.valueOf(form.get("bb_gender" + i));
-            String bbBirthYear = form.get("bb_birth_year" + i);
-            String bbBirthMonth = form.get("bb_birth_month" + i);
-            String bbBirthDay = form.get("bb_birth_day" + i);
-            
-            if (bbBirthDay == null) {
-                bbBirthDay = "";
-            }
-            
-            if (!DateTimeUtil.isDateOfBirthValid(bbBirthYear, bbBirthMonth, bbBirthDay)) {
-                return handleSaveSignupInfoError("寶寶生日日期格式不正確。請重試", fb);
-            }
-            
-            UserChild userChild = new UserChild();
-            userChild.gender = bbGender;
-            userChild.birthYear = bbBirthYear;
-            userChild.birthMonth = bbBirthMonth;
-            userChild.birthDay = bbBirthDay;
-            
-            userChild.save();
-            localUser.children.add(userChild);
-            
-            logger.underlyingLogger().info("[u="+localUser.id+"][name="+localUser.displayName+"] doSaveSignupInfo userChild="+userChild.toString());
-        }
-        */
-        
         return redirect("/home");
 	}
 	

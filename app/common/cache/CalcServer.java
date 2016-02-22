@@ -48,6 +48,9 @@ public class CalcServer {
 	public static final int FEED_SOLD_CLEANUP_DAYS = Play.application().configuration().getInt("feed.sold.cleanup.days");
 	public static final int FEED_RETRIEVAL_COUNT = DefaultValues.FEED_INFINITE_SCROLL_COUNT;
 	
+	public static final String CACHED_USERS = "CACHED_USERS";
+	public static final String CACHED_PRODUCTS = "CACHED_PRODUCTS";
+	
 	private CalcFormula formula = new CalcFormula();
 	
 	private static CalcServer instance;
@@ -67,8 +70,10 @@ public class CalcServer {
 		    jedisCache.flushAll();
 		}
 		
+		clearStaticQueues();
 		buildQueuesFromUsers();
 		buildQueuesFromPosts();
+		
 		JobScheduler.getInstance().schedule(
 		        "buildCategoryPopularQueue", 
 		        FEED_SCORE_COMPUTE_SCHEDULE,  // initial delay 
@@ -91,6 +96,11 @@ public class CalcServer {
         
 		sw.stop();
 		logger.underlyingLogger().debug("warmUpActivity completed. Took "+sw.getElapsedSecs()+"s");
+	}
+	
+	private void clearStaticQueues() {
+	    jedisCache.remove(CACHED_USERS);
+	    jedisCache.remove(CACHED_PRODUCTS);
 	}
 	
 	public void clearCategoryQueues() {
@@ -126,6 +136,38 @@ public class CalcServer {
 	}
 	
 	/**
+	 * Static caches 
+	 */
+	
+	public boolean isUserCached(User user) {
+        return jedisCache.isMemberOfSortedSet(CACHED_USERS, user.id.toString());
+    }
+   
+	public void addToCachedUsersQueue(User user) {
+        if (!isUserCached(user)) {
+            jedisCache.putToSortedSet(CACHED_USERS, new Date().getTime(), user.id.toString());
+        }
+    }
+    
+    public void removeFromCachedUsersQueue(User user) {
+        jedisCache.removeMemberFromSortedSet(CACHED_USERS, user.id.toString());
+    }
+    
+    public boolean isProductCached(Post post) {
+        return jedisCache.isMemberOfSortedSet(CACHED_PRODUCTS, post.id.toString());
+    }
+   
+    public void addToCachedProductsQueue(Post post) {
+        if (!isProductCached(post)) {
+            jedisCache.putToSortedSet(CACHED_PRODUCTS, new Date().getTime(), post.id.toString());
+        }
+    }
+    
+    public void removeFromCachedProductsQueue(Post post) {
+        jedisCache.removeMemberFromSortedSet(CACHED_PRODUCTS, post.id.toString());
+    }
+    
+	/**
 	 * Main entry for building queues from users.
 	 */
 	private void buildQueuesFromUsers() {
@@ -134,10 +176,33 @@ public class CalcServer {
 		        clearUserQueues(user);
 		    }
 		    
-			buildUserLikedPostQueue(user);
-			buildUserFollowingsFollowersQueue(user);
-			addToRecommendedSellersQueue(user);
+		    buildQueuesForUser(user);
 		}
+	}
+	
+	private boolean eligibleToBuildQueues(User user) {
+	    if (user.newUser || !user.active || user.deleted) {
+            return false;
+        }
+	    
+	    if (user.numFollowers == 0 && user.numFollowings == 0 && 
+	            user.numLikes == 0 && user.numProducts == 0 && user.numStories == 0) {
+	        return false;
+	    }
+	    
+	    return true;
+	}
+	
+	public void buildQueuesForUser(User user) {
+	    if (!eligibleToBuildQueues(user)) {
+	        return;
+	    }
+	    
+	    buildUserLikedPostQueue(user);
+        buildUserFollowingsFollowersQueue(user);
+        addToRecommendedSellersQueue(user);
+        // mark cached
+        addToCachedUsersQueue(user);
 	}
 
 	private void buildUserLikedPostQueue(User user) {
@@ -227,21 +292,29 @@ public class CalcServer {
 		        clearPostQueues(post);
 		    }
 		    
-			addToUserPostedQueue(post);
-			
-			// below queues skip sold products
-		    if (post.soldMarked) {
-                continue;
-            }
-		    addToCategoryQueues(post);
-		    addToHashtagQueues(post);
-		    buildProductLikesQueue(post);
+			buildQueuesForPost(post);
 		}
 		
 		sw.stop();
         logger.underlyingLogger().debug("buildQueuesFromPosts completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
+	public void buildQueuesForPost(Post post) {
+	    addToUserPostedQueue(post);
+        
+        // below queues skip sold products
+        if (post.soldMarked) {
+            return;
+        }
+        
+        addToCategoryQueues(post);
+        addToHashtagQueues(post);
+        buildProductLikesQueue(post);
+        
+	    // mark cached
+        addToCachedProductsQueue(post);
+	}
+	
 	private void buildCategoryPopularQueues() {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
         logger.underlyingLogger().debug("buildCategoryPopularQueue starts");
@@ -350,11 +423,11 @@ public class CalcServer {
         jedisCache.removeMemberFromSortedSet(getKey(FeedType.CATEGORY_POPULAR_USED,category.id), post.id.toString());
     }
     
-    public void addToLikeQueue(Post post, User user){
+    public void addToUserLikedQueue(Post post, User user){
         jedisCache.putToSortedSet(getKey(FeedType.USER_LIKED,user.id), new Date().getTime(), post.id.toString());
     }
     
-    public void removeFromLikeQueue(Post post, User user){
+    public void removeFromUserLikedQueue(Post post, User user){
         jedisCache.removeMemberFromSortedSet(getKey(FeedType.USER_LIKED,user.id), post.id.toString());
     }
     

@@ -93,9 +93,6 @@ public class User extends SocialObject implements Subject, Followable {
 	@OneToOne
 	public UserInfo userInfo;
 
-	@OneToMany
-	public List<UserChild> children = new ArrayList<>();
-
 	// fb info
 
 	public boolean fbLogin;
@@ -986,14 +983,6 @@ public class User extends SocialObject implements Subject, Followable {
 	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
 	}
-
-	public List<UserChild> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<UserChild> children) {
-        this.children = children;
-    }
 
 	public boolean isActive() {
 		return active;
