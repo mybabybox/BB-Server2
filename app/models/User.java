@@ -574,7 +574,7 @@ public class User extends SocialObject implements Subject, Followable {
 		otherUser.merge();
 	}
 
-	public static User create(final AuthUser authUser) {
+s	public static User create(final AuthUser authUser) {
 		final User user = new User();
 		user.roles = Collections.singletonList(
 				SecurityRole.findByRoleName(SecurityRole.RoleType.USER.name()));
@@ -792,6 +792,15 @@ public class User extends SocialObject implements Subject, Followable {
         return false;
     }
 	
+	@Transactional
+	public void addPromotedSellerRole() {
+        SecurityRole role = SecurityRole.findByRoleName(SecurityRole.RoleType.PROMOTED_SELLER.name());
+        if (role != null && !roles.contains(role)) {
+            roles.add(role);
+            save();
+        }
+    }
+    
 	@Transactional
 	public boolean isRecommendedSeller() {
 	    if (isSystemUser() || newUser || system || !active || deleted) {

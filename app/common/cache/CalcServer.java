@@ -29,6 +29,7 @@ import com.google.inject.Singleton;
 import common.model.FeedFilter.FeedType;
 import common.schedule.JobScheduler;
 import common.thread.ThreadLocalOverride;
+import common.thread.TransactionalRunnableTask;
 import common.utils.NanoSecondStopWatch;
 import domain.DefaultValues;
 
@@ -193,6 +194,16 @@ public class CalcServer {
 	    return true;
 	}
 	
+	public void buildQueuesForUserAsync(final User user) {
+	    JobScheduler.getInstance().run(
+                new TransactionalRunnableTask() {
+                    @Override
+                    public void execute() {
+                        buildQueuesForUserAsync(user);
+                    }
+                });
+	}
+	
 	public void buildQueuesForUser(User user) {
 	    if (!eligibleToBuildQueues(user)) {
 	        return;
@@ -200,7 +211,7 @@ public class CalcServer {
 	    
 	    buildUserLikedPostQueue(user);
         buildUserFollowingsFollowersQueue(user);
-        addToRecommendedSellersQueue(user);
+        
         // mark cached
         addToCachedUsersQueue(user);
 	}
@@ -266,7 +277,8 @@ public class CalcServer {
 	}
 	
 	public void addToRecommendedSellersQueue(User user) {
-        if (user.isRecommendedSeller()) {
+	    boolean added = jedisCache.isMemberOfSortedSet(getKey(FeedType.RECOMMENDED_SELLERS), user.id.toString());
+        if (user.isRecommendedSeller() && !added) {
             jedisCache.putToSortedSet(getKey(FeedType.RECOMMENDED_SELLERS), user.getLastLogin().getTime(), user.id.toString());
         }
     }
@@ -301,6 +313,7 @@ public class CalcServer {
 
 	public void buildQueuesForPost(Post post) {
 	    addToUserPostedQueue(post);
+	    addToRecommendedSellersQueue(post.owner);
         
         // below queues skip sold products
         if (post.soldMarked) {
