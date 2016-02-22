@@ -31,6 +31,7 @@ import models.Message;
 import models.NotificationCounter;
 import models.Post;
 import models.Resource;
+import models.Settings;
 import models.SocialRelation;
 import models.User;
 import models.Conversation.OrderTransactionState;
@@ -87,7 +88,7 @@ public class UserController extends Controller {
 			try {
 				return URLDecoder.decode(m[0], "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+				logger.underlyingLogger().error("Error in getMobileUserKey", e);
 			}
 		}
 		return null;
@@ -156,7 +157,7 @@ public class UserController extends Controller {
     	        GameBadgeAwarded.recordGameBadge(localUser, BadgeType.PROFILE_PHOTO);
 			}
 		} catch (IOException e) {
-		    logger.underlyingLogger().error("Error in uploadProfilePhoto", e);
+		    logger.underlyingLogger().error("["+localUser.id+"] Error in uploadProfilePhoto", e);
 			return badRequest();
 		}
 		return ok();
@@ -178,7 +179,7 @@ public class UserController extends Controller {
 	    	File fileTo = ImageFileUtil.copyImageFileToTemp(image.getFile(), fileName);
 			localUser.setCoverPhoto(fileTo);
 		} catch (IOException e) {
-		    logger.underlyingLogger().error("Error in uploadCoverPhoto", e);
+		    logger.underlyingLogger().error("["+localUser.id+"] Error in uploadCoverPhoto", e);
 			return badRequest();
 		}
 		return ok();
@@ -313,8 +314,37 @@ public class UserController extends Controller {
             GameBadgeAwarded.recordGameBadge(localUser, BadgeType.PROFILE_INFO);
         }
         
-        return ok();
+        return ok(Json.toJson(new UserVM(localUser)));
 	}
+    
+	@Transactional
+    public static Result editUserNotificationSettings() {
+        final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        Settings settings = Settings.findByUserId(localUser.id);
+        try {
+            DynamicForm form = form().bindFromRequest();
+            settings.emailNewPost = Boolean.parseBoolean(form.get("emailNewPost"));
+            settings.emailNewConversation = Boolean.parseBoolean(form.get("emailNewConversation"));
+            settings.emailNewComment = Boolean.parseBoolean(form.get("emailNewComment"));
+            settings.emailNewPromotions = Boolean.parseBoolean(form.get("emailNewPromotions"));
+            settings.pushNewConversation = Boolean.parseBoolean(form.get("pushNewConversation"));
+            settings.pushNewComment = Boolean.parseBoolean(form.get("pushNewComment"));
+            settings.pushNewFollow = Boolean.parseBoolean(form.get("pushNewFollow"));
+            settings.pushNewFeedback = Boolean.parseBoolean(form.get("pushNewFeedback"));
+            settings.pushNewPromotions = Boolean.parseBoolean(form.get("pushNewPromotions"));
+            settings.save();
+        } catch (Exception e) {
+            logger.underlyingLogger().error("["+localUser.id+"] Error in editUserNotificationSettings", e);
+            return badRequest();
+        }
+        
+        return ok(Json.toJson(new UserVM(localUser)));
+    }
     
     @Transactional
 	public static Result getProfileImageById(Long id) {
@@ -470,7 +500,7 @@ public class UserController extends Controller {
 	        MessageVM vm = new MessageVM(message);
 	        return ok(Json.toJson(vm));
 		} catch (IOException e) {
-			logger.underlyingLogger().error("Error in newMessage", e);
+			logger.underlyingLogger().error("["+localUser.id+"] Error in newMessage", e);
 		}
         
         return badRequest();
@@ -636,10 +666,10 @@ public class UserController extends Controller {
             Long id = message.addMessagePhoto(fileTo,localUser).id;
             return ok(id.toString());
         } catch (NumberFormatException e) {
-        	logger.underlyingLogger().error(ExceptionUtils.getStackTrace(e));
+            logger.underlyingLogger().error("["+localUser.id+"] Error in uploadMessagePhoto", e);
             return badRequest();
         } catch (IOException e) {
-            logger.underlyingLogger().error(ExceptionUtils.getStackTrace(e));
+            logger.underlyingLogger().error("["+localUser.id+"] Error in uploadMessagePhoto", e);
             return badRequest();
         }
     }
@@ -678,6 +708,7 @@ public class UserController extends Controller {
             conversation.note = body;
             conversation.save();
         } catch (Exception e) {
+            logger.underlyingLogger().error("["+localUser.id+"] Error in updateConversationNote", e);
             return notFound();
         }
         
@@ -702,6 +733,7 @@ public class UserController extends Controller {
             conversation.orderTransactionState = orderTransactionState;
             conversation.save();
         } catch (Exception e) {
+            logger.underlyingLogger().error("["+localUser.id+"] Error in updateConversationOrderTransactionState", e);
             return notFound();
         }
         
@@ -726,6 +758,7 @@ public class UserController extends Controller {
             conversation.highlightColor = highlightColor;
             conversation.save();
         } catch (Exception e) {
+            logger.underlyingLogger().error("["+localUser.id+"] Error in highlightConversation", e);
             return notFound();
         }
         

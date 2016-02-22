@@ -170,6 +170,8 @@ GET     /get-user-info                              @controllers.UserController.
 POST    /api/user-info/edit                         controllers.UserController.editUserInfo
 POST    /updateUserProfileData                      controllers.UserController.editUserInfo
 
+POST    /api/user-notification-settings/edit        controllers.UserController.editUserNotificationSettings()
+
 GET     /api/follow-user/:id                        controllers.UserController.followUser(id:Long)
 GET     /follow-user/:id                            controllers.UserController.followUser(id:Long)
 
