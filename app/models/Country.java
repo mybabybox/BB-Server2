@@ -2,6 +2,7 @@ package models;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -34,7 +35,8 @@ public class Country extends domain.Entity {
 
     public int seq;
     
-    public Boolean deleted = false;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean deleted = false;
     
     @Enumerated(EnumType.STRING)
     public CountryCode code;

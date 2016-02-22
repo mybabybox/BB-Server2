@@ -83,7 +83,8 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 
 	public String lastMessage;
 	
-	public Boolean lastMessageHasImage = false;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean lastMessageHasImage = false;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date lastMessageDate;
@@ -106,7 +107,8 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 
 	public int numMessages = 0;
 	
-	public Boolean deleted = false; 
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean deleted = false; 
 	
 	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "conversation")
 	public Set<Message> messages = new TreeSet<Message>();

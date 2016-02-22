@@ -8,7 +8,7 @@ public class ActivityVM {
     @JsonProperty("id") public Long id;
     @JsonProperty("createdDate") public Long createdDate;
     @JsonProperty("activityType") public String activityType;
-    @JsonProperty("userIsOwner") public Boolean userIsOwner;
+    @JsonProperty("userIsOwner") public boolean userIsOwner;
     @JsonProperty("actor") public Long actor;
     @JsonProperty("actorImage") public Long actorImage;
     @JsonProperty("actorName") public String actorName;
@@ -17,7 +17,7 @@ public class ActivityVM {
     @JsonProperty("targetImage") public Long targetImage;
     @JsonProperty("targetName") public String targetName;
     @JsonProperty("targetType") public String targetType;
-    @JsonProperty("viewed") public Boolean viewed;
+    @JsonProperty("viewed") public boolean viewed;
 	
 	public ActivityVM() {}
 	

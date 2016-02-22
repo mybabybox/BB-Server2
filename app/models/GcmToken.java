@@ -2,6 +2,7 @@ package models;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,8 +30,8 @@ public class GcmToken extends domain.Entity {
 	@Required
 	public Long versionCode;
 	
-	@Required
-	public Boolean deleted = false;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean deleted = false;
 
     /**
      * Ctor

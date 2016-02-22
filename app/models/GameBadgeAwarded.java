@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -39,8 +40,8 @@ public class GameBadgeAwarded extends domain.Entity implements Serializable, Cre
     @Required
     public Long gameBadgeId;
     
-    @Required
-    public Boolean deleted = false;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean deleted = false;
     
 	public GameBadgeAwarded() {
 	}

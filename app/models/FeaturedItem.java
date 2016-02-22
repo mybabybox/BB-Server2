@@ -59,8 +59,8 @@ public class FeaturedItem extends domain.Entity  implements Serializable, Creata
     
     public String destinationObjName;
     
-    @Required
-    public Boolean deleted = false;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean deleted = false;
     
 	public static enum ItemType {
 	    HOME_SLIDER

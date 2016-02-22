@@ -319,6 +319,8 @@ public class UserController extends Controller {
     
 	@Transactional
     public static Result editUserNotificationSettings() {
+	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
+	    
         final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
@@ -343,6 +345,8 @@ public class UserController extends Controller {
             return badRequest();
         }
         
+        sw.stop();
+        logger.underlyingLogger().info("[u="+localUser.id+"] editUserNotificationSettings. Took "+sw.getElapsedMS()+"ms");
         return ok(Json.toJson(new UserVM(localUser)));
     }
     

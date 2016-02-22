@@ -71,8 +71,10 @@ public class Post extends SocialObject implements Likeable, Commentable {
 
 	public Double price = 0.0;
 
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
 	public boolean sold = false;
 	
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
 	public boolean soldMarked = false;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -81,7 +83,8 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	// Seller fields
 	public Double originalPrice = 0.0;
 	
-	public Boolean freeDelivery = false;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean freeDelivery = false;
 	
 	@Enumerated(EnumType.ORDINAL)
 	public Country.CountryCode countryCode = Country.CountryCode.NA;
@@ -122,7 +125,7 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	}
 
 	public Post(User owner, String title, String body, Category category, Double price, ConditionType conditionType, 
-	        Double originalPrice, Boolean freeDelivery, Country.CountryCode countryCode, DeviceType deviceType) {
+	        Double originalPrice, boolean freeDelivery, Country.CountryCode countryCode, DeviceType deviceType) {
 		this.owner = owner;
 		this.title = title;
 		this.body = body;

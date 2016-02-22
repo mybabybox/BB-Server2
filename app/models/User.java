@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -95,8 +96,10 @@ public class User extends SocialObject implements Subject, Followable {
 
 	// fb info
 
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
 	public boolean fbLogin;
 
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
 	public boolean mobileSignup;
 
 	public DeviceType deviceType;
@@ -128,18 +131,23 @@ public class User extends SocialObject implements Subject, Followable {
 	// system
 
 	@JsonIgnore
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
 	public boolean active;
 
 	@JsonIgnore
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
     public boolean emailProvidedOnSignup;
 	
 	@JsonIgnore
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
 	public boolean emailValidated;
 	
 	@JsonIgnore
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
     public boolean accountVerified;
 
 	@JsonIgnore
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
 	public boolean newUser;
 
 	@Formats.DateTime(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -353,7 +361,7 @@ public class User extends SocialObject implements Subject, Followable {
 	@Transactional
 	public Post createProduct(
 	        String title, String body, Category category, Double price, ConditionType conditionType, 
-	        Double originalPrice, Boolean freeDelivery, CountryCode countryCode, DeviceType deviceType) {
+	        Double originalPrice, boolean freeDelivery, CountryCode countryCode, DeviceType deviceType) {
 	    
 		if (Strings.isNullOrEmpty(title) || 
 				Strings.isNullOrEmpty(body) || category == null || price == -1D) {
@@ -394,7 +402,7 @@ public class User extends SocialObject implements Subject, Followable {
 	@Transactional
     public Post editProduct(
             Post post, String title, String body, Category category, Double price, Post.ConditionType conditionType, 
-            Double originalPrice, Boolean freeDelivery, CountryCode countryCode) {
+            Double originalPrice, boolean freeDelivery, CountryCode countryCode) {
 	    
 	    if (post == null || 
 	            Strings.isNullOrEmpty(title) || Strings.isNullOrEmpty(body) || 
@@ -450,7 +458,7 @@ public class User extends SocialObject implements Subject, Followable {
 	 * @param system
 	 * @return
 	 */
-	public Folder createFolder(String name, String description, Boolean system) {
+	public Folder createFolder(String name, String description, boolean system) {
 		if (ensureAlbumExistWithGivenName(name)) {
 			Folder folder = createFolder(name, description,
 					SocialObjectType.FOLDER, system);
@@ -462,7 +470,7 @@ public class User extends SocialObject implements Subject, Followable {
 	}
 
 	private Folder createFolder(String name, String description,
-			SocialObjectType type, Boolean system) {
+			SocialObjectType type, boolean system) {
 
 		Folder folder = new Folder(name);
 		folder.owner = this;

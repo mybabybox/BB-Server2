@@ -2,6 +2,7 @@ package models;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -57,11 +58,11 @@ public abstract class SocialObject extends domain.Entity implements Serializable
 	 *     System albums will not generate socialAction onCreate and should be always public 
 	 *     (the privacy is set on the single inner elements)
      */
-	@Required
-    public Boolean system = false;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean system = false;
     
-	@Required
-    public Boolean deleted = false;     // social objects should always be soft deleted
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean deleted = false;     // social objects should always be soft deleted
 	
 	@JsonIgnore
     @ManyToOne

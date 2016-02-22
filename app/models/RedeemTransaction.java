@@ -38,8 +38,8 @@ public class RedeemTransaction extends domain.Entity implements Serializable, Cr
 	@Column(length = 1024)
     public String note;
 	
-	@Required
-    public Boolean deleted = false;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean deleted = false;
 	
     @Enumerated(EnumType.STRING)
 	public RedeemType redeemType;

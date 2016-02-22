@@ -7,15 +7,15 @@ import models.SystemInfo;
 
 public class SettingsVM {
 	@JsonProperty("id") public long id;
-	@JsonProperty("emailNewPost") public Boolean emailNewPost;
-	@JsonProperty("emailNewConversation") public Boolean emailNewConversation;
-	@JsonProperty("emailNewComment") public Boolean emailNewComment;
-	@JsonProperty("emailNewPromotions") public Boolean emailNewPromotions;
-	@JsonProperty("pushNewConversation") public Boolean pushNewConversation;
-	@JsonProperty("pushNewComment") public Boolean pushNewComment;
-	@JsonProperty("pushNewFollow") public Boolean pushNewFollow;
-	@JsonProperty("pushNewFeedback") public Boolean pushNewFeedback;
-	@JsonProperty("pushNewPromotions") public Boolean pushNewPromotions;
+	@JsonProperty("emailNewPost") public boolean emailNewPost;
+	@JsonProperty("emailNewConversation") public boolean emailNewConversation;
+	@JsonProperty("emailNewComment") public boolean emailNewComment;
+	@JsonProperty("emailNewPromotions") public boolean emailNewPromotions;
+	@JsonProperty("pushNewConversation") public boolean pushNewConversation;
+	@JsonProperty("pushNewComment") public boolean pushNewComment;
+	@JsonProperty("pushNewFollow") public boolean pushNewFollow;
+	@JsonProperty("pushNewFeedback") public boolean pushNewFeedback;
+	@JsonProperty("pushNewPromotions") public boolean pushNewPromotions;
 
 	@JsonProperty("systemAndroidVersion") public String systemAndroidVersion;
     @JsonProperty("systemIosVersion") public String systemIosVersion;

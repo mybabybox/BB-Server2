@@ -2,6 +2,7 @@ package models;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -35,7 +36,8 @@ public class SystemInfo {
 	
 	public String iosVersion = "1";
 	
-	public Boolean versionUpdated = false;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean versionUpdated = false;
 	
 	public Long babyboxAdmin = 1L;
 	

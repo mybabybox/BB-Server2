@@ -11,7 +11,7 @@ public class StoryVMLite {
     @JsonProperty("ownerName") public String ownerName;
 
 	@JsonProperty("images") public Long[] images;
-	@JsonProperty("hasImage") public Boolean hasImage = false;
+	@JsonProperty("hasImage") public boolean hasImage = false;
 	
 	@JsonProperty("numLikes") public int numLikes;
 	@JsonProperty("numComments") public int numComments;
@@ -94,11 +94,11 @@ public class StoryVMLite {
 		this.images = images;
 	}
 	
-	public Boolean getHasImage() {
+	public boolean getHasImage() {
 		return hasImage;
 	}
 	
-	public void setHasImage(Boolean hasImage) {
+	public void setHasImage(boolean hasImage) {
 		this.hasImage = hasImage;
 	}
 	

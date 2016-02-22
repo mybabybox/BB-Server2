@@ -58,11 +58,11 @@ public class Resource extends SocialObject {
 		this.objectType = objectType;
 	}
 
-	public Boolean isImage() {
+	public boolean isImage() {
 		return FileUtil.isImage(resourceName);
 	}
 
-	public Boolean isExternal() {
+	public boolean isExternal() {
 		return FileUtil.isExternal(resourceName);
 	}
 

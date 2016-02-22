@@ -33,7 +33,8 @@ public class NotificationCounter extends domain.Entity implements Serializable, 
 	
 	public Long conversationsCount = 0L;
 	
-	public Boolean deleted = false;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean deleted = false;
 	
 	public NotificationCounter() {
     }

@@ -18,12 +18,12 @@ public class ConversationVM {
 	@JsonProperty("postImage") public Long postImage;
 	@JsonProperty("postTitle") public String postTitle;
 	@JsonProperty("postPrice") public double postPrice;
-	@JsonProperty("postOwner") public Boolean postOwner;
-	@JsonProperty("postSold") public Boolean postSold;
+	@JsonProperty("postOwner") public boolean postOwner;
+	@JsonProperty("postSold") public boolean postSold;
 	@JsonProperty("userId") public Long userId;
 	@JsonProperty("userName") public String userName;
 	@JsonProperty("lastMessage") public String lastMessage;
-	@JsonProperty("lastMessageHasImage") public Boolean lastMessageHasImage;
+	@JsonProperty("lastMessageHasImage") public boolean lastMessageHasImage;
 	@JsonProperty("lastMessageDate") public Long lastMessageDate;
 	@JsonProperty("unread") public Long unread = 0L;
 	@JsonProperty("order") public ConversationOrderVM order;

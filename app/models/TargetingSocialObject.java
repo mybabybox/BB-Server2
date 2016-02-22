@@ -9,7 +9,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class TargetingSocialObject extends SocialObject {
 
-    @Column(nullable=false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     public boolean excludeFromTargeting = false;
     
     @Enumerated(EnumType.STRING)

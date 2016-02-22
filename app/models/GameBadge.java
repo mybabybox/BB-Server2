@@ -51,8 +51,8 @@ public class GameBadge extends domain.Entity implements Serializable, Creatable,
     @Required
     public int seq;
     
-    @Required
-    public Boolean deleted = false;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean deleted = false;
     
 	public static enum BadgeType {
 	    PROFILE_PHOTO,

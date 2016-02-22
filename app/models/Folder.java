@@ -75,14 +75,14 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
      * @param system
      * @return
      */
-    public static Folder createFolder(User owner, String name, String description, Boolean system) {
+    public static Folder createFolder(User owner, String name, String description, boolean system) {
         Folder folder = createFolder(owner, name, description,
                 SocialObjectType.FOLDER, system);
         return folder;
     }
 
     public static Folder createFolder(User owner, String name, String description,
-                                      SocialObjectType type, Boolean system) {
+                                      SocialObjectType type, boolean system) {
         Folder folder = new Folder(name);
         folder.owner = owner;
         folder.name = name;
@@ -420,11 +420,11 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
 		this.description = description;
 	}
 
-	public Boolean getSystem() {
+	public boolean getSystem() {
 		return system;
 	}
 
-	public void setSystem(Boolean system) {
+	public void setSystem(boolean system) {
 		this.system = system;
 	}
 

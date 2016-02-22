@@ -3,6 +3,7 @@ package models;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -70,24 +71,29 @@ public class ConversationOrder extends domain.Entity implements Serializable, Cr
 
 	public Double offeredPrice = 0.0;
 	
-	public Boolean cancelled = false;  // by buyer
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean cancelled = false;  // by buyer
     
     @Temporal(TemporalType.TIMESTAMP)
     public Date cancelDate;
 	
-	public Boolean accepted = false;   // by seller
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean accepted = false;   // by seller
     
     @Temporal(TemporalType.TIMESTAMP)
     public Date acceptDate;
     
-    public Boolean declined = false;   // by seller
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean declined = false;   // by seller
     
     @Temporal(TemporalType.TIMESTAMP)
     public Date declineDate;
     
-    public Boolean active = true;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean active = true;
     
-	public Boolean deleted = false; 
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean deleted = false; 
 	
 	public ConversationOrder() {}
 	

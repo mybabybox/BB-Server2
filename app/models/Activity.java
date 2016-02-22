@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -42,7 +43,8 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
 	@Required
 	public Long userId;
 
-	public Boolean userIsOwner = false;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean userIsOwner = false;
 	
 	public Long actor;
 
@@ -62,9 +64,11 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
 	@Enumerated(EnumType.STRING)
 	public SocialObjectType targetType;
 
-	public Boolean viewed = false;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean viewed = false;
 
-	public Boolean deleted = false;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean deleted = false;
 
 	@Enumerated(EnumType.STRING)
 	public ActivityType activityType;
@@ -82,7 +86,7 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
 	public Activity() {
 	}
 	
-	public Activity(ActivityType activityType, Long userId, Boolean userIsOwner,  
+	public Activity(ActivityType activityType, Long userId, boolean userIsOwner,  
 			Long actor, Long actorImage, String actorName,  
 			Long target, Long targetImage, String targetName) {
 		this.activityType = activityType;
@@ -247,11 +251,11 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
 		this.userId = userId;
 	}
 
-	public Boolean getUserIsOwner() {
+	public boolean getUserIsOwner() {
         return userIsOwner;
     }
 
-    public void setUserIsOwner(Boolean userIsOwner) {
+    public void setUserIsOwner(boolean userIsOwner) {
         this.userIsOwner = userIsOwner;
     }
 
@@ -319,11 +323,11 @@ public class Activity  extends domain.Entity implements Serializable, Creatable,
         this.targetType = targetType;
     }
 
-	public Boolean isViewed() {
+	public boolean isViewed() {
 		return viewed;
 	}
 
-	public void setViewed(Boolean viewed) {
+	public void setViewed(boolean viewed) {
 		this.viewed = viewed;
 	}
 

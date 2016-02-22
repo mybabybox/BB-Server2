@@ -111,7 +111,7 @@ public class Category extends SocialObject implements Likeable, Postable, Compar
     @Override
     public int compareTo(Category o) {
         if (this.system != o.system) {
-            return this.system.compareTo(o.system);
+            return Boolean.compare(this.system, o.system);
         }
         if (this.categoryType != null && o.categoryType != null && 
         		this.categoryType != o.categoryType) {

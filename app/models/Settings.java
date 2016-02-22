@@ -2,6 +2,7 @@ package models;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,23 +27,32 @@ public class Settings extends domain.Entity implements Serializable {
 	@Required
 	public Long userId;
 	
-	public Boolean emailNewPost = true;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	public boolean emailNewPost = true;
     
-    public Boolean emailNewConversation = true;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean emailNewConversation = true;
     
-    public Boolean emailNewComment = false;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean emailNewComment = false;
     
-    public Boolean emailNewPromotions = true;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean emailNewPromotions = true;
     
-    public Boolean pushNewConversation = true;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean pushNewConversation = true;
     
-    public Boolean pushNewComment = true;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean pushNewComment = true;
     
-    public Boolean pushNewFollow = true;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean pushNewFollow = true;
     
-    public Boolean pushNewFeedback = true;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean pushNewFeedback = true;
     
-    public Boolean pushNewPromotions = true;
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean pushNewPromotions = true;
     
 	public Settings() {
 	}

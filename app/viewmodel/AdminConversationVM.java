@@ -13,13 +13,13 @@ public class AdminConversationVM {
 	@JsonProperty("postImage") public Long postImage;
 	@JsonProperty("postTitle") public String postTitle;
 	@JsonProperty("postPrice") public Long postPrice;
-	@JsonProperty("postSold") public Boolean postSold;
+	@JsonProperty("postSold") public boolean postSold;
 	@JsonProperty("user1Id") public Long user1Id;
 	@JsonProperty("user1Name") public String user1Name;
 	@JsonProperty("user2Id") public Long user2Id;
 	@JsonProperty("user2Name") public String user2Name;
 	@JsonProperty("lastMessage") public String lastMessage;
-	@JsonProperty("lastMessageHasImage") public Boolean lastMessageHasImage;
+	@JsonProperty("lastMessageHasImage") public boolean lastMessageHasImage;
 	@JsonProperty("lastMessageDate") public Long lastMessageDate;
 	
 	public AdminConversationVM(Conversation conversation) {

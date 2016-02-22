@@ -43,7 +43,8 @@ public class ReportedUser extends domain.Entity implements Serializable {
     @Enumerated(EnumType.STRING)
     public ReportedType reportedType;
 
-    public Boolean deleted = false;
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public boolean deleted = false;
     
     public ReportedUser() {}
     

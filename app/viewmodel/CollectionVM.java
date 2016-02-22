@@ -19,7 +19,7 @@ public class CollectionVM {
 	//new added from android babybox
     @JsonProperty("name") public String name;
     @JsonProperty("desc") public String desc;
-    @JsonProperty("system") public Boolean system;
+    @JsonProperty("system") public boolean system;
     @JsonProperty("seq") public Long seq;
 	
 	public CollectionVM() {}

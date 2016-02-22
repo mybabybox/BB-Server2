@@ -13,7 +13,7 @@ public class GameBadgeVM {
 	@JsonProperty("icon") public String icon;
 	@JsonProperty("seq") public int seq;
 	
-	@JsonProperty("awarded") public Boolean awarded;
+	@JsonProperty("awarded") public boolean awarded;
 	@JsonProperty("awardedDate") public Long awardedDate;
 	
 	public GameBadgeVM(GameBadge badge) {

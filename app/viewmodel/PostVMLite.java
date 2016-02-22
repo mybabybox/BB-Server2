@@ -17,7 +17,7 @@ public class PostVMLite {
 	@JsonProperty("sold") public boolean sold;
 	@JsonProperty("conditionType") public String conditionType;
 	@JsonProperty("images") public Long[] images;
-	@JsonProperty("hasImage") public Boolean hasImage = false;
+	@JsonProperty("hasImage") public boolean hasImage = false;
 	
 	@JsonProperty("numLikes") public int numLikes;
 	@JsonProperty("numConversations") public int numConversations;
@@ -31,7 +31,7 @@ public class PostVMLite {
 	
 	// seller fields
 	@JsonProperty("originalPrice") public double originalPrice;
-	@JsonProperty("freeDelivery") public Boolean freeDelivery;
+	@JsonProperty("freeDelivery") public boolean freeDelivery;
 	@JsonProperty("countryCode") public String countryCode;
 	@JsonProperty("countryIcon") public String countryIcon;
 	
@@ -175,11 +175,11 @@ public class PostVMLite {
 		this.images = images;
 	}
 	
-	public Boolean getHasImage() {
+	public boolean getHasImage() {
 		return hasImage;
 	}
 	
-	public void setHasImage(Boolean hasImage) {
+	public void setHasImage(boolean hasImage) {
 		this.hasImage = hasImage;
 	}
 	
@@ -207,11 +207,11 @@ public class PostVMLite {
         this.isLiked = isLiked;
     }
 
-    public Boolean getFreeDelivery() {
+    public boolean getFreeDelivery() {
         return freeDelivery;
     }
 
-    public void setFreeDelivery(Boolean freeDelivery) {
+    public void setFreeDelivery(boolean freeDelivery) {
         this.freeDelivery = freeDelivery;
     }
 
