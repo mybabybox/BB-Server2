@@ -148,6 +148,7 @@ public class Application extends Controller {
 	}
 	
 	public static Result getStaticImage(String path) {
+	    response().setHeader("Cache-Control", "max-age=604800");
 	    File file = Resource.getStorageStaticImage(path);
 	    if (file != null) {
 	        return ok(file);
