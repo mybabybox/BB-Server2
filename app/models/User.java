@@ -574,7 +574,7 @@ public class User extends SocialObject implements Subject, Followable {
 		otherUser.merge();
 	}
 
-s	public static User create(final AuthUser authUser) {
+	public static User create(final AuthUser authUser) {
 		final User user = new User();
 		user.roles = Collections.singletonList(
 				SecurityRole.findByRoleName(SecurityRole.RoleType.USER.name()));
