@@ -49,6 +49,10 @@ public class DateTimeUtil {
         return withinWeeks(start, end, 1);
     }
     
+    public static boolean withinAMonth(long start, long end) {
+        return withinDays(start, end, 30);
+    }
+    
     public static DateTime getToday() {
         DateTime now = DateTime.now();
         if (TODAY != null && 

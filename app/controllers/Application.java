@@ -138,6 +138,8 @@ public class Application extends Controller {
 	    String metaTags =
 	            "<title>"+title+"</title>"+
 	            "<meta name='description' content='"+description+"' />"+
+	            "<meta name='theme-color' content='#FF76A4' />" +
+	            "<meta name='apple-mobile-web-app-status-bar-style' content='#FF76A4' />" +
 	            "<meta property='og:title' content='"+title+"' />"+
 	            "<meta property='og:description' content='"+description+"' />"+
 	            "<meta property='og:image' itemprop='image' content='"+HtmlUtil.fullUrl(image)+"' />"+

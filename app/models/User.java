@@ -808,7 +808,8 @@ public class User extends SocialObject implements Subject, Followable {
 	    }
 	    
 	    boolean isRecommended = isPromotedSeller() || isVerifiedSeller() || 
-	            this.numProducts > DefaultValues.MIN_RECOMMENDED_SELLER_PRODUCTS;  // temp conditions
+	            (this.numProducts >= DefaultValues.MIN_RECOMMENDED_SELLER_PRODUCTS && 
+	                    DateTimeUtil.withinAMonth(this.lastLogin.getTime(), new Date().getTime()));  // temp conditions
 	    
 	    // must have profile photo
 	    /*

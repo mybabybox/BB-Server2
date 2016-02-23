@@ -14,7 +14,7 @@ public class DefaultValues {
 	public static final int MAX_POST_IMAGES = 4;
 	public static final int MAX_MESSAGE_IMAGES = 1;
 	public static final int MAX_SELLER_PRODUCTS_FOR_FEED = 4;
-	public static final int MIN_RECOMMENDED_SELLER_PRODUCTS = 2;
+	public static final int MIN_RECOMMENDED_SELLER_PRODUCTS = 4;
 	
     public static final int POST_PREVIEW_CHARS = 300;
     public static final int COMMENT_PREVIEW_CHARS = 200;
