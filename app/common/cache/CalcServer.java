@@ -72,7 +72,7 @@ public class CalcServer {
 		}
 		
 		clearStaticQueues();
-		buildQueuesFromUsers();
+		//buildQueuesFromUsers();
 		buildQueuesFromPosts();
 		
 		JobScheduler.getInstance().schedule(
@@ -128,6 +128,9 @@ public class CalcServer {
 		jedisCache.remove(getKey(FeedType.USER_POSTED,user.id));
 		jedisCache.remove(getKey(FeedType.USER_LIKED,user.id));
 		jedisCache.remove(getKey(FeedType.USER_FOLLOWINGS,user.id));
+		jedisCache.remove(getKey(FeedType.USER_FOLLOWERS,user.id));
+		
+		// only if we loop thru all users to build queues
 		// dont clear USER_FOLLOWERS queue, it is created by USER_FOLLOWINGS indirectly 
         //jedisCache.remove(getKey(FeedType.USER_FOLLOWERS,user.id));
 	}
@@ -205,18 +208,18 @@ public class CalcServer {
 	}
 	
 	public void buildQueuesForUser(User user) {
-	    if (!eligibleToBuildQueues(user)) {
+	    if (isUserCached(user) || !eligibleToBuildQueues(user)) {
 	        return;
 	    }
 	    
-	    buildUserLikedPostQueue(user);
+	    buildUserLikedQueue(user);
         buildUserFollowingsFollowersQueue(user);
         
         // mark cached
         addToCachedUsersQueue(user);
 	}
 
-	private void buildUserLikedPostQueue(User user) {
+	private void buildUserLikedQueue(User user) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
 		logger.underlyingLogger().debug("buildUserLikedPostQueue starts - u="+user.id);
 		
@@ -232,12 +235,25 @@ public class CalcServer {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
 		logger.underlyingLogger().debug("buildUserFollowingsQueue starts - u="+user.id);
 		
+		/*
+		// only if we loop thru all users to build queues 
+		for (SocialRelation socialRelation : FollowSocialRelation.getUserFollowings(user.id)) {
+            // USER_FOLLOWINGS:actor adds target
+            jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWINGS,socialRelation.actor), socialRelation.getCreatedDate().getTime(), socialRelation.target.toString());
+            // USER_FOLLOWERS:target adds actor  
+            jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWERS,socialRelation.target), socialRelation.getCreatedDate().getTime(), socialRelation.actor.toString());
+        }
+        */
+		
 		for (SocialRelation socialRelation : FollowSocialRelation.getUserFollowings(user.id)) {
 		    // USER_FOLLOWINGS:actor adds target
 			jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWINGS,socialRelation.actor), socialRelation.getCreatedDate().getTime(), socialRelation.target.toString());
-			// USER_FOLLOWERS:target adds actor  
-			jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWERS,socialRelation.target), socialRelation.getCreatedDate().getTime(), socialRelation.actor.toString());
 		}
+		
+		for (SocialRelation socialRelation : FollowSocialRelation.getUserFollowers(user.id)) {
+            // USER_FOLLOWERS:target adds actor  
+            jedisCache.putToSortedSet(getKey(FeedType.USER_FOLLOWERS,socialRelation.target), socialRelation.getCreatedDate().getTime(), socialRelation.actor.toString());
+        }
 		
 		sw.stop();
 		logger.underlyingLogger().debug("buildUserFollowingsQueue completed. Took "+sw.getElapsedSecs()+"s");
@@ -311,7 +327,19 @@ public class CalcServer {
         logger.underlyingLogger().debug("buildQueuesFromPosts completed. Took "+sw.getElapsedSecs()+"s");
 	}
 
+	private boolean eligibleToBuildQueues(Post post) {
+        if (post.deleted) {
+            return false;
+        }
+        
+        return true;
+    }
+	
 	public void buildQueuesForPost(Post post) {
+	    if (isProductCached(post) || !eligibleToBuildQueues(post)) {
+	        return;
+	    }
+	    
 	    addToUserPostedQueue(post);
 	    addToRecommendedSellersQueue(post.owner);
         

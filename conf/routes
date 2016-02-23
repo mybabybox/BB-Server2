@@ -90,8 +90,8 @@ POST    /story/edit                                 controllers.ProductControlle
 GET     /comments/:postId                           @controllers.ProductController.viewComments(postId:Long)
 
 # User
-GET     /seller/:id                                 controllers.UserController.viewProfile(id:Long)
-GET     /profile/:id                                controllers.UserController.viewProfile(id:Long)
+GET     /seller/:id                                 @controllers.UserController.viewProfile(id:Long)
+GET     /profile/:id                                @controllers.UserController.viewProfile(id:Long)
 GET     /followings/:id                             @controllers.UserController.viewFollowings(id:Long)
 GET     /followers/:id                              @controllers.UserController.viewFollowers(id:Long)
 
@@ -178,8 +178,8 @@ GET     /follow-user/:id                            controllers.UserController.f
 GET     /api/unfollow-user/:id                      controllers.UserController.unfollowUser(id:Long)
 GET     /unfollow-user/:id                          controllers.UserController.unfollowUser(id:Long)
 
-GET     /api/get-user/:id                           controllers.UserController.getUserInfoById(id:Long)
-GET     /get-user/:id                               controllers.UserController.getUserInfoById(id:Long)
+GET     /api/get-user/:id                           @controllers.UserController.getUserInfoById(id:Long)
+GET     /get-user/:id                               @controllers.UserController.getUserInfoById(id:Long)
 
 GET     /api/get-followings/:id/:offset             @controllers.UserController.getFollowings(id:Long,offset:Long)
 GET     /get-followings/:id/:offset                 @controllers.UserController.getFollowings(id:Long,offset:Long)

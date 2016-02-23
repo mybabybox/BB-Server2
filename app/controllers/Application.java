@@ -306,7 +306,7 @@ public class Application extends Controller {
 			}
 		}
 
-		//if request from web
+		// request from web
 		final AuthUser currentAuthUser = PlayAuthenticate.getUser(session);
 		if (currentAuthUser == null) {
 		    return User.noLoginUser();
