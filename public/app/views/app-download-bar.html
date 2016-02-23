@@ -1,0 +1,22 @@
+<div id="appDownloadTips" ng-if="showAppDownloadTips">
+    <a href="" onclick="dismissAppDownloadTips()">
+        <img style="width:12px;height:auto;margin-right:5px;" src="/assets/app/images/general/icons/i-close.png"></img>
+    </a>
+    <a ng-href="{{appDownloadUrl}}">
+        <div class="ic_logo_get" style="vertical-align: middle;"></div>
+        <div style="display:inline-block;vertical-align: middle;">
+            <span class="tips-main">
+                {{'APP_DOWNLOAD_BAR_MESSAGE_1'|translate}}
+            </span>
+            <span class="tips-main">
+                {{'APP_DOWNLOAD_BAR_MESSAGE_2'|translate}}
+            </span>
+            <span class="tips-small">
+                
+            </span>
+        </div>
+    </a>
+    <button class="btn ng-binding" style="right:10px;position:absolute;margin-top:15px;background-color:#EAAD4F;">
+        <a ng-href="{{appDownloadUrl}}" style="color:#ffffff;">{{'APP_DOWNLOAD_NOW'|translate}}</a>
+    </button>
+</div>

@@ -7,8 +7,12 @@ babybox.controller('HomeController',
 	
 	writeMetaCanonical($location.absUrl());
 	
-	usSpinnerService.spin('loading...');
+	// agent
+	$scope.showAppDownloadTips = showAppDownloadTips();
+	$scope.appDownloadUrl = getAppDownloadUrl();
 
+	usSpinnerService.spin('loading...');
+	
 	$scope.featuredItems = featuredItems;
 	$scope.userInfo = userInfo;
 	
@@ -172,6 +176,10 @@ babybox.controller('CategoryPageController',
 			category.description, 
 			formatToExternalUrl(category.icon));
 	*/
+	
+	// agent
+	$scope.showAppDownloadTips = showAppDownloadTips();
+	$scope.appDownloadUrl = getAppDownloadUrl();
 	
 	usSpinnerService.spin('loading...');
 	

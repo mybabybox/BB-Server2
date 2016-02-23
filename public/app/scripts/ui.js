@@ -1,19 +1,31 @@
 
-var dismissAndroidAppDownloadTips = function() {
-	$('#androidAppDownloadTips').hide();
-	sessionStorage.setItem('dismissAndroidAppDownloadTips','true');
+var dismissAppDownloadTips = function() {
+	$('#appDownloadTips').hide();
+	sessionStorage.setItem('dismissAppDownloadTips','true');
+	
 	// use sessionStorage for current session only
-	//localStorage.setItem('dismissAndroidAppDownloadTips','true');
+	//localStorage.setItem('dismissAppDownloadTips','true');
 }
 
-var showAndroidAppDownloadTips = function() {
+var showAppDownloadTips = function() {
 	// use sessionStorage for current session only
-	//var dismiss = localStorage.getItem('dismissAndroidAppDownloadTips');
-	var dismiss = sessionStorage.getItem('dismissAndroidAppDownloadTips');
+	//var dismiss = localStorage.getItem('dismissAppDownloadTips');
+	
+	var dismiss = sessionStorage.getItem('dismissAppDownloadTips');
+	//if ((isAndroid() || isIOS()) && dismiss != 'true') {
 	if (isAndroid() && dismiss != 'true') {
 		return true;
 	}
 	return false;
+}
+
+var getAppDownloadUrl = function() {
+	if (isAndroid()) {
+		return "https://play.google.com/store/apps/details?id=com.babybox.app";
+	} else if (isIOS()) {
+		return ""
+	}
+	return "";
 }
 
 //
@@ -103,6 +115,13 @@ $(window).on("blur focus", function(e) {
 
 var isAndroid = function() {
 	if (/Android/i.test(navigator.userAgent)) {
+		return true;
+	}
+	return false;
+}
+
+var isIOS = function() {
+	if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
 		return true;
 	}
 	return false;

@@ -937,3 +937,41 @@ label {
 .page_name {
     right: 50px !important
 }
+
+#appDownloadTips {
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,.8);
+    padding: .3rem;
+    bottom: 0;
+}
+
+#appDownloadTips .ic_logo_get {
+    border-radius: 10px;
+    background: #FF76A4;
+    width: 48px;
+    height: 48px;
+    background-size: 48px 48px;
+    background-image: url(../../images/logo_babybox_w@2x.png);
+    margin: 3px;
+}
+
+#appDownloadTips .tips-main {
+    color: #fff;
+    font-weight: normal;
+    font-size: 13px;
+    margin: 3px;
+    vertical-align: middle;
+    display: block;
+}
+
+#appDownloadTips .tips-small {
+    color: #777;
+    font-size: 12px;
+    margin: 3px;
+    vertical-align: middle;
+    display: block;
+}
+

@@ -115,9 +115,11 @@ babybox.config(['$translateProvider', function ($translateProvider) {
 	    "LIKES":"喜歡",
 	    "LOGOUT":"登出",
 	    // Other
+	    "APP_DOWNLOAD_BAR_MESSAGE_1":"立即下載 BabyBox 手機 App",
+	    "APP_DOWNLOAD_BAR_MESSAGE_2":"媽媽即拍即賣!",
 	    "APP_DOWNLOAD_MESSAGE":"免費下載 BabyBox 手機 App。 購買商品或刊登你的商品 (30秒完成刊登)。 媽媽即拍即賣！",
 	    "APP_IOS_COMING_SOON":"BabyBox iPhone 手機 App 快將推出",
-	    "DOWNLOAD_NOW":"立即下載"
+	    "APP_DOWNLOAD_NOW":"下載"
 	});
 	
 	$translateProvider.translations('en', {
@@ -151,9 +153,11 @@ babybox.config(['$translateProvider', function ($translateProvider) {
 	    "LIKES":"Likes",
 	    "LOGOUT":"Logout",
 	    // Other
+	    "APP_DOWNLOAD_BAR_MESSAGE_1":"Download BabyBox App now",
+	    "APP_DOWNLOAD_BAR_MESSAGE_2":"Everymom is a seller!",
 	    "APP_DOWNLOAD_MESSAGE":"Download BabyBox for free now and list your product in 30 seconds. Everymom is a Seller!",
 	    "APP_IOS_COMING_SOON":"BabyBox iPhone App is coming very soon!",
-	    "DOWNLOAD_NOW":"Download Now"
+	    "APP_DOWNLOAD_NOW":"Download"
 	});
 
 	// http://angular-translate.github.io/docs/#/guide/19_security
