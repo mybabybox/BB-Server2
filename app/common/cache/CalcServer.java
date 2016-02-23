@@ -898,7 +898,7 @@ public class CalcServer {
         if (!jedisCache.exists(getKey(FeedType.USER_RECOMMENDED_SELLERS,id))) {
             buildUserRecommendedSellersFeedQueue(id);
         }
-        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_RECOMMENDED_SELLERS,id), offset);
+        Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_RECOMMENDED_SELLERS,id), offset, DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT);
         final List<Long> postIds = new ArrayList<>();
         for (String value : values) {
             try {

@@ -190,13 +190,17 @@ public class JedisCache {
     }
     
     public Set<String> getSortedSetDsc(String key, Double max) {
+        return getSortedSetDsc(key, max, CalcServer.FEED_RETRIEVAL_COUNT);
+    }
+    
+    public Set<String> getSortedSetDsc(String key, Double max, int count) {
         Jedis j = null;
         try {
             j = getResource();
             if(max == 0){
                 max = POS_INF;
             }
-            return j.zrevrangeByScore(key, --max, NEG_INF, 0, CalcServer.FEED_RETRIEVAL_COUNT); 
+            return j.zrevrangeByScore(key, --max, NEG_INF, 0, count); 
         } finally {
             returnResource(j);
         }

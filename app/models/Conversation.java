@@ -266,8 +266,8 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		}
 		
 		try {
-			q.setFirstResult((int) (offset * DefaultValues.CONVERSATION_MESSAGES_COUNT));
-			q.setMaxResults(DefaultValues.CONVERSATION_MESSAGES_COUNT);
+			q.setFirstResult((int) (offset * DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT));
+			q.setMaxResults(DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT);
 			return (List<Message>) q.getResultList();
 		} catch (NoResultException e) {
 			return null;
@@ -280,8 +280,8 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
         q.setParameter(1, this);
 
         try {
-            q.setFirstResult((int) (offset * DefaultValues.CONVERSATION_MESSAGES_COUNT));
-            q.setMaxResults(DefaultValues.CONVERSATION_MESSAGES_COUNT);
+            q.setFirstResult((int) (offset * DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT));
+            q.setMaxResults(DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT);
             return (List<Message>) q.getResultList();
         } catch (NoResultException e) {
             return null;
