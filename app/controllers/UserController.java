@@ -443,6 +443,11 @@ public class UserController extends Controller {
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
 
 		final User localUser = Application.getLocalUser(session());
+		if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+		
 		List<MessageVM> vms = new ArrayList<>();
 		Conversation conversation = Conversation.findById(conversationId); 
 		List<Message> messages =  conversation.getMessages(localUser, offset);
@@ -465,6 +470,11 @@ public class UserController extends Controller {
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
 
         final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
         List<MessageVM> vms = new ArrayList<>();
         Conversation conversation = Conversation.findById(conversationId); 
         List<Message> messages =  conversation.getMessagesForAdmin(offset);
@@ -852,12 +862,11 @@ public class UserController extends Controller {
     @Transactional
     public static Result inviteByEmail(String email) {
 		final User localUser = Application.getLocalUser(session());
-
-        if (localUser.isLoggedIn()) {
+		if (!localUser.isLoggedIn()) {
+		    logger.underlyingLogger().info("Not signed in. Skipped signup invitation to: "+email);
+        } else {
             /*GameAccount gameAccount = GameAccount.findByUserId(localUser.id);
             gameAccount.sendInvitation(email);*/
-        } else {
-            logger.underlyingLogger().info("Not signed in. Skipped signup invitation to: "+email);
         }
 		return ok();
 	}
@@ -916,6 +925,7 @@ public class UserController extends Controller {
 			logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
 			return notFound();
 		}
+		
 		List<PostVMLite> vms = feedHandler.getFeedPosts(localUser.id, offset, localUser, FeedType.HOME_FOLLOWING);
 		return ok(Json.toJson(vms));
 	}
