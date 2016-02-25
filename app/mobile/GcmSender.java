@@ -64,7 +64,7 @@ public class GcmSender {
         
         Map<String, String> map = new HashMap<>();
         map.put("actor", actor);
-        map.put("message", "following you");
+        map.put("message", "");
         map.put("messageType", NotificationType.FOLLOW.name());
         sendNotification(userId, Json.stringify(Json.toJson(map)));
     }
