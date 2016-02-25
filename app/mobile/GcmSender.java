@@ -28,7 +28,8 @@ public class GcmSender {
     
     public static enum NotificationType {
         CONVERSATION,
-        COMMENT
+        COMMENT,
+        FOLLOW
     }
 
     public static void sendNewCommentNotification(Long userId, String actor, String message, Long postId) {
@@ -53,6 +54,18 @@ public class GcmSender {
         map.put("actor", actor);
         map.put("message", StringUtil.shortMessage(message));
         map.put("messageType", NotificationType.CONVERSATION.name());
+        sendNotification(userId, Json.stringify(Json.toJson(map)));
+    }
+    
+    public static void sendNewFollowNotification(Long userId, String actor) {
+        if (StringUtils.isEmpty(actor)) {
+            return;
+        }
+        
+        Map<String, String> map = new HashMap<>();
+        map.put("actor", actor);
+        map.put("message", "following you");
+        map.put("messageType", NotificationType.FOLLOW.name());
         sendNotification(userId, Json.stringify(Json.toJson(map)));
     }
     
