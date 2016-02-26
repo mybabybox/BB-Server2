@@ -108,6 +108,7 @@ public class UserController extends Controller {
 		
 		// build queues if not yet built
 		calcServer.buildQueuesForUser(localUser);
+		calcServer.buildUserExploreFeedQueueIfNotExistAsync(localUser);
 		
 		// update last login and user agent
 		localUser.updateLastLoginDate();

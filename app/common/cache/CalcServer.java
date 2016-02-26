@@ -503,12 +503,30 @@ public class CalcServer {
         sw.stop();
         logger.underlyingLogger().debug("removeFromAllUsersLikedQueues completed. Took "+sw.getElapsedSecs()+"s");
     }
-	    
-	private void buildUserExploreFeedQueue(Long userId) {
+    
+    public void buildUserExploreFeedQueueIfNotExistAsync(final User user) {
+        if(!jedisCache.exists(getKey(FeedType.HOME_EXPLORE,user.id))){
+            JobScheduler.getInstance().run(
+                    new TransactionalRunnableTask() {
+                        @Override
+                        public void execute() {
+                            buildUserExploreFeedQueueIfNotExist(user.id);
+                        }
+                    });
+        }
+    }
+    
+    public void buildUserExploreFeedQueueIfNotExist(Long id) {
+        if(!jedisCache.exists(getKey(FeedType.HOME_EXPLORE,id))){
+            buildUserExploreFeedQueue(id);
+        } 
+    }
+    
+	private void buildUserExploreFeedQueue(Long id) {
 	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildUserExploreFeedQueue starts - u="+userId);
+		logger.underlyingLogger().debug("buildUserExploreFeedQueue starts - u="+id);
 		
-		User user = User.findById(userId);
+		User user = User.findById(id);
 		Map<Long, Integer> map = new HashMap<>();
 		if (user != null) {
 			map = user.getUserCategoriesRatioForFeed();
@@ -547,7 +565,7 @@ public class CalcServer {
 			    }
 			    Double randomizedScore = formula.randomizeScore(post);
 			    if (randomizedScore > 0) {
-			        jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE, userId), randomizedScore * FEED_SCORE_HIGH_BASE, postId.toString());
+			        jedisCache.putToSortedSet(getKey(FeedType.HOME_EXPLORE, id), randomizedScore * FEED_SCORE_HIGH_BASE, postId.toString());
 			    }
 			}
 		}
@@ -556,25 +574,37 @@ public class CalcServer {
 		logger.underlyingLogger().debug("buildUserExploreFeedQueue completed. Took "+sw.getElapsedSecs()+"s");
 	}
 	
-	private void buildHomeFollowingFeedQueue(Long userId) {
+	public void buildHomeFollowingFeedQueueIfNotExist(Long id) {
+	    if(!jedisCache.exists(getKey(FeedType.HOME_FOLLOWING,id))){
+	        buildHomeFollowingFeedQueue(id);
+        }
+	}
+	
+	private void buildHomeFollowingFeedQueue(Long id) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
-		logger.underlyingLogger().debug("buildHomeFollowingQueue starts - u="+userId);
+		logger.underlyingLogger().debug("buildHomeFollowingQueue starts - u="+id);
 		
-		List<Long> followings = getUserFollowingsFeed(userId);
+		List<Long> followings = getUserFollowingsFeed(id);
 		for (Long followingUser : followings){
 			Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_POSTED,followingUser));
 			for (String value : values) {
 				try {
 					Long postId = Long.parseLong(value);
-					jedisCache.putToSortedSet(getKey(FeedType.HOME_FOLLOWING,userId), getScore(getKey(FeedType.USER_POSTED, followingUser), postId), postId.toString());
+					jedisCache.putToSortedSet(getKey(FeedType.HOME_FOLLOWING,id), getScore(getKey(FeedType.USER_POSTED, followingUser), postId), postId.toString());
 				} catch (Exception e) {
 				}
 			}
 		}
-		jedisCache.expire(getKey(FeedType.HOME_FOLLOWING,userId), FEED_SNAPSHOT_EXPIRY_SECS);
+		jedisCache.expire(getKey(FeedType.HOME_FOLLOWING,id), FEED_SNAPSHOT_EXPIRY_SECS);
 		
 		sw.stop();
 		logger.underlyingLogger().debug("buildHomeFollowingQueue completed. Took "+sw.getElapsedSecs()+"s");
+	}
+	
+	public void buildUserRecommendedSellersFeedQueueIfNotExist(Long id) {
+	    if (!jedisCache.exists(getKey(FeedType.USER_RECOMMENDED_SELLERS,id))) {
+            buildUserRecommendedSellersFeedQueue(id);
+        }
 	}
 	
 	private void buildUserRecommendedSellersFeedQueue(Long id) {
@@ -594,6 +624,12 @@ public class CalcServer {
         sw.stop();
         logger.underlyingLogger().debug("buildUserRecommendedSellersFeedQueue completed. Took "+sw.getElapsedSecs()+"s");
     }
+	
+	public void buildSuggestedProductQueueIfNotExist(Long id) {
+	    if(!jedisCache.exists(getKey(FeedType.PRODUCT_SUGGEST, id))){
+            buildSuggestedProductQueue(id);
+        }    
+	}
 	
 	private void buildSuggestedProductQueue(Long postId) {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
@@ -688,9 +724,8 @@ public class CalcServer {
 	// feeds
 	
 	public List<Long> getHomeExploreFeed(Long id, Double offset) {
-        if(!jedisCache.exists(getKey(FeedType.HOME_EXPLORE,id))){
-            buildUserExploreFeedQueue(id);
-        }
+	    buildUserExploreFeedQueueIfNotExist(id);
+
         Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HOME_EXPLORE,id), offset);
         final List<Long> postIds = new ArrayList<>();
         for (String value : values) {
@@ -704,9 +739,8 @@ public class CalcServer {
     }
     
     public List<Long> getHomeFollowingFeed(Long id, Double offset) {
-        if(!jedisCache.exists(getKey(FeedType.HOME_FOLLOWING,id))){
-            buildHomeFollowingFeedQueue(id);
-        }
+        buildHomeFollowingFeedQueueIfNotExist(id);
+
         Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.HOME_FOLLOWING,id), offset);
         final List<Long> postIds = new ArrayList<>();
         for (String value : values) {
@@ -895,9 +929,8 @@ public class CalcServer {
     }
     
     public List<Long> getUserRecommendedSellersFeed(Long id, Double offset) {
-        if (!jedisCache.exists(getKey(FeedType.USER_RECOMMENDED_SELLERS,id))) {
-            buildUserRecommendedSellersFeedQueue(id);
-        }
+        buildUserRecommendedSellersFeedQueueIfNotExist(id);
+        
         Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.USER_RECOMMENDED_SELLERS,id), offset, DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT);
         final List<Long> postIds = new ArrayList<>();
         for (String value : values) {
@@ -963,9 +996,7 @@ public class CalcServer {
     }
     
     public List<Long> getSuggestedProducts(Long id) {
-        if(!jedisCache.exists(getKey(FeedType.PRODUCT_SUGGEST, id))){
-            buildSuggestedProductQueue(id);
-        }
+        buildSuggestedProductQueueIfNotExist(id);
         
         Set<String> values = jedisCache.getSortedSetDsc(getKey(FeedType.PRODUCT_SUGGEST, id));
         final List<Long> postIds = new ArrayList<>();
