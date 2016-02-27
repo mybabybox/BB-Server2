@@ -959,7 +959,7 @@ public class ProductController extends Controller{
     }
     
 	@Transactional
-	public static Result adjustUpPostScore(Long id) {
+	public static Result adjustUpPostScore(Long id, Long points) {
 	    final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
@@ -971,7 +971,7 @@ public class ProductController extends Controller{
             return notFound();
         }
         
-        post.baseScoreAdjust += DefaultValues.DEFAULT_ADJUST_POST_SCORE;
+        post.baseScoreAdjust += points;
         post.save();
         
         SocialRelationHandler.recordTouchPost(post, localUser);
@@ -979,11 +979,11 @@ public class ProductController extends Controller{
         if (logger.underlyingLogger().isDebugEnabled()) {
             logger.underlyingLogger().debug("[u="+localUser.getId()+"][p="+post.id+"] adjustUpPostScore()");
         }
-	    return ok(DefaultValues.DEFAULT_ADJUST_POST_SCORE+"");
+	    return ok(points+"");
 	}
 	
 	@Transactional
-	public static Result adjustDownPostScore(Long id) {
+	public static Result adjustDownPostScore(Long id, Long points) {
 	    final User localUser = Application.getLocalUser(session());
         if (!localUser.isLoggedIn()) {
             logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
@@ -995,7 +995,7 @@ public class ProductController extends Controller{
             return notFound();
         }
         
-        post.baseScoreAdjust -= DefaultValues.DEFAULT_ADJUST_POST_SCORE;
+        post.baseScoreAdjust -= points;
         post.save();
         
         SocialRelationHandler.recordTouchPost(post, localUser);
@@ -1003,7 +1003,7 @@ public class ProductController extends Controller{
         if (logger.underlyingLogger().isDebugEnabled()) {
             logger.underlyingLogger().debug("[u="+localUser.getId()+"][p="+post.id+"] adjustDownPostScore()");
         }
-        return ok(-DefaultValues.DEFAULT_ADJUST_POST_SCORE+"");
+        return ok(-points+"");
     }
 
 	@Transactional
