@@ -125,6 +125,7 @@ babybox.config(['$translateProvider', function ($translateProvider) {
 	$translateProvider.translations('en', {
 		// Home page
 		"HOME_EXPLORE":"Explore",
+		"HOME_SELLER":"Shop",
 	    "HOME_FOLLOWING":"Following",
 	    // Category page
 	    "POPULAR":"Popular",
