@@ -105,7 +105,7 @@ public class CalcServer {
 	}
 	
 	public void clearCategoryQueues() {
-		for(Category category : Category.getAllCategories()){
+		for(Category category : Category.getCategories()){
 		    jedisCache.remove(getKey(FeedType.CATEGORY_POPULAR,category.id));
 		    jedisCache.remove(getKey(FeedType.CATEGORY_POPULAR_NEW,category.id));
 		    jedisCache.remove(getKey(FeedType.CATEGORY_POPULAR_USED,category.id));
@@ -115,7 +115,7 @@ public class CalcServer {
 	}
 	
 	public void clearHashtagQueues() {
-        for(Hashtag hashtag : Hashtag.getAllHashtags()){
+        for(Hashtag hashtag : Hashtag.getHashtags()){
             jedisCache.remove(getKey(FeedType.HASHTAG_POPULAR,hashtag.id));
             jedisCache.remove(getKey(FeedType.HASHTAG_POPULAR_NEW,hashtag.id));
             jedisCache.remove(getKey(FeedType.HASHTAG_POPULAR_USED,hashtag.id));
@@ -387,7 +387,7 @@ public class CalcServer {
 		NanoSecondStopWatch sw = new NanoSecondStopWatch();
 		logger.underlyingLogger().debug("addToHashtagQueues starts - p="+post.id);
 		
-		for (Hashtag hashtag: Hashtag.getAllHashtags()){
+		for (Hashtag hashtag: Hashtag.getHashtags()){
 			addToHashtagPriceLowHighQueue(hashtag, post);
 			addToHashtagNewestQueue(hashtag, post);
 			addToHashtagPopularQueue(hashtag, post);
@@ -398,7 +398,7 @@ public class CalcServer {
 	}
 
     public void removeFromHashtagQueues(Post post){
-        for (Hashtag hashtag: Hashtag.getAllHashtags()){
+        for (Hashtag hashtag: Hashtag.getHashtags()){
             removeFromHashtagQueues(post, hashtag);    
         }
     }
@@ -532,7 +532,7 @@ public class CalcServer {
 			map = user.getUserCategoriesRatioForFeed();
 		}
 		
-		for (Category category : Category.getAllCategories()) {
+		for (Category category : Category.getCategories()) {
 		    int percentage = category.minPercentFeedExposure;
             Integer catViewPercentage = map.get(category.getId());
             if (catViewPercentage != null && catViewPercentage > percentage) {

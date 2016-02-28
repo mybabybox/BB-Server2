@@ -94,7 +94,7 @@ public class Hashtag extends SocialObject implements Likeable, Postable {
         }
     }
 	
-	public static List<Hashtag> getAllSystemHashtags() {
+	public static List<Hashtag> getSystemHashtags() {
 		try {
             Query q = JPA.em().createQuery("SELECT t FROM Hashtag t where system = true and jobClass is not null and deleted = 0");
             List<Hashtag> list = (List<Hashtag>)q.getResultList();
@@ -104,8 +104,8 @@ public class Hashtag extends SocialObject implements Likeable, Postable {
         }
     }
 	
-	public static List<Hashtag> getAllHashtags() {
-		return HashtagCache.getAllHashtags();
+	public static List<Hashtag> getHashtags() {
+		return HashtagCache.getHashtags();
 	}
 	
 	@Override

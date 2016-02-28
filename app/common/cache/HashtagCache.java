@@ -24,7 +24,7 @@ public class HashtagCache {
         }
     }
 
-    public static List<Hashtag> getAllHashtags() {
+    public static List<Hashtag> getHashtags() {
         return hashtags;
     }
     

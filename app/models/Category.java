@@ -39,6 +39,9 @@ public class Category extends SocialObject implements Likeable, Postable, Compar
 	@Enumerated(EnumType.STRING)
 	public CategoryType categoryType;
     
+	@ManyToOne
+	public Category parent;
+	
 	public int seq;
 
 	public int minPercentFeedExposure = 0;
@@ -61,6 +64,10 @@ public class Category extends SocialObject implements Likeable, Postable, Compar
 	}
 	
 	public Category(String name, String description, User owner, String icon, int seq) {
+	    this(name, description, owner, icon, seq, null);
+	}
+	
+	public Category(String name, String description, User owner, String icon, int seq, Category parent) {
 		this();
 		this.name = name;
 		this.description = description;
@@ -68,12 +75,22 @@ public class Category extends SocialObject implements Likeable, Postable, Compar
 		this.owner = owner;
 		this.icon = icon;
 		this.seq = seq;
+		this.parent = parent;
 		this.system = true;
 	}
 	
 	public static List<Category> loadCategories() {
 		try {
-            Query q = JPA.em().createQuery("SELECT c FROM Category c where deleted = 0 order by seq");
+            Query q = JPA.em().createQuery("SELECT c FROM Category c where parent is null and deleted = 0 order by seq");
+            return (List<Category>) q.getResultList();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
+	
+	public static List<Category> loadSubCategories() {
+        try {
+            Query q = JPA.em().createQuery("SELECT c FROM Category c where parent is not null and deleted = 0 order by seq");
             return (List<Category>) q.getResultList();
         } catch (NoResultException nre) {
             return null;
@@ -95,8 +112,8 @@ public class Category extends SocialObject implements Likeable, Postable, Compar
         }
     }
 
-	public static List<Category> getAllCategories() {
-		return CategoryCache.getAllCategories();
+	public static List<Category> getCategories() {
+		return CategoryCache.getCategories();
 	}
 	
 	@Override
@@ -112,6 +129,9 @@ public class Category extends SocialObject implements Likeable, Postable, Compar
     public int compareTo(Category o) {
         if (this.system != o.system) {
             return Boolean.compare(this.system, o.system);
+        }
+        if (this.parent != null && this.parent != o.parent) {
+            return this.parent.compareTo(o.parent);
         }
         if (this.categoryType != null && o.categoryType != null && 
         		this.categoryType != o.categoryType) {

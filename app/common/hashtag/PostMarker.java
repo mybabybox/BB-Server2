@@ -21,7 +21,7 @@ public class PostMarker {
 
 			for(PostToMark postToMark : PostToMark.getAllPostsToMark()){
 			    Post post = Post.findById(postToMark.postId);
-				for(Hashtag hash : Hashtag.getAllSystemHashtags()){
+				for(Hashtag hash : Hashtag.getSystemHashtags()){
 					try {
 						//jobClass name must be qualified name in DB, for eg: common.hashtag.NewThisWeekHashtagMarkingJob
 						Class cls = classLoader.loadClass(hash.jobClass);
