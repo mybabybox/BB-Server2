@@ -78,11 +78,12 @@ public class PostEventListener extends EventListener {
             Post post = (Post) map.get("post");
             Category oldCategory = (Category) map.get("category");
             
-            // category change
-            if (post.category.id != oldCategory.id) {
-                CalcServer.instance().removeFromCategoryQueues(post, oldCategory);
-            } else {
-                CalcServer.instance().removeFromCategoryQueues(post, post.category);
+            // category/subcategory change
+            if (oldCategory != null) {
+                if ((oldCategory.parent == null && post.category.id != oldCategory.id) || 
+                        (oldCategory.parent != null && post.subCategory.id != oldCategory.id)) {
+                    CalcServer.instance().removeFromCategoryQueues(post, oldCategory);
+                }
             }
             
             CalcServer.instance().addToCategoryQueues(post);

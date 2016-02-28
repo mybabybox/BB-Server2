@@ -316,6 +316,9 @@ public class ProductController extends Controller{
         }
         
         Category oldCategory = post.category;
+        if (post.subCategory != null) {
+            oldCategory = post.subCategory;
+        }
         Category category = Category.findById(catId);
         if (category == null) {
             logger.underlyingLogger().error(String.format("[u=%d][p=%d][cat=%d] editProduct() Category not found", localUser.id, id, catId));
@@ -392,6 +395,9 @@ public class ProductController extends Controller{
         }
         
         Category oldCategory = post.category;
+        if (post.subCategory != null) {
+            oldCategory = post.subCategory;
+        }
         Category category = Category.findById(catId);
         if (category == null) {
             logger.underlyingLogger().error(String.format("[u=%d][p=%d][cat=%d] editStory() Category not found", localUser.id, id, catId));
