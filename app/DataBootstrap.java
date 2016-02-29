@@ -340,9 +340,13 @@ public class DataBootstrap {
     }
 
     private static Category createCategory(String name, String desc, String icon, int seq) {
+        return createCategory(name, desc, icon, seq, null);
+    }
+    
+    private static Category createCategory(String name, String desc, String icon, int seq, Category parent) {
     	Category category = null;
         try {
-        	category = SystemInfo.getInfo().getBabyBoxAdmin().createCategory(name, desc, icon, seq);
+        	category = SystemInfo.getInfo().getBabyBoxAdmin().createCategory(name, desc, icon, seq, parent);
             //category.setCoverPhoto(new File(Resource.STORAGE_PATH + "/default/box_cover.jpg"));
         } catch (Exception e) {
             logger.underlyingLogger().error(ExceptionUtils.getStackTrace(e));

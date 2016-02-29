@@ -116,6 +116,10 @@ public class Category extends SocialObject implements Likeable, Postable, Compar
 		return CategoryCache.getCategories();
 	}
 	
+	public static List<Category> getSubCategories(Long categoryId) {
+	    return CategoryCache.getSubCategories(categoryId);
+	}
+	
 	@Override
     public boolean equals(Object o) {
         if (o != null && o instanceof Category) {

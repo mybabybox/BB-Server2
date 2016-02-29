@@ -209,6 +209,8 @@ GET     /api/get-categories                         controllers.CategoryControll
 GET     /get-categories                             controllers.CategoryController.getCategories()
 GET     /categories                                 controllers.CategoryController.getCategories()
 
+GET     /api/get-subcategories                      controllers.CategoryController.getSubCategories(categoryId:Long)
+
 GET     /api/get-category/:id                       controllers.CategoryController.getCategory(id:Long)
 GET     /get-category/:id                           controllers.CategoryController.getCategory(id:Long)
 GET     /category/:id                               controllers.CategoryController.getCategory(id:Long)

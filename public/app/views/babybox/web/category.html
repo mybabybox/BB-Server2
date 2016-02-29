@@ -3,14 +3,15 @@
   <div ng-click="doBack()"
    class="icon_left ic_icon  ic_arrow_back clickable_area"></div>
   <div class="no-search-bar-holder flex1"></div>
-  <div class='page_name L16'><a href="/"><div class='ic_logo_shortcut clickable_area'></div></a></div>
+  <div class='page_name L16'>{{cat.name}}<!--a href="/"><div class='ic_logo_shortcut clickable_area'></div></a--></div>
   <span ng-if="!userInfo.isLoggedIn" style="padding-right: 15px;">
    <a href="/login">
     <div class='hold user_avatar ic_web_profile clickable_area'></div>
   </a>
-  </span> <span ng-if="userInfo.isLoggedIn"
-   style="padding-right: 15px; padding-top: 0px;"> <a
-   href="/seller/{{userInfo.id}}">
+  </span> 
+  <span ng-if="userInfo.isLoggedIn"
+   style="padding-right: 15px; padding-top: 0px;"> 
+   <a href="/seller/{{userInfo.id}}">
     <div class="hold user_avatar clickable_area"
      style="background-image: url(/image/get-mini-profile-image-by-id/{{userInfo.id}});"></div>
   </a>
@@ -33,14 +34,25 @@
     <div class="avatar" style="background-image: url({{cat.icon}});"></div>
    </div>
    <div class="flex1 categoryname-wrapper">
-    <div class="categoryname truncate m18 flex1">{{cat.name}}</div>
+    <div class="categoryname truncate L16 flex1">{{cat.name}}</div>
    </div>
   </div>
+  
+  <!--div class="category-grids subcat-container row categories-wrapper center-container">
+   <div data-ng-repeat="subcat in subcats" class="col-xs-4 category-grid clickable_area">
+    <a data-ng-href="/category/{{subcat.id}}/popular">
+     <div class="ratio_8_7_box category-wrapper"
+      style="background-image: url({{subcat.icon}})"></div>
+     <div class="middle-centered-div subcat-title">
+      <div class="title L12 category-grid-title">{{subcat.name}}</div>
+     </div>
+    </a>
+   </div-->
  </header>
  
  <div class="center-container">
   <div id="category-items" class='page-holder'>
-   <ul class='header_tabs M14 center-container'>
+   <ul class='header_tabs L13 center-container'>
     <li ng-class="catType=='popular'? 'active':'' "
      class='header_tab_item popular clickable_area'
      data-sorttype='popular'><a data-ng-href="/category/{{cat.id}}/popular">{{'POPULAR'|translate}}</a></li>

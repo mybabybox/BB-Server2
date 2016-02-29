@@ -166,7 +166,7 @@ babybox.controller('HomeController',
 });
 
 babybox.controller('CategoryPageController', 
-		function($scope, $location, $translate, $route, $rootScope, ngDialog, $routeParams,userInfo, category, product, categoryService, $anchorScroll, usSpinnerService) {
+		function($scope, $location, $translate, $route, $rootScope, ngDialog, $routeParams, subCategories, category, products, userInfo, categoryService, $anchorScroll, usSpinnerService) {
 	
 	writeMetaCanonical($location.absUrl());
 	
@@ -184,10 +184,9 @@ babybox.controller('CategoryPageController',
 	usSpinnerService.spin('loading...');
 	
 	$scope.userInfo = userInfo;
-	$scope.products = product;
-	//console.log($scope.products);
-	
+	$scope.products = products;
 	$scope.cat = category;
+	$scope.subcats = subCategories;
 	
 	//we are routing this from scala file so we can't able to get $routeParams , so this is just a workaround
 	var url = $location.absUrl();

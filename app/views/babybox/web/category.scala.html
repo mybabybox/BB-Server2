@@ -1,4 +1,4 @@
-@(category: String, products: String, userInfo: String, metaTags: String)
+@(subCategories: String, category: String, products: String, userInfo: String, metaTags: String)
 
 <!doctype html>
 <html lang="zh-hk">
@@ -100,10 +100,13 @@
 </html>
 
 <script type="text/javascript">
+    angular.module('babybox').factory('subCategories', function(){
+        return @Html(subCategories);
+    });
 	angular.module('babybox').factory('category', function(){
 		return @Html(category);
 	});
-	angular.module('babybox').factory('product', function(){
+	angular.module('babybox').factory('products', function(){
 		return @Html(products);
 	});
 	angular.module('babybox').factory('userInfo', function(){

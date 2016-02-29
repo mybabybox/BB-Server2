@@ -61,9 +61,6 @@ public class Post extends SocialObject implements Likeable, Commentable {
 	@ManyToOne
 	public Category category;
 
-	@ManyToOne
-    public Category subCategory;
-
 	@Enumerated(EnumType.STRING)
     public ConditionType conditionType;
 	

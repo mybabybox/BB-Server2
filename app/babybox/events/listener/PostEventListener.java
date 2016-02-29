@@ -80,8 +80,7 @@ public class PostEventListener extends EventListener {
             
             // category/subcategory change
             if (oldCategory != null) {
-                if ((oldCategory.parent == null && post.category.id != oldCategory.id) || 
-                        (oldCategory.parent != null && post.subCategory.id != oldCategory.id)) {
+                if (post.category.id != oldCategory.id) {
                     CalcServer.instance().removeFromCategoryQueues(post, oldCategory);
                 }
             }

@@ -344,16 +344,16 @@ public class User extends SocialObject implements Subject, Followable {
 	}
 	
 	@Transactional
-    public Category createCategory(String name, String description, String icon, int seq) {
-		
+    public Category createCategory(String name, String description, String icon, int seq, Category parent) {
+        
         if (Strings.isNullOrEmpty(name) || 
-        		Strings.isNullOrEmpty(description) || 
+                Strings.isNullOrEmpty(description) || 
                 Strings.isNullOrEmpty(icon)) {
             logger.underlyingLogger().warn("Missing parameters to createCategory");
             return null;
         }
         
-        Category category = new Category(name, description, this, icon, seq);
+        Category category = new Category(name, description, this, icon, seq, parent);
         category.save();
         return category;
     }
