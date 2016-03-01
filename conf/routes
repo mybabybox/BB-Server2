@@ -246,12 +246,14 @@ POST    /comment/new                                controllers.ProductControlle
 GET     /api/comment/delete/:id                     controllers.ProductController.deleteComment(id:Long)
 GET     /comment/delete/:id                         controllers.ProductController.deleteComment(id:Long)
 
-GET     /api/get-comments/:postId/:offset           controllers.ProductController.getPostComments(postId: Long,offset:Long)
-GET     /comments/:postId/:offset                   controllers.ProductController.getPostComments(postId: Long,offset:Long) 
+GET     /api/get-comments/:postId/:offset           controllers.ProductController.getPostComments(postId:Long,offset:Long)
+GET     /comments/:postId/:offset                   controllers.ProductController.getPostComments(postId:Long,offset:Long) 
 
 # Conversation
 GET     /api/get-conversations                      controllers.UserController.getConversations()
 GET     /get-all-conversations                      controllers.UserController.getConversations()
+
+GET     /api/get-user-conversations/:offset         controllers.UserController.getUserConversations(offset:Long)
 
 GET     /api/get-post-conversations/:id             controllers.ProductController.getConversations(id:Long)
 GET     /get-post-conversations/:id                 controllers.ProductController.getConversations(id:Long)

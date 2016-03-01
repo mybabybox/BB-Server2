@@ -586,6 +586,37 @@ public class UserController extends Controller {
 	}
 	
 	@Transactional
+    public static Result getUserConversations(Long offset) {
+	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
+	    
+        final User localUser = Application.getLocalUser(session());
+        if (!localUser.isLoggedIn()) {
+            logger.underlyingLogger().error(String.format("[u=%d] User not logged in", localUser.id));
+            return notFound();
+        }
+        
+        List<ConversationVM> vms = new ArrayList<>();
+        List<Conversation> conversations = Conversation.getUserConversations(localUser, offset);
+        if (conversations != null && conversations.size() > 0) {
+            for (Conversation conversation : conversations) {
+                // archived, dont show
+                if (conversation.isArchivedBy(localUser)) {
+                    continue;
+                }
+
+                ConversationVM vm = new ConversationVM(conversation, localUser);
+                vms.add(vm);
+            }
+        } else if (offset == 0) {
+            NotificationCounter.resetConversationsCount(localUser.id);
+        }
+        
+        sw.stop();
+        logger.underlyingLogger().info("[u="+localUser.id+"][offset="+offset+"] getUserConversations. Took "+sw.getElapsedMS()+"ms");
+        return ok(Json.toJson(vms));
+    }
+	
+	@Transactional
     public static Result getLatestConversations(Long offset) {
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
 

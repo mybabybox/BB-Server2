@@ -290,7 +290,7 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 	
 	public static List<Conversation> getUserConversations(User user) {
 		Query q = JPA.em().createQuery(
-		        "SELECT c from Conversation c where deleted = 0 and (" + 
+		        "SELECT c from Conversation c where numMessages > 0 and deleted = 0 and (" + 
 		        "(user1 = ?1 and (user1ArchiveDate < lastMessageDate or user1ArchiveDate is null)) or " + 
 		        "(user2 = ?1 and (user2ArchiveDate < lastMessageDate or user2ArchiveDate is null)) ) order by lastMessageDate desc");
 		q.setParameter(1, user);
@@ -303,9 +303,25 @@ public class Conversation extends domain.Entity implements Serializable, Creatab
 		}
 	}
 	
+	public static List<Conversation> getUserConversations(User user, Long offset) {
+	    Query q = JPA.em().createQuery(
+                "SELECT c from Conversation c where numMessages > 0 and deleted = 0 and (" + 
+                "(user1 = ?1 and (user1ArchiveDate < lastMessageDate or user1ArchiveDate is null)) or " + 
+                "(user2 = ?1 and (user2ArchiveDate < lastMessageDate or user2ArchiveDate is null)) ) order by lastMessageDate desc");
+	    q.setParameter(1, user);
+	    
+        try {
+            q.setFirstResult((int) (offset * DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT));
+            q.setMaxResults(DefaultValues.DEFAULT_INFINITE_SCROLL_COUNT);
+            return q.getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        }
+    }
+	
 	public static List<Conversation> getPostConversations(Post post) {
 		Query q = JPA.em().createQuery(
-				"SELECT c from Conversation c where deleted = 0 and post = ?1 and (" + 
+				"SELECT c from Conversation c where numMessages > 0 and deleted = 0 and post = ?1 and (" + 
 				        "(user1 = ?2 and (user1ArchiveDate < lastMessageDate or user1ArchiveDate is null)) or " + 
 				        "(user2 = ?2 and (user2ArchiveDate < lastMessageDate or user2ArchiveDate is null)) ) order by lastMessageDate desc");
 		q.setParameter(1, post);
