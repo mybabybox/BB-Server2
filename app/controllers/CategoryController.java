@@ -105,13 +105,13 @@ public class CategoryController extends Controller{
     }
     
 	@Transactional
-    public static Result getSubCategories(Long categoryId){
-        return ok(Json.toJson(getSubCategoryVMs(categoryId)));
+    public static Result getSubCategories(Long id){
+        return ok(Json.toJson(getSubCategoryVMs(id)));
     }
     
-    public static List<CategoryVM> getSubCategoryVMs(Long categoryId) {
+    public static List<CategoryVM> getSubCategoryVMs(Long id) {
         List<CategoryVM> vms = new ArrayList<CategoryVM>();
-        List<Category> subCategories = Category.getSubCategories(categoryId);
+        List<Category> subCategories = Category.getSubCategories(id);
         if (subCategories != null) {
             for(Category category : subCategories){
                 CategoryVM vm = new CategoryVM(category);
