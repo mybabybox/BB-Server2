@@ -946,6 +946,9 @@ public class UserController extends Controller {
 	@Transactional 
 	public Result getHomeExploreFeed(Long offset) {
 		final User localUser = Application.getLocalUser(session());
+		if (offset == 0) {
+            calcServer.buildQueuesForUser(localUser);
+        }
 		List<PostVMLite> vms = feedHandler.getFeedPosts(localUser.id, offset, localUser, FeedType.HOME_EXPLORE);
 		return ok(Json.toJson(vms));
 	}
@@ -958,6 +961,9 @@ public class UserController extends Controller {
 			return notFound();
 		}
 		
+		if (offset == 0) {
+            calcServer.buildQueuesForUser(localUser);
+        }
 		List<PostVMLite> vms = feedHandler.getFeedPosts(localUser.id, offset, localUser, FeedType.HOME_FOLLOWING);
 		return ok(Json.toJson(vms));
 	}
