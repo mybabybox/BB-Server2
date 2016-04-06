@@ -1327,17 +1327,27 @@ public class UserController extends Controller {
     }
     
     @Transactional
-    public static Result saveApnKey(String key, Long versionCode){
-        return savePushNotifictionTokenKey(key, versionCode, DeviceType.IOS);
+    public static Result saveApnToken(String key, String appVersion) {
+        return savePushNotificationToken(key, appVersion, DeviceType.IOS);
     }
     
     @Transactional
-    public static Result saveGcmKey(String key, Long versionCode){
-        return savePushNotifictionTokenKey(key, versionCode, DeviceType.ANDROID);
+    public static Result saveGcmToken(String key, String appVersion) {
+        return savePushNotificationToken(key, appVersion, DeviceType.ANDROID);
     }
     
     @Transactional
-    public static Result savePushNotifictionTokenKey(String key, Long versionCode, DeviceType deviceType) {
+    public static Result saveApnKey(String key, Long versionCode) {
+        return savePushNotificationToken(key, versionCode.toString(), DeviceType.IOS);
+    }
+    
+    @Transactional
+    public static Result saveGcmKey(String key, Long versionCode) {
+        return savePushNotificationToken(key, versionCode.toString(), DeviceType.ANDROID);
+    }
+    
+    @Transactional
+    public static Result savePushNotificationToken(String token, String appVersion, DeviceType deviceType) {
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
         
         User localUser = Application.getLocalUser(session());
@@ -1346,11 +1356,11 @@ public class UserController extends Controller {
             return notFound();
         }
 
-        PushNotificationToken.createUpdateToken(localUser.id, key, versionCode, deviceType);
+        PushNotificationToken.createUpdateToken(localUser.id, token, appVersion, deviceType);
         
         sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {
-            logger.underlyingLogger().debug("[u="+localUser.getId()+"][tokenKey="+key+"][versionCode="+versionCode+"] savePushNotifictionTokenKey(). Took "+sw.getElapsedMS()+"ms");
+            logger.underlyingLogger().debug("[u="+localUser.getId()+"][token="+token+"][appVersion="+appVersion+"] savePushNotifictionTokenKey(). Took "+sw.getElapsedMS()+"ms");
         }
         return ok();
     }

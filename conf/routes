@@ -310,8 +310,10 @@ GET     /api/reported-post/delete/:id               controllers.ProductControlle
 POST    /api/update-reported-post-note              controllers.ProductController.updateReportedPostNote()
 
 # Push notification token
-POST    /api/save-apn-key/:key/:versionCode        controllers.UserController.saveApnKey(key:String, versionCode:Long)
-POST    /api/save-gcm-key/:key/:versionCode        controllers.UserController.saveGcmKey(key:String, versionCode:Long)
+POST    /api/save-apn-token/:token/:appVersion      controllers.UserController.saveApnToken(token:String, appVersion:String)
+POST    /api/save-gcm-token/:token/:appVersion      controllers.UserController.saveGcmToken(token:String, appVersion:String)
+POST    /api/save-apn-key/:key/:versionCode         controllers.UserController.saveApnKey(key:String, versionCode:Long)
+POST    /api/save-gcm-key/:key/:versionCode         controllers.UserController.saveGcmKey(key:String, versionCode:Long)
 
 # Other
 GET     /api/get-districts                          controllers.Application.getDistricts

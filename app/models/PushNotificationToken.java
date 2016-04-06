@@ -31,7 +31,10 @@ public class PushNotificationToken extends domain.Entity {
     public String token;
     
     @Required
-    public Long versionCode;
+    public String appVersion;
+    
+    @Required
+    public Long versionCode = 0L;
     
     @Enumerated(EnumType.STRING)
     public DeviceType deviceType;
@@ -45,8 +48,8 @@ public class PushNotificationToken extends domain.Entity {
     public PushNotificationToken() {
     }
 
-    public static void createUpdateToken(Long userId, String token, Long versionCode, DeviceType deviceType) {
-        PushNotificationToken pushNotificationToken = findByUserIdVersionCode(userId, versionCode);
+    public static void createUpdateToken(Long userId, String token, String appVersion, DeviceType deviceType) {
+        PushNotificationToken pushNotificationToken = findByUserIdAppVersion(userId, appVersion);
         if (token == null) {
             markDelete(userId);     // mark delete old versions
             pushNotificationToken = new PushNotificationToken();
@@ -56,7 +59,7 @@ public class PushNotificationToken extends domain.Entity {
         if (!token.equals(pushNotificationToken.token)) {
             pushNotificationToken.userId = userId;
             pushNotificationToken.token = token;
-            pushNotificationToken.versionCode = versionCode;
+            pushNotificationToken.appVersion = appVersion;
             pushNotificationToken.deviceType = deviceType;
             pushNotificationToken.setCreatedDate(new Date());
             pushNotificationToken.save();
@@ -83,11 +86,11 @@ public class PushNotificationToken extends domain.Entity {
         } 
     }
     
-    public static PushNotificationToken findByUserIdVersionCode(Long userId, Long versionCode) {
+    public static PushNotificationToken findByUserIdAppVersion(Long userId, String appVersion) {
         try { 
-            Query q = JPA.em().createQuery("SELECT t FROM PushNotificationToken t where userId = ?1 and versionCode = ?2 and deleted = false");
+            Query q = JPA.em().createQuery("SELECT t FROM PushNotificationToken t where userId = ?1 and appVersion = ?2 and deleted = false");
             q.setParameter(1, userId);
-            q.setParameter(2, versionCode);
+            q.setParameter(2, appVersion);
             return (PushNotificationToken) q.getSingleResult();
         } catch (NoResultException e) {
             return null;
