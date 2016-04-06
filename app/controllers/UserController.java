@@ -25,11 +25,11 @@ import models.ConversationOrder;
 import models.FollowSocialRelation;
 import models.GameBadge;
 import models.GameBadgeAwarded;
-import models.GcmToken;
 import models.Location;
 import models.Message;
 import models.NotificationCounter;
 import models.Post;
+import models.PushNotificationToken;
 import models.Resource;
 import models.Settings;
 import models.SocialRelation;
@@ -1327,7 +1327,17 @@ public class UserController extends Controller {
     }
     
     @Transactional
+    public static Result saveApnKey(String key, Long versionCode){
+        return savePushNotifictionTokenKey(key, versionCode, DeviceType.IOS);
+    }
+    
+    @Transactional
     public static Result saveGcmKey(String key, Long versionCode){
+        return savePushNotifictionTokenKey(key, versionCode, DeviceType.ANDROID);
+    }
+    
+    @Transactional
+    public static Result savePushNotifictionTokenKey(String key, Long versionCode, DeviceType deviceType) {
         NanoSecondStopWatch sw = new NanoSecondStopWatch();
         
         User localUser = Application.getLocalUser(session());
@@ -1336,13 +1346,13 @@ public class UserController extends Controller {
             return notFound();
         }
 
-        GcmToken.createUpdateGcmKey(localUser.id, key, versionCode);
+        PushNotificationToken.createUpdateToken(localUser.id, key, versionCode, deviceType);
         
         sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {
-            logger.underlyingLogger().debug("[u="+localUser.getId()+"][gcmKey="+key+"][versionCode="+versionCode+"] saveGcmKey(). Took "+sw.getElapsedMS()+"ms");
+            logger.underlyingLogger().debug("[u="+localUser.getId()+"][tokenKey="+key+"][versionCode="+versionCode+"] savePushNotifictionTokenKey(). Took "+sw.getElapsedMS()+"ms");
         }
-		return ok();
+        return ok();
     }
     
     @Transactional

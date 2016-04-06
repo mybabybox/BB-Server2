@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import play.Play;
 import play.libs.Json;
-import models.GcmToken;
+import models.PushNotificationToken;
 
 import com.google.android.gcm.server.Sender;
 import com.google.android.gcm.server.Message;
@@ -74,15 +74,23 @@ public class GcmSender {
             return;
         }
         
-        GcmToken gcmToken = GcmToken.findByUserId(userId);
-        if (gcmToken != null) {
-            sendToGcm(userId, gcmToken.getRegId(), message);
+        PushNotificationToken token = PushNotificationToken.findByUserId(userId);
+        if (token != null) {
+            if (Application.DeviceType.IOS.equals(token.deviceType)) {
+                sendToApn(userId, token.token, message);
+            } else if (Application.DeviceType.ANDROID.equals(token.deviceType)) {
+                sendToGcm(userId, token.token, message);
+            }
         } else {
-            logger.underlyingLogger().info("[u="+userId+"] User does not have Gcm reg");
+            logger.underlyingLogger().info("[u="+userId+"] User does not have push notification token");
         }
     }
 
-    private static boolean sendToGcm(Long userId, String regId, String msg) {
+    private static boolean sendToApn(Long userId, String token, String msg) {
+        return true;
+    }
+    
+    private static boolean sendToGcm(Long userId, String token, String msg) {
         try {
             Sender sender = new Sender(API_SERVER_KEY);
             Message message = new Message.Builder().timeToLive(TTL)
@@ -90,8 +98,8 @@ public class GcmSender {
                     .delayWhileIdle(true)
                     .addData(MESSAGE_KEY, msg).build();
 
-            Result result = sender.send(message, regId, RETRIES);
-            logger.underlyingLogger().info("[u="+userId+"][regId="+regId+"][msg="+msg+"] Gcm send result: "+result);
+            Result result = sender.send(message, token, RETRIES);
+            logger.underlyingLogger().info("[u="+userId+"][token="+token+"][msg="+msg+"] Gcm send result: "+result);
             return true;
         } catch (Exception e) {
             logger.underlyingLogger().error("[u="+userId+"] Error in Gcm send", e);

@@ -4,6 +4,7 @@ import models.Activity;
 import models.Category;
 import models.GameBadgeAwarded;
 import models.Post;
+import models.PostToMark;
 import models.SystemInfo;
 import models.User;
 import models.Activity.ActivityType;
@@ -40,6 +41,10 @@ public class PostEventListener extends EventListener {
                     new TransactionalRunnableTask() {
                         @Override
                         public void execute() {
+                            // To be marked by PostMarker 
+                            PostToMark mark = new PostToMark(post.id);
+                            mark.save();
+                            
                             // game badge
                             if (user.numProducts == 1) {
                                 GameBadgeAwarded.recordGameBadge(user, BadgeType.POST_1);
@@ -75,8 +80,8 @@ public class PostEventListener extends EventListener {
 	@Subscribe
     public void recordEditPostEvent(EditPostEvent map){
 	    try {
-            Post post = (Post) map.get("post");
-            Category oldCategory = (Category) map.get("category");
+            final Post post = (Post) map.get("post");
+            final Category oldCategory = (Category) map.get("category");
             
             // category/subcategory change
             if (oldCategory != null) {
@@ -86,6 +91,16 @@ public class PostEventListener extends EventListener {
             }
             
             CalcServer.instance().addToCategoryQueues(post);
+            
+            executeAsync(
+                    new TransactionalRunnableTask() {
+                        @Override
+                        public void execute() {
+                            // To be marked by PostMarker 
+                            PostToMark mark = new PostToMark(post.id);
+                            mark.save();
+                        }
+                    });
     	} catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);
         }
@@ -94,7 +109,7 @@ public class PostEventListener extends EventListener {
 	@Subscribe
     public void recordDeletePostEvent(DeletePostEvent map){
 	    try {
-    		Post post = (Post) map.get("post");
+	        final Post post = (Post) map.get("post");
     		
     		CalcServer.instance().removeFromCategoryQueues(post);
     		CalcServer.instance().removeFromUserPostedQueue(post, post.owner);
