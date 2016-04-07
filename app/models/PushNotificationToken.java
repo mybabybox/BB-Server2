@@ -50,7 +50,7 @@ public class PushNotificationToken extends domain.Entity {
 
     public static void createUpdateToken(Long userId, String token, String appVersion, DeviceType deviceType) {
         PushNotificationToken pushNotificationToken = findByUserIdAppVersion(userId, appVersion);
-        if (token == null) {
+        if (pushNotificationToken == null) {
             markDelete(userId);     // mark delete old versions
             pushNotificationToken = new PushNotificationToken();
             logger.underlyingLogger().debug("createUpdateToken() created new token");

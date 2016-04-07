@@ -1327,13 +1327,13 @@ public class UserController extends Controller {
     }
     
     @Transactional
-    public static Result saveApnToken(String key, String appVersion) {
-        return savePushNotificationToken(key, appVersion, DeviceType.IOS);
+    public static Result saveApnToken(String token, String appVersion) {
+        return savePushNotificationToken(token, appVersion, DeviceType.IOS);
     }
     
     @Transactional
-    public static Result saveGcmToken(String key, String appVersion) {
-        return savePushNotificationToken(key, appVersion, DeviceType.ANDROID);
+    public static Result saveGcmToken(String token, String appVersion) {
+        return savePushNotificationToken(token, appVersion, DeviceType.ANDROID);
     }
     
     @Transactional
@@ -1360,7 +1360,7 @@ public class UserController extends Controller {
         
         sw.stop();
         if (logger.underlyingLogger().isDebugEnabled()) {
-            logger.underlyingLogger().debug("[u="+localUser.getId()+"][token="+token+"][appVersion="+appVersion+"] savePushNotifictionTokenKey(). Took "+sw.getElapsedMS()+"ms");
+            logger.underlyingLogger().debug("[u="+localUser.getId()+"][token="+token+"][appVersion="+appVersion+"][deviceType="+deviceType.toString()+"] savePushNotifictionTokenKey(). Took "+sw.getElapsedMS()+"ms");
         }
         return ok();
     }
