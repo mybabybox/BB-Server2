@@ -49,7 +49,8 @@ public class PushNotificationToken extends domain.Entity {
     }
 
     public static void createUpdateToken(Long userId, String token, String appVersion, DeviceType deviceType) {
-        PushNotificationToken pushNotificationToken = findByUserIdAppVersion(userId, appVersion);
+        //PushNotificationToken pushNotificationToken = getToken(userId, appVersion, deviceType);
+        PushNotificationToken pushNotificationToken = findByUserId(userId);
         if (pushNotificationToken == null) {
             markDelete(userId);     // mark delete old versions
             pushNotificationToken = new PushNotificationToken();
@@ -86,11 +87,12 @@ public class PushNotificationToken extends domain.Entity {
         } 
     }
     
-    public static PushNotificationToken findByUserIdAppVersion(Long userId, String appVersion) {
+    public static PushNotificationToken getToken(Long userId, String appVersion, DeviceType deviceType) {
         try { 
-            Query q = JPA.em().createQuery("SELECT t FROM PushNotificationToken t where userId = ?1 and appVersion = ?2 and deleted = false");
+            Query q = JPA.em().createQuery("SELECT t FROM PushNotificationToken t where userId = ?1 and appVersion = ?2 and deviceType = ?3 and deleted = false");
             q.setParameter(1, userId);
             q.setParameter(2, appVersion);
+            q.setParameter(3, deviceType);
             return (PushNotificationToken) q.getSingleResult();
         } catch (NoResultException e) {
             return null;
