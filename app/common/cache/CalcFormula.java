@@ -59,15 +59,20 @@ public class CalcFormula {
 	}
 	
 	public Double computeTimeScore(Post post) {
-	    NanoSecondStopWatch sw = new NanoSecondStopWatch();
-        logger.underlyingLogger().debug("computeTimeScore for p="+post.id+" date=" + post.getCreatedDate() + " baseScore="+post.baseScore);
+        NanoSecondStopWatch sw = new NanoSecondStopWatch();
+        logger.underlyingLogger().debug("---");
+        logger.underlyingLogger().debug("computeTimeScore for p="+post.id+" date="+post.getCreatedDate()+" baseScore="+post.baseScore);
         
         Double timeScore = (double) Math.max(post.baseScore, 1);
         Double timeDiff = Math.abs(Days.daysBetween(new DateTime(post.getCreatedDate()), new DateTime()).getDays()) / 7D;
-        timeDiff = (double) Math.ceil(timeDiff);
+        timeDiff = (double) Math.ceil(timeDiff);    // timeDiff in terms of weeks
         if (timeDiff > FEED_SCORE_COMPUTE_DECAY_START) {
             timeDiff -= FEED_SCORE_COMPUTE_DECAY_START;
-            timeScore = timeScore * getDiscountFactor(timeDiff);
+            Double discountFactor = getDiscountFactor(timeDiff);
+            timeScore = timeScore * discountFactor;
+            logger.underlyingLogger().debug("timeDecay timeDiff="+timeDiff+" => discountFactor="+discountFactor);
+        } else {
+            logger.underlyingLogger().debug("timeDecay timeDiff="+timeDiff+" => NO discountFactor");
         }
         
         // adjust score
@@ -86,7 +91,7 @@ public class CalcFormula {
         logger.underlyingLogger().debug("computeTimeScore completed with timeScore="+timeScore+". Took "+sw.getElapsedSecs()+"s");
         
         return timeScore;
-	}
+    }
 	
 	public Double randomizeScore(Post post) {
 	    Double timeScore = post.timeScore;
