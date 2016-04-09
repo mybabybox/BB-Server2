@@ -202,7 +202,7 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
                         new Runnable() {
                             public void run() {
                                 try {
-                                    int targetFullWidth = ImageDimensions.LIGHTBOX_WIDTH_PX;
+                                    int targetFullWidth = ImageDimensions.IMAGE_FULL_WIDTH_PX;
                                     if (origWidth > targetFullWidth) {
                                         Thumbnails.of(source).width(targetFullWidth).keepAspectRatio(true).toFiles(parentFile, Rename.NO_CHANGE);
                                     } else {
@@ -230,7 +230,7 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
                         new Runnable() {
                             public void run() {
                                 try {
-                                    int targetFullHeight = ImageDimensions.LIGHTBOX_HEIGHT_PX;
+                                    int targetFullHeight = ImageDimensions.IMAGE_FULL_HEIGHT_PX;
                                     if (origHeight > targetFullHeight) {
                                         Thumbnails.of(source)
                                                 .height(targetFullHeight)
@@ -279,7 +279,7 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
                         new Runnable() {
                             public void run() {
                                 try {
-                                    int targetFullWidth = ImageDimensions.LIGHTBOX_WIDTH_PX;
+                                    int targetFullWidth = ImageDimensions.IMAGE_FULL_WIDTH_PX;
                                     if (origWidth > targetFullWidth) {
                                         Thumbnails.of(source)
                                                 .width(targetFullWidth)
@@ -308,7 +308,7 @@ public class Folder extends SocialObject implements Serializable, Creatable, Upd
                         new Runnable() {
                             public void run() {
                                 try {
-                                    int targetFullHeight = ImageDimensions.LIGHTBOX_HEIGHT_PX;
+                                    int targetFullHeight = ImageDimensions.IMAGE_FULL_HEIGHT_PX;
                                     if (origHeight > targetFullHeight) {
                                         Thumbnails.of(source)
                                                 .height(targetFullHeight)
