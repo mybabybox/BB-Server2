@@ -3,7 +3,7 @@ package babybox.events.listener;
 import java.util.HashSet;
 import java.util.Set;
 
-import mobile.GcmSender;
+import mobile.PushNotificationSender;
 import models.Activity;
 import models.Comment;
 import models.Post;
@@ -50,8 +50,8 @@ public class CommentEventListener extends EventListener {
                                         StringUtil.shortMessage(comment.body));
                                 activity.ensureUniqueAndMerge();    // only record latest comment activity from sender
                                 
-                                // GCM
-                                GcmSender.sendNewCommentNotification(
+                                // Push notification
+                                PushNotificationSender.sendNewCommentNotification(
                                         post.owner.id, 
                                         comment.owner.name,
                                         post.title, 
@@ -65,13 +65,13 @@ public class CommentEventListener extends EventListener {
             
             // fan out to all commenters
             Set<Long> commenterIds = new HashSet<>();
-            for (Comment c : post.comments) {
+            for (Comment otherComment : post.comments) {
                 // 1. skip post owner here, sent already
                 // 2. skip comment owner
                 // 3. remove duplicates
-                if (c.owner.id == post.owner.id || 
-                        c.owner.id == comment.owner.id || 
-                        commenterIds.contains(c.owner.id)) {
+                if (otherComment.owner.id == post.owner.id || 
+                        otherComment.owner.id == comment.owner.id || 
+                        commenterIds.contains(otherComment.owner.id)) {
                     continue;
                 }
                 
@@ -80,14 +80,14 @@ public class CommentEventListener extends EventListener {
                     break;
                 }
                 
-                final Long commenterId = c.owner.id;
+                final Long otherCommenterId = otherComment.owner.id;
                 executeAsync(
                         new TransactionalRunnableTask() {
                             @Override
                             public void execute() {
                                 Activity activity = new Activity(
                                         ActivityType.NEW_COMMENT, 
-                                        commenterId,
+                                        otherCommenterId,
                                         false, 
                                         comment.owner.id, 
                                         comment.owner.id, 
@@ -95,11 +95,21 @@ public class CommentEventListener extends EventListener {
                                         post.id,
                                         postImageId, 
                                         StringUtil.shortMessage(comment.body));
-                                activity.ensureUniqueAndCreate();
+                                activity.ensureUniqueAndMerge();
+                                
+                                // Push notification
+                                PushNotificationSender.sendNewCommentNotification(
+                                        otherCommenterId, 
+                                        comment.owner.name,
+                                        post.title, 
+                                        post.id);
+                                
+                                // Sendgrid
+                                // NOTE: skip email for other commenters
                             }
                         });
                 
-                commenterIds.add(c.owner.id);
+                commenterIds.add(otherComment.owner.id);
             }
 	    } catch(Exception e) {
             logger.underlyingLogger().error(e.getMessage(), e);

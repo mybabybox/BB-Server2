@@ -2,7 +2,7 @@ package babybox.events.listener;
 
 import java.util.Date;
 
-import mobile.GcmSender;
+import mobile.PushNotificationSender;
 import models.Activity;
 import models.GameBadgeAwarded;
 import models.User;
@@ -55,8 +55,8 @@ public class FollowEventListener extends EventListener {
                                         user.displayName);
                                 activity.ensureUniqueAndCreate();
                                 
-                                // GCM
-                                GcmSender.sendNewFollowNotification(
+                                // Push notification
+                                PushNotificationSender.sendNewFollowNotification(
                                         user.id, 
                                         localUser.name);
                             }

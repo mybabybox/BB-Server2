@@ -1,6 +1,6 @@
 package babybox.events.listener;
 
-import mobile.GcmSender;
+import mobile.PushNotificationSender;
 import models.Message;
 import models.User;
 import babybox.events.map.MessageEvent;
@@ -31,8 +31,8 @@ public class MessageEventListener extends EventListener {
                                         sender, recipient, message.conversation.post.title, message.body);
                             }
                             
-                            // GCM
-                            GcmSender.sendNewMessageNotification(
+                            // Push notification
+                            PushNotificationSender.sendNewMessageNotification(
                                     recipient.id, 
                                     sender.name,
                                     message.body);

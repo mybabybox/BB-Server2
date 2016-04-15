@@ -146,6 +146,28 @@ public class UserController extends Controller {
 	}
 	
 	@Transactional
+    public Result getUserInfoByDisplayName(String displayName) {
+        NanoSecondStopWatch sw = new NanoSecondStopWatch();
+        
+        final User localUser = Application.getLocalUser(session());
+        final User user = User.findByDisplayName(displayName);
+        if (user == null) {
+            return notFound();
+        }
+        
+        // build queues if not yet built
+        calcServer.buildQueuesForUser(user);
+        
+        UserVM userVM = new UserVM(user, localUser);
+        
+        sw.stop();
+        if (logger.underlyingLogger().isDebugEnabled()) {
+            logger.underlyingLogger().debug("[u="+localUser.getId()+"] getUserInfoByDisplayName(). Took "+sw.getElapsedMS()+"ms");
+        }
+        return ok(Json.toJson(userVM));
+    }
+	
+	@Transactional
 	public static Result uploadProfilePhoto() {
 		final User localUser = Application.getLocalUser(session());
 		if (!localUser.isLoggedIn()) {
