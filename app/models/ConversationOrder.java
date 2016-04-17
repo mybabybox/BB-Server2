@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -129,16 +130,25 @@ public class ConversationOrder extends domain.Entity implements Serializable, Cr
                 "SELECT o from ConversationOrder o where conversation = ?1 and active = ?2 and deleted = false");
         q.setParameter(1, conversation);
         q.setParameter(2, true);
-        q.setMaxResults(1);
-        
-        if (q.getMaxResults() > 1) {
-            logger.underlyingLogger().error("[conv="+conversation.id+"] has "+q.getMaxResults()+" active orders!!");
-        }
         
         try {
             return (ConversationOrder) q.getSingleResult();
         } catch (NoResultException e) {
             return null;
+        } catch (NonUniqueResultException e) {
+            logger.underlyingLogger().error("[conv="+conversation.id+"] has multiple active orders! Mark delete all orders...");
+            markDelete(conversation);
+            return null;
         }
 	}
+	
+	public static void markDelete(Conversation conversation) {
+        try {
+            Query q = JPA.em().createQuery("update ConversationOrder set active = 0, deleted = 1 where conversation = ?1");
+            q.setParameter(1, conversation);
+            q.executeUpdate();
+        } catch (Exception e) {
+            logger.underlyingLogger().error("Failed to mark delete ConversationOrder for conversationId="+conversation.id, e);
+        }
+    }
 }

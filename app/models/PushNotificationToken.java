@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
 import controllers.Application.DeviceType;
@@ -52,9 +53,11 @@ public class PushNotificationToken extends domain.Entity {
         //PushNotificationToken pushNotificationToken = getToken(userId, appVersion, deviceType);
         PushNotificationToken pushNotificationToken = findByUserId(userId);
         if (pushNotificationToken == null) {
-            markDelete(userId);     // mark delete old versions
             pushNotificationToken = new PushNotificationToken();
+            pushNotificationToken.setCreatedDate(new Date());
             logger.underlyingLogger().debug("createUpdateToken() created new token");
+        } else {
+            pushNotificationToken.setUpdatedDate(new Date());            
         }
         
         if (!token.equals(pushNotificationToken.token)) {
@@ -62,7 +65,6 @@ public class PushNotificationToken extends domain.Entity {
             pushNotificationToken.token = token;
             pushNotificationToken.appVersion = appVersion;
             pushNotificationToken.deviceType = deviceType;
-            pushNotificationToken.setCreatedDate(new Date());
             pushNotificationToken.save();
             logger.underlyingLogger().debug("createUpdateToken() updated token");
         } else {
@@ -75,16 +77,15 @@ public class PushNotificationToken extends domain.Entity {
         try { 
             Query q = JPA.em().createQuery("SELECT t FROM PushNotificationToken t where userId = ?1 and deleted = false order by CREATED_DATE desc");
             q.setParameter(1, userId);
-            q.setMaxResults(1);
-            
-            if (q.getMaxResults() > 1) {
-                logger.underlyingLogger().error("[u="+userId+"] has "+q.getMaxResults()+" tokens!!");
-            }
-            
+            //q.setMaxResults(1);
             return (PushNotificationToken) q.getSingleResult();
         } catch (NoResultException e) {
             return null;
-        } 
+        } catch (NonUniqueResultException e) {
+            logger.underlyingLogger().error("[u="+userId+"] has multiple tokens! Mark delete all tokens...");
+            markDelete(userId);
+            return null;
+        }
     }
     
     public static PushNotificationToken getToken(Long userId, String appVersion, DeviceType deviceType) {
