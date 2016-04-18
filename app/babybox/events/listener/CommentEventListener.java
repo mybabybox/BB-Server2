@@ -44,7 +44,7 @@ public class CommentEventListener extends EventListener {
                                         true,
                                         comment.owner.id, 
                                         comment.owner.id,
-                                        comment.owner.name,
+                                        comment.owner.displayName,
                                         post.id,
                                         postImageId, 
                                         StringUtil.shortMessage(comment.body));
@@ -53,7 +53,7 @@ public class CommentEventListener extends EventListener {
                                 // Push notification
                                 PushNotificationSender.sendNewCommentNotification(
                                         post.owner.id, 
-                                        comment.owner.name,
+                                        comment.owner.displayName,
                                         post.title, 
                                         post.id);
                                 
@@ -91,7 +91,7 @@ public class CommentEventListener extends EventListener {
                                         false, 
                                         comment.owner.id, 
                                         comment.owner.id, 
-                                        comment.owner.name,
+                                        comment.owner.displayName,
                                         post.id,
                                         postImageId, 
                                         StringUtil.shortMessage(comment.body));
@@ -100,7 +100,7 @@ public class CommentEventListener extends EventListener {
                                 // Push notification
                                 PushNotificationSender.sendNewCommentNotification(
                                         otherCommenterId, 
-                                        comment.owner.name,
+                                        comment.owner.displayName,
                                         post.title, 
                                         post.id);
                                 

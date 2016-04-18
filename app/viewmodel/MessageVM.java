@@ -20,9 +20,9 @@ public class MessageVM {
 		this.id = message.id;
 		this.createdDate = message.getCreatedDate().getTime();
 		this.senderId = message.sender.id;
-		this.senderName = message.sender.name;
+		this.senderName = message.sender.displayName;
         this.receiverId = message.receiver().id;
-        this.receiverName = message.receiver().name;
+        this.receiverName = message.receiver().displayName;
 		this.body = message.body;
 		this.system = message.system;
 		

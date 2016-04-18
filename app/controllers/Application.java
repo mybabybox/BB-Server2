@@ -368,20 +368,6 @@ public class Application extends Controller {
         return User.NO_LOGIN_ID;
     }
 
-    public static String getLocalUserName() {
-        User user = null;
-        try {
-            user = getLocalUser(session());
-        } catch (Exception e) {
-            // ignore
-        }
-
-        if (user != null) {
-            return user.name;
-        }
-        return "";
-    }
-	        
 	@Restrict(@Group(SecurityRole.USER))
     public static Result restricted() {
         final User localUser = getLocalUser(session());

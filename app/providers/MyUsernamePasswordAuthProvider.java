@@ -366,10 +366,10 @@ UsernamePasswordAuthProvider<String, MyLoginUsernamePasswordAuthUser, MyUsername
 
 		final String html = getEmailTemplate(
 				"views.html.account.email.password_reset", langCode, url,
-				token, user.name, user.email);
+				token, user.displayName, user.email);
 		final String text = getEmailTemplate(
 				"views.txt.account.email.password_reset", langCode, url, token,
-				user.name, user.email);
+				user.displayName, user.email);
 
 		return new Body(text, html);
 	}
@@ -447,10 +447,10 @@ UsernamePasswordAuthProvider<String, MyLoginUsernamePasswordAuthUser, MyUsername
 
 		final String html = getEmailTemplate(
 				"views.html.account.email.verify_email", langCode, url, token,
-				user.name, user.email);
+				user.displayName, user.email);
 		final String text = getEmailTemplate(
 				"views.txt.account.email.verify_email", langCode, url, token,
-				user.name, user.email);
+				user.displayName, user.email);
 
 		return new Body(text, html);
 	}
@@ -466,7 +466,7 @@ UsernamePasswordAuthProvider<String, MyLoginUsernamePasswordAuthUser, MyUsername
 	}
 
 	private String getEmailName(final User user) {
-		return getEmailName(user.email, user.name);
+		return getEmailName(user.email, user.displayName);
 	}
 
 	protected Cancellable sendMail(final Mail mail) {

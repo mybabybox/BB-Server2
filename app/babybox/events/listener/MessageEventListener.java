@@ -34,7 +34,7 @@ public class MessageEventListener extends EventListener {
                             // Push notification
                             PushNotificationSender.sendNewMessageNotification(
                                     recipient.id, 
-                                    sender.name,
+                                    sender.displayName,
                                     message.body);
                         }
                     });

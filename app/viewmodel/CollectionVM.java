@@ -26,7 +26,7 @@ public class CollectionVM {
 
 	public CollectionVM(Collection collection) {
 		this.ownerId = collection.owner.id;
-		this.ownerName = collection.owner.name;
+		this.ownerName = collection.owner.displayName;
 		this.id = collection.id;
 		this.collectionName = collection.name;
 		for(Post product : collection.products){

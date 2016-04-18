@@ -58,7 +58,7 @@ public class FollowEventListener extends EventListener {
                                 // Push notification
                                 PushNotificationSender.sendNewFollowNotification(
                                         user.id, 
-                                        localUser.name);
+                                        localUser.displayName);
                             }
                         });
     		}

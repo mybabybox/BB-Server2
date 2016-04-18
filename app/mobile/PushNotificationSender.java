@@ -90,7 +90,7 @@ public class PushNotificationSender {
         PushNotificationToken token = PushNotificationToken.findByUserId(userId);
         if (token != null) {
             if (Application.DeviceType.IOS.equals(token.deviceType)) {
-                sendToApn(userId, token.token, map);
+                //sendToApn(userId, token.token, map);
             } else if (Application.DeviceType.ANDROID.equals(token.deviceType)) {
                 sendToGcm(userId, token.token, map);
             }
@@ -119,8 +119,7 @@ public class PushNotificationSender {
                     "\"messageType\":\""+map.get(MESSAGE_TYPE)+"\","+
                     "\"alert\":\""+map.get(MESSAGE)+"\"}}";
             
-            PushNotificationPayload payload = 
-                    PushNotificationPayload.fromJSON(content);
+            PushNotificationPayload payload = PushNotificationPayload.fromJSON(content);
             PushedNotifications notifications = Push.payload(payload, cert, pass, prod, token);
             
             logger.underlyingLogger().info("[u="+userId+"][token="+token+"][content="+content+"] Apn send result: "+notifications.toString());
